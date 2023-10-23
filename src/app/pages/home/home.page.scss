@@ -25,3 +25,12 @@
 #container a {
   text-decoration: none;
 }
+
+
+@media screen and (min-width: 768px) {
+  /* Apply the always-open-menu class to the ion-menu component */
+  .always-open-menu {
+    background: red!important;
+    --ion-menu-width: auto; /* Set the menu width to "auto" to keep it open */
+  }
+}
