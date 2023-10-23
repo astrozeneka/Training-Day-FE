@@ -1,0 +1,11 @@
+.login-header{
+  padding-bottom: 2em;
+}
+
+.dark-logo img {
+  display: none; /* Hide the light logo by default */
+}
+
+.dark-logo img:last-child {
+  display: block; /* Display the dark logo when the dark mode is active */
+}

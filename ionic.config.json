@@ -1,5 +1,7 @@
 {
   "name": "Training-Day-FE",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
