@@ -1,0 +1,51 @@
+.page{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+ion-content{
+  flex: 1;
+  overflow: visible;
+}
+
+// THe toolbar having the username and the call to action
+#menu-header{
+  padding: .8em;
+  padding-top: 3em;
+  ion-row{
+    display: flex;
+    align-items: center;
+  }
+  ion-title{
+  }
+}
+
+ion-list{
+  padding: 1em 0em;
+}
+
+ion-list ion-item ion-label{
+  display: flex!important;
+  align-items: center!important;
+  ion-badge{
+    margin-left: 1em;
+  }
+}
+
+ion-footer{
+  padding: 1em;
+}
+
+// The profile container
+.profile-container{
+  display: flex;
+  align-items: center;
+  .profile-image{
+
+  }
+  .profile-name{
+    font-size: 1.3em;
+    padding-left: .5em;
+  }
+}
