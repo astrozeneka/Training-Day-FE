@@ -19,6 +19,10 @@ const routes: Routes = [
     path: 'subscribe',
     loadChildren: () => import('./pages/subscribe/subscribe.module').then(m => m.SubscribePageModule)
   },
+  {
+    path: 'test-payment',
+    loadChildren: () => import('./pages/test-payment/test-payment.module').then(m => m.TestPaymentPageModule)
+  },
 ];
 
 @NgModule({
