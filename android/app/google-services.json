@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "635024379631",
+    "project_id": "training-day-47a31",
+    "storage_bucket": "training-day-47a31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635024379631:android:806abffb1352e57d23d51a",
+        "android_client_info": {
+          "package_name": "com.trainingday"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6LuTBDrCglIvOf1_PbVG9jP-3nZUC9_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
