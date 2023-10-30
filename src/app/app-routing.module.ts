@@ -23,6 +23,10 @@ const routes: Routes = [
     path: 'test-payment',
     loadChildren: () => import('./pages/test-payment/test-payment.module').then(m => m.TestPaymentPageModule)
   },
+  {
+    path: 'test-editor',
+    loadChildren: () => import('./pages/test-editor/test-editor.module').then(m => m.TestEditorPageModule)
+  },
 ];
 
 @NgModule({

@@ -34,3 +34,13 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+// Quill code snippets
+
+@import '~quill/dist/quill.core.css';
+@import '~quill/dist/quill.snow.css';
+
+[contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}
