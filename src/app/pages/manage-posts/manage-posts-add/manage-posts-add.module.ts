@@ -4,27 +4,27 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { TestEditorPageRoutingModule } from './test-editor-routing.module';
+import { ManagePostsAddPageRoutingModule } from './manage-posts-add-routing.module';
 
-import { TestEditorPage } from './test-editor.page';
-import { QuillModule } from 'ngx-quill'
+import { ManagePostsAddPage } from './manage-posts-add.page';
+import {QuillModule} from "ngx-quill";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    IonicModule,
-    TestEditorPageRoutingModule,
+    IonicModule.forRoot(),
+    ManagePostsAddPageRoutingModule,
     QuillModule.forRoot({
       modules: {
         toolbar: [
-          ['bold', 'italic', 'underline']
+          ['bold', 'italic', 'underline', 'strike']
         ],
         syntax: true
       },
       formats: ['bold', 'italic', 'underline']
     }),
   ],
-  declarations: [TestEditorPage]
+  declarations: [ManagePostsAddPage]
 })
-export class TestEditorPageModule {}
+export class ManagePostsAddPageModule {}

@@ -31,6 +31,14 @@ const routes: Routes = [
     path: 'test-agenda',
     loadChildren: () => import('./pages/test-agenda/test-agenda.module').then(m => m.TestAgendaPageModule)
   },
+  {
+    path: 'manage/posts/view',
+    loadChildren: () => import('./pages/manage-posts/manage-posts-view/manage-posts-view.module').then(m => m.ManagePostsViewPageModule)
+  },
+  {
+    path: 'manage/posts/add',
+    loadChildren: () => import('./pages/manage-posts/manage-posts-add/manage-posts-add.module').then(m => m.ManagePostsAddPageModule)
+  },
 ];
 
 @NgModule({

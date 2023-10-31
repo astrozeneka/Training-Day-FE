@@ -1,0 +1,72 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Ajouter un article</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Ajouter un article</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div> <!-- The form -->
+    <ion-item>
+      <ion-input
+        label="Titre"
+        label-placement="floating"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Permalink"
+        label-placement="floating"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <quill-editor></quill-editor>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Tags"
+        label-placement="floating"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-select
+        label="Type"
+        label-placement="floating"
+      >
+        <ion-select-option value="article">Article</ion-select-option>
+        <ion-select-option value="app_content">Contenu de l'application</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select
+        label="Modalité d'accès"
+        label-placement="floating"
+      >
+        <ion-select-option value="free">Gratuit</ion-select-option>
+        <ion-select-option value="need_membership">Payant</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select
+        label="Fil"
+        label-placement="floating"
+      ></ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select label="Média" label-placement="floating"></ion-select>
+    </ion-item>
+
+    <div style="display: flex; justify-content: center;" class="ion-padding">
+      <ion-button color="medium" fill="clear">Cancel</ion-button>
+      <ion-button>Submit</ion-button>
+    </div>
+  </div>
+</ion-content>
