@@ -27,6 +27,10 @@ const routes: Routes = [
     path: 'test-editor',
     loadChildren: () => import('./pages/test-editor/test-editor.module').then(m => m.TestEditorPageModule)
   },
+  {
+    path: 'test-agenda',
+    loadChildren: () => import('./pages/test-agenda/test-agenda.module').then(m => m.TestAgendaPageModule)
+  },
 ];
 
 @NgModule({
