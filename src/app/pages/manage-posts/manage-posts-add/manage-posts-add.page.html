@@ -14,32 +14,39 @@
     </ion-toolbar>
   </ion-header>
 
-  <div> <!-- The form -->
+  <form [formGroup]="form"> <!-- The form -->
+    <ion-alert class="ion-color-danger">{{ displayedError }}</ion-alert>
     <ion-item>
       <ion-input
         label="Titre"
         label-placement="floating"
+        formControlName="title"
       ></ion-input>
     </ion-item>
     <ion-item>
       <ion-input
         label="Permalink"
         label-placement="floating"
+        formControlName="permalink"
       ></ion-input>
     </ion-item>
     <ion-item>
-      <quill-editor></quill-editor>
+      <quill-editor
+        formControlName="content"
+      ></quill-editor>
     </ion-item>
     <ion-item>
       <ion-input
         label="Tags"
         label-placement="floating"
+        formControlName="tags"
       ></ion-input>
     </ion-item>
     <ion-item>
       <ion-select
         label="Type"
         label-placement="floating"
+        formControlName="type"
       >
         <ion-select-option value="article">Article</ion-select-option>
         <ion-select-option value="app_content">Contenu de l'application</ion-select-option>
@@ -49,6 +56,7 @@
       <ion-select
         label="Modalité d'accès"
         label-placement="floating"
+        formControlName="access"
       >
         <ion-select-option value="free">Gratuit</ion-select-option>
         <ion-select-option value="need_membership">Payant</ion-select-option>
@@ -66,7 +74,7 @@
 
     <div style="display: flex; justify-content: center;" class="ion-padding">
       <ion-button color="medium" fill="clear">Cancel</ion-button>
-      <ion-button>Submit</ion-button>
+      <ion-button (click)="submit()">Submit</ion-button>
     </div>
-  </div>
+  </form>
 </ion-content>

@@ -39,6 +39,14 @@ const routes: Routes = [
     path: 'manage/posts/add',
     loadChildren: () => import('./pages/manage-posts/manage-posts-add/manage-posts-add.module').then(m => m.ManagePostsAddPageModule)
   },
+  {
+    path: 'manage/agencies/view',
+    loadChildren: () => import('./pages/manage-agencies/manage-agencies-view/manage-agencies-view.module').then(m => m.ManageAgenciesViewPageModule)
+  },
+  {
+    path: 'manage/agencies/add',
+    loadChildren: () => import('./pages/manage-agencies/manage-agencies-add/manage-agencies-add.module').then(m => m.ManageAgenciesAddPageModule)
+  },
 ];
 
 @NgModule({
