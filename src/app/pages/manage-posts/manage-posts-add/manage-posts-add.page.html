@@ -28,6 +28,8 @@
         label="Permalink"
         label-placement="floating"
         formControlName="permalink"
+        [errorText]="displayedError.permalink"
+        class="ion-invalid ion-touched"
       ></ion-input>
     </ion-item>
     <ion-item>
