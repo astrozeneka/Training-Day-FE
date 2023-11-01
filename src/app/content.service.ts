@@ -17,7 +17,7 @@ export class ContentService {
 
   constructor(
     private httpClient: HttpClient,
-    private storage: Storage
+    public storage: Storage
   ) {
     this.storage.create()
   }

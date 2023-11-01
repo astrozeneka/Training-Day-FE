@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ManagePostsViewPageRoutingModule } from './manage-posts-view-routing.module';
 
 import { ManagePostsViewPage } from './manage-posts-view.page';
+import {FeedbackComponent} from "../../../components/feedback/feedback.component";
 
 @NgModule({
   imports: [
@@ -15,6 +16,9 @@ import { ManagePostsViewPage } from './manage-posts-view.page';
     IonicModule,
     ManagePostsViewPageRoutingModule
   ],
-  declarations: [ManagePostsViewPage]
+  declarations: [
+    ManagePostsViewPage,
+    FeedbackComponent
+  ]
 })
 export class ManagePostsViewPageModule {}
