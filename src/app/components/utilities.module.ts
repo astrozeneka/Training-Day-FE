@@ -4,13 +4,15 @@ import {HeaderComponent} from "./header/header.component";
 import {IonicModule} from "@ionic/angular";
 import {PageWrapperBasicComponent} from "./page-wrapper-basic/page-wrapper-basic.component";
 import {ReactiveFormsModule} from "@angular/forms";
+import {FeedbackComponent} from "./feedback/feedback.component";
 
 
 
 @NgModule({
   declarations: [
     HeaderComponent,
-    PageWrapperBasicComponent
+    PageWrapperBasicComponent,
+    FeedbackComponent
   ],
   imports: [
     CommonModule,

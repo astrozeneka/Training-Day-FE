@@ -56,8 +56,8 @@ export class ManageFilesAddPage implements OnInit {
               }
               return throwError(error)
             }))
-            .subscribe((res)=>{
-              this.feedbackService.register("Le fichier a été ajouté")
+            .subscribe(async (res)=>{
+              await this.feedbackService.register("Le fichier a été ajouté")
               this.router.navigate(["/manage/files/view"])
             })
         }

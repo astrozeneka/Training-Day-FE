@@ -18,7 +18,8 @@ import {FeedbackComponent} from "../../../components/feedback/feedback.component
   ],
   declarations: [
     ManagePostsViewPage,
-    FeedbackComponent
+    // FeedbackComponent
+    // Now it is moved into the utilities module
   ]
 })
 export class ManagePostsViewPageModule {}
