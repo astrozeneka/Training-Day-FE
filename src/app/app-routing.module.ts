@@ -47,6 +47,14 @@ const routes: Routes = [
     path: 'manage/agencies/add',
     loadChildren: () => import('./pages/manage-agencies/manage-agencies-add/manage-agencies-add.module').then(m => m.ManageAgenciesAddPageModule)
   },
+  {
+    path: 'manage/files/view',
+    loadChildren: () => import('./pages/manage-files/manage-files-view/manage-files-view.module').then(m => m.ManageFilesViewPageModule)
+  },
+  {
+    path: 'manage/files/add',
+    loadChildren: () => import('./pages/manage-files/manage-files-add/manage-files-add.module').then(m => m.ManageFilesAddPageModule)
+  },
 ];
 
 @NgModule({

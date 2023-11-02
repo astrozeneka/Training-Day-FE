@@ -31,7 +31,7 @@ export class ManagePostsAddPage implements OnInit {
   ) { }
 
   submit(){
-    this.contentService.post(`/posts?XDEBUG_SESSION_START=client`, this.form.value)
+    this.contentService.post(`/posts`, this.form.value)
       .pipe(
         catchError((error)=>{
           if (error.status === 422){

@@ -1,0 +1,21 @@
+<app-page-wrapper-basic
+  title="Liste des fichiers"
+  defaultBackHref="/manage"
+>
+  <div class="content">
+    <ion-card>
+      <ion-card-content>
+        <p>
+          <a routerLink="/manage/files/add">Ajouter un fichier</a>
+          <br/>
+          <a routerLink="/">Accueil</a>
+        </p>
+      </ion-card-content>
+    </ion-card>
+    <ion-card *ngFor="let entity of entityList">
+      <ion-card-header>
+        <ion-checkbox>{{ entity.name }}</ion-checkbox>
+      </ion-card-header>
+    </ion-card>
+  </div>
+</app-page-wrapper-basic>

@@ -9,6 +9,8 @@ import {ActivatedRoute} from "@angular/router";
 export class PageWrapperBasicComponent  implements OnInit {
 
   @Input() title: string = "";
+  @Input() defaultBackHref: string = "";
+
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {

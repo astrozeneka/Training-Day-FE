@@ -1,0 +1,22 @@
+
+<app-page-wrapper-basic
+  title="Ajouter un ficher"
+  defaultBackHref="/manage/files/view"
+>
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-input
+        label="Sélectionner votre fichier"
+        type="file"
+        label-placement="floating"
+        formControlName="file"
+        name="file"
+        [errorText]="displayedError.file"
+      ></ion-input>
+    </ion-item>
+    <div style="display: flex; justify-content: center;" class="ion-padding">
+      <ion-button color="medium" fill="clear">Cancel</ion-button>
+      <ion-button (click)="submit()">Submit</ion-button>
+    </div>
+  </form>
+</app-page-wrapper-basic>
