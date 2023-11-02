@@ -38,7 +38,6 @@ export class ManagePostsAddPage implements OnInit {
             if(error.error.errors.permalink != undefined){
               this.displayedError['permalink'] = error.error.errors.permalink
               this.form.controls['permalink'].setErrors({notUnique: true})
-              this.form.controls['permalink'].markAsTouched()
             }
             return of(null)
           }else{
@@ -47,14 +46,8 @@ export class ManagePostsAddPage implements OnInit {
         })
       )
       .subscribe((res:any)=>{
-        if(res.hasOwnProperty('error')){
-          this.displayedError = res['error']
-          console.log(res)
-          // TODO: patch validation
-        }else{
-          this.feedbackService.register("Votre article a été inséré")
-          this.router.navigate(["/manage/posts/view"])
-        }
+        this.feedbackService.register("Votre article a été inséré")
+        this.router.navigate(["/manage/posts/view"])
       })
   }
 
