@@ -10,6 +10,9 @@ import {ActivatedRoute} from "@angular/router";
 export class ManageFilesViewPage implements OnInit {
 
   entityList:Array<any> = []
+  pageCount:number = 0
+  pageSegments:Array<any> = []
+  pageOffset = 0;
 
   constructor(
     private contentService:ContentService,
@@ -26,10 +29,19 @@ export class ManageFilesViewPage implements OnInit {
 
   loadData(){
     console.log("Refresh")
-    this.contentService.get('/files').subscribe(([data, metaInfo])=>{
+    this.contentService.get(`/files`, this.pageOffset).subscribe(([data, metaInfo])=>{
       this.entityList = data as unknown as Array<any>
-      console.log(data)
-      console.log(metaInfo)
+      // The page segments
+      this.pageCount = Math.ceil((metaInfo as any).count / 10) as number
+      this.pageSegments = Array.from({length: this.pageCount} as any, (_, index)=> ({
+        label: (index+1).toString(),
+        value: index
+      }))
     })
+  }
+
+  updatePage(page:number){
+    this.pageOffset = page*10
+    this.loadData()
   }
 }

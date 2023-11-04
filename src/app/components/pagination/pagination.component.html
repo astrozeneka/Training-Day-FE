@@ -1,0 +1,9 @@
+<ion-item class="pagination"><!-- เข็ก scss ไฟล์ -->
+  <ion-button slot="start"><ion-icon name="chevron-back"></ion-icon></ion-button>
+  <div>
+    <ion-button *ngFor="let segment of pageSegments" (click)="navigateTo(segment.value)">
+      {{ segment.label }}
+    </ion-button>
+  </div>
+  <ion-button slot="end"><ion-icon name="chevron-forward"></ion-icon></ion-button>
+</ion-item>

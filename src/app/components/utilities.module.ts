@@ -5,6 +5,7 @@ import {IonicModule} from "@ionic/angular";
 import {PageWrapperBasicComponent} from "./page-wrapper-basic/page-wrapper-basic.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {FeedbackComponent} from "./feedback/feedback.component";
+import {PaginationComponent} from "./pagination/pagination.component";
 
 
 
@@ -12,7 +13,8 @@ import {FeedbackComponent} from "./feedback/feedback.component";
   declarations: [
     HeaderComponent,
     PageWrapperBasicComponent,
-    FeedbackComponent
+    FeedbackComponent,
+    PaginationComponent
   ],
   imports: [
     CommonModule,
@@ -22,6 +24,7 @@ import {FeedbackComponent} from "./feedback/feedback.component";
   exports: [
     HeaderComponent,
     PageWrapperBasicComponent,
+    PaginationComponent,
     ReactiveFormsModule
   ]
 })

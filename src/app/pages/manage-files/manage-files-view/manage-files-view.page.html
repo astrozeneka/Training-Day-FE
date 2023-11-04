@@ -12,6 +12,10 @@
         </p>
       </ion-card-content>
     </ion-card>
+    <app-pagination
+      [pageSegments]="pageSegments"
+      (onNavigate)="updatePage($event)"
+    ></app-pagination>
     <ion-card *ngFor="let entity of entityList">
       <ion-card-header>
         <ion-checkbox>{{ entity.name }}</ion-checkbox>

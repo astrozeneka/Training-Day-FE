@@ -30,9 +30,9 @@ export class ContentService {
     return this.httpClient.post(`${this.apiEndpoint}${suffix}?${this.isDebug?'XDEBUG_SESSION_START=client':''}`, data, {headers})
   }
 
-  get(suffix:string){
+  get(suffix:string, offset=0){
     let headers = this.bearerHeaders()
-    let dataObs = this.httpClient.get(`${this.apiEndpoint}${suffix}?${this.isDebug?'XDEBUG_SESSION_START=client':''}`, {headers})
+    let dataObs = this.httpClient.get(`${this.apiEndpoint}${suffix}?offset=${offset}&${this.isDebug?'XDEBUG_SESSION_START=client':''}`, {headers})
     let metainfoObs = this.httpClient.get(`${this.apiEndpoint}${suffix}/metaInfo?${this.isDebug?'XDEBUG_SESSION_START=client':''}`)
     metainfoObs.pipe(
       catchError((error:any)=>{
