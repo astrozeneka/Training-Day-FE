@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ContentService} from "../../../content.service";
 import {ActivatedRoute} from "@angular/router";
+import {FormControl} from "@angular/forms";
+import {refresh} from "ionicons/icons";
 
 @Component({
   selector: 'app-manage-files-view',
@@ -14,6 +16,8 @@ export class ManageFilesViewPage implements OnInit {
   pageSegments:Array<any> = []
   pageOffset = 0;
 
+  searchControl:FormControl = new FormControl("")
+
   constructor(
     private contentService:ContentService,
     private route:ActivatedRoute
@@ -25,11 +29,12 @@ export class ManageFilesViewPage implements OnInit {
 
   ngOnInit() {
     this.loadData()
+
   }
 
   loadData(){
     console.log("Refresh")
-    this.contentService.get(`/files`, this.pageOffset).subscribe(([data, metaInfo])=>{
+    this.contentService.get(`/files`, this.pageOffset, this.searchControl.value, "f_name").subscribe(([data, metaInfo])=>{
       this.entityList = data as unknown as Array<any>
       // The page segments
       this.pageCount = Math.ceil((metaInfo as any).count / 10) as number

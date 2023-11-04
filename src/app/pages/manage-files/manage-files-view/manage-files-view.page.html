@@ -12,6 +12,10 @@
         </p>
       </ion-card-content>
     </ion-card>
+    <ion-searchbar [formControl]="searchControl"
+                   animated="true"
+                   placeholder="Animated"
+                   (keydown.enter)="loadData()"></ion-searchbar>
     <app-pagination
       [pageSegments]="pageSegments"
       (onNavigate)="updatePage($event)"
