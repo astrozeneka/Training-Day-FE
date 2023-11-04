@@ -12,10 +12,16 @@
       [pageSegments]="pageSegments"
       (onNavigate)="updatePage($event)"
     ></app-pagination>
-    <ion-card *ngFor="let entity of entityList">
-      <ion-card-header>
-        <ion-checkbox [formControl]="getCheckboxControl(entity)">{{ entity.name }}</ion-checkbox>
-      </ion-card-header>
-    </ion-card>
+    <ion-item *ngFor="let entity of entityList" class="ion-margin">
+      <ion-label>
+        {{ entity.name }}
+      </ion-label>
+      <ion-checkbox slot="start" [formControl]="getCheckboxControl(entity)"></ion-checkbox>
+      <ion-buttons slot="end">
+        <ion-button slot="icon-only">
+          <ion-icon name="eye-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
   </div>
 </app-page-wrapper-basic>
