@@ -4,6 +4,11 @@
       <ion-back-button [defaultHref]="defaultBackHref"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ title }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
@@ -11,4 +16,11 @@
   <app-feedback></app-feedback>
 
   <ng-content></ng-content>
+
 </ion-content>
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button (click)="navigateTo(urlForAdd)">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

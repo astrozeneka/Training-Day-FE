@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-page-wrapper-basic',
@@ -11,7 +11,14 @@ export class PageWrapperBasicComponent  implements OnInit {
   @Input() title: string = "";
   @Input() defaultBackHref: string = "";
 
-  constructor(private route: ActivatedRoute) { }
+  protected urlForAdd = "";
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    this.urlForAdd = router.url.replace('/view', '/add')
+  }
 
   ngOnInit() {
     this.route.data.subscribe((data:any) => {
@@ -19,4 +26,7 @@ export class PageWrapperBasicComponent  implements OnInit {
     });
   }
 
+  navigateTo(url:string){
+    this.router.navigateByUrl(url)
+  }
 }
