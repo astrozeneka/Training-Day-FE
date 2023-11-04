@@ -6,6 +6,7 @@ import {refresh} from "ionicons/icons";
 import {ModalController} from "@ionic/angular";
 import {DeleteModalComponent} from "../../../components/delete-modal/delete-modal.component";
 import {FeedbackService} from "../../../feedback.service";
+import {FileViewComponent} from "../../../components/entity-views/file-view/file-view.component";
 
 @Component({
   selector: 'app-manage-files-view',
@@ -86,5 +87,19 @@ export class ManageFilesViewPage implements OnInit {
 
   getCheckboxControl(entity:any):FormControl {
     return (this.formGroup.controls as any)[entity.id]
+  }
+
+  async detail(entity: any){
+    let modal = await this.modalController.create({
+      component: FileViewComponent,
+      componentProps: {
+        entity: entity
+      }
+    })
+    modal.present()
+    const { data, role } = await modal.onWillDismiss();
+    if (role === 'update'){
+      // Update the data, but for the file, there is no such function
+    }
   }
 }

@@ -8,6 +8,7 @@ import {FeedbackComponent} from "./feedback/feedback.component";
 import {PaginationComponent} from "./pagination/pagination.component";
 import {DeleteModalComponent} from "./delete-modal/delete-modal.component";
 import {MainMenuComponent} from "./main-menu/main-menu.component";
+import {FileViewComponent} from "./entity-views/file-view/file-view.component";
 
 
 
@@ -18,7 +19,8 @@ import {MainMenuComponent} from "./main-menu/main-menu.component";
     FeedbackComponent,
     PaginationComponent,
     MainMenuComponent,
-    DeleteModalComponent
+    DeleteModalComponent,
+    FileViewComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,8 @@ import {MainMenuComponent} from "./main-menu/main-menu.component";
     PaginationComponent,
     ReactiveFormsModule,
     DeleteModalComponent,
-    MainMenuComponent
+    MainMenuComponent,
+    FileViewComponent
   ]
 })
 export class UtilitiesModule { }

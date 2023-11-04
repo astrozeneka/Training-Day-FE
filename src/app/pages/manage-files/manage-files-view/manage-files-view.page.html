@@ -24,7 +24,7 @@
         </ion-label>
         <ion-checkbox slot="start" [formControl]="getCheckboxControl(entity)"></ion-checkbox>
         <ion-buttons slot="end">
-          <ion-button slot="icon-only">
+          <ion-button slot="icon-only" (click)="detail(entity)">
             <ion-icon name="eye-outline"></ion-icon>
           </ion-button>
         </ion-buttons>
