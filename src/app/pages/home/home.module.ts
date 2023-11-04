@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
-import {MainMenuComponent} from "../../main-menu/main-menu.component";
+import {MainMenuComponent} from "../../components/main-menu/main-menu.component";
+import {UtilitiesModule} from "../../components/utilities.module";
 
 
 @NgModule({
@@ -13,8 +14,10 @@ import {MainMenuComponent} from "../../main-menu/main-menu.component";
     CommonModule,
     FormsModule,
     IonicModule,
-    HomePageRoutingModule
+    HomePageRoutingModule,
+    UtilitiesModule
   ],
-    declarations: [HomePage, MainMenuComponent]
+    declarations: [HomePage],
+
 })
 export class HomePageModule {}

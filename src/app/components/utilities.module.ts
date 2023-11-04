@@ -7,6 +7,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {FeedbackComponent} from "./feedback/feedback.component";
 import {PaginationComponent} from "./pagination/pagination.component";
 import {DeleteModalComponent} from "./delete-modal/delete-modal.component";
+import {MainMenuComponent} from "./main-menu/main-menu.component";
 
 
 
@@ -16,6 +17,7 @@ import {DeleteModalComponent} from "./delete-modal/delete-modal.component";
     PageWrapperBasicComponent,
     FeedbackComponent,
     PaginationComponent,
+    MainMenuComponent,
     DeleteModalComponent
   ],
   imports: [
@@ -28,7 +30,8 @@ import {DeleteModalComponent} from "./delete-modal/delete-modal.component";
     PageWrapperBasicComponent,
     PaginationComponent,
     ReactiveFormsModule,
-    DeleteModalComponent
+    DeleteModalComponent,
+    MainMenuComponent
   ]
 })
 export class UtilitiesModule { }

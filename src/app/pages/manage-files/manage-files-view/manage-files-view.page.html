@@ -1,27 +1,35 @@
-<app-page-wrapper-basic
-  title="Liste des fichiers"
-  defaultBackHref="/manage"
-  (onDelete)="deleteBatch()"
->
-  <div class="content">
-    <ion-searchbar [formControl]="searchControl"
-                   animated="true"
-                   placeholder="Animated"
-                   (keydown.enter)="loadData()"></ion-searchbar>
-    <app-pagination
-      [pageSegments]="pageSegments"
-      (onNavigate)="updatePage($event)"
-    ></app-pagination>
-    <ion-item *ngFor="let entity of entityList" class="ion-margin">
-      <ion-label>
-        {{ entity.name }}
-      </ion-label>
-      <ion-checkbox slot="start" [formControl]="getCheckboxControl(entity)"></ion-checkbox>
-      <ion-buttons slot="end">
-        <ion-button slot="icon-only">
-          <ion-icon name="eye-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
+<ion-split-pane when="md" contentId="main">
+  <ion-menu contentId="main">
+    <app-main-menu></app-main-menu>
+  </ion-menu>
+
+  <div class="ion-page" id="main">
+  <app-page-wrapper-basic
+    title="Liste des fichiers"
+    defaultBackHref="/manage"
+    (onDelete)="deleteBatch()"
+  >
+    <div class="content">
+      <ion-searchbar [formControl]="searchControl"
+                     animated="true"
+                     placeholder="Rechercher"
+                     (keydown.enter)="loadData()"></ion-searchbar>
+      <app-pagination
+        [pageSegments]="pageSegments"
+        (onNavigate)="updatePage($event)"
+      ></app-pagination>
+      <ion-item *ngFor="let entity of entityList" class="ion-margin">
+        <ion-label>
+          {{ entity.name }}
+        </ion-label>
+        <ion-checkbox slot="start" [formControl]="getCheckboxControl(entity)"></ion-checkbox>
+        <ion-buttons slot="end">
+          <ion-button slot="icon-only">
+            <ion-icon name="eye-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </div>
+  </app-page-wrapper-basic>
   </div>
-</app-page-wrapper-basic>
+</ion-split-pane>
