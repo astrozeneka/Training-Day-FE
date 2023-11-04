@@ -37,7 +37,7 @@ export class ContentService {
     let debugParams = this.isDebug?'XDEBUG_SESSION_START=client':''
 
     let dataObs = this.httpClient.get(`${this.apiEndpoint}${suffix}?offset=${offset}&${searchParams}&${debugParams}`, {headers})
-    let metainfoObs = this.httpClient.get(`${this.apiEndpoint}${suffix}/metaInfo?${searchParams}&${debugParams}`)
+    let metainfoObs = this.httpClient.get(`${this.apiEndpoint}${suffix}/metaInfo?${searchParams}&${debugParams}`, {headers})
     metainfoObs.pipe(
       catchError((error:any)=>{
         if(error.status == 404){
@@ -47,5 +47,12 @@ export class ContentService {
       })
     )
     return forkJoin([dataObs, metainfoObs])
+  }
+
+  delete(suffix: string, idList: string){
+    let headers = this.bearerHeaders()
+    let idListParams = `?id_list=${idList}`
+    let debugParams = this.isDebug?'XDEBUG_SESSION_START=client':''
+    return this.httpClient.delete(`${this.apiEndpoint}${suffix}?${idListParams}&${debugParams}`, {headers})
   }
 }

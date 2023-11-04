@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Annuler</ion-button>
+    </ion-buttons>
+    <ion-title>Suppression</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirm()" [strong]="true">Confirmer</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <p>
+    Êtes-vous sur de supprimer le(s) éléments ?
+  </p>
+</ion-content>

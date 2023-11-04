@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
@@ -10,6 +10,7 @@ export class PageWrapperBasicComponent  implements OnInit {
 
   @Input() title: string = "";
   @Input() defaultBackHref: string = "";
+  @Output() onDelete = new EventEmitter<any>;
 
   protected urlForAdd = "";
 
@@ -28,5 +29,10 @@ export class PageWrapperBasicComponent  implements OnInit {
 
   navigateTo(url:string){
     this.router.navigateByUrl(url)
+  }
+
+  delete(){
+    console.log("Delete")
+    this.onDelete.emit()
   }
 }

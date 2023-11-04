@@ -1,6 +1,7 @@
 <app-page-wrapper-basic
   title="Liste des fichiers"
   defaultBackHref="/manage"
+  (onDelete)="deleteBatch()"
 >
   <div class="content">
     <ion-searchbar [formControl]="searchControl"
@@ -13,7 +14,7 @@
     ></app-pagination>
     <ion-card *ngFor="let entity of entityList">
       <ion-card-header>
-        <ion-checkbox>{{ entity.name }}</ion-checkbox>
+        <ion-checkbox [formControl]="getCheckboxControl(entity)">{{ entity.name }}</ion-checkbox>
       </ion-card-header>
     </ion-card>
   </div>

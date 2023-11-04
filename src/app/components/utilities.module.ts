@@ -6,6 +6,7 @@ import {PageWrapperBasicComponent} from "./page-wrapper-basic/page-wrapper-basic
 import {ReactiveFormsModule} from "@angular/forms";
 import {FeedbackComponent} from "./feedback/feedback.component";
 import {PaginationComponent} from "./pagination/pagination.component";
+import {DeleteModalComponent} from "./delete-modal/delete-modal.component";
 
 
 
@@ -14,7 +15,8 @@ import {PaginationComponent} from "./pagination/pagination.component";
     HeaderComponent,
     PageWrapperBasicComponent,
     FeedbackComponent,
-    PaginationComponent
+    PaginationComponent,
+    DeleteModalComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +27,8 @@ import {PaginationComponent} from "./pagination/pagination.component";
     HeaderComponent,
     PageWrapperBasicComponent,
     PaginationComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DeleteModalComponent
   ]
 })
 export class UtilitiesModule { }
