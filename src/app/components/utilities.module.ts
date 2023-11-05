@@ -10,6 +10,7 @@ import {DeleteModalComponent} from "./delete-modal/delete-modal.component";
 import {MainMenuComponent} from "./main-menu/main-menu.component";
 import {FileViewComponent} from "./entity-views/file-view/file-view.component";
 import {AgencyViewComponent} from "./entity-views/agency-view/agency-view.component";
+import {DayoffViewComponent} from "./entity-views/dayoff-view/dayoff-view.component";
 
 
 
@@ -23,7 +24,8 @@ import {AgencyViewComponent} from "./entity-views/agency-view/agency-view.compon
     DeleteModalComponent,
 
     FileViewComponent,
-    AgencyViewComponent
+    AgencyViewComponent,
+    DayoffViewComponent
   ],
   imports: [
     CommonModule,

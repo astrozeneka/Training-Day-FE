@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Jours de congés</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        John Doe
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      23 Novembre 2023
+    </ion-card-content>
+    <ion-button fill="clear" color="danger" (click)="showDeleteModal()">Supprimer</ion-button>
+    <ion-button fill="clear" (click)="showDetailsModal()">Détails</ion-button>
+  </ion-card>
+</ion-content>
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button (click)="showAddModal()"n>
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

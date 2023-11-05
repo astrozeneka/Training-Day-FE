@@ -52,7 +52,7 @@ export class AgencyViewComponent  implements OnInit {
         return throwError(error)
       }))
       .subscribe(async(res)=>{
-        await this.feedbackService.register("Une agence a été ajoutée")
+        await this.feedbackService.registerNow("Une agence a été ajoutée")
         this.modalCtrl.dismiss(null, 'insert-success')
       })
   }

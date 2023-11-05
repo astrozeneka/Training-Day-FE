@@ -55,6 +55,10 @@ const routes: Routes = [
     path: 'manage/files/add',
     loadChildren: () => import('./pages/manage-files/manage-files-add/manage-files-add.module').then(m => m.ManageFilesAddPageModule)
   },
+  {
+    path: 'manage/dayoff/view',
+    loadChildren: () => import('./pages/manage-dayoffs/manage-dayoff-view/manage-dayoff-view.module').then(m => m.ManageDayoffViewPageModule)
+  },
 ];
 
 @NgModule({

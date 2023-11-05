@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Annuler</ion-button>
+    </ion-buttons>
+    <ion-title>Ajouter un jour férié</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="confirm()">Ajouter</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-select
+        label="Coach"
+        label-placement="floating"
+        formControlName="user_id"
+      >
+        <ion-select-option value="1">John Doe</ion-select-option>
+      </ion-select>
+      <div>
+        <ion-note slot="end" color="danger" *ngIf="form.controls['user_id'].invalid" style="padding-left: 2em; display: inline-block">
+          {{ displayedError.user_id }}
+        </ion-note>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-textarea
+        label="Motif"
+        label-placement="floating"
+        formControlName="content"
+        [errorText]="displayedError.content"
+      ></ion-textarea> <!-- มันเป็น required -->
+    </ion-item>
+    <div class="ion-padding">
+      <ion-datetime
+        formControlName="date"
+        presentation="date"
+        style="margin: auto"
+        class="ion-margin-vertical"
+      ></ion-datetime>
+      <div>
+        <ion-note slot="end" color="danger" *ngIf="form.controls['date'].invalid">
+          {{ displayedError.date }}
+        </ion-note>
+      </div>
+    </div>
+  </form>
+</ion-content>
