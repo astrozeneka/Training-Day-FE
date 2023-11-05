@@ -9,6 +9,7 @@ import {PaginationComponent} from "./pagination/pagination.component";
 import {DeleteModalComponent} from "./delete-modal/delete-modal.component";
 import {MainMenuComponent} from "./main-menu/main-menu.component";
 import {FileViewComponent} from "./entity-views/file-view/file-view.component";
+import {AgencyViewComponent} from "./entity-views/agency-view/agency-view.component";
 
 
 
@@ -20,7 +21,9 @@ import {FileViewComponent} from "./entity-views/file-view/file-view.component";
     PaginationComponent,
     MainMenuComponent,
     DeleteModalComponent,
-    FileViewComponent
+
+    FileViewComponent,
+    AgencyViewComponent
   ],
   imports: [
     CommonModule,

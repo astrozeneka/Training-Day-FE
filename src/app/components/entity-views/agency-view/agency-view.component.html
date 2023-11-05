@@ -1,0 +1,69 @@
+<script src="agency-view.component.ts"></script>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Annuler</ion-button>
+    </ion-buttons>
+    <ion-title>Ajouter une agence</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="confirm()">Ajouter</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-input
+        label="Nom"
+        label-placement="floating"
+        formControlName="name"
+        [errorText]="displayedError.name"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Adresse"
+        label-placement="floating"
+        formControlName="address"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Ville"
+        label-placement="floating"
+        formControlName="city"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Commune"
+        label-placement="floating"
+        formControlName="subdistrict"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Département"
+        label-placement="floating"
+        formControlName="district"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Code postal"
+        label-placement="floating"
+        formControlName="postal_code"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-select
+        label="Pays"
+        label-placement="floating"
+        formControlName="country"
+      >
+        <ion-select-option value="FR">France</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </form>
+</ion-content>

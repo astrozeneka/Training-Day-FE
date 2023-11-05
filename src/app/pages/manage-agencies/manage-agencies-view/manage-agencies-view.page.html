@@ -7,5 +7,23 @@
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
-  <p>Ici, nous allons mettre les informations à propos des agences</p>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        The title
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Lorem ipsum
+    </ion-card-content>
+
+    <ion-button fill="clear" color="danger" (click)="showDeleteModal()">Supprimer</ion-button>
+    <ion-button fill="clear" (click)="showDetailsModal()">Détails</ion-button>
+  </ion-card>
 </ion-content>
+<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button (click)="showAddModal()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
