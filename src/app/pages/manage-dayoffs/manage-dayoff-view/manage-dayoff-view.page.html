@@ -8,17 +8,19 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-card>
+  <ion-card *ngFor="let entity of entityList">
     <ion-card-header>
       <ion-card-title>
-        John Doe
+        {{ entity.user.firstname }}
+        {{ entity.user.lastname }}
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      23 Novembre 2023
+      {{ entity.date | date:'longDate' }}
+      – {{ entity.content }}
     </ion-card-content>
-    <ion-button fill="clear" color="danger" (click)="showDeleteModal()">Supprimer</ion-button>
-    <ion-button fill="clear" (click)="showDetailsModal()">Détails</ion-button>
+    <ion-button fill="clear" color="danger" (click)="showDeleteModal(entity.id)">Supprimer</ion-button>
+    <ion-button fill="clear" (click)="showDetailsModal(entity)">Détails</ion-button>
   </ion-card>
 </ion-content>
 

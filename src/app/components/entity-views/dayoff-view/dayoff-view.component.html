@@ -5,7 +5,9 @@
     </ion-buttons>
     <ion-title>Ajouter un jour férié</ion-title>
     <ion-buttons slot="end">
-      <ion-button color="primary" (click)="confirm()">Ajouter</ion-button>
+      <ion-button color="primary" (click)="confirm()">
+        {{ entity ? 'Modifier' : 'Ajouter' }}
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -18,7 +20,7 @@
         label-placement="floating"
         formControlName="user_id"
       >
-        <ion-select-option value="1">John Doe</ion-select-option>
+        <ion-select-option *ngFor="let user of userList" [value]="user.id">{{ user.firstname }} {{user.lastname }}</ion-select-option>
       </ion-select>
       <div>
         <ion-note slot="end" color="danger" *ngIf="form.controls['user_id'].invalid" style="padding-left: 2em; display: inline-block">
