@@ -12,7 +12,7 @@ import {FeedbackService} from "../../../feedback.service";
   styleUrls: ['./manage-dayoff-view.page.scss'],
 })
 export class ManageDayoffViewPage implements OnInit {
-  entityList:Array<any> = []
+  entityList:Array<any>|null = []
   pageCount:number = 0
   pageSegments:Array<any> = []
   pageOffset = 0;
@@ -35,8 +35,13 @@ export class ManageDayoffViewPage implements OnInit {
     this.loadData()
   }
 
+  updatePage(page:number){
+    this.pageOffset = page*10
+    this.loadData()
+  }
+
   loadData(){
-    console.log("Refresh")
+    this.entityList = null
     this.contentService.get('/dayoff', this.pageOffset, this.searchControl.value, "f_content")
       .subscribe(([data, metaInfo]) => {
         this.entityList = data as unknown as Array<any>

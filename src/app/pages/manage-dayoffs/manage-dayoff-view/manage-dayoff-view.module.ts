@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { ManageDayoffViewPageRoutingModule } from './manage-dayoff-view-routing.module';
 
 import { ManageDayoffViewPage } from './manage-dayoff-view.page';
+import {UtilitiesModule} from "../../../components/utilities.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ManageDayoffViewPageRoutingModule
+    ManageDayoffViewPageRoutingModule,
+    UtilitiesModule
   ],
   declarations: [ManageDayoffViewPage]
 })
