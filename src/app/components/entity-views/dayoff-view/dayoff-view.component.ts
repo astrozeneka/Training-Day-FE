@@ -63,28 +63,9 @@ export class DayoffViewComponent extends FormComponent implements OnInit {
       this.contentService.post('/dayoff', obj)
         .pipe(catchError((error) => {
           if (error.status == 422) {
-            if (error.error.errors['user_id'] != undefined) {
-              this.displayedError['user_id'] = error.error.errors['user_id']
-              this.form.controls['user_id'].setErrors(error.error.errors['user_id'])
-              this.form.controls['content'].markAsTouched()
-            } else {
-              this.displayedError['user_id'] = undefined
-              this.form.controls['user_id'].setErrors(null);
-            }
-            if (error.error.errors['content'] != undefined) {
-              this.displayedError['content'] = error.error.errors['content']
-              this.form.controls['content'].setErrors(error.error.errors['content'])
-              this.form.controls['content'].markAsTouched()
-            } else {
-              this.displayedError['content'] = undefined
-            }
-            if (error.error.errors['date'] != undefined) {
-              this.displayedError['date'] = error.error.errors['date']
-              this.form.controls['date'].setErrors(error.error.errors['date'])
-              this.form.controls['date'].markAsTouched()
-            } else {
-              this.displayedError['date'] = undefined
-            }
+            this.manageValidationFeedback(error, 'user_id')
+            this.manageValidationFeedback(error, 'content')
+            this.manageValidationFeedback(error, 'date')
           }
           return throwError(error)
         }))
