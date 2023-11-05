@@ -63,6 +63,26 @@ const routes: Routes = [
     path: 'manage/appointments/view',
     loadChildren: () => import('./pages/manage-appointments/manage-appointments-view/manage-appointments-view.module').then(m => m.ManageAppointmentsViewPageModule)
   },
+  {
+    path: 'manage/users/view',
+    loadChildren: () => import('./pages/manage-users/manage-users-view/manage-users-view.module').then(m => m.ManageUsersViewPageModule)
+  },
+  {
+    path: 'manage/posts-view',
+    loadChildren: () => import('./pages/manage-posts/manage-posts-view/manage-posts-view.module').then( m => m.ManagePostsViewPageModule)
+  },
+  {
+    path: 'manage/threads/view',
+    loadChildren: () => import('./pages/manage-threads/manage-threads-view/manage-threads-view.module').then(m => m.ManageThreadsViewPageModule)
+  },
+  {
+    path: 'manage/communities/view',
+    loadChildren: () => import('./pages/manage-communities/manage-communities-view/manage-communities-view.module').then(m => m.ManageCommunitiesViewPageModule)
+  },
+  {
+    path: 'manage/payments/view',
+    loadChildren: () => import('./pages/manage-payments/manage-payments-view/manage-payments-view.module').then(m => m.ManagePaymentsViewPageModule)
+  },
 ];
 
 @NgModule({

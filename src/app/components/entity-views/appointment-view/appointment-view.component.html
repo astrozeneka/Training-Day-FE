@@ -3,7 +3,9 @@
     <ion-buttons slot="start">
       <ion-button color="medium" (click)="cancel()">Annuler</ion-button>
     </ion-buttons>
-    <ion-title>Ajouter un rendez-vous</ion-title>
+    <ion-title>
+      {{ entity ? 'Détails sur le rendez-vous' : 'Nouveau rendez-vous' }}
+    </ion-title>
     <ion-buttons slot="end">
       <ion-button color="primary" (click)="confirm()">
         {{ entity ? 'Modifier' : 'Ajouter' }}

@@ -12,6 +12,11 @@ import {FileViewComponent} from "./entity-views/file-view/file-view.component";
 import {AgencyViewComponent} from "./entity-views/agency-view/agency-view.component";
 import {DayoffViewComponent} from "./entity-views/dayoff-view/dayoff-view.component";
 import {AppointmentViewComponent} from "./entity-views/appointment-view/appointment-view.component";
+import {CommunityViewComponent} from "./entity-views/community-view/community-view.component";
+import {PaymentViewComponent} from "./entity-views/payment-view/payment-view.component";
+import {PostViewComponent} from "./entity-views/post-view/post-view.component";
+import {ThreadViewComponent} from "./entity-views/thread-view/thread-view.component";
+import {UserViewComponent} from "./entity-views/user-view/user-view.component";
 
 
 
@@ -27,7 +32,12 @@ import {AppointmentViewComponent} from "./entity-views/appointment-view/appointm
     FileViewComponent,
     AgencyViewComponent,
     DayoffViewComponent,
-    AppointmentViewComponent
+    AppointmentViewComponent,
+    CommunityViewComponent,
+    PaymentViewComponent,
+    PostViewComponent,
+    ThreadViewComponent,
+    UserViewComponent
   ],
   imports: [
     CommonModule,

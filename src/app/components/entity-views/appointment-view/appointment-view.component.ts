@@ -51,7 +51,6 @@ export class AppointmentViewComponent extends FormComponent implements OnInit {
     this.form.controls["coach_id"].patchValue(this.entity.members[0].id)
     this.form.controls["customer_id"].patchValue(this.entity.members[1].id)
     this.form.controls["hour"].patchValue(this.entity.hour.toString())
-    console.log(this.entity)
   }
 
   loadData(){

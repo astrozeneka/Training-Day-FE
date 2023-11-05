@@ -4,15 +4,14 @@ import {ContentService} from "../../../content.service";
 import {AlertController, ModalController} from "@ionic/angular";
 import {ActivatedRoute} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
-import {AppointmentViewComponent} from "../../../components/entity-views/appointment-view/appointment-view.component";
-import {DayoffViewComponent} from "../../../components/entity-views/dayoff-view/dayoff-view.component";
+import {UserViewComponent} from "../../../components/entity-views/user-view/user-view.component";
 
 @Component({
-  selector: 'app-manage-appointments-view',
-  templateUrl: './manage-appointments-view.page.html',
-  styleUrls: ['./manage-appointments-view.page.scss'],
+  selector: 'app-manage-users-view',
+  templateUrl: './manage-users-view.page.html',
+  styleUrls: ['./manage-users-view.page.scss'],
 })
-export class ManageAppointmentsViewPage implements OnInit {
+export class ManageUsersViewPage implements OnInit {
   entityList:Array<any>|null = []
   pageCount:number = 0
   pageSegments:Array<any> = []
@@ -43,7 +42,7 @@ export class ManageAppointmentsViewPage implements OnInit {
 
   loadData() {
     this.entityList = null
-    this.contentService.get('/appointments', this.pageOffset, this.searchControl.value, "f_description")
+    this.contentService.get('/users', this.pageOffset, this.searchControl.value, "f_email")
       .subscribe(([data, metaInfo])=>{
         this.entityList = data as unknown as Array<any>
         this.pageCount = Math.ceil((metaInfo as any).count / 10) as number
@@ -56,7 +55,7 @@ export class ManageAppointmentsViewPage implements OnInit {
 
   async showAddModal(){
     let modal = await this.modalController.create({
-      component: AppointmentViewComponent,
+      component: UserViewComponent,
       componentProps: {}
     })
     modal.present()
@@ -66,7 +65,7 @@ export class ManageAppointmentsViewPage implements OnInit {
     }
   }
 
-  async showDeleteModal(id:number){
+  async showDeleteModal(id:number) {
     let alert = await this.alertController.create({
       header: "Supprimer l'élément",
       message: "Veuillez confirmer la suppression",
@@ -80,8 +79,8 @@ export class ManageAppointmentsViewPage implements OnInit {
         {
           text: 'Supprimer',
           cssClass: 'ion-color-danger',
-          handler: ()=>{
-            this.contentService.delete('/appointments', `${id}`)
+          handler: ()=> {
+            this.contentService.delete('/users', `${id}`)
               .subscribe(()=>{
                 this.feeedbackService.registerNow("Vous avez supprimé un élémént")
                 this.loadData()
@@ -95,7 +94,7 @@ export class ManageAppointmentsViewPage implements OnInit {
 
   async showDetailsModal(entity: any){
     let modal = await this.modalController.create({
-      component: AppointmentViewComponent,
+      component: UserViewComponent,
       componentProps: {
         entity: entity
       }
@@ -107,5 +106,4 @@ export class ManageAppointmentsViewPage implements OnInit {
       this.loadData()
     }
   }
-
 }

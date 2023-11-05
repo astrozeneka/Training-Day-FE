@@ -1,0 +1,89 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Annuler</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ entity ? "Détails sur l'utilisateur" : 'Nouvel utilisateur' }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="confirm()">
+        {{ entity ? 'Modifier' : 'Ajouter' }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-input
+        label="Email"
+        label-placement="floating"
+        formControlName="email"
+        [errorText]="displayedError.email"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-select
+        label="Rôle"
+        label-placement="floating"
+        formControlName="role"
+      >
+        <ion-select-option value="admin">Administrateur</ion-select-option>
+        <ion-select-option value="customer">Client</ion-select-option>
+        <ion-select-option value="coach">Coach</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        type="password"
+        label="Mot de passe"
+        label-placement="floating"
+        formControlName="password"
+        [errorText]="displayedError.password"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        type="password"
+        label="Confirmez le mot de passe"
+        label-placement="floating"
+        formControlName="password_confirm"
+        [errorText]="displayedError.password_confirm"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Prénom"
+        label-placement="floating"
+        formControlName="firstname"
+        [errorText]="displayedError.firstname"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Nom"
+        label-placement="floating"
+        formControlName="lastname"
+        [errorText]="displayedError.lastname"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Téléphone"
+        label-placement="floating"
+        formControlName="phone"
+        [errorText]="displayedError.phone"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Adresse"
+        label-placement="floating"
+        formControlName="address"
+        [errorText]="displayedError.address"
+      ></ion-input>
+    </ion-item>
+  </form>
+</ion-content>
