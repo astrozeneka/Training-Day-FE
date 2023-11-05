@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Jours de congés</ion-title>
+    <ion-title>Rendez-vous</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -16,7 +16,6 @@
     [pageSegments]="pageSegments"
     (onNavigate)="updatePage($event)"
   ></app-pagination>
-
   <div class="ion-text-center">
     <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
   </div>
@@ -24,13 +23,16 @@
     <ion-card *ngFor="let entity of entityList">
       <ion-card-header>
         <ion-card-title>
-          {{ entity.user.firstname }}
-          {{ entity.user.lastname }}
+          {{ entity.date | date:'longDate' }}
         </ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        {{ entity.date | date:'longDate' }}
-        – {{ entity.content }}
+        <p>
+          {{ entity.description }}
+        </p>
+        <div *ngFor="let member of entity.members">
+          {{ member.firstname }} {{ member.lastname }} ({{ member.role }})
+        </div>
       </ion-card-content>
       <ion-button fill="clear" color="danger" (click)="showDeleteModal(entity.id)">Supprimer</ion-button>
       <ion-button fill="clear" (click)="showDetailsModal(entity)">Détails</ion-button>

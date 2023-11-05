@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Annuler</ion-button>
+    </ion-buttons>
+    <ion-title>Ajouter un rendez-vous</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="confirm()">
+        {{ entity ? 'Modifier' : 'Ajouter' }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-input
+        label="Description"
+        label-placement="floating"
+        formControlName="description"
+        [errorText]="displayedError.description"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-select
+        label="Coach"
+        label-placement="floating"
+        formControlName="coach_id"
+      >
+        <ion-select-option *ngFor="let user of userList" [value]="user.id">{{ user.firstname }} {{user.lastname }}</ion-select-option>
+      </ion-select>
+      <div>
+        <ion-note slot="end" color="danger" *ngIf="form.controls['coach_id'].invalid" style="padding-left: 2em; display: inline-block">
+          {{ displayedError.coach_id }}
+        </ion-note>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-select
+        label="Client"
+        label-placement="floating"
+        formControlName="customer_id"
+      >
+        <ion-select-option *ngFor="let user of userList" [value]="user.id">{{ user.firstname }} {{user.lastname }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <div class="ion-padding">
+      <ion-datetime
+        formControlName="date"
+        presentation="date"
+        style="margin: auto"
+        class="ion-margin-vertical"
+      ></ion-datetime>
+      <div>
+        <ion-note slot="end" color="danger" *ngIf="form.controls['date'].invalid">
+          {{ displayedError.date }}
+        </ion-note>
+      </div>
+    </div>
+    <ion-item>
+      <ion-select
+        label="Time"
+        label-placement="floating"
+        formControlName="hour"
+      >
+        <ion-select-option value="8">8h - 9h</ion-select-option>
+        <ion-select-option value="9">9h - 10h</ion-select-option>
+        <ion-select-option value="10">10h - 11h</ion-select-option>
+        <ion-select-option value="11">11h - 12h</ion-select-option>
+        <ion-select-option value="13">13h - 14h</ion-select-option>
+        <ion-select-option value="14">14h - 15h</ion-select-option>
+        <ion-select-option value="15">15h - 16h</ion-select-option>
+        <ion-select-option value="16">16h - 17h</ion-select-option>
+        <ion-select-option value="17">17h - 18h</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select
+        label="Type"
+        label-placement="floating"
+        formControlName="type"
+      >
+        <ion-select-option value="onsite">Présentiel</ion-select-option>
+        <ion-select-option value="online">À distance</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <!-- For now, the agence ID is null, should be carefully checked on the next step, or the WEEK 2 -->
+  </form>
+</ion-content>

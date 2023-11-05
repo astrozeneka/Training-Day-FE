@@ -59,6 +59,10 @@ const routes: Routes = [
     path: 'manage/dayoff/view',
     loadChildren: () => import('./pages/manage-dayoffs/manage-dayoff-view/manage-dayoff-view.module').then(m => m.ManageDayoffViewPageModule)
   },
+  {
+    path: 'manage/appointments/view',
+    loadChildren: () => import('./pages/manage-appointments/manage-appointments-view/manage-appointments-view.module').then(m => m.ManageAppointmentsViewPageModule)
+  },
 ];
 
 @NgModule({

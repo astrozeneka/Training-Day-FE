@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import {AlertController, ModalController} from "@ionic/angular";
-import {DayoffViewComponent} from "../../../components/entity-views/dayoff-view/dayoff-view.component";
-import {FormControl, FormGroup} from "@angular/forms";
-import {ActivatedRoute} from "@angular/router";
+import {FormControl} from "@angular/forms";
 import {ContentService} from "../../../content.service";
+import {AlertController, ModalController} from "@ionic/angular";
+import {ActivatedRoute} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
+import {AppointmentViewComponent} from "../../../components/entity-views/appointment-view/appointment-view.component";
+import {DayoffViewComponent} from "../../../components/entity-views/dayoff-view/dayoff-view.component";
 
 @Component({
-  selector: 'app-manage-dayoff-view',
-  templateUrl: './manage-dayoff-view.page.html',
-  styleUrls: ['./manage-dayoff-view.page.scss'],
+  selector: 'app-manage-appointments-view',
+  templateUrl: './manage-appointments-view.page.html',
+  styleUrls: ['./manage-appointments-view.page.scss'],
 })
-export class ManageDayoffViewPage implements OnInit {
+export class ManageAppointmentsViewPage implements OnInit {
   entityList:Array<any>|null = []
   pageCount:number = 0
   pageSegments:Array<any> = []
@@ -40,23 +41,24 @@ export class ManageDayoffViewPage implements OnInit {
     this.loadData()
   }
 
-  loadData(){
+  loadData() {
     this.entityList = null
-    this.contentService.get('/dayoff', this.pageOffset, this.searchControl.value, "f_content")
-      .subscribe(([data, metaInfo]) => {
+    this.contentService.get('/appointments', this.pageOffset, this.searchControl.value, "f_description")
+      .subscribe(([data, metaInfo])=>{
         this.entityList = data as unknown as Array<any>
         this.pageCount = Math.ceil((metaInfo as any).count / 10) as number
         this.pageSegments = Array.from({length: this.pageCount} as any, (_, index)=> ({
           label: (index+1).toString(),
           value: index
         }))
-      })
 
+        console.log(this.entityList)
+      })
   }
 
   async showAddModal(){
     let modal = await this.modalController.create({
-      component: DayoffViewComponent,
+      component: AppointmentViewComponent,
       componentProps: {}
     })
     modal.present()
@@ -81,7 +83,7 @@ export class ManageDayoffViewPage implements OnInit {
           text: 'Supprimer',
           cssClass: 'ion-color-danger',
           handler: ()=>{
-            this.contentService.delete('/dayoff', `${id}`)
+            this.contentService.delete('/appointments', `${id}`)
               .subscribe(()=>{
                 this.feeedbackService.registerNow("Vous avez supprimé un élémént")
                 this.loadData()
@@ -95,7 +97,7 @@ export class ManageDayoffViewPage implements OnInit {
 
   async showDetailsModal(entity: any){
     let modal = await this.modalController.create({
-      component: DayoffViewComponent,
+      component: AppointmentViewComponent,
       componentProps: {
         entity: entity
       }

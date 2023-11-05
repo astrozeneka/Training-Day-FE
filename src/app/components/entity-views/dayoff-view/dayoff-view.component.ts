@@ -58,7 +58,6 @@ export class DayoffViewComponent extends FormComponent implements OnInit {
     let obj = this.form.value
     obj.id = this.entity?.id
     obj.date = obj.date.split('T')[0]
-    console.log(obj.date)
     if(this.entity == null) { // New element
       this.contentService.post('/dayoff', obj)
         .pipe(catchError((error) => {

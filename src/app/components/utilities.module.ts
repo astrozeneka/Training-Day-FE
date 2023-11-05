@@ -11,6 +11,7 @@ import {MainMenuComponent} from "./main-menu/main-menu.component";
 import {FileViewComponent} from "./entity-views/file-view/file-view.component";
 import {AgencyViewComponent} from "./entity-views/agency-view/agency-view.component";
 import {DayoffViewComponent} from "./entity-views/dayoff-view/dayoff-view.component";
+import {AppointmentViewComponent} from "./entity-views/appointment-view/appointment-view.component";
 
 
 
@@ -25,7 +26,8 @@ import {DayoffViewComponent} from "./entity-views/dayoff-view/dayoff-view.compon
 
     FileViewComponent,
     AgencyViewComponent,
-    DayoffViewComponent
+    DayoffViewComponent,
+    AppointmentViewComponent
   ],
   imports: [
     CommonModule,
