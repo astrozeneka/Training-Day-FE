@@ -7,22 +7,41 @@ import {
   PushNotifications,
   Token,
 } from '@capacitor/push-notifications';
+import {ContentService} from "../../content.service";
+import {catchError, throwError} from "rxjs";
+import {FormComponent} from "../../components/form.component";
+import {FeedbackService} from "../../feedback.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
-  form = new FormGroup({
+export class LoginPage extends FormComponent implements OnInit {
+
+  override form = new FormGroup({
     "email": new FormControl('', [Validators.required, Validators.email]),
     "password": new FormControl('', Validators.required)
   })
-  constructor(
-  ) { }
 
-  ngOnInit() {
-    console.log(document.body.classList)
+  override displayedError = {
+    'email': undefined,
+    'password': undefined
+  }
+
+  constructor(
+    private contentService: ContentService,
+    private feedbackService: FeedbackService,
+    private router: Router
+  ) {
+    super()
+  }
+
+  async ngOnInit() {
+    // Check if the user is connected, then redirect it to the Home
+    if(await this.contentService.storage.get('token') != undefined)
+      this.router.navigate(['/home'])
 
     /*
     const addListeners = async () => {
@@ -102,7 +121,20 @@ export class LoginPage implements OnInit {
   }
 
   submit(){
+    this.contentService.requestLogin(this.form.value)
+      .pipe(catchError((error)=>{
+        console.log("Error")
+        if(error.status == 422){
+          this.manageValidationFeedback(error, 'email');
+          this.manageValidationFeedback(error, 'password');
+        }else{
+          this.feedbackService.registerNow("Erreur d'authentication")
+        }
+        return throwError(error)
+      }))
+      .subscribe((data)=>{
 
+      })
   }
 
   getLogoSrc(){

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Storage} from "@ionic/storage-angular";
-import {catchError, forkJoin, of, throwError} from "rxjs";
+import {catchError, forkJoin, map, of, throwError} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +17,30 @@ export class ContentService {
     }
   }
 
+  requestLogin(data:any) {
+    console.log(data)
+    let headers = this.bearerHeaders()
+    let debugParams = this.isDebug?'?XDEBUG_SESSION_START=client':''
+    return this.httpClient.post(`${this.apiEndpoint}/request-login${debugParams}`, data, {})
+      .pipe(
+        map(async (res:any)=>{
+          console.log(res)
+          if(res.token)
+            await this.storage.set('token', res.token)
+        })
+      )
+  }
+
   constructor(
     private httpClient: HttpClient,
     public storage: Storage
   ) {
     this.storage.create()
+    this.storage.get('token').then((e)=>{
+      if(e != undefined){
+
+      }
+    })
   }
 
   post(suffix:string, data:any){

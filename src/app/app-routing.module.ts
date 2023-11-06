@@ -83,6 +83,10 @@ const routes: Routes = [
     path: 'manage/payments/view',
     loadChildren: () => import('./pages/manage-payments/manage-payments-view/manage-payments-view.module').then(m => m.ManagePaymentsViewPageModule)
   },
+  {
+    path: 'logout',
+    loadChildren: () => import('./pages/logout/logout.module').then(m => m.LogoutPageModule)
+  },
 ];
 
 @NgModule({
