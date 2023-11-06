@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Storage} from "@ionic/storage-angular";
-import {catchError, forkJoin, map, of, throwError} from "rxjs";
+import {catchError, forkJoin, from, map, mergeMap, of, throwError} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -24,10 +24,13 @@ export class ContentService {
     return this.httpClient.post(`${this.apiEndpoint}/request-login${debugParams}`, data, {})
       .pipe(
         map(async (res:any)=>{
-          console.log(res)
           if(res.token)
             await this.storage.set('token', res.token)
-        })
+          if(res.user)
+            await this.storage.set('user', res.user)
+          console.log(res.user)
+        }),
+        mergeMap((res: any)=>from(res))
       )
   }
 

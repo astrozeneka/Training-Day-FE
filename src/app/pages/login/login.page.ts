@@ -123,7 +123,6 @@ export class LoginPage extends FormComponent implements OnInit {
   submit(){
     this.contentService.requestLogin(this.form.value)
       .pipe(catchError((error)=>{
-        console.log("Error")
         if(error.status == 422){
           this.manageValidationFeedback(error, 'email');
           this.manageValidationFeedback(error, 'password');
@@ -133,7 +132,7 @@ export class LoginPage extends FormComponent implements OnInit {
         return throwError(error)
       }))
       .subscribe((data)=>{
-
+        this.router.navigate(['/'])
       })
   }
 

@@ -1,9 +1,4 @@
-<ion-split-pane when="md" contentId="main">
-  <ion-menu contentId="main">
-    <app-main-menu></app-main-menu>
-  </ion-menu>
 
-  <div class="ion-page" id="main">
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
@@ -14,21 +9,8 @@
     </ion-header>
     <ion-content class="ion-padding"> Main View Content
       <a routerLink="/login">Go to login page</a>
-      <p>
-        Test our <a routerLink="/test-payment">Payment page</a>
-      </p>
-      <p>
-        Please try our <a routerLink="/test-editor">Wysiwig component </a>
-      </p>
-      <p>
-        Test our <a routerLink="/test-agenda">Test agenda</a>
-      </p>
-      <p>
-        Go to the file list <a routerLink="/manage/files/view">backoffice</a>
-      </p>
-      <p>
-        Go to the <a routerLink="/manage/agencies/view">agencies</a>
+      <p *ngIf="user">
+        Bonjour {{ user.firstname }}
+        Vôtre rôle est {{ user.role }}
       </p>
     </ion-content>
-  </div>
-</ion-split-pane>
