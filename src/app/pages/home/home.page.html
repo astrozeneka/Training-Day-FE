@@ -13,4 +13,10 @@
         Bonjour {{ user.firstname }}
         Vôtre rôle est {{ user.role }}
       </p>
+      <div *ngIf="content">
+        <h3>{{ content.title }}</h3>
+        <p>
+          {{ content.content }}
+        </p>
+      </div>
     </ion-content>

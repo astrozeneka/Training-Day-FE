@@ -72,6 +72,19 @@ export class ContentService {
     return forkJoin([dataObs, metainfoObs])
   }
 
+  getOne(suffix:string, criterias:any){
+    let headers = this.bearerHeaders()
+    let criteriaParams = ""
+    for (const key in criterias)
+      if (criterias.hasOwnProperty(key)) {
+        if (criteriaParams !== '')
+          criteriaParams += '&';
+        criteriaParams += `${encodeURIComponent(key)}=${encodeURIComponent(criterias[key])}`;
+      }
+    let debugParams = this.isDebug?'&XDEBUG_SESSION_START=client':''
+    return this.httpClient.get(`${this.apiEndpoint}${suffix}?${criteriaParams}${debugParams}`, {headers})
+  }
+
   put(suffix:string, data:any){
     let headers = this.bearerHeaders()
     return this.httpClient.put(`${this.apiEndpoint}${suffix}?${this.isDebug?'XDEBUG_SESSION_START=client':''}`, data, {headers})

@@ -9,6 +9,7 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class HomePage implements OnInit {
   user:any = null
+  content:any = null
 
   constructor(
     private contentService: ContentService,
@@ -28,6 +29,13 @@ export class HomePage implements OnInit {
   async loadData(){
     this.user = await this.contentService.storage.get('user')
     this.cdRef.detectChanges()
+
+    // Load the content
+    this.contentService.getOne('/posts/details', {'f_permalink': `${this.user.role}-home`})
+      .subscribe((data)=>{
+        this.content = data
+        console.log(this.content)
+      })
   }
 
 
