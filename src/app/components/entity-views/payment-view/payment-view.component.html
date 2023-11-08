@@ -1,3 +1,65 @@
-<p>
-  payment-view works!
-</p>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Annuler</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ entity ? "Détails sur le paiement" : 'Nouvel enregistrement' }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="confirm()">
+        {{ entity ? 'Modifier' : 'Ajouter' }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-input
+        label="Amount"
+        label-placement="floating"
+        formControlName="amount"
+        [errorText]="displayedError.amount"
+      ></ion-input>
+    </ion-item>
+
+    <div class="ion-padding">
+      <label>Date du paiement</label>
+      <ion-datetime
+        formControlName="datetime"
+        presentation="date"
+        style="margin: auto"
+        class="ion-margin-vertical"
+      ></ion-datetime>
+      <div>
+        <ion-note slot="end" color="danger" *ngIf="form.controls['datetime'].invalid">
+          {{ displayedError.datetime }}
+        </ion-note>
+      </div>
+    </div>
+
+    <ion-item>
+      <ion-input
+        label="Lien"
+        label-placement="floating"
+        formControlName="permalink"
+        [errorText]="displayedError.permalink"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-textarea
+        label="Description"
+        label-placement="floating"
+        formControlName="description"
+        [errorText]="displayedError.description"
+      ></ion-textarea> <!-- มันเป็น required -->
+    </ion-item>
+
+
+
+
+  </form>
+</ion-content>
