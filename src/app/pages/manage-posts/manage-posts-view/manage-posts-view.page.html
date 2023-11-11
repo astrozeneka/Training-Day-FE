@@ -1,25 +1,42 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
+      <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Articles</ion-title>
+    <ion-title>Mes articles</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Articles</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div class="ion-padding">
-    <a href="/manage/posts/add">
-      <ion-button>
-        <ion-icon name="add"></ion-icon>
-        Ajouter
-      </ion-button>
-    </a>
+<ion-content class="ion-padding">
+  <ion-searchbar [formControl]="searchControl"
+                 animated="true"
+                 placeholder="Rechercher"
+                 (keydown.enter)="loadData()"></ion-searchbar>
+  <app-pagination
+    [pageSegments]="pageSegments"
+    (onNavigate)="updatePage($event)"
+  ></app-pagination>
+  <div class="ion-text-center">
+    <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
+  </div>
+  <div *ngIf="entityList">
+    <ion-card *ngFor="let entity of entityList">
+      <ion-card-header>
+        <ion-title>{{ entity.title }}</ion-title>
+        <ion-card-subtitle>{{ entity.permalink }}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        {{ entity.description }}
+        <ion-button fill="clear" (click)="showDeleteModal(entity)" class="ion-color-danger">Suppimer</ion-button>
+        <ion-button fill="clear" (click)="showDetailsModal(entity)">Détails</ion-button>
+      </ion-card-content>
+    </ion-card>
   </div>
 </ion-content>
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button (click)="showAddModal()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+

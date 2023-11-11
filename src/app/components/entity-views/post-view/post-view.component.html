@@ -1,3 +1,69 @@
-<p>
-  post-view works!
-</p>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Annuler</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ entity ? "Détails sur l'article" : 'Nouvel article' }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="confirm()">
+        {{ entity ? 'Modifier' : 'Ajouter' }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-input
+        label="Title"
+        label-placement="floating"
+        formControlName="title"
+        [errorText]="displayedError.title"
+      ></ion-input>
+    </ion-item>
+    <!-- TODO: เปลียนเป็น wysiwig editor -->
+    <ion-textarea
+      label="Contenu de l'article"
+      label-placement="floating"
+      formControlName="content"
+      [errorText]="displayedError.content"
+    ></ion-textarea>
+    <ion-item>
+      <ion-input
+        label="Permalink"
+        label-placement="floating"
+        formControlName="permalink"
+        [errorText]="displayedError.permalink"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-select
+        label="Accès"
+        label-placement="floating"
+        formControlName="access"
+      >
+        <ion-select-option value="free">Gratuit</ion-select-option>
+        <ion-select-option value="premium">Premium</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select
+        label="Type"
+        label-placement="floating"
+        formControlName="type"
+      >
+        <ion-select-option value="general">Général</ion-select-option>
+        <ion-select-option value="article">Article</ion-select-option>
+        <ion-select-option value="video">Vidéo</ion-select-option>
+        <!--<ion-select-option value="featured">Éléments mis en avant</ion-select-option>-->
+        <!--<ion-select-option value="shop_item">Article e-commerce</ion-select-option>-->
+        <ion-select-option value="profile_page">Profile personnel</ion-select-option>
+        <ion-select-option value="program_page">Programme sportif</ion-select-option>
+        <ion-select-option value="app_content">Contenu de l'application</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </form>
+</ion-content>

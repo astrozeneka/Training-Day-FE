@@ -8,14 +8,16 @@ import { ManagePostsViewPageRoutingModule } from './manage-posts-view-routing.mo
 
 import { ManagePostsViewPage } from './manage-posts-view.page';
 import {FeedbackComponent} from "../../../components/feedback/feedback.component";
+import {UtilitiesModule} from "../../../components/utilities.module";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ManagePostsViewPageRoutingModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ManagePostsViewPageRoutingModule,
+        UtilitiesModule
+    ],
   declarations: [
     ManagePostsViewPage,
     // FeedbackComponent
