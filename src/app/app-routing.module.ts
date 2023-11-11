@@ -87,6 +87,14 @@ const routes: Routes = [
     path: 'logout',
     loadChildren: () => import('./pages/logout/logout.module').then(m => m.LogoutPageModule)
   },
+  {
+    path: 'chat',
+    loadChildren: () => import('./pages/chat/chat-master/chat-master.module').then(m => m.ChatMasterPageModule)
+  },
+  {
+    path: 'chat/details',
+    loadChildren: () => import('./pages/chat/chat-details/chat-details.module').then(m => m.ChatDetailsPageModule)
+  },
 ];
 
 @NgModule({

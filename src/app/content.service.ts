@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Storage} from "@ionic/storage-angular";
-import {catchError, forkJoin, from, map, mergeMap, of, throwError} from "rxjs";
+import {catchError, forkJoin, from, map, mergeMap, Observable, of, throwError} from "rxjs";
+import {ActivatedRoute, Route, Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -10,15 +11,21 @@ export class ContentService {
   apiEndpoint = 'http://localhost:8000/api'
   isDebug = true
 
-  bearerHeaders(): any{
+  private _token = null;
+  bearerHeaders(){
     const options:any = {}
-    if(this.storage.get('token') != undefined){
-      options['Authorization'] = `Bearer ${this.storage.get('token')}`
+    options['Authorization'] = `Bearer ${this._token}`;
+    return options
+  }
+
+  async reloadHeader() {
+    let token = await this.storage.get('token')
+    if(token != undefined){
+      this._token = token
     }
   }
 
   requestLogin(data:any) {
-    console.log(data)
     let headers = this.bearerHeaders()
     let debugParams = this.isDebug?'?XDEBUG_SESSION_START=client':''
     return this.httpClient.post(`${this.apiEndpoint}/request-login${debugParams}`, data, {})
@@ -28,6 +35,7 @@ export class ContentService {
             await this.storage.set('token', res.token)
           if(res.user)
             await this.storage.set('user', res.user)
+          console.log(res.token)
           console.log(res.user)
         }),
         mergeMap((res: any)=>from(res))
@@ -36,13 +44,18 @@ export class ContentService {
 
   constructor(
     private httpClient: HttpClient,
-    public storage: Storage
+    public storage: Storage,
+    public route: ActivatedRoute,
+    public router: Router
   ) {
     this.storage.create()
     this.storage.get('token').then((e)=>{
       if(e != undefined){
 
       }
+    })
+    this.router.events.subscribe((res)=>{
+      this.reloadHeader()
     })
   }
 
@@ -55,10 +68,59 @@ export class ContentService {
   get(suffix:string, offset=0, searchValue="", searchFilter="", limit=10){
     let headers = this.bearerHeaders()
 
+    return new Observable<[any, any]>(observer => {
+      this.storage.get('token')
+        .then(token => {
+          const headers:any = {}
+          headers['Authorization'] = `Bearer ${token}`;
+          let searchParams = searchValue!=""?`${searchFilter}=${searchValue}`:""
+          let debugParams = this.isDebug?'&XDEBUG_SESSION_START=client':''
+          let limitParams = limit?`&limit=${limit}`:''
+          let dataObs:Observable<any> = this.httpClient.get(`${this.apiEndpoint}${suffix}?offset=${offset}&${searchParams}${debugParams}${limitParams}`, {headers})
+          let metainfoObs:Observable<any> = this.httpClient.get(`${this.apiEndpoint}${suffix}/metaInfo?${searchParams}${debugParams}`, {headers})
+          metainfoObs.pipe(
+            catchError((error:any)=>{
+              if(error.status == 404){
+                return of(null)
+              }
+              return throwError(()=>error)
+            })
+          )
+          forkJoin([dataObs, metainfoObs]).subscribe({
+            next: ([data, metaInfo]) => {
+              observer.next([data, metaInfo]);
+            },
+            error: (error) => {
+              // Handle errors here or pass them to the observer
+              observer.error(error);
+            },
+            complete: () => {
+              observer.complete();
+            }
+          });
+        })
+    })
+    /*
+    return this.storage.get('token')
+      .then((token)=>{
+
+
+        let dataObs = this.httpClient.get(`${this.apiEndpoint}${suffix}?offset=${offset}&${searchParams}${debugParams}${limitParams}`, {headers})
+        let metainfoObs = this.httpClient.get(`${this.apiEndpoint}${suffix}/metaInfo?${searchParams}${debugParams}`, {headers})
+        metainfoObs.pipe(
+          catchError((error:any)=>{
+            if(error.status == 404){
+              return of(null)
+            }
+            return throwError(()=>error)
+          })
+        )
+        return forkJoin([dataObs, metainfoObs])
+      })
+    /*
     let searchParams = searchValue!=""?`${searchFilter}=${searchValue}`:""
     let debugParams = this.isDebug?'&XDEBUG_SESSION_START=client':''
     let limitParams = limit?`&limit=${limit}`:''
-
     let dataObs = this.httpClient.get(`${this.apiEndpoint}${suffix}?offset=${offset}&${searchParams}${debugParams}${limitParams}`, {headers})
     let metainfoObs = this.httpClient.get(`${this.apiEndpoint}${suffix}/metaInfo?${searchParams}${debugParams}`, {headers})
     metainfoObs.pipe(
@@ -70,6 +132,7 @@ export class ContentService {
       })
     )
     return forkJoin([dataObs, metainfoObs])
+    */
   }
 
   getOne(suffix:string, criterias:any){
