@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {ContentService} from "../../../content.service";
 import {AlertController, ModalController} from "@ionic/angular";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
 
 @Component({
@@ -19,7 +19,8 @@ export class ChatMasterPage implements OnInit {
     private modalController: ModalController,
     private route:ActivatedRoute,
     private alertController:AlertController,
-    private feeedbackService:FeedbackService
+    private feeedbackService:FeedbackService,
+    private router:Router
   ) {
     this.route.params.subscribe(()=>{
       this.loadData()
@@ -39,4 +40,7 @@ export class ChatMasterPage implements OnInit {
       })
   }
 
+  navigateTo(url:string) {
+    this.router.navigate([url])
+  }
 }

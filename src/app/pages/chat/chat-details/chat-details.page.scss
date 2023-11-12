@@ -1,0 +1,50 @@
+.messaging{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.discussion-flow{
+  flex-grow: 1;
+  overflow-y: auto;
+  flex-direction: column;
+}
+
+.controls{
+  height: 50px;
+}
+
+.message{
+  display: flex;
+  flex-direction: row;
+  align-items: top;
+  margin-top: 1em;
+
+  & .message-content{
+    flex: 1;
+    padding: .8em;
+    border-radius: 1em;
+    margin-left: .2em;
+  }
+
+  &.received{
+    & ion-avatar{
+      height: 40px;
+      width: 40px;
+    }
+    & .message-content{
+      text-align: left;
+      margin-right: 20%;
+      background: rgba(170, 170, 170, 0.16);
+    }
+  }
+
+  &.sent{
+
+    & .message-content{
+      text-align: right;
+      margin-left: 20%;
+      background: rgba(44, 146, 210, 0.41);
+    }
+  }
+}

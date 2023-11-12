@@ -92,7 +92,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/chat/chat-master/chat-master.module').then(m => m.ChatMasterPageModule)
   },
   {
-    path: 'chat/details',
+    path: 'chat/details/:id',
     loadChildren: () => import('./pages/chat/chat-details/chat-details.module').then(m => m.ChatDetailsPageModule)
   },
 ];
