@@ -65,5 +65,19 @@
         <ion-select-option value="app_content">Contenu de l'application</ion-select-option>
       </ion-select>
     </ion-item>
+    <div class="featured-container">
+      <!-- Previously selected image -->
+      <img *ngIf="entity?.featured_media_file?.base64" [src]="entity.featured_media_file.base64" alt="Featured Media">
+      <h4>{{ entity?.featured_media_file?.name }}</h4>
+    </div>
+    <ion-item>
+      <ion-input
+        label="Image"
+        type="file"
+        label-placement="floating"
+        formControlName="featured_media"
+        name="featured_media"
+      ></ion-input>
+    </ion-item>
   </form>
 </ion-content>

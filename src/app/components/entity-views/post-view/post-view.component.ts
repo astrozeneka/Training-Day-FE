@@ -44,16 +44,56 @@ export class PostViewComponent extends FormComponent implements OnInit {
   ngOnInit() {
     this.form.patchValue(this.entity)
     console.log(this.form.value)
+    this.loadData()
     // Additionnal patching value correction
+  }
+
+  loadData(){
+    // เพราว่า input entity ไม่ครบ
+    // ข้อมูลไฟล์ไม่อยู่
+    if(this.entity){
+      this.contentService.getOne('/posts/details', {'f_id': this.entity.id})
+        .subscribe(data=>{
+          console.log(data)
+          this.entity = data
+        })
+
+    }
   }
 
   cancel() {
     return this.modalCtrl.dismiss(null, 'cancel');
   }
 
-  confirm() {
+  async readFile(file:any) {
+    return new Promise((resolve) => {
+      if (file) {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          let base64 = reader.result as string
+          let obj = {
+            name: file.name,
+            type: file.type,
+            permalink: null,
+            base64: base64
+          }
+          resolve(obj)
+        }
+        reader.readAsDataURL(file);
+      }else{
+        resolve(null)
+      }
+    })
+  }
+
+  async confirm() {
+    let fileInput: any = document.querySelector('input[name=featured_media]')
+    let file = fileInput?.files[0]
+    let fileContent = await this.readFile(file)
     let obj = this.form.value
     obj.id = this.entity?.id
+    obj.featured_media = fileContent
+    console.log(obj)
     if(this.entity == null) {
       console.log(obj)
       this.contentService.post('/posts', obj)
