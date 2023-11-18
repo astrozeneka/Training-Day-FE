@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { SubscriptionPage } from './subscription.page';
+import { AppTimerPage } from './app-timer.page';
 
-describe('SubscriptionPage', () => {
-  let component: SubscriptionPage;
-  let fixture: ComponentFixture<SubscriptionPage>;
+describe('AppTimerPage', () => {
+  let component: AppTimerPage;
+  let fixture: ComponentFixture<AppTimerPage>;
 
   beforeEach(async(() => {
-    fixture = TestBed.createComponent(SubscriptionPage);
+    fixture = TestBed.createComponent(AppTimerPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

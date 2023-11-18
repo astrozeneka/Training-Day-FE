@@ -96,8 +96,48 @@ const routes: Routes = [
     loadChildren: () => import('./pages/chat/chat-details/chat-details.module').then(m => m.ChatDetailsPageModule)
   },
   {
-    path: 'subscription',
-    loadChildren: () => import('./pages/subscription/subscription.module').then(m => m.SubscriptionPageModule)
+    path: 'communities',
+    loadChildren: () => import('./pages/communities/communities.module').then(m => m.CommunitiesPageModule)
+  },
+  {
+    path: 'goals',
+    loadChildren: () => import('./pages/goals/goals.module').then(m => m.GoalsPageModule)
+  },
+  {
+    path: 'programs',
+    loadChildren: () => import('./pages/programs/programs.module').then(m => m.ProgramsPageModule)
+  },
+  {
+    path: 'shop',
+    loadChildren: () => import('./pages/shop/shop.module').then(m => m.ShopPageModule)
+  },
+  {
+    path: 'contact',
+    loadChildren: () => import('./pages/contact/contact.module').then(m => m.ContactPageModule)
+  },
+  {
+    path: 'subscriptions',
+    loadChildren: () => import('./pages/subscriptions/subscriptions.module').then(m => m.SubscriptionsPageModule)
+  },
+  {
+    path: 'news',
+    loadChildren: () => import('./pages/news/news.module').then(m => m.NewsPageModule)
+  },
+  {
+    path: 'app-imc',
+    loadChildren: () => import('./pages/app-imc/app-imc.module').then(m => m.AppImcPageModule)
+  },
+  {
+    path: 'app-calories',
+    loadChildren: () => import('./pages/app-calories/app-calories.module').then(m => m.AppCaloriesPageModule)
+  },
+  {
+    path: 'app-timer',
+    loadChildren: () => import('./pages/app-timer/app-timer.module').then(m => m.AppTimerPageModule)
+  },
+  {
+    path: 'manage',
+    loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardPageModule)
   },
 ];
 

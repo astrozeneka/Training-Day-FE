@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { SubscriptionPageRoutingModule } from './subscription-routing.module';
+import { SubscriptionsPageRoutingModule } from './subscriptions-routing.module';
 
-import { SubscriptionPage } from './subscription.page';
+import { SubscriptionsPage } from './subscriptions.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SubscriptionPageRoutingModule
+    SubscriptionsPageRoutingModule
   ],
-  declarations: [SubscriptionPage]
+  declarations: [SubscriptionsPage]
 })
-export class SubscriptionPageModule {}
+export class SubscriptionsPageModule {}

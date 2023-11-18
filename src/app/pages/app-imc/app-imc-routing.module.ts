@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { SubscriptionPage } from './subscription.page';
+import { AppImcPage } from './app-imc.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: SubscriptionPage
+    component: AppImcPage
   }
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class SubscriptionPageRoutingModule {}
+export class AppImcPageRoutingModule {}
