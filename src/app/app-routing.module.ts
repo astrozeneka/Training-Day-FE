@@ -95,6 +95,10 @@ const routes: Routes = [
     path: 'chat/details/:id',
     loadChildren: () => import('./pages/chat/chat-details/chat-details.module').then(m => m.ChatDetailsPageModule)
   },
+  {
+    path: 'subscription',
+    loadChildren: () => import('./pages/subscription/subscription.module').then(m => m.SubscriptionPageModule)
+  },
 ];
 
 @NgModule({

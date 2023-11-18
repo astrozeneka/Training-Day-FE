@@ -24,6 +24,31 @@
 </ion-header>
 
 <ion-list lines="none">
+
+  <ion-button (click)="menuNavigate('')" expand="full" fill="clear">News</ion-button>
+  <ion-button (click)="menuNavigate('')" expand="full" fill="clear">Mon Coach</ion-button>
+  <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
+    Messagerie
+  </ion-button>
+  <ion-button (click)="menuNavigate('')" expand="full" fill="clear">Communautés</ion-button>
+  <ion-button (click)="menuNavigate('')" expand="full" fill="clear">Mes suivis</ion-button>
+  <ion-button (click)="menuNavigate('/chrono')" expand="full" fill="clear">
+    Chronomètre
+  </ion-button>
+  <ion-button (click)="menuNavigate('/IMC')" expand="full" fill="clear">
+    Calcul IMC
+  </ion-button>
+  <ion-button (click)="menuNavigate('/calc-calories')" expand="full" fill="clear">
+    Calc. calories
+  </ion-button>
+  <ion-button (click)="menuNavigate('')" expand="full" fill="clear">Exercices</ion-button>
+  <ion-button (click)="menuNavigate('')" expand="full" fill="clear">Abonnements</ion-button>
+  <ion-button (click)="menuNavigate('')" expand="full" fill="clear">Programmes</ion-button>
+  <ion-button (click)="menuNavigate('')" expand="full" fill="clear">Boutique</ion-button>
+  <ion-button (click)="menuNavigate('')" expand="full" fill="clear">Contact</ion-button>
+
+  <h4>Administration</h4>
+
   <ion-button (click)="menuNavigate('/manage/')" expand="full" fill="clear">
     Tableau de bord
   </ion-button>
@@ -51,20 +76,8 @@
   <ion-button (click)="menuNavigate('/manage/posts/view')" expand="full" fill="clear">
     Mes articles
   </ion-button>
-  <br/>
-  <hr/>
-  <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
-    Messagerie
-  </ion-button>
-  <ion-button (click)="menuNavigate('/chrono')" expand="full" fill="clear">
-    Chronomètre
-  </ion-button>
-  <ion-button (click)="menuNavigate('/IMC')" expand="full" fill="clear">
-    Calcul IMC
-  </ion-button>
-  <ion-button (click)="menuNavigate('/calc-calories')" expand="full" fill="clear">
-    Calc. calories
-  </ion-button>
+
+  <h4></h4>
   <ion-button (click)="menuNavigate('/logout')" expand="full" fill="clear">Se déconnecter</ion-button>
 </ion-list>
 
