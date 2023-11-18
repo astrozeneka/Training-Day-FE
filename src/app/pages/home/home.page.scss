@@ -34,3 +34,30 @@
     --ion-menu-width: auto; /* Set the menu width to "auto" to keep it open */
   }
 }
+
+
+#home-card-list{
+  ion-card{
+    border-radius: 2em;
+  }
+
+  p.placeholder{
+    display: inline-block;
+    height: 3pt;
+  }
+
+  ion-card-title{
+    margin: 0;
+    padding: 0;
+    padding-bottom: 1pt;
+    align-items: center;
+    flex-direction: row;
+    display: flex;
+    font-size: 1.9em;
+    span{
+    }
+    ion-button{
+      margin-left: 2em;
+    }
+  }
+}
