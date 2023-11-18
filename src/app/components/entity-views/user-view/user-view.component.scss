@@ -1,0 +1,16 @@
+.profile-image-container{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1em;
+
+  ion-avatar {
+    width: 140px;
+    height: 140px;
+  }
+
+  ion-item{
+    width: 100%;
+  }
+}

@@ -16,6 +16,19 @@
 
 <ion-content>
   <form [formGroup]="form">
+    <div class="profile-image-container">
+      <ion-avatar>
+        <img *ngIf="entity?.profile_image?.base64" [src]="entity.profile_image.base64" alt="Profile image"/>
+      </ion-avatar>
+      <ion-item>
+        <ion-input
+          label="Profile picture"
+          type="file"
+          label-placement="floating"
+          name="profile_image"
+        ></ion-input>
+      </ion-item>
+    </div>
     <ion-item>
       <ion-input
         label="Email"

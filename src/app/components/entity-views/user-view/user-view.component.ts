@@ -44,7 +44,18 @@ export class UserViewComponent extends FormComponent implements OnInit {
 
   ngOnInit() {
     this.form.patchValue(this.entity)
+    this.loadData()
     // Additionnal patching value correction
+  }
+
+  loadData(){
+    if(this.entity){
+      this.contentService.getOne(`/users/${this.entity.id}`, {})
+        .subscribe(data=>{
+          console.log(data)
+          this.entity = data;
+        })
+    }
   }
 
   cancel() {
@@ -52,9 +63,13 @@ export class UserViewComponent extends FormComponent implements OnInit {
   }
 
 
-  confirm() {
+  async confirm() {
+    let fileInput: any = document.querySelector('input[name=profile_image]')
+    let file = fileInput?.files[0]
+    let fileContent = await this.readFile(file)
     let obj = this.form.value
     obj.id = this.entity?.id
+    obj.profile_image = fileContent;
     if(this.entity == null){
       this.contentService.post('/users', obj)
         .pipe(catchError((error)=>{

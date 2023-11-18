@@ -65,28 +65,8 @@ export class PostViewComponent extends FormComponent implements OnInit {
     return this.modalCtrl.dismiss(null, 'cancel');
   }
 
-  async readFile(file:any) {
-    return new Promise((resolve) => {
-      if (file) {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          let base64 = reader.result as string
-          let obj = {
-            name: file.name,
-            type: file.type,
-            permalink: null,
-            base64: base64
-          }
-          resolve(obj)
-        }
-        reader.readAsDataURL(file);
-      }else{
-        resolve(null)
-      }
-    })
-  }
-
   async confirm() {
+    // TODO: Doesn't work on iPhone, and most probably on safari also, only on the web
     let fileInput: any = document.querySelector('input[name=featured_media]')
     let file = fileInput?.files[0]
     let fileContent = await this.readFile(file)

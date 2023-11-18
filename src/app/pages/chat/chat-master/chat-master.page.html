@@ -17,7 +17,7 @@
     <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
   </div>
   <div *ngIf="entityList">
-    <ion-item *ngFor="let entity of entityList" (click)="navigateTo('/chat/details/' + entity.sender.id)" style="cursor:pointer">
+    <ion-item *ngFor="let entity of entityList" (click)="navigateTo('/chat/details/' + entity.correspondent_id)" style="cursor:pointer">
       <ion-avatar slot="start">
         <img src="../../../assets/samples/profile-sample-1.jpg" alt="Profile Picture">
       </ion-avatar>
