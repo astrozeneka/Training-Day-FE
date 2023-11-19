@@ -19,15 +19,24 @@
   <div class="ion-text-center">
     <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
   </div>
-  <div *ngIf="entityList">
+  <div *ngIf="entityList" class="entity-list">
     <ion-card *ngFor="let entity of entityList">
-      <ion-card-header>
-        <ion-title>{{ entity.firstname }} {{ entity.lastname }}</ion-title>
-      </ion-card-header>
-      <ion-card-content>
-        Additionnal content
-      </ion-card-content>
-      <ion-button fill="clear" (click)="showDetailsModal(entity)">Détails</ion-button>
+      <ion-avatar>
+        <img *ngIf="entity.profile_image?.base64" [src]="getSafeImageURL(entity.profile_image)" alt="Profile Picture"/>
+        <img *ngIf="!entity.profile_image" src="../../../assets/samples/profile-default-01.png" alt="Default Profile Picture"/>
+      </ion-avatar>
+      <div>
+        <ion-card-header>
+          <ion-card-title>{{ entity.firstname }} {{ entity.lastname }}
+            <ion-chip *ngIf="entity.role==='admin'" color="danger">Admin</ion-chip>
+            <ion-chip *ngIf="entity.role==='coach'" color="secondary">Coach</ion-chip>
+            <ion-chip *ngIf="entity.role==='customer'" color="medium">Client</ion-chip>
+          </ion-card-title>
+          <div>
+            <ion-button fill="clear" (click)="showDetailsModal(entity)">Détails</ion-button>
+          </div>
+        </ion-card-header>
+      </div>
     </ion-card>
   </div>
 </ion-content>

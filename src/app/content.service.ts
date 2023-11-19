@@ -65,7 +65,7 @@ export class ContentService {
     return this.httpClient.post(`${this.apiEndpoint}${suffix}?${this.isDebug?'XDEBUG_SESSION_START=client':''}`, data, {headers})
   }
 
-  get(suffix:string, offset=0, searchValue="", searchFilter="", limit=10){
+  get(suffix:string, offset=0, searchValue="", searchFilter="", limit=10, criterias:any={}){
     let headers = this.bearerHeaders()
 
     return new Observable<[any, any]>(observer => {
@@ -76,8 +76,18 @@ export class ContentService {
           let searchParams = searchValue!=""?`${searchFilter}=${searchValue}`:""
           let debugParams = this.isDebug?'&XDEBUG_SESSION_START=client':''
           let limitParams = limit?`&limit=${limit}`:''
-          let dataObs:Observable<any> = this.httpClient.get(`${this.apiEndpoint}${suffix}?offset=${offset}&${searchParams}${debugParams}${limitParams}`, {headers})
-          let metainfoObs:Observable<any> = this.httpClient.get(`${this.apiEndpoint}${suffix}/metaInfo?${searchParams}${debugParams}`, {headers})
+          let criteriaParams = ""
+          for (const key in criterias)
+            if (criterias.hasOwnProperty(key)) {
+              if (criteriaParams !== '')
+                criteriaParams += '&';
+              criteriaParams += `${encodeURIComponent(key)}=${encodeURIComponent(criterias[key])}`;
+            }
+          if(criteriaParams != "")
+            criteriaParams = "&" + criteriaParams
+          console.log(`${this.apiEndpoint}${suffix}?offset=${offset}&${searchParams}${debugParams}${limitParams}${criteriaParams}`)
+          let dataObs:Observable<any> = this.httpClient.get(`${this.apiEndpoint}${suffix}?offset=${offset}&${searchParams}${debugParams}${limitParams}${criteriaParams}`, {headers})
+          let metainfoObs:Observable<any> = this.httpClient.get(`${this.apiEndpoint}${suffix}/metaInfo?${searchParams}${debugParams}${criteriaParams}`, {headers})
           metainfoObs.pipe(
             catchError((error:any)=>{
               if(error.status == 404){

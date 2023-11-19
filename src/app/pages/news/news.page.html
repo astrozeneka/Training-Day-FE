@@ -1,13 +1,29 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>news</ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">news</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <p></p>
+  <div>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </div>
+
+  <h2 class="ion-padding">Accueil</h2>
+  <ion-searchbar></ion-searchbar>
+  <div id="home-card-list">
+    <ion-card *ngFor="let entity of entityList">
+      <ion-card-header>
+        <ion-card-title>{{ entity.title }}
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        {{ entity.content }}
+        <br/>
+        <p class="ion-text-right">
+          <ion-button fill="clear">Plus</ion-button>
+        </p>
+      </ion-card-content>
+
+    </ion-card>
+  </div>
+
 </ion-content>

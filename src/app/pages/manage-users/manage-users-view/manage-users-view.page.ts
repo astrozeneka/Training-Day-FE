@@ -5,6 +5,7 @@ import {AlertController, ModalController} from "@ionic/angular";
 import {ActivatedRoute} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
 import {UserViewComponent} from "../../../components/entity-views/user-view/user-view.component";
+import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-manage-users-view',
@@ -24,7 +25,8 @@ export class ManageUsersViewPage implements OnInit {
     private modalController: ModalController,
     private route:ActivatedRoute,
     private alertController:AlertController,
-    private feeedbackService:FeedbackService
+    private feeedbackService:FeedbackService,
+    private sanitizer: DomSanitizer
   ) {
     this.route.params.subscribe(()=>{
       this.loadData()
@@ -50,6 +52,7 @@ export class ManageUsersViewPage implements OnInit {
           label: (index+1).toString(),
           value: index
         }))
+        console.log(this.entityList)
       })
   }
 
@@ -105,5 +108,11 @@ export class ManageUsersViewPage implements OnInit {
       // คิด่วาต้องเรียก
       this.loadData()
     }
+  }
+
+  getSafeImageURL(image:any): SafeUrl {
+    // Assuming your base64 data is prefixed with "data:image/png;base64,"
+    const imageSource = `data:${image.type};base64,${image.base64}`;
+    return this.sanitizer.bypassSecurityTrustUrl(imageSource);
   }
 }
