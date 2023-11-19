@@ -1,13 +1,52 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>subscriptions</ion-title>
-  </ion-toolbar>
-</ion-header>
+
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">subscriptions</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <p></p>
+  <div>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </div>
+
+  <h2 class="ion-padding">Choisissez un offre d'abonnement à nos services</h2>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Normal</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Contenu standard pour une expérience basique et complète. Idéal pour débuter votre aventure.</p>
+      <div class="ion-padding ion-text-right">
+        <span>A partir de 30€/mois</span>
+        <ion-button color="medium" fill="clear">Choisir</ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Premium</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Optimisez votre expérience avec des fonctionnalités avancées et un contenu exclusif.</p>
+      <div class="ion-padding">
+        <span>A partir de 40€/mois</span>
+        <ion-button color="primary" fill="clear">Choisir</ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Premium Plus</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Le summum de notre offre avec des avantages exclusifs, un accès VIP et des contenus premium.</p>
+      <div class="ion-padding ion-text-right">
+        <span>A partir de 50€/mois</span>
+        <ion-button color="danger" fill="clear">Choisir</ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
