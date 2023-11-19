@@ -3,12 +3,13 @@ import {HttpClient} from "@angular/common/http";
 import {Storage} from "@ionic/storage-angular";
 import {catchError, forkJoin, from, map, mergeMap, Observable, of, throwError} from "rxjs";
 import {ActivatedRoute, Route, Router} from "@angular/router";
+import {environment} from "../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContentService {
-  apiEndpoint = 'http://localhost:8000/api'
+  apiEndpoint = environment.apiEndpoint
   isDebug = true
 
   private _token = null;
@@ -48,6 +49,7 @@ export class ContentService {
     public route: ActivatedRoute,
     public router: Router
   ) {
+    console.log(`API Endpoint is ${this.apiEndpoint}`)
     this.storage.create()
     this.storage.get('token').then((e)=>{
       if(e != undefined){
