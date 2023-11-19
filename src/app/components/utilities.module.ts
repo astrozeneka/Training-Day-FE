@@ -17,6 +17,7 @@ import {PaymentViewComponent} from "./entity-views/payment-view/payment-view.com
 import {PostViewComponent} from "./entity-views/post-view/post-view.component";
 import {ThreadViewComponent} from "./entity-views/thread-view/thread-view.component";
 import {UserViewComponent} from "./entity-views/user-view/user-view.component";
+import {UnavailableComponent} from "./unavailable/unavailable.component";
 
 
 
@@ -37,7 +38,9 @@ import {UserViewComponent} from "./entity-views/user-view/user-view.component";
     PaymentViewComponent,
     PostViewComponent,
     ThreadViewComponent,
-    UserViewComponent
+    UserViewComponent,
+
+    UnavailableComponent
   ],
   imports: [
     CommonModule,
@@ -51,7 +54,9 @@ import {UserViewComponent} from "./entity-views/user-view/user-view.component";
     ReactiveFormsModule,
     DeleteModalComponent,
     MainMenuComponent,
-    FileViewComponent
+    FileViewComponent,
+
+    UnavailableComponent
   ]
 })
 export class UtilitiesModule { }

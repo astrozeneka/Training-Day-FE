@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { AppTimerPageRoutingModule } from './app-timer-routing.module';
 
 import { AppTimerPage } from './app-timer.page';
+import {UtilitiesModule} from "../../components/utilities.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AppTimerPageRoutingModule
+    AppTimerPageRoutingModule,
+    UtilitiesModule
   ],
   declarations: [AppTimerPage]
 })
