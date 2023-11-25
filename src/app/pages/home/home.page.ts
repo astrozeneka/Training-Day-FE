@@ -34,7 +34,6 @@ export class HomePage implements OnInit {
     this.contentService.getOne('/posts/details', {'f_permalink': `${this.user.role}-home`})
       .subscribe((data)=>{
         this.content = data
-        console.log(this.content)
       })
   }
 

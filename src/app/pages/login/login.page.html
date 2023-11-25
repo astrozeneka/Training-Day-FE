@@ -6,7 +6,7 @@
   -->
 </ion-header>
 
-<ion-content [fullscreen]="true" style="text-align: center">
+<ion-content [fullscreen]="true" class="ion-padding">
   <!--
     <ion-header collapse="condense">
       <ion-toolbar>
@@ -14,6 +14,7 @@
       </ion-toolbar>
     </ion-header>
   -->
+  <div class="centered-container">
     <div class="login-header">
       <div>
         <img [src]="getLogoSrc()" alt="Logo" width="150px">
@@ -44,5 +45,5 @@
     <p class="ion-margin-vertical">
       <a routerLink="/subscribe">Mot de passe oublié ?</a>
     </p>
-
+  </div>
 </ion-content>

@@ -46,6 +46,7 @@
   <ion-button (click)="menuNavigate('/shop')" expand="full" fill="clear">Boutique</ion-button>
   <ion-button (click)="menuNavigate('/contact')" expand="full" fill="clear">Contact</ion-button>
 
+  <div *ngIf="user?.role === 'admin'">
   <h4>Administration</h4>
 
   <ion-button (click)="menuNavigate('/manage/')" expand="full" fill="clear">
@@ -79,6 +80,8 @@
   <ion-button (click)="menuNavigate('/manage/posts/view')" expand="full" fill="clear">
     Mes articles
   </ion-button>
+
+  </div>
 
   <h4></h4>
   <ion-button (click)="menuNavigate('/logout')" expand="full" fill="clear">Se déconnecter</ion-button>

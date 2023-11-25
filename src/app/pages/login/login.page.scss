@@ -9,3 +9,12 @@
 .dark-logo img:last-child {
   display: block; /* Display the dark logo when the dark mode is active */
 }
+
+ion-content{
+}
+
+.centered-container{
+  text-align: center;
+  max-width: 600px;
+  margin: auto;
+}
