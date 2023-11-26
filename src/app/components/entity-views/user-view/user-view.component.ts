@@ -81,7 +81,7 @@ export class UserViewComponent extends FormComponent implements OnInit {
             this.manageValidationFeedback(error, 'firstname')
             this.manageValidationFeedback(error, 'lastname')
             this.manageValidationFeedback(error, 'phone')
-            this.manageValidationFeedback(error, 'addresse')
+            this.manageValidationFeedback(error, 'address')
           }
           return throwError(error)
         }))
