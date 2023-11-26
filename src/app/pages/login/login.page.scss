@@ -17,4 +17,13 @@ ion-content{
   text-align: center;
   max-width: 600px;
   margin: auto;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+
+  &>div{
+    width: 100%;
+  }
 }

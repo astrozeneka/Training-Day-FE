@@ -15,35 +15,38 @@
     </ion-header>
   -->
   <div class="centered-container">
-    <div class="login-header">
-      <div>
-        <img [src]="getLogoSrc()" alt="Logo" width="150px">
+    <div>
+      <div class="login-header">
+        <div>
+          <img [src]="getLogoSrc()" alt="Logo" width="150px">
+        </div>
+        <h1>Se connecter</h1>
       </div>
-      <h1>Se connecter</h1>
-    </div>
-    <form [formGroup]="form" (submit)="submit()">
-      <ion-item class="ion-margin-vertical">
-        <ion-input
-          label="Email"
-          label-placement="floating"
-          formControlName="email"
-        ></ion-input>
-      </ion-item>
-      <ion-item class="ion-margin-vertical">
-        <ion-input
-          label="Password"
-          label-placement="floating"
-          formControlName="password"
-        ></ion-input>
-      </ion-item>
-      <ion-button expand="full" type="submit">Log in</ion-button>
-    </form>
+      <form [formGroup]="form" (submit)="submit()">
+        <ion-item class="ion-margin-vertical">
+          <ion-input
+            label="Email"
+            label-placement="floating"
+            formControlName="email"
+          ></ion-input>
+        </ion-item>
+        <ion-item class="ion-margin-vertical">
+          <ion-input
+            label="Password"
+            label-placement="floating"
+            formControlName="password"
+            type="password"
+          ></ion-input>
+        </ion-item>
+        <ion-button expand="full" type="submit">Log in</ion-button>
+      </form>
 
-    <p class="ion-margin-vertical">
-      Créez un compte gratuitement par <a routerLink="/subscribe">ici</a>.
-    </p>
-    <p class="ion-margin-vertical">
-      <a routerLink="/subscribe">Mot de passe oublié ?</a>
-    </p>
+      <p class="ion-margin-vertical">
+        Créez un compte gratuitement par <a routerLink="/subscribe">ici</a>.
+      </p>
+      <p class="ion-margin-vertical">
+        <a routerLink="/subscribe">Mot de passe oublié ?</a>
+      </p>
+    </div>
   </div>
 </ion-content>
