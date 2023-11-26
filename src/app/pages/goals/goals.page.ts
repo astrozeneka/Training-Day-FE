@@ -116,4 +116,13 @@ export class GoalsPage implements OnInit {
         await this.feedbackService.registerNow("La progression a été mise à jour")
       })
   }
+
+  onClickDelete(entity: any, event: any){
+    let id = entity.id
+    this.contentService.delete('/goals', `${id}`)
+      .subscribe(async(res)=>{
+        await this.feedbackService.registerNow("Un objectif a été supprimé")
+        this.loadData()
+      })
+  }
 }
