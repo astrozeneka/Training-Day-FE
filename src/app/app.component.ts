@@ -17,7 +17,6 @@ export class AppComponent {
       this.contentService.storage.get('user')
         .then((u)=>{
           this.user = u;
-          console.log(this.user)
         })
     })
   }

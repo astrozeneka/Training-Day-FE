@@ -18,6 +18,7 @@ import {PostViewComponent} from "./entity-views/post-view/post-view.component";
 import {ThreadViewComponent} from "./entity-views/thread-view/thread-view.component";
 import {UserViewComponent} from "./entity-views/user-view/user-view.component";
 import {UnavailableComponent} from "./unavailable/unavailable.component";
+import {GoalViewComponent} from "./entity-views/goal-view/goal-view.component";
 
 
 
@@ -39,6 +40,7 @@ import {UnavailableComponent} from "./unavailable/unavailable.component";
     PostViewComponent,
     ThreadViewComponent,
     UserViewComponent,
+    GoalViewComponent,
 
     UnavailableComponent
   ],
@@ -55,6 +57,7 @@ import {UnavailableComponent} from "./unavailable/unavailable.component";
     DeleteModalComponent,
     MainMenuComponent,
     FileViewComponent,
+    GoalViewComponent,
 
     UnavailableComponent
   ]

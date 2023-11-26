@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Annuler</ion-button>
+    </ion-buttons>
+    <ion-title>Ajouter un objectif</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="confirm()">Ajouter</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form">
+
+    <ion-item>
+      <ion-input
+        label="Objectif"
+        label-placement="floating"
+        formControlName="label"
+        [errorText]="displayedError.label"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-select
+        label="Groupe d'objectif"
+        formControlName="goal_group_id"
+      >
+        <ion-select-option>-- Nouveau (Entrez dans le champ ci-après) --</ion-select-option>
+        <ion-select-option *ngFor="let goalGroup of goalGroups" [value]="goalGroup.id">{{ goalGroup.label }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-input
+        label="Nouveau groupe d'objectif"
+        label-placement="floating"
+        formControlName="goal_group_label"
+        [errorText]="displayedError.goal_group_label"
+      ></ion-input>
+    </ion-item>
+  </form>
+</ion-content>
