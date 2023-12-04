@@ -7,19 +7,17 @@
           <img src="../../../assets/samples/profile-sample-1.jpg" alt="Profile Picture">
         </ion-avatar>
       </div>
-      <div class="profile-name">
-        <span>John Doe</span>
+      <div class="profile-name" *ngIf="user">
+        <span>{{ user.firstname }} {{ user.lastname }}</span>
       </div>
     </div>
 
-    <ion-row>
-      <ion-col size="2" class="ion-text-end">
-        <ion-button routerLink="/premium" color="warning">
-          Go Premium
-          <ion-icon slot="end" name="arrow-forward"></ion-icon>
-        </ion-button>
-      </ion-col>
-    </ion-row>
+    <div class="ion-text-center ion-padding">
+      <ion-button routerLink="/premium" color="warning">
+        Go Premium
+        <ion-icon slot="end" name="arrow-forward"></ion-icon>
+      </ion-button>
+    </div>
   </ion-toolbar>
 </ion-header>
 
@@ -27,9 +25,6 @@
 
   <ion-button (click)="menuNavigate('/news')" expand="full" fill="clear">News</ion-button>
   <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">Mon Coach</ion-button>
-  <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
-    Messagerie
-  </ion-button>
   <ion-button (click)="menuNavigate('/communities')" expand="full" fill="clear">Communautés</ion-button>
   <ion-button (click)="menuNavigate('/goals')" expand="full" fill="clear">Mes suivis</ion-button>
   <ion-button (click)="menuNavigate('/app-timer')" expand="full" fill="clear">
@@ -45,6 +40,12 @@
   <ion-button (click)="menuNavigate('/programs')" expand="full" fill="clear">Programmes</ion-button>
   <ion-button (click)="menuNavigate('/shop')" expand="full" fill="clear">Boutique</ion-button>
   <ion-button (click)="menuNavigate('/contact')" expand="full" fill="clear">Contact</ion-button>
+
+  <div *ngIf="user?.role === 'coach'">
+    <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
+      Messagerie
+    </ion-button>
+  </div>
 
   <div *ngIf="user?.role === 'admin'">
   <h4>Administration</h4>
@@ -80,7 +81,6 @@
   <ion-button (click)="menuNavigate('/manage/posts/view')" expand="full" fill="clear">
     Mes articles
   </ion-button>
-
   </div>
 
   <h4></h4>
