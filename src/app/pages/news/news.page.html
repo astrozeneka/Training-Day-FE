@@ -10,6 +10,14 @@
   <h2 class="ion-padding">Accueil</h2>
   <ion-searchbar></ion-searchbar>
   <div id="home-card-list">
+
+    <ion-card>
+      <div class="video-container">
+        <iframe width="420" height="315"
+                src="https://www.youtube.com/embed/tgbNymZ7vqY">
+        </iframe>
+      </div>
+    </ion-card>
     <ion-card *ngFor="let entity of entityList">
       <ion-card-header>
         <ion-card-title>{{ entity.title }}
