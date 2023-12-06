@@ -128,6 +128,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/app-imc/app-imc.module').then(m => m.AppImcPageModule)
   },
   {
+    path: 'app-gps',
+    loadChildren: () => import('./pages/gps/gps.module').then(m => m.GpsPageModule)
+  },
+  {
     path: 'app-calories',
     loadChildren: () => import('./pages/app-calories/app-calories.module').then(m => m.AppCaloriesPageModule)
   },

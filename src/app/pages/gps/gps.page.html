@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>GPS</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">GPS</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+
+
+  <div class="gps-container">
+    <div>
+      <h1 class="ion-padding">{{ distance | number:'1.2-2' }} km</h1>
+      <h2 class="ion-padding">{{ chronometerValue }}</h2>
+      <ion-button (click)="startTracking()" expand="full" *ngIf="!watch">Démarrer</ion-button>
+      <ion-button (click)="stopTracking()" expand="full" *ngIf="watch" fill="primary">Stopper</ion-button>
+    </div>
+  </div>
+</ion-content>

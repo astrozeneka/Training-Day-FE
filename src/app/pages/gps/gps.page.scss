@@ -1,0 +1,23 @@
+.gps-container{
+  height: 100%;
+  margin-top: 0;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+  &>div{
+    width: 100%;
+    h1{
+      margin-top: 0;
+    }
+  }
+
+  h2{
+    font-weight: normal;
+    margin-bottom: 2em;
+  }
+
+  h1, h2 {
+    text-align: center;
+  }
+}
