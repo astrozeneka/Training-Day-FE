@@ -1,6 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>app-timer</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Chronomètre</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,5 +14,21 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-unavailable></app-unavailable>
+  <div class="timer-container">
+    <div>
+      <h1>{{ chronometerValue }}</h1>
+      <ion-button expand="full" (click)="startChronometer()" *ngIf="!chronometerRunning">Démarrer</ion-button>
+      <ion-button expand="full" color="medium" (click)="pauseChronometer()" *ngIf="chronometerRunning">Pause</ion-button>
+      <br/>
+      <div style="text-align: center;">
+        <ion-button color="tertiary" (click)="addLap()" [disabled]="!chronometerRunning">Ajouter au tour</ion-button>
+      </div>
+      <table>
+        <tr *ngFor="let lap of laps; let i = index">
+          <td>Tour {{ i + 1 }}</td>
+          <td>{{ lap }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
 </ion-content>
