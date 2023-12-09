@@ -10,6 +10,7 @@ import {environment} from "../environments/environment";
 })
 export class ContentService {
   apiEndpoint = environment.apiEndpoint
+  rootEndpoint = environment.rootEndpoint
   isDebug = true
 
   private _token = null;

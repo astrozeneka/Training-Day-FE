@@ -1,0 +1,16 @@
+
+@import "../../../mixins";
+
+.profile-image-container{
+  text-align: center !important;
+  @include v-padding;
+
+  & ion-avatar{
+    margin: auto;
+    width: 180pt;
+    height: 180pt;
+  }
+  img{
+    margin: auto;
+  }
+}

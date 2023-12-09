@@ -147,6 +147,10 @@ const routes: Routes = [
     path: 'article/:id',
     loadChildren: () => import('./pages/article-view/article-view.module').then(m => m.ArticleViewPageModule)
   },
+  {
+    path: 'profile',
+    loadChildren: () => import('./pages/profile/profile.module').then(m => m.ProfilePageModule)
+  },
 ];
 
 @NgModule({

@@ -1,0 +1,40 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Mon profil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <form [formGroup]="form">
+
+    <div class="profile-image-container">
+      <ion-avatar>
+        <img *ngIf="!profile_image && entity?.profile_image?.permalink"
+          [src]="getStaticUrl(entity?.profile_image?.permalink)"
+             alt="Profile picture"
+        />
+        <img *ngIf="!profile_image && !entity?.profile_image?.permalink" src="/assets/samples/profile-default-01.png" alt="Profile image"/>
+        <img *ngIf="profile_image" [src]="profile_image.base64" alt="Profile image"/>
+      </ion-avatar>
+      <input type="file"
+             name="profile_image"
+             style="display: none"
+             #fileInput
+             (change)="handleFileInput($event)"
+      />
+      <ion-button size="small" color="medium" (click)="selectImage()">
+        Upload profile picture
+        <ion-icon slot="end" name="cloud-upload-outline"></ion-icon>
+      </ion-button>
+    </div>
+
+    <div class="ion-padding ion-text-center">
+      <ion-button (click)="submit()">Submit</ion-button>
+    </div>
+  </form>
+
+</ion-content>
