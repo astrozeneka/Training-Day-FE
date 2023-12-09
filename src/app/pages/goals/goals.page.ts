@@ -17,6 +17,9 @@ export class GoalsPage implements OnInit {
   pageSegments:Array<any> = []
   pageOffset = 0;
 
+  program_id = null;
+  program:any = null;
+
   // No need
   //searchControl:FormControl = new FormControl("")
 
@@ -28,7 +31,11 @@ export class GoalsPage implements OnInit {
     private feedbackService:FeedbackService
   ) {
     this.route.params.subscribe(()=>{
-      this.loadData()
+      this.contentService.storage.get('user').then(u => {
+        console.debug("Program id: ", u.program_id)
+        this.program_id = u.program_id
+        this.loadData()
+      })
     })
   }
 
@@ -42,6 +49,14 @@ export class GoalsPage implements OnInit {
   }
 
   loadData() {
+    if(this.program_id != undefined){
+      this.contentService.getOne(`/programs/content/${this.program_id}`, {})
+        .subscribe(program => {
+          this.program = program
+        });
+    }
+
+
     this.entityList = null
     this.contentService.get('/goal-groups', this.pageOffset, "", "")
       .subscribe(([data, metaInfo]) => {
@@ -124,5 +139,9 @@ export class GoalsPage implements OnInit {
         await this.feedbackService.registerNow("Un objectif a été supprimé")
         this.loadData()
       })
+  }
+
+  openAdvice(){
+
   }
 }

@@ -5,3 +5,9 @@
 @mixin display-1{
   font-family: 'Bebas Neue', sans-serif;
 }
+
+@mixin display-2{
+  letter-spacing: 0.1em;
+  font-style: italic;
+  font-family: 'Bebas Neue', sans-serif;
+}
