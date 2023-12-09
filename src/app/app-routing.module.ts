@@ -143,6 +143,10 @@ const routes: Routes = [
     path: 'manage',
     loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardPageModule)
   },
+  {
+    path: 'article/:id',
+    loadChildren: () => import('./pages/article-view/article-view.module').then(m => m.ArticleViewPageModule)
+  },
 ];
 
 @NgModule({

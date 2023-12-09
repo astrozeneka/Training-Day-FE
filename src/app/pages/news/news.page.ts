@@ -4,8 +4,9 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {FormControl} from "@angular/forms";
 import {ContentService} from "../../content.service";
 import {AlertController, ModalController} from "@ionic/angular";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {FeedbackService} from "../../feedback.service";
+import {navigate} from "ionicons/icons";
 
 @Component({
   selector: 'app-news',
@@ -22,13 +23,14 @@ export class NewsPage extends DefaultPage implements OnInit {
 
   constructor(
     sanitizer:DomSanitizer,
+    router:Router,
     private contentService:ContentService,
     private modalController: ModalController,
     private route:ActivatedRoute,
     private alertController:AlertController,
     private feedbackService:FeedbackService
   ) {
-    super(sanitizer)
+    super(sanitizer, router)
     this.route.params.subscribe(()=>{
       this.loadData()
     })
@@ -55,5 +57,4 @@ export class NewsPage extends DefaultPage implements OnInit {
         }))
       })
   }
-
 }

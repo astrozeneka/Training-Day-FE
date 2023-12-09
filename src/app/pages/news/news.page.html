@@ -27,7 +27,7 @@
         {{ entity.content }}
         <br/>
         <p class="ion-text-right">
-          <ion-button fill="clear">Plus</ion-button>
+          <ion-button fill="clear" (click)="navigateTo('/article/' + entity.id)">Plus</ion-button>
         </p>
       </ion-card-content>
 

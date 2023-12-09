@@ -1,8 +1,7 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import '../../../mixins';
 
 h1{
-  font-family: 'Bebas Neue', sans-serif;
+  @include display-1;
   opacity: .8;
   padding-bottom: .5em;
 }
