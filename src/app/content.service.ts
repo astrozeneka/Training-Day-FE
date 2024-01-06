@@ -172,4 +172,6 @@ export class ContentService {
     let debugParams = this.isDebug?'XDEBUG_SESSION_START=client':''
     return this.httpClient.delete(`${this.apiEndpoint}${suffix}?${idListParams}&${debugParams}`, {headers})
   }
+
+  
 }

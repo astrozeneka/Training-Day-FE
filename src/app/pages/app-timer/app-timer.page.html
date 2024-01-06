@@ -15,6 +15,98 @@
   </ion-header>
 
   <div class="timer-container">
+    <form [formGroup]="form" *ngIf="!round_started">
+      <!-- Select number of round -->
+      <ion-item>
+        <ion-select
+          formControlName="round_number"
+          label="Nombre de tours"
+          label-placement="floating"
+        >
+          <ion-select-option value="1">1</ion-select-option>
+          <ion-select-option value="2">2</ion-select-option>
+          <ion-select-option value="3">3</ion-select-option>
+          <ion-select-option value="5">5</ion-select-option>
+          <ion-select-option value="7">7</ion-select-option>
+          <ion-select-option value="10">10</ion-select-option>
+          <ion-select-option value="25">25</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Select work duration (30s, 45s, 1min, 2min, 3min, 5min) -->
+      <ion-item>
+        <ion-select
+          formControlName="work_duration"
+          label="Durée du travail"
+          label-placement="floating"
+        >
+          <ion-select-option value="5">5s</ion-select-option>
+          <ion-select-option value="30">30s</ion-select-option>
+          <ion-select-option value="45">45s</ion-select-option>
+          <ion-select-option value="60">1min</ion-select-option>
+          <ion-select-option value="120">2min</ion-select-option>
+          <ion-select-option value="180">3min</ion-select-option>
+          <ion-select-option value="300">5min</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Select rest duration (10s, 20s, 30s, 45s, 1min, 2min) -->
+      <ion-item>
+        <ion-select
+          formControlName="rest_duration"
+          label="Durée du repos"
+          label-placement="floating"
+        >
+          <ion-select-option value="3">3s</ion-select-option>
+          <ion-select-option value="10">10s</ion-select-option>
+          <ion-select-option value="20">20s</ion-select-option>
+          <ion-select-option value="30">30s</ion-select-option>
+          <ion-select-option value="45">45s</ion-select-option>
+          <ion-select-option value="60">1min</ion-select-option>
+          <ion-select-option value="120">2min</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Select alert mode (sound, vibration, both) -->
+      <ion-item>
+        <ion-select
+          formControlName="alert_mode"
+          label="Mode d'alerte"
+          label-placement="floating"
+        >
+          <ion-select-option value="sound">Sonore</ion-select-option>
+          <ion-select-option value="vibration">Vibration</ion-select-option>
+          <ion-select-option value="both">Les deux</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </form>
+
+    <div *ngIf="round_started" style="text-align: center">
+      <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="'50'" aria-valuemin="0" aria-valuemax="100" [style.background]="'radial-gradient(closest-side, var(--ion-background-color, #fff) 79%, transparent 80% 100%), conic-gradient(var(--ion-color-primary) ' +(progress*100)+ '%, gray 0)'">
+        <span class="round-number">Round {{ round_number }} sur {{ form.value.round_number }}</span>
+        <span class="status">
+          <ion-icon name="bed-outline" *ngIf="train_status === 'rest'"></ion-icon>
+          <ion-icon name="fitness-outline" *ngIf="train_status === 'work'"></ion-icon>
+          {{ train_status }}
+        </span>
+
+        <!-- The elaspsed time formated -->
+        <span class="round-time">{{ work_or_rest_time * 1000 | date: 'mm:ss' }}</span>
+        <span class="total-time">{{ train_total_time * 1000 | date: 'mm:ss' }}</span>
+
+      </div>
+    </div>
+
+    <div>
+      <ion-button expand="" color="primary" (click)="start_round()" *ngIf="!round_started">Start</ion-button>
+
+      <ion-button expand="" color="medium" (click)="pause_round()" *ngIf="round_started && !round_paused">Pause</ion-button>
+      <ion-button expand="" color="medium" (click)="resume_round()" *ngIf="round_started && round_paused">Resume</ion-button>
+      <!-- Stop -->
+      <ion-button expand="" color="danger" (click)="stop_round()" *ngIf="round_started">Stop</ion-button>
+    </div>
+
+    <!--
     <div>
       <h1>{{ chronometerValue }}</h1>
       <ion-button expand="full" (click)="startChronometer()" *ngIf="!chronometerRunning">Démarrer</ion-button>
@@ -30,5 +122,6 @@
         </tr>
       </table>
     </div>
+    -->
   </div>
 </ion-content>
