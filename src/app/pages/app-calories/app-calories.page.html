@@ -37,17 +37,71 @@
           type="number"
         ></ion-input>
       </ion-item>
+      <ion-item>
+        <ion-input
+          label="Age (années)"
+          label-placement="floating"
+          formControlName="age"
+          [errorText]="displayedError.age"
+          [disabled]="!loaded"
+          type="number"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-select
+          label="Sexe"
+          label-placement="floating"
+          formControlName="sex"
+        >
+          <!-- The two sex -->
+          <ion-select-option value="male">Homme</ion-select-option>
+          <ion-select-option value="femelle">Femme</ion-select-option>
+        </ion-select>
+        <ion-text color="danger" *ngIf="displayedError.sex">{{ displayedError.sex }}</ion-text>
+      </ion-item>
       <div>
         <ion-button
           expand="full"
           (click)="validatePhysical()"
           [disabled]="!loaded || physicalValidated"
         >
-          Suivant
+          Calculer
           <ion-icon name="arrow-down"></ion-icon>
         </ion-button>
       </div>
     </form>
+
+    <div class="calories-output" *ngIf="physicalValidated">
+      <br/><br/><br/>
+      <h1>Quantité de calories à consommer</h1>
+      <table>
+        <tr>
+          <th scope="col">Activité</th>
+          <th scope="col">Calories à consommer</th>
+        </tr>
+        <tr>
+          <th scope="row">Sédentaire</th>
+          <td>{{ calory_to_consume.sedentary }} cal.</td>
+        </tr>
+        <tr>
+          <th scope="row">Légèrement actif</th>
+          <td>{{ calory_to_consume.light }} cal.</td>
+        </tr>
+        <tr>
+          <th scope="row">Modérément actif</th>
+          <td>{{ calory_to_consume.moderate }} cal.</td>
+        </tr>
+        <tr>
+          <th scope="row">Très actif</th>
+          <td>{{ calory_to_consume.intense }} cal.</td>
+        </tr>
+        <tr>
+          <th scope="row">Athlète (+2h de sport intensif par jour)</th>
+          <td>{{ calory_to_consume.extreme }} cal.</td>
+        </tr>
+      </table>
+    </div>
+    <!-- We hide this old form for onw
     <div *ngIf="physicalValidated">
       <br/>
       <h1>Entrez les informations sur l'activité</h1>
@@ -81,5 +135,6 @@
         <ion-icon name="arrow-down"></ion-icon>
       </ion-button>
     </div>
+    -->
   </div>
 </ion-content>

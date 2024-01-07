@@ -5,3 +5,31 @@ h1{
   opacity: .8;
   padding-bottom: .5em;
 }
+
+.calories-output{
+  table{
+    margin-top: 1em;
+    margin: auto;
+    width: 100%;
+    border-collapse: separate;
+    line-height: 1.8em;
+  }
+
+  th{
+    @include display-1;
+    letter-spacing: 2px;
+    background: var(--ion-color-primary);
+    font-size: 0.85em;
+  }
+
+  td{
+    @include display-1;
+    font-size: 1.1em;
+    text-align: center
+  }
+
+  td, th{
+    border: 1px solid var(--ion-background-color);
+  }
+}
+

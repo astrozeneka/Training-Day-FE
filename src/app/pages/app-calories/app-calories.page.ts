@@ -14,11 +14,15 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
 
   override form = new FormGroup({
     'weight': new FormControl('', [Validators.required]),
-    'height': new FormControl('', [Validators.required])
+    'height': new FormControl('', [Validators.required]),
+    'age': new FormControl('', [Validators.required]),
+    'sex': new FormControl('', [Validators.required])
   })
   override displayedError = {
     'weight': undefined,
     'height': undefined,
+    'age': undefined,
+    'sex': undefined,
 
     'duration': undefined
   }
@@ -54,9 +58,37 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
     obj.id = this.user.id
     this.contentService.put('/users', obj)
       .subscribe((u)=>{
-        console.log("updated")
         this.physicalValidated = true;
+        this.calculate()
       })
+  }
+
+  // Quantité de calories à consommer
+  calory_to_consume = {
+    sedentary: 0,
+    light: 0,
+    moderate: 0,
+    intense: 0,
+    extreme: 0
+  }
+
+  calculate(){
+    let base = 0
+    if (this.form.value.sex == "male"){
+      base = 10 * parseInt(this.form.value.weight as any)
+        + 6.25 * parseInt(this.form.value.height as any)
+        - 5 * parseInt(this.form.value.age as any) + 5
+    } else if (this.form.value.sex == "female"){
+      base = 10 * parseInt(this.form.value.weight as any)
+        + 6.25 * parseInt(this.form.value.height as any)
+        - 5 * parseInt(this.form.value.age as any) - 161
+    }
+    console.log(`Calories à consommer de base: ${base}`)
+    this.calory_to_consume.sedentary = base * 1.2
+    this.calory_to_consume.light = base * 1.375
+    this.calory_to_consume.moderate = base * 1.55
+    this.calory_to_consume.intense = base * 1.725
+    this.calory_to_consume.extreme = base * 1.9
   }
 
 }
