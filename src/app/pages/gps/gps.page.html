@@ -14,12 +14,33 @@
     </ion-toolbar>
   </ion-header>
 
+
   <div class="gps-container">
+
     <div>
       <h1 class="ion-padding">{{ distance | number:'1.2-2' }} km</h1>
       <h2 class="ion-padding">{{ chronometerValue }}</h2>
       <ion-button (click)="startTracking()" expand="full" *ngIf="!watch">Démarrer</ion-button>
       <ion-button (click)="stopTracking()" expand="full" *ngIf="watch" fill="primary">Stopper</ion-button>
+
+      <table>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Durée</th>
+          <th scope="col">Vitesse</th>
+        </tr>
+        <tr *ngFor="let index of per_kilometer.slice().reverse(); let isFirst=first">
+          <!-- Show the index -->
+          <th scope="row">{{ index+1 }}<sup>e</sup> km
+            <span *ngIf="isFirst">({{ Math.round((distance % 1) * 1000) }} m)</span></th>
+          <td>{{ per_kilometer_duration[index] }} s</td>
+          <!-- Make it 2 zero after the comma -->
+          <td>{{ Math.round(per_kilometer_speed[index] * 3600 * 100)/100 }} km/h</td>
+        </tr>
+      </table>
+
+      <button (click)="_add_100m()">+ 100M</button>
     </div>
+
   </div>
 </ion-content>

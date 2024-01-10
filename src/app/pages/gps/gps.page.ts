@@ -15,6 +15,12 @@ export class GpsPage implements OnInit {
   chronometerValue = "00:00"
   private destroy$ = new Subject<void>();
 
+  elapsedTime = 0
+  per_kilometer: number[] = []
+  per_kilometer_duration:number[] = [] // An array that show the history for each kilometer
+  per_kilometer_distance:number[] = [] // It is normally an array of 1, except for the last item
+  per_kilometer_speed:number[] = [] // It is normally an array of 1, except for the last item
+
   constructor(
   ) { }
 
@@ -24,7 +30,9 @@ export class GpsPage implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         if (this.chronometerRunning) {
+          this.elapsedTime++;
           this.updateChronometer();
+          this.updateHistory();
         }
       });
   }
@@ -32,6 +40,7 @@ export class GpsPage implements OnInit {
   tracking = false;
   watch: any = null;
   async startTracking(){
+    this.elapsedTime = 0
     this.chronometerRunning = true
     this.tracking = true;
     // const coordinates = await Geolocation.getCurrentPosition();
@@ -57,6 +66,22 @@ export class GpsPage implements OnInit {
       this.watch = null
       this.tracking = false;
     }
+  }
+
+  updateHistory() {
+    let km_index = Math.floor(this.distance)
+    if (this.per_kilometer_duration[km_index] == undefined){
+      this.per_kilometer_duration[km_index] = 0
+      this.per_kilometer_distance[km_index] = 0
+      this.per_kilometer.push(km_index)
+    }
+    this.per_kilometer_duration[km_index] += 1
+    this.per_kilometer_distance[km_index] = this.distance - this.sumArray(this.per_kilometer_distance.slice(0, km_index-1))
+    this.per_kilometer_speed[km_index] = this.per_kilometer_distance[km_index] / this.per_kilometer_duration[km_index]
+  }
+
+  _add_100m(){
+    this.distance += 0.1
   }
 
   calculateDistance(lat1:number, lon1:number, lat2:number, lon2:number) {
@@ -99,4 +124,14 @@ export class GpsPage implements OnInit {
   padZero(value: number): string {
     return value < 10 ? `0${value}` : `${value}`;
   }
+
+  sumArray(arr: number[]) {
+    let sum = 0;
+    for (let i = 0; i < arr.length; i++) {
+      sum += arr[i];
+    }
+    return sum;
+  }
+
+  protected readonly Math = Math;
 }
