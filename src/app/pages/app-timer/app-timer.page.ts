@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {interval, Subject, takeUntil} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {NativeAudio} from "@capacitor-community/native-audio";
 
 async function wait(ms: number): Promise<void> {
   return new Promise<void>(resolve => setTimeout(resolve, ms));
@@ -111,6 +112,9 @@ export class AppTimerPage implements OnInit {
           this.train_status = "rest";
           this.work_or_rest_time = 0;
           this.audio_rest.play();
+          NativeAudio.play({
+            assetId: "dream-99404.mp3"
+          })
         }
         // Set the progress bar
         this.set_progress(this.work_or_rest_time / parseInt(this.form.value.work_duration as any))
@@ -124,6 +128,9 @@ export class AppTimerPage implements OnInit {
         if (parseInt(this.work_or_rest_time + this.audio_work.duration) == this.form.value.rest_duration && this.round_number +1 <= parseInt(this.form.value.round_number as any)) {
           // Play the work audio
           this.audio_work.play();
+          NativeAudio.play({
+            assetId: "race-start-beeps-125125.mp3"
+          })
         }
         // Set the progress bar
         this.set_progress(this.work_or_rest_time / parseInt(this.form.value.rest_duration as any))
@@ -133,6 +140,9 @@ export class AppTimerPage implements OnInit {
   async start_round() {
     // Play audio when start
     this.audio_work.play();
+    NativeAudio.play({
+      assetId: "race-start-beeps-125125.mp3"
+    })
     await wait(4000);
 
     this.round_number = 1
@@ -151,6 +161,9 @@ export class AppTimerPage implements OnInit {
 
   async resume_round() {
     this.audio_work.play();
+    NativeAudio.play({
+      assetId: "race-start-beeps-125125.mp3"
+    })
     await wait(4000);
     this.round_paused = false;
     this.launch_interval()
@@ -158,6 +171,9 @@ export class AppTimerPage implements OnInit {
 
   finish_training(){
     this.audio_finish.play();
+    NativeAudio.play({
+      assetId: "success-1-6297.mp3"
+    })
     this.stop_round();
   }
 
@@ -167,12 +183,33 @@ export class AppTimerPage implements OnInit {
   audio_finish: any = undefined
 
   load_audios = () => {
+    // For the web
     this.audio_work = new Audio()
     this.audio_work.src = "../../assets/audio/race-start-beeps-125125.mp3";
     this.audio_rest = new Audio()
     this.audio_rest.src = "../../assets/audio/dream-99404.mp3"
     this.audio_finish = new Audio()
     this.audio_finish.src = "../../assets/audio/success-1-6297.mp3"
+
+    // For the native device
+    NativeAudio.preload({
+      assetId: "race-start-beeps-125125.mp3",
+      assetPath: "public/assets/assets/audio/race-start-beeps-125125.mp3",
+      audioChannelNum: 1,
+      isUrl: false
+    })
+    NativeAudio.preload({
+      assetId: "dream-99404.mp3",
+      assetPath: "public/assets/assets/audio/dream-99404.mp3",
+      audioChannelNum: 1,
+      isUrl: false
+    })
+    NativeAudio.preload({
+      assetId: "success-1-6297.mp3",
+      assetPath: "public/assets/assets/audio/success-1-6297.mp3",
+      audioChannelNum: 1,
+      isUrl: false
+    })
   }
 
   stop_round() {
