@@ -52,5 +52,8 @@ export class AppComponent {
         this.feedbackService.clear()
       }
     })
+
+    // We also update the user information from the database
+    this.contentService.reloadUserData()
   }
 }
