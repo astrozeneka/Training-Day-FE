@@ -20,7 +20,7 @@
         <div>
           <img [src]="getLogoSrc()" alt="Logo" width="150px">
         </div>
-        <h1>Se connecter</h1>
+        <h1>Se connecter au plateforme</h1>
       </div>
       <form [formGroup]="form" (submit)="submit()">
         <ion-item class="ion-margin-vertical">
@@ -38,15 +38,19 @@
             type="password"
           ></ion-input>
         </ion-item>
-        <ion-button expand="full" type="submit">Log in</ion-button>
+        <ion-button expand="full" type="submit">Se connecter</ion-button>
+        <p class="ion-margin-vertical">
+          <a routerLink="/subscribe">Mot de passe oublié ?</a>
+        </p>
+        <br>
+        <hr/>
       </form>
 
-      <p class="ion-margin-vertical">
-        Créez un compte gratuitement par <a routerLink="/subscribe">ici</a>.
-      </p>
-      <p class="ion-margin-vertical">
-        <a routerLink="/subscribe">Mot de passe oublié ?</a>
-      </p>
+      <div>
+        <ion-button expand="full" type="submit" color="medium" (click)="goTo('/subscribe')">S'inscrire gratuitement</ion-button>
+        <ion-button expand="full" type="submit" color="tertiary" (click)="goTo('/home')">Continuer sans s'inscrire</ion-button>
+      </div>
+
     </div>
   </div>
 </ion-content>

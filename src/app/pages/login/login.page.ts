@@ -144,7 +144,9 @@ export class LoginPage extends FormComponent implements OnInit {
       return "assets/logo-light.png"
   }
 
-
+  goTo(url: string){
+    this.router.navigate([url])
+  }
 
   protected readonly document = document;
 }

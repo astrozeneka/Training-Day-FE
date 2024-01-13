@@ -1,5 +1,5 @@
 <ion-app>
-  <ion-split-pane when="md" contentId="main" *ngIf="user">
+  <ion-split-pane when="md" contentId="main">
     <ion-menu type="reveal" contentId="main" persistent="true">
       <app-main-menu></app-main-menu>
     </ion-menu>
@@ -7,7 +7,4 @@
       <ion-router-outlet></ion-router-outlet>
     </div>
   </ion-split-pane>
-  <div class="ion-page" *ngIf="!user">
-    <ion-router-outlet></ion-router-outlet>
-  </div>
 </ion-app>

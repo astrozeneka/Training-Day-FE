@@ -1,5 +1,11 @@
+@import '../../../mixins';
+
 .login-header{
   padding-bottom: 2em;
+
+  h1{
+    @include display-1;
+  }
 }
 
 .dark-logo img {
