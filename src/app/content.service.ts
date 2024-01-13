@@ -173,5 +173,22 @@ export class ContentService {
     return this.httpClient.delete(`${this.apiEndpoint}${suffix}?${idListParams}&${debugParams}`, {headers})
   }
 
+  reloadUserData(){
+    // TODO: Authentication service, make it for later
+    /*
+    let token = await this.storage.get('token')
+    let user_id = await this.storage.get('user_id')
+    this.authService.token = token
+    this.authService.user_id = user_id
+    if(token && user_id){
+      this.getOne(`/users/${user_id}`, {})
+        .subscribe((user:any)=>{
+          console.debug("Load user data")
+          console.debug(user)
+          this.authService.user = user
+        })
+    }
+  */
+  }
   
 }

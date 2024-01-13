@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import {Router} from "@angular/router";
+import {Component, NgZone} from '@angular/core';
+import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "./content.service";
+import {FeedbackService} from "./feedback.service";
+import {ToastController} from "@ionic/angular";
 
 @Component({
   selector: 'app-root',
@@ -11,13 +13,44 @@ export class AppComponent {
   user: any = null;
   constructor(
     private router:Router,
-    private contentService: ContentService
+    private zone: NgZone,
+    private contentService: ContentService,
+    private feedbackService: FeedbackService,
+    private toastController: ToastController
   ) {
-    router.events.subscribe(()=>{
+    router.events.subscribe((event)=>{
+      if (event instanceof NavigationEnd) {
+        this.zone.run(() => {
+          // Execute your callback function here
+          this.onRouteChange();
+        });
+      }
+      // Old code is below
       this.contentService.storage.get('user')
         .then((u)=>{
           this.user = u;
         })
+    })
+  }
+
+  private onRouteChange(){
+    this.contentService.reloadUserData()
+    console.log("On route changed")
+    // Check if there is some message from the feedback service
+    this.feedbackService.fetch().then((feedback)=>{
+      console.log("The feedback is ", feedback)
+      if(feedback.message){
+        let toast = this.toastController.create({
+          message: feedback.message,
+          position: 'top',
+          duration: 5000,
+          color: feedback.color
+        })
+        toast.then((toast)=>{
+          toast.present()
+        })
+        this.feedbackService.clear()
+      }
     })
   }
 }

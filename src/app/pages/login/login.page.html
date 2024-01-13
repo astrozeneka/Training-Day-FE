@@ -28,6 +28,7 @@
             label="Email"
             label-placement="floating"
             formControlName="email"
+            [errorText]="displayedError.email"
           ></ion-input>
         </ion-item>
         <ion-item class="ion-margin-vertical">
@@ -36,6 +37,7 @@
             label-placement="floating"
             formControlName="password"
             type="password"
+            [errorText]="displayedError.password"
           ></ion-input>
         </ion-item>
         <ion-button expand="full" type="submit">Se connecter</ion-button>

@@ -126,13 +126,17 @@ export class LoginPage extends FormComponent implements OnInit {
         if(error.status == 422){
           this.manageValidationFeedback(error, 'email');
           this.manageValidationFeedback(error, 'password');
-        }else{
-          this.feedbackService.registerNow("Erreur d'authentication")
+        }else if(error.status == 401){ // 401 Unauthorized
+          console.log("401 unauthorized")
+          this.feedbackService.registerNow("Le nom d'utilisateur ou le mot de passe est incorrect", 'danger')
         }
         return throwError(error)
       }))
-      .subscribe((data)=>{
-        this.router.navigate(['/'])
+      .subscribe(async (response:any)=>{
+        await this.contentService.storage.set('token', response.token) // Not in use
+        await this.contentService.storage.set('user_id', response.user.id) // Not in use
+        await this.feedbackService.register("Bonjour, vous êtes connecté", 'success')
+        this.router.navigate(['/home'])
       })
   }
 

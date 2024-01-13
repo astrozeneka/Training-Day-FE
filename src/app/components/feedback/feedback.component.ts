@@ -10,6 +10,7 @@ import {ActivatedRoute} from "@angular/router";
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.scss'],
 })
+// Not usable anymore
 export class FeedbackComponent  implements OnInit {
 
   constructor(
@@ -19,15 +20,16 @@ export class FeedbackComponent  implements OnInit {
     private route: ActivatedRoute
   ) {
     route.params.subscribe(()=>{
-      this.refresh()
+      //this.refresh()
     })
   }
 
   async ngOnInit() {
-    this.refresh()
+    //this.refresh()
   }
 
-  async refresh(){
+  // Not usable anymore, now it we call from the
+  /*async refresh(){
     if(await this.feedbackService.fetch() != undefined){
       console.log("Fetch message")
       let toast = await this.toastController.create({
@@ -38,6 +40,6 @@ export class FeedbackComponent  implements OnInit {
       toast.present()
       this.feedbackService.clear()
     }
-  }
+  }*/
 
 }
