@@ -89,7 +89,9 @@
   </div>
 
   <h4></h4>
-  <ion-button (click)="menuNavigate('/logout')" expand="full" fill="clear">Se déconnecter</ion-button>
+    <div *ngIf="user">
+        <ion-button (click)="menuNavigate('/logout')" expand="full" fill="clear">Se déconnecter</ion-button>
+    </div>
 </ion-list>
 
 <ion-footer>

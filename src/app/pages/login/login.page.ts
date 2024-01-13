@@ -133,8 +133,9 @@ export class LoginPage extends FormComponent implements OnInit {
         return throwError(error)
       }))
       .subscribe(async (response:any)=>{
-        await this.contentService.storage.set('token', response.token) // Not in use
+        /*await this.contentService.storage.set('token', response.token) // Not in use
         await this.contentService.storage.set('user_id', response.user.id) // Not in use
+        */
         await this.feedbackService.register("Bonjour, vous êtes connecté", 'success')
         this.router.navigate(['/home'])
       })
