@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {interval, Subject, takeUntil} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {NativeAudio} from "@capacitor-community/native-audio";
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 async function wait(ms: number): Promise<void> {
   return new Promise<void>(resolve => setTimeout(resolve, ms));
@@ -110,6 +111,7 @@ export class AppTimerPage implements OnInit {
       if (this.train_status == "work") {
         if (this.work_or_rest_time == this.form.value.work_duration) {
           this.train_status = "rest";
+          this.vibrate()
           this.work_or_rest_time = 0;
           this.sound_or_vibrate_pause();
         }
@@ -118,6 +120,7 @@ export class AppTimerPage implements OnInit {
       } else {
         if (this.work_or_rest_time == this.form.value.rest_duration) {
           this.train_status = "work";
+          this.vibrate()
           this.work_or_rest_time = 0;
           this.round_number += 1;
         }
@@ -134,7 +137,7 @@ export class AppTimerPage implements OnInit {
   async start_round() {
     this.sound_or_vibrate_work();
     await wait(3000); // The audio is supposed to be 4 seconds long, but the step begin 1 second before the audio end
-
+    this.vibrate()
     this.round_number = 1
     this.round_started = true;
     this.round_paused = false;
@@ -177,19 +180,19 @@ export class AppTimerPage implements OnInit {
     // For the native device
     NativeAudio.preload({
       assetId: "race-start-beeps-125125.mp3",
-      assetPath: "public/assets/assets/audio/race-start-beeps-125125.mp3",
+      assetPath: "public/assets/audio/race-start-beeps-125125.mp3",
       audioChannelNum: 1,
       isUrl: false
     })
     NativeAudio.preload({
       assetId: "dream-99404.mp3",
-      assetPath: "public/assets/assets/audio/dream-99404.mp3",
+      assetPath: "public/assets/audio/dream-99404.mp3",
       audioChannelNum: 1,
       isUrl: false
     })
     NativeAudio.preload({
       assetId: "success-1-6297.mp3",
-      assetPath: "public/assets/assets/audio/success-1-6297.mp3",
+      assetPath: "public/assets/audio/success-1-6297.mp3",
       audioChannelNum: 1,
       isUrl: false
     })
@@ -243,4 +246,9 @@ export class AppTimerPage implements OnInit {
   }
 
   protected readonly Math = Math;
+
+  vibrate () {
+    // Vibrate when the session begin
+    Haptics.vibrate();
+  }
 }
