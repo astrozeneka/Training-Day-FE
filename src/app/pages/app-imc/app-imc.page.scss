@@ -1,0 +1,9 @@
+@import '../../../mixins.scss';
+
+h1, .display-1{
+  @include display-1;
+}
+
+.display-1 em{
+  font-size: 1.5em;
+}
