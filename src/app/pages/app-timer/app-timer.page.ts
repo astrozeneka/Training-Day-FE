@@ -111,10 +111,7 @@ export class AppTimerPage implements OnInit {
         if (this.work_or_rest_time == this.form.value.work_duration) {
           this.train_status = "rest";
           this.work_or_rest_time = 0;
-          this.audio_rest.play();
-          NativeAudio.play({
-            assetId: "dream-99404.mp3"
-          })
+          this.sound_or_vibrate_pause();
         }
         // Set the progress bar
         this.set_progress(this.work_or_rest_time / parseInt(this.form.value.work_duration as any))
@@ -125,12 +122,9 @@ export class AppTimerPage implements OnInit {
           this.round_number += 1;
         }
         // run before the next step begin, fetch audio length
-        if (parseInt(this.work_or_rest_time + this.audio_work.duration) == this.form.value.rest_duration && this.round_number +1 <= parseInt(this.form.value.round_number as any)) {
-          // Play the work audio
-          this.audio_work.play();
-          NativeAudio.play({
-            assetId: "race-start-beeps-125125.mp3"
-          })
+        // the -1 is important because the step begin 1 second before the audio end
+        if (parseInt(this.work_or_rest_time + this.audio_work.duration) - 1 == this.form.value.rest_duration && this.round_number +1 <= parseInt(this.form.value.round_number as any)) {
+          this.sound_or_vibrate_work()
         }
         // Set the progress bar
         this.set_progress(this.work_or_rest_time / parseInt(this.form.value.rest_duration as any))
@@ -138,20 +132,15 @@ export class AppTimerPage implements OnInit {
     }, 1000);
   }
   async start_round() {
-    // Play audio when start
-    this.audio_work.play();
-    NativeAudio.play({
-      assetId: "race-start-beeps-125125.mp3"
-    })
-    await wait(4000);
+    this.sound_or_vibrate_work();
+    await wait(3000); // The audio is supposed to be 4 seconds long, but the step begin 1 second before the audio end
 
     this.round_number = 1
     this.round_started = true;
     this.round_paused = false;
     this.train_status = "work";
     this.launch_interval()
-
-    this.set_progress(0.5)
+    this.set_progress(0.0)
   }
 
   pause_round() {
@@ -160,20 +149,14 @@ export class AppTimerPage implements OnInit {
   }
 
   async resume_round() {
-    this.audio_work.play();
-    NativeAudio.play({
-      assetId: "race-start-beeps-125125.mp3"
-    })
+    this.sound_or_vibrate_work()
     await wait(4000);
     this.round_paused = false;
     this.launch_interval()
   }
 
   finish_training(){
-    this.audio_finish.play();
-    NativeAudio.play({
-      assetId: "success-1-6297.mp3"
-    })
+    this.sound_or_vibrate_finish()
     this.stop_round();
   }
 
@@ -223,12 +206,33 @@ export class AppTimerPage implements OnInit {
   }
 
   sound_or_vibrate_work() {
-    // Play sound
-    this.audio_work.play();
+    // Play audio when start
+    NativeAudio.play({
+      assetId: "race-start-beeps-125125.mp3"
+    }).catch((e)=>{
+      console.info("Native Audio not managed in this device, fallback to web audio");
+      this.audio_work.play();
+    });
   }
 
   sound_or_vibrate_pause() {
+    // Play audio when the "pause" session begin
+    NativeAudio.play({
+      assetId: "dream-99404.mp3"
+    }).catch((e)=>{
+      console.info("Native Audio not managed in this device, fallback to web audio");
+      this.audio_rest.play();
+    });
+  }
 
+  sound_or_vibrate_finish() {
+    // Play audio when the training is finished
+    NativeAudio.play({
+      assetId: "success-1-6297.mp3"
+    }).catch((e)=>{
+      console.info("Native Audio not managed in this device, fallback to web audio");
+      this.audio_finish.play();
+    });
   }
 
   progress = 0.0;

@@ -82,11 +82,9 @@
     </form>
 
     <div *ngIf="round_started" style="text-align: center">
-      <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="'50'" aria-valuemin="0" aria-valuemax="100" [style.background]="'radial-gradient(closest-side, var(--ion-background-color, #fff) 79%, transparent 80% 100%), conic-gradient(var(--ion-color-primary) ' +(progress*100)+ '%, gray 0)'">
+      <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="'0'" aria-valuemin="0" aria-valuemax="100" [style.background]="'radial-gradient(closest-side, var(--ion-background-color, #fff) 79%, transparent 80% 100%), conic-gradient(var(--ion-color-primary) ' +(progress*100)+ '%, gray 0)'">
         <span class="round-number">Round {{ round_number }} sur {{ form.value.round_number }}</span>
         <span class="status">
-          <ion-icon name="bed-outline" *ngIf="train_status === 'rest'"></ion-icon>
-          <ion-icon name="fitness-outline" *ngIf="train_status === 'work'"></ion-icon>
           {{ train_status }}
         </span>
 
@@ -105,23 +103,5 @@
       <!-- Stop -->
       <ion-button expand="" color="danger" (click)="stop_round()" *ngIf="round_started">Stop</ion-button>
     </div>
-
-    <!--
-    <div>
-      <h1>{{ chronometerValue }}</h1>
-      <ion-button expand="full" (click)="startChronometer()" *ngIf="!chronometerRunning">Démarrer</ion-button>
-      <ion-button expand="full" color="medium" (click)="pauseChronometer()" *ngIf="chronometerRunning">Pause</ion-button>
-      <br/>
-      <div style="text-align: center;">
-        <ion-button color="tertiary" (click)="addLap()" [disabled]="!chronometerRunning">Ajouter au tour</ion-button>
-      </div>
-      <table>
-        <tr *ngFor="let lap of laps; let i = index">
-          <td>Tour {{ i + 1 }}</td>
-          <td>{{ lap }}</td>
-        </tr>
-      </table>
-    </div>
-    -->
   </div>
 </ion-content>
