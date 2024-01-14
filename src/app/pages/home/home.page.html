@@ -17,7 +17,102 @@
         -->
       </div>
 
-      <h2 class="ion-padding">Les programmes sportifs</h2>
+      <h2 class="ion-padding">Bienvenue sur Training Day</h2>
+
+        <div>
+            <h3>Mes Applications</h3>
+            <div class="swiper-container">
+                <!-- Additional required wrapper -->
+                <swiper-container
+                    navigation="true"
+                    pagination="true"
+                    autoplay-delay="2500"
+                >
+                    <swiper-slide>
+                        <span class="icon">
+                             <ion-icon name="alarm-outline"></ion-icon>
+                        </span>
+                        <div class="description">
+                            <p>
+                                Entraînez-vous avec l'application chronomètre réglable pour chaque tour d'entraînement.
+                            </p>
+                            <h3>
+                                <span>Chronomètre</span>
+                            </h3>
+                            <ion-button (click)="navigateTo('/app-timer')">Découvrir</ion-button>
+                        </div>
+                    </swiper-slide>
+                    <swiper-slide>
+                        <span class="icon">
+                             <ion-icon name="navigate-outline"></ion-icon>
+                        </span>
+                        <div class="description">
+                            <p>
+                                Calculez vos kilomètres parcourus avec l'application GPS.
+                            </p>
+                            <h3>
+                                <span>GPS</span>
+                            </h3>
+                            <ion-button (click)="navigateTo('/app-gps')">Découvrir</ion-button>
+                        </div>
+                    </swiper-slide>
+                    <swiper-slide>
+                        <span class="icon">
+                             <ion-icon name="calculator-outline"></ion-icon>
+                        </span>
+                        <div class="description">
+                            <p>
+                                Découvrez notre application calculateur d'IMC pour connaître votre indice de masse corporelle.
+                            </p>
+                            <h3>
+                                <span>Calculateur d'IMC</span>
+                            </h3>
+                            <ion-button (click)="navigateTo('/app-imc')">Découvrir</ion-button>
+                        </div>
+                    </swiper-slide>
+                    <swiper-slide>
+
+                        <span class="icon">
+                             <ion-icon name="football-outline"></ion-icon>
+                        </span>
+                        <div class="description">
+                            <p>
+                                Découvrez notre application calculateur de calories.
+                            </p>
+                            <h3>
+                                <span>Calculateur de calories</span>
+                            </h3>
+                            <ion-button (click)="navigateTo('/app-calories')">Découvrir</ion-button>
+                        </div>
+                    </swiper-slide>
+                </swiper-container>
+            </div>
+        </div>
+
+
+        <div class="premium-subscription">
+            <h3>Abonnement Premium</h3>
+            <p>
+                L'abonnement Premium vous permet d'accéder à des programmes d'entraînement personnalisés ainsi qu'à un coach personnel.
+            </p>
+            <p>
+                Inscrivez-vous à la liste d'attente pour être informé de la sortie de l'abonnement Premium.
+            </p>
+            <form [formGroup]="form">
+                <ion-item>
+                    <ion-input
+                            label-placement="floating"
+                            label="Votre adresse email"
+                            type="email"
+                            formControlName="email"
+                            required
+                    ></ion-input>
+                </ion-item>
+                <ion-button fill="clear" expand="full" (click)="registerToWaitingList()">S'inscrire à la liste d'attente</ion-button>
+            </form>
+        </div>
+
+        <!--
       <ion-searchbar></ion-searchbar>
 
       <div id="home-card-list">
@@ -58,4 +153,5 @@
           </ion-card-content>
         </ion-card>
       </div>
+      -->
     </ion-content>
