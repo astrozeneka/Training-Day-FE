@@ -21,7 +21,7 @@ export class FeedbackService {
   async registerNow(message:string, color:string = 'secondary'){
     let toast = await this.toastController.create({
       message: message,
-      position: 'top',
+      position: 'bottom',
       duration: 5000,
       color: color
     })

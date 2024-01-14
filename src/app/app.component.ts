@@ -42,7 +42,7 @@ export class AppComponent {
       if(feedback.message){
         let toast = this.toastController.create({
           message: feedback.message,
-          position: 'top',
+          position: 'bottom',
           duration: 5000,
           color: feedback.color
         })
