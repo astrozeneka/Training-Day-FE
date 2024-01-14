@@ -3,27 +3,26 @@ import {Router} from "@angular/router";
 import {MenuController} from "@ionic/angular";
 import {Storage} from "@ionic/storage-angular";
 import {ContentService} from "../../content.service";
+import {AbstractComponent} from "../abstract-component";
 
 @Component({
   selector: 'app-main-menu',
   templateUrl: './main-menu.component.html',
   styleUrls: ['./main-menu.component.scss'],
 })
-export class MainMenuComponent  implements OnInit {
+export class MainMenuComponent extends AbstractComponent implements OnInit {
   user: any = null
 
   constructor(
     private router: Router,
     private menuController: MenuController,
-    private contentService: ContentService
+    contentService: ContentService
   ) {
-    // TODO: หาวิธีที่ทำให้ภาคนี้ optimized
-    this.router.events.subscribe((res)=>{
-      this.contentService.storage.get('user')
-        .then((u)=>{
-          this.user = u
-        })
-    })
+    super(contentService);
+    (async()=>{
+      this.user = await this.contentService.storage.get('user')
+      console.log(this.user)
+    })();
   }
 
   ngOnInit() {}

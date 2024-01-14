@@ -3,8 +3,12 @@
   <ion-toolbar color="primary" id="menu-header" *ngIf="user">
     <div class="profile-container">
       <div class="profile-image">
+
         <ion-avatar>
-          <img src="../../../assets/samples/profile-sample-1.jpg" alt="Profile Picture">
+            <!-- Default picture -->
+            <img *ngIf="user?.profile_image?.permalink"
+                 [src]="getStaticUrl(user?.profile_image?.permalink)" alt="Profile Picture">
+          <img *ngIf="!user?.profile_image?.permalink" src="../../../assets/samples/profile-sample-1.jpg" alt="Profile Picture">
         </ion-avatar>
       </div>
       <div class="profile-name" *ngIf="user">

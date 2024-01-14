@@ -55,7 +55,7 @@ export class SubscribePage extends FormComponent implements OnInit {
     // ต้องใส่โคตเพิ่มสำหรับรูปโปรไฟล์ฯลฯ
     this.contentService.post('/users', obj)
       .pipe(catchError((error)=>{
-        if(error.status == 402){
+        if(error.status == 422){
           this.manageValidationFeedback(error, 'email')
           this.manageValidationFeedback(error, 'password')
           this.manageValidationFeedback(error, 'password_confirm')
