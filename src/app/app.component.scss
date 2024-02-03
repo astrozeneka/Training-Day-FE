@@ -1,4 +1,9 @@
 app-main-menu{
   overflow: scroll!important;
   height: 100vh!important;
+  z-index: 99;
+}
+
+.ion-page{
+  z-index: -99;
 }
