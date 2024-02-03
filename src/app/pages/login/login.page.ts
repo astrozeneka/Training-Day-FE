@@ -84,6 +84,7 @@ export class LoginPage extends FormComponent implements OnInit {
     registerNotifications();
     */
     // Example
+    /*
     PushNotifications.requestPermissions().then((result) => {
       if (result.receive === 'granted') {
         PushNotifications.register();
@@ -117,6 +118,8 @@ export class LoginPage extends FormComponent implements OnInit {
         // Implement the needed action to take when user tap on a notification.
       }
     );
+
+     */
 
   }
 
