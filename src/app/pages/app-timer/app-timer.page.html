@@ -64,18 +64,6 @@
         </ion-select>
       </ion-item>
 
-      <!-- Select alert mode (sound, vibration, both) -->
-      <ion-item>
-        <ion-select
-          formControlName="alert_mode"
-          label="Mode d'alerte"
-          label-placement="floating"
-        >
-          <ion-select-option value="sound">Sonore</ion-select-option>
-          <ion-select-option value="vibration">Vibration</ion-select-option>
-          <ion-select-option value="both">Les deux</ion-select-option>
-        </ion-select>
-      </ion-item>
     </form>
 
     <div *ngIf="round_started" style="text-align: center">
