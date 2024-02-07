@@ -93,6 +93,7 @@ export class ProfilePage extends FormComponent implements OnInit {
       .subscribe(async(res)=>{
         console.debug("Update user information")
         this.feedbackService.register("Les informations ont été mises à jour", 'success')
+        await this.contentService.reloadUserData()
         this.form.reset()
         this.router.navigate(["/home"]);
       })

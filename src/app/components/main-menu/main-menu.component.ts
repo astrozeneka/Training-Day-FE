@@ -23,7 +23,6 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
       if (event instanceof NavigationEnd) {
         console.log("Navigation end (menu caller)")
         this.user = await this.contentService.storage.get('user')
-        console.log(this.user)
       }
     };
     console.log((this.router.events as any).currentObservers)

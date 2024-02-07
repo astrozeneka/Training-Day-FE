@@ -175,14 +175,19 @@ export class ContentService {
   }
 
   async reloadUserData(){
-    let token = await this.storage.get('token')
-    let user = await this.storage.get('user')
-    if(token && user){
-      this.getOne(`/users/${user.id}`, {})
-        .subscribe((user:any)=>{
-          this.storage.set('user', user)
-        })
-    }
+    return new Promise(async (resolve, reject)=>{
+      let token = await this.storage.get('token')
+      let user = await this.storage.get('user')
+      if(token && user){
+        console.debug("Reloading user data")
+        this.getOne(`/users/${user.id}`, {})
+          .subscribe((user:any)=>{
+            console.debug("User data reloaded", user)
+            this.storage.set('user', user)
+            resolve(user)
+          })
+      }
+    })
   }
   
 }

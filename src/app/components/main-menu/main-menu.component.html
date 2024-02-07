@@ -3,7 +3,6 @@
   <ion-toolbar color="primary" id="menu-header" *ngIf="user">
     <div class="profile-container">
       <div class="profile-image">
-
         <ion-avatar>
             <!-- Default picture -->
             <img *ngIf="user?.profile_image?.permalink"
@@ -33,7 +32,7 @@
         <ion-button (click)="menuNavigate('/login')" expand="full" fill="clear">Se connecter</ion-button>
         <ion-button (click)="menuNavigate('/subscribe')" expand="full" fill="clear">S'inscrire</ion-button>
     </div>
-    <div *ngIf="user?.role === 'customer'">
+    <div *ngIf="user?.role === 'customer' || user?.role_id === 2">
         <h4>Espace personnel</h4>
         <!--<ion-button (click)="menuNavigate('/communities')" expand="full" fill="clear">Mes communautés</ion-button>-->
         <ion-button (click)="menuNavigate('/profile')" expand="full" fill="clear">Mon profil</ion-button>
