@@ -19,6 +19,7 @@ import {ThreadViewComponent} from "./entity-views/thread-view/thread-view.compon
 import {UserViewComponent} from "./entity-views/user-view/user-view.component";
 import {UnavailableComponent} from "./unavailable/unavailable.component";
 import {GoalViewComponent} from "./entity-views/goal-view/goal-view.component";
+import {PasswordConfirmationModalComponent} from "./password-confirmation-modal/password-confirmation-modal.component";
 
 
 
@@ -30,6 +31,7 @@ import {GoalViewComponent} from "./entity-views/goal-view/goal-view.component";
     PaginationComponent,
     MainMenuComponent,
     DeleteModalComponent,
+    PasswordConfirmationModalComponent,
 
     FileViewComponent,
     AgencyViewComponent,

@@ -5,6 +5,10 @@ import {ContentService} from "../../content.service";
 import {catchError, throwError} from "rxjs";
 import {FeedbackService} from "../../feedback.service";
 import {FormComponent} from "../../components/form.component";
+import {ModalController} from "@ionic/angular";
+import {
+  PasswordConfirmationModalComponent
+} from "../../components/password-confirmation-modal/password-confirmation-modal.component";
 
 @Component({
   selector: 'app-profile',
@@ -38,7 +42,8 @@ export class ProfilePage extends FormComponent implements OnInit {
   constructor(
     private router:Router,
     private contentService: ContentService,
-    private feedbackService: FeedbackService
+    private feedbackService: FeedbackService,
+    private modalCtrl: ModalController
   ) {
     super();
     (async()=>{
@@ -101,5 +106,60 @@ export class ProfilePage extends FormComponent implements OnInit {
 
   getStaticUrl(suffix:any){
     return this.contentService.rootEndpoint + '/' + suffix
+  }
+
+  async deleteAccount(){
+    // Show modal
+    let modal = await this.modalCtrl.create({
+      component: PasswordConfirmationModalComponent,
+      componentProps: {}
+    })
+    await modal.present()
+    let {data, role} = await modal.onDidDismiss()
+    if(role == 'confirm'){
+      // Send DELETE method to the backend
+      let user = await this.contentService.storage.get('user')
+      let obj: any = {
+        id: this.user_id,
+        email: user.email,
+        password: data
+      }
+      // Try to request login
+      this.contentService.requestLogin(obj)
+        .pipe(catchError(error=>{
+          if(error.status == 422){
+            this.feedbackService.registerNow("Le mot de passe est requis", 'danger')
+          }
+          if(error.status == 401){
+            this.feedbackService.registerNow("Le mot de passe est incorrect", 'danger')
+          }
+          return throwError(error)
+        }))
+        .subscribe(async()=>{
+          console.debug("Delete user account")
+          this.feedbackService.register("Le compte a été supprimé", 'success')
+          await this.contentService.storage.clear()
+          await this.contentService.deleteOne('/users', obj);
+          this.feedbackService.register("Le compte a été supprimé", 'success')
+          this.router.navigate(["/login"]);
+        })
+
+      /*
+      this.contentService.deleteOne('/users/self', obj)
+        .pipe(catchError(error=>{
+          if(error.status == 422){
+            this.feedbackService.registerNow("Le mot de passe est incorrect", 'danger')
+          }
+          return throwError(error)
+        }))
+        .subscribe(async()=>{
+          console.debug("Delete user account")
+          this.feedbackService.register("Le compte a été supprimé", 'success')
+          await this.contentService.storage.clear()
+          this.router.navigate(["/login"]);
+        })
+
+       */
+    }
   }
 }

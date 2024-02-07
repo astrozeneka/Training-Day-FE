@@ -174,6 +174,13 @@ export class ContentService {
     return this.httpClient.delete(`${this.apiEndpoint}${suffix}?${idListParams}&${debugParams}`, {headers})
   }
 
+  deleteOne(suffix: string, data:any){
+    let headers = this.bearerHeaders()
+    let debugParams = this.isDebug?'XDEBUG_SESSION_START=client':''
+    let passwordParams = `password=${data.password}`
+    return this.httpClient.delete(`${this.apiEndpoint}${suffix}?${debugParams}&${passwordParams}`, {headers})
+  }
+
   async reloadUserData(){
     return new Promise(async (resolve, reject)=>{
       let token = await this.storage.get('token')

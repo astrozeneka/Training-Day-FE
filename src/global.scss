@@ -25,6 +25,7 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
+@import "mixins";
 
 #app-container{
   text-align: center;
@@ -45,3 +46,7 @@
   user-select: text;
 }
 
+
+.display-1{
+  @include display-1;
+}
