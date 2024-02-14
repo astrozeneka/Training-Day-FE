@@ -25,9 +25,9 @@
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Allow geolocation</string>
+	<string>Used for tracking the running distance in the GPS section of the application.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow geolocation</string>
+	<string>Used for tracking the running distance in the GPS section of the application.</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -53,5 +53,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>The photo library access allows the users to select profile picture from their device.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>The camera usage allows the users to take profile picture using their camera.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>The tracking usage data will be used for giving better fitness experience, especially with the fitness tracking section.</string>
 </dict>
 </plist>
