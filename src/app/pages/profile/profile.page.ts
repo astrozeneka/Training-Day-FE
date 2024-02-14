@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
+import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
 import {catchError, throwError} from "rxjs";
 import {FeedbackService} from "../../feedback.service";
@@ -47,9 +47,11 @@ export class ProfilePage extends FormComponent implements OnInit {
   ) {
     super();
     router.events.subscribe(async(event: any)=>{
-      this.entity = await this.contentService.storage.get('user')
-      this.user_id = this.entity.id
-      this.form.patchValue(this.entity)
+      if (event instanceof NavigationEnd) {
+        this.entity = await this.contentService.storage.get('user')
+        this.user_id = this.entity?.id
+        this.form.patchValue(this.entity)
+      }
     });
   }
 
@@ -134,13 +136,16 @@ export class ProfilePage extends FormComponent implements OnInit {
           }
           return throwError(error)
         }))
-        .subscribe(async()=>{
+        .subscribe(async(res)=>{
           console.debug("Delete user account")
-          this.feedbackService.register("Le compte a été supprimé", 'success')
           await this.contentService.storage.clear()
-          await this.contentService.deleteOne('/users', obj);
-          this.feedbackService.register("Le compte a été supprimé", 'success')
-          this.router.navigate(["/login"]);
+          let id_list = this.user_id.toString()
+          await this.contentService.delete('/users', id_list)
+            .subscribe(()=>{
+              this.feedbackService.register("Le compte a été supprimé", 'success')
+              this.router.navigate(["/login"]);
+            })
+          // this.router.navigate(["/login"]);
         })
 
       /*

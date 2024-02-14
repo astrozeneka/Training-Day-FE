@@ -177,6 +177,9 @@ export class ContentService {
     return this.httpClient.delete(`${this.apiEndpoint}${suffix}?${idListParams}&${debugParams}`, {headers})
   }
 
+  /**
+   * @deprecated, do not use this function
+   */
   deleteOne(suffix: string, data:any){
     let headers = this.bearerHeaders()
     let debugParams = this.isDebug?'XDEBUG_SESSION_START=client':''
