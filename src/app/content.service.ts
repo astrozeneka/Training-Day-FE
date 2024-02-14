@@ -39,6 +39,9 @@ export class ContentService {
             await this.storage.set('user', res.user)
           console.log(res.token)
           console.log(res.user)
+
+          // After login, make it load the unread message also
+          // await this.reloadUserData()
         }),
         mergeMap((res: any)=>from(res))
       )
@@ -188,12 +191,24 @@ export class ContentService {
       if(token && user){
         console.debug("Reloading user data")
         this.getOne(`/users/${user.id}`, {})
-          .subscribe((user:any)=>{
+          .subscribe(async (user:any)=>{
             console.debug("User data reloaded", user)
+            await this._reloadUserMessageData()
             this.storage.set('user', user)
             resolve(user)
           })
       }
+    })
+  }
+
+  async _reloadUserMessageData(){
+    return new Promise(async (resolve, reject)=>{
+      this.getOne(`/chat/unread`, {})
+        .subscribe((res:any)=>{
+          console.debug("Unread messages", res)
+          this.storage.set('unreadMessages', res.unread)
+          resolve(res)
+        })
     })
   }
   

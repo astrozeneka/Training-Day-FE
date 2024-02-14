@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ContentService} from "../../../content.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AlertController, ModalController} from "@ionic/angular";
@@ -17,6 +17,8 @@ export class ChatDetailsPage implements OnInit {
   correspondentId = null
   correspondent:any|null = null
   user:any|null = null;
+
+  @ViewChild('discussionFlow') discussionFlow:any = undefined;
 
   form = new FormGroup({
     'content': new FormControl('', Validators.required)
@@ -46,6 +48,11 @@ export class ChatDetailsPage implements OnInit {
         this.entityList = data as unknown as Array<any>
         this.correspondent = metaInfo['correspondent'];
         console.log(this.correspondent)
+        // Make the scrollable stick to bottom
+        setTimeout(()=>{
+          this.discussionFlow = document.querySelector('.discussion-flow')
+          this.discussionFlow.scrollTop = this.discussionFlow.scrollHeight - this.discussionFlow.clientHeight;
+        }, 20);
       })
   }
 

@@ -46,12 +46,11 @@ export class ProfilePage extends FormComponent implements OnInit {
     private modalCtrl: ModalController
   ) {
     super();
-    (async()=>{
+    router.events.subscribe(async(event: any)=>{
       this.entity = await this.contentService.storage.get('user')
       this.user_id = this.entity.id
       this.form.patchValue(this.entity)
-      console.log(this.entity)
-    })();
+    });
   }
 
   ngOnInit() {

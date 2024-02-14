@@ -9,7 +9,7 @@
 
 <ion-content class="ion-padding">
   <div class="messaging">
-    <div class="discussion-flow"><!-- The discussion flow -->
+    <div class="discussion-flow" #discussionFlow><!-- The discussion flow -->
       <div *ngFor="let entity of entityList" class="message" [class.received]="entity.recipient_id === user.id" [class.sent]="entity.recipient_id !== user.id">
         <ion-avatar slot="start" *ngIf="entity.recipient_id === user.id">
           <img src="../../../assets/samples/profile-sample-1.jpg" alt="Profile Picture">

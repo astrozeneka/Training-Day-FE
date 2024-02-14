@@ -12,6 +12,7 @@ import {AbstractComponent} from "../abstract-component";
 })
 export class MainMenuComponent extends AbstractComponent implements OnInit {
   user: any = null
+  unreadMessages: any = null
 
   constructor(
     private router: Router,
@@ -23,6 +24,7 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
       if (event instanceof NavigationEnd) {
         console.log("Navigation end (menu caller)")
         this.user = await this.contentService.storage.get('user')
+        this.unreadMessages = await this.contentService.storage.get('unreadMessages')
       }
     };
     console.log((this.router.events as any).currentObservers)
