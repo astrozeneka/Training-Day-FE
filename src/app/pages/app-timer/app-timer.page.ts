@@ -170,32 +170,49 @@ export class AppTimerPage implements OnInit {
 
   load_audios = () => {
     // For the web
-    this.audio_work = new Audio()
-    this.audio_work.src = "../../assets/audio/race-start-beeps-125125.mp3";
-    this.audio_rest = new Audio()
-    this.audio_rest.src = "../../assets/audio/dream-99404.mp3"
-    this.audio_finish = new Audio()
-    this.audio_finish.src = "../../assets/audio/success-1-6297.mp3"
-
+    try{
+      this.audio_work = new Audio()
+      this.audio_work.src = "../../assets/audio/race-start-beeps-125125.mp3";
+      this.audio_rest = new Audio()
+      this.audio_rest.src = "../../assets/audio/dream-99404.mp3"
+      this.audio_finish = new Audio()
+      this.audio_finish.src = "../../assets/audio/success-1-6297.mp3"
+    }catch(e){
+      console.info("Resource not found, probably not in the web environment")
+    }
     // For the native device
-    NativeAudio.preload({
-      assetId: "race-start-beeps-125125.mp3",
-      assetPath: "public/assets/audio/race-start-beeps-125125.mp3",
-      audioChannelNum: 1,
-      isUrl: false
-    })
-    NativeAudio.preload({
-      assetId: "dream-99404.mp3",
-      assetPath: "public/assets/audio/dream-99404.mp3",
-      audioChannelNum: 1,
-      isUrl: false
-    })
-    NativeAudio.preload({
-      assetId: "success-1-6297.mp3",
-      assetPath: "public/assets/audio/success-1-6297.mp3",
-      audioChannelNum: 1,
-      isUrl: false
-    })
+    try{
+      NativeAudio.preload({
+        assetId: "race-start-beeps-125125.mp3",
+        assetPath: "public/assets/audio/race-start-beeps-125125.mp3",
+        audioChannelNum: 1,
+        isUrl: false
+      })
+    }catch (e) {
+      console.info("assetId already exists skip")
+    }
+
+    try{
+      NativeAudio.preload({
+        assetId: "dream-99404.mp3",
+        assetPath: "public/assets/audio/dream-99404.mp3",
+        audioChannelNum: 1,
+        isUrl: false
+      })
+    }catch (e) {
+      console.info("assetId already exists skip")
+    }
+
+    try{
+      NativeAudio.preload({
+        assetId: "success-1-6297.mp3",
+        assetPath: "public/assets/audio/success-1-6297.mp3",
+        audioChannelNum: 1,
+        isUrl: false
+      })
+    }catch (e) {
+      console.info("assetId already exists skip")
+    }
   }
 
   stop_round() {
