@@ -60,7 +60,6 @@ export class PaymentViewComponent extends FormComponent implements OnInit {
           return throwError(error)
         }))
         .subscribe(async (res) => {
-          console.log(res)
           await this.feedbackService.registerNow("Un élément a été ajouté")
           this.modalCtrl.dismiss(null, 'insert-success')
         })

@@ -56,7 +56,6 @@ export class AppointmentViewComponent extends FormComponent implements OnInit {
   loadData(){
     this.contentService.get('/users').subscribe(([data, metaInfo])=>{
       this.userList = data as unknown as Array<any>
-      console.log(this.userList)
       // TODO: should separate the coach and the normal user, use ChatGPT
     })
   }

@@ -52,7 +52,6 @@ export class ManageUsersViewPage implements OnInit {
           label: (index+1).toString(),
           value: index
         }))
-        console.log(this.entityList)
       })
   }
 

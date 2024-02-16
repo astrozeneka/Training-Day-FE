@@ -52,10 +52,8 @@ export class GpsPage implements OnInit {
       if (this.previousCoords) {
         const delta = this.calculateDistance(this.previousCoords.latitude, this.previousCoords.longitude, latitude, longitude);
         this.distance += delta
-        console.log(delta)
       }
       this.previousCoords = {latitude, longitude}
-      console.log(this.previousCoords)
     });
   }
 

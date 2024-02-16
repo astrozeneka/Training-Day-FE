@@ -97,7 +97,6 @@ export class ProfilePage extends FormComponent implements OnInit {
         return throwError(error)
       }))
       .subscribe(async(res)=>{
-        console.debug("Update user information")
         this.feedbackService.register("Les informations ont été mises à jour", 'success')
         await this.contentService.reloadUserData()
         this.form.reset()
@@ -137,7 +136,6 @@ export class ProfilePage extends FormComponent implements OnInit {
           return throwError(error)
         }))
         .subscribe(async(res)=>{
-          console.debug("Delete user account")
           await this.contentService.storage.clear()
           let id_list = this.user_id.toString()
           await this.contentService.delete('/users', id_list)

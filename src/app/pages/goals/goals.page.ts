@@ -32,7 +32,6 @@ export class GoalsPage implements OnInit {
   ) {
     this.route.params.subscribe(()=>{
       this.contentService.storage.get('user').then(u => {
-        console.debug("Program id: ", u.program_id)
         this.program_id = u.program_id
         this.loadData()
       })
@@ -66,7 +65,6 @@ export class GoalsPage implements OnInit {
           label: (index+1).toString(),
           value: index
         }))
-        console.log(this.entityList)
       })
   }
 

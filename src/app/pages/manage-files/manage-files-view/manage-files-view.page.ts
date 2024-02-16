@@ -40,7 +40,6 @@ export class ManageFilesViewPage implements OnInit {
   }
 
   loadData(){
-    console.log("Refresh")
     this.contentService.get(`/files`, this.pageOffset, this.searchControl.value, "f_name").subscribe(([data, metaInfo])=>{
       this.entityList = data as unknown as Array<any>
       // The page segments

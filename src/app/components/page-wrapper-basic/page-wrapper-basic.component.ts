@@ -23,7 +23,7 @@ export class PageWrapperBasicComponent  implements OnInit {
 
   ngOnInit() {
     this.route.data.subscribe((data:any) => {
-      console.log()
+
     });
   }
 
@@ -32,7 +32,7 @@ export class PageWrapperBasicComponent  implements OnInit {
   }
 
   delete(){
-    console.log("Delete")
+
     this.onDelete.emit()
   }
 }

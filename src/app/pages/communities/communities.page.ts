@@ -47,7 +47,6 @@ export class CommunitiesPage implements OnInit {
         this.entityList = data as unknown as Array<any>
         // ไม่ต้องใส่ pagination ก่อน
         // จะใส่ที่หลังถ้าเราจะต้องการ
-        console.log(this.entityList)
       })
 
   }

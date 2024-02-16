@@ -22,12 +22,10 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
     super(contentService);
     let observer = async(event:any)=>{
       if (event instanceof NavigationEnd) {
-        console.log("Navigation end (menu caller)")
         this.user = await this.contentService.storage.get('user')
         this.unreadMessages = await this.contentService.storage.get('unreadMessages')
       }
     };
-    console.log((this.router.events as any).currentObservers)
     if(!(this.router.events as any).observers.includes(observer)){
       this.router.events.subscribe(observer)
     }
@@ -36,7 +34,6 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
   ngOnInit() {}
 
   menuNavigate(url:string){
-    console.log(url)
     this.menuController.close();
     this.router.navigate([url])
   }

@@ -37,7 +37,6 @@ export class AppImcPage extends FormComponent {
         if(this.user){
           this.contentService.getOne(`/users/body/${this.user.id}`, '')
             .subscribe(v=>{
-              console.debug(`Load user data from server ${JSON.stringify(v)}`)
               this.form.patchValue(v)
               this.loaded = true
             })
@@ -54,7 +53,6 @@ export class AppImcPage extends FormComponent {
         this.user = u
         this.contentService.getOne(`/users/body/${u.id}`, '')
           .subscribe(v=>{
-            console.debug(`Load user data from server ${JSON.stringify(v)}`)
             this.form.patchValue(v)
             this.loaded = true
           })

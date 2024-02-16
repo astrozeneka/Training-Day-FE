@@ -65,7 +65,6 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
         this.user = u
         this.contentService.getOne(`/users/body/${u.id}`, '')
           .subscribe(v=>{
-            console.debug(`Load user data from server ${JSON.stringify(v)}`)
             this.form.patchValue(v)
             this.loaded = true
           })
@@ -115,7 +114,6 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
         + 6.25 * parseInt(this.form.value.height as any)
         - 5 * parseInt(this.form.value.age as any) - 161
     }
-    console.log(`Calories à consommer de base: ${base}`)
     this.calory_to_consume.sedentary = base * 1.2
     this.calory_to_consume.light = base * 1.375
     this.calory_to_consume.moderate = base * 1.55

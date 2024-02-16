@@ -14,7 +14,6 @@ export class FileViewComponent  implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.entity)
   }
 
   cancel(){

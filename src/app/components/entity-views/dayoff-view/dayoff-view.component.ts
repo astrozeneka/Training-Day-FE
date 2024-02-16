@@ -46,7 +46,6 @@ export class DayoffViewComponent extends FormComponent implements OnInit {
   loadData(){
     this.contentService.get('/users').subscribe(([data, metaInfo])=>{
       this.userList = data as unknown as Array<any>
-      console.log(this.userList)
     })
   }
 

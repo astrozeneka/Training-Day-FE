@@ -37,8 +37,6 @@ export class ContentService {
             await this.storage.set('token', res.token)
           if(res.user)
             await this.storage.set('user', res.user)
-          console.log(res.token)
-          console.log(res.user)
 
           // After login, make it load the unread message also
           // await this.reloadUserData()
@@ -53,7 +51,6 @@ export class ContentService {
     public route: ActivatedRoute,
     public router: Router
   ) {
-    console.log(`API Endpoint is ${this.apiEndpoint}`)
     this.storage.create()
     this.storage.get('token').then((e)=>{
       if(e != undefined){
@@ -91,7 +88,6 @@ export class ContentService {
             }
           if(criteriaParams != "")
             criteriaParams = "&" + criteriaParams
-          console.log(`${this.apiEndpoint}${suffix}?offset=${offset}&${searchParams}${debugParams}${limitParams}${criteriaParams}`)
           let dataObs:Observable<any> = this.httpClient.get(`${this.apiEndpoint}${suffix}?offset=${offset}&${searchParams}${debugParams}${limitParams}${criteriaParams}`, {headers})
           let metainfoObs:Observable<any> = this.httpClient.get(`${this.apiEndpoint}${suffix}/metaInfo?${searchParams}${debugParams}${criteriaParams}`, {headers})
           metainfoObs.pipe(
@@ -166,7 +162,6 @@ export class ContentService {
 
   put(suffix:string, data:any){
     let headers = this.bearerHeaders()
-    console.log(headers)
     return this.httpClient.put(`${this.apiEndpoint}${suffix}?${this.isDebug?'XDEBUG_SESSION_START=client':''}`, data, {headers})
   }
 
@@ -192,10 +187,8 @@ export class ContentService {
       let token = await this.storage.get('token')
       let user = await this.storage.get('user')
       if(token && user){
-        console.debug("Reloading user data")
         this.getOne(`/users/${user.id}`, {})
           .subscribe(async (user:any)=>{
-            console.debug("User data reloaded", user)
             await this._reloadUserMessageData()
             this.storage.set('user', user)
             resolve(user)
@@ -208,7 +201,6 @@ export class ContentService {
     return new Promise(async (resolve, reject)=>{
       this.getOne(`/chat/unread`, {})
         .subscribe((res:any)=>{
-          console.debug("Unread messages", res)
           this.storage.set('unreadMessages', res.unread)
           resolve(res)
         })

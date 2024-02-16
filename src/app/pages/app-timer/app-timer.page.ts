@@ -178,7 +178,6 @@ export class AppTimerPage implements OnInit {
       this.audio_finish = new Audio()
       this.audio_finish.src = "../../assets/audio/success-1-6297.mp3"
     }catch(e){
-      console.info("Resource not found, probably not in the web environment")
     }
     // For the native device
     try{
@@ -189,7 +188,6 @@ export class AppTimerPage implements OnInit {
         isUrl: false
       })
     }catch (e) {
-      console.info("assetId already exists skip")
     }
 
     try{
@@ -200,7 +198,6 @@ export class AppTimerPage implements OnInit {
         isUrl: false
       })
     }catch (e) {
-      console.info("assetId already exists skip")
     }
 
     try{
@@ -211,7 +208,6 @@ export class AppTimerPage implements OnInit {
         isUrl: false
       })
     }catch (e) {
-      console.info("assetId already exists skip")
     }
   }
 
@@ -230,7 +226,6 @@ export class AppTimerPage implements OnInit {
     NativeAudio.play({
       assetId: "race-start-beeps-125125.mp3"
     }).catch((e)=>{
-      console.info("Native Audio not managed in this device, fallback to web audio");
       this.audio_work.play();
     });
   }
@@ -240,7 +235,6 @@ export class AppTimerPage implements OnInit {
     NativeAudio.play({
       assetId: "dream-99404.mp3"
     }).catch((e)=>{
-      console.info("Native Audio not managed in this device, fallback to web audio");
       this.audio_rest.play();
     });
   }
@@ -250,7 +244,6 @@ export class AppTimerPage implements OnInit {
     NativeAudio.play({
       assetId: "success-1-6297.mp3"
     }).catch((e)=>{
-      console.info("Native Audio not managed in this device, fallback to web audio");
       this.audio_finish.play();
     });
   }

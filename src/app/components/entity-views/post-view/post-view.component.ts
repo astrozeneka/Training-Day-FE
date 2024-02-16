@@ -43,7 +43,6 @@ export class PostViewComponent extends FormComponent implements OnInit {
 
   ngOnInit() {
     this.form.patchValue(this.entity)
-    console.log(this.form.value)
     this.loadData()
     // Additionnal patching value correction
   }
@@ -54,7 +53,6 @@ export class PostViewComponent extends FormComponent implements OnInit {
     if(this.entity){
       this.contentService.getOne('/posts/details', {'f_id': this.entity.id})
         .subscribe(data=>{
-          console.log(data)
           this.entity = data
         })
 
@@ -73,9 +71,7 @@ export class PostViewComponent extends FormComponent implements OnInit {
     let obj = this.form.value
     obj.id = this.entity?.id
     obj.featured_media = fileContent
-    console.log(obj)
     if(this.entity == null) {
-      console.log(obj)
       this.contentService.post('/posts', obj)
         .pipe(catchError((error) => {
           if (error.status == 422) {
@@ -90,12 +86,10 @@ export class PostViewComponent extends FormComponent implements OnInit {
           return throwError(error)
         }))
         .subscribe(async (res)=>{
-          console.log(res)
           await this.feedbackService.registerNow("Un élément a été ajouté")
           this.modalCtrl.dismiss(null, 'insert-success')
         })
     }else if(this.entity != null){
-      console.log("Update")
       this.contentService.put('/posts', obj)
         .pipe(catchError((error) => {
           if (error.status == 422) {

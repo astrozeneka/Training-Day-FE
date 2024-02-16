@@ -36,19 +36,15 @@ export class GoalViewComponent extends FormComponent implements OnInit {
     private router:Router
   ) {
     super()
-    console.log("Should Load data")
     this.loadData()
     router.events.subscribe((res)=>{
       // Todo: Find a better way to update the content
-      console.log("OK")
     })
   }
 
   loadData(){
-    console.log("Load data")
     this.contentService.get('/goal-groups').subscribe(([data, metaInfo])=>{
       this.goalGroups = data as unknown as Array<any>
-      console.log(this.goalGroups) // Todo: remove this line
     })
   }
 

@@ -17,7 +17,6 @@ export class TestPaymentPage implements OnInit {
     // คิดค่อ server
     this.http.post('http://localhost:8000/api/test-payment?XDEBUG_SESSION_START=1', {})
       .subscribe((res)=>{
-        console.log(res)
       })
   }
 

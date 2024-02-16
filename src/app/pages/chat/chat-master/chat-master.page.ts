@@ -36,7 +36,6 @@ export class ChatMasterPage implements OnInit {
     this.contentService.get('/chat', 0, this.searchControl.value, "f_name")
       .subscribe(([data, metaInfo])=>{
         this.entityList = data as unknown as Array<any>
-        console.log(this.entityList)
       })
   }
 

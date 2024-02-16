@@ -22,9 +22,6 @@ export class ArticleViewPage implements OnInit {
         .subscribe((post:any)=>{
           this.post = post
           this.rounded_rating = Math.floor(parseFloat(post.rate) * 2) / 2
-          console.debug(this.rounded_rating)
-          console.debug("Receive data from the server")
-          console.debug(this.post)
         })
     })
   }

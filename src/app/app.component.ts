@@ -35,10 +35,10 @@ export class AppComponent {
 
   private onRouteChange(){
     this.contentService.reloadUserData()
-    console.log("On route changed")
+
     // Check if there is some message from the feedback service
     this.feedbackService.fetch().then((feedback)=>{
-      console.log("The feedback is ", feedback)
+
       if(feedback.message){
         let toast = this.toastController.create({
           message: feedback.message,

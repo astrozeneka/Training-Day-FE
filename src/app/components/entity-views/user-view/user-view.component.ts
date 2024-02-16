@@ -52,7 +52,6 @@ export class UserViewComponent extends FormComponent implements OnInit {
     if(this.entity){
       this.contentService.getOne(`/users/${this.entity.id}`, {})
         .subscribe(data=>{
-          console.log(data)
           this.entity = data;
         })
     }

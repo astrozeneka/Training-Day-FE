@@ -47,7 +47,6 @@ export class ChatDetailsPage implements OnInit {
       .subscribe(([data, metaInfo])=>{
         this.entityList = data as unknown as Array<any>
         this.correspondent = metaInfo['correspondent'];
-        console.log(this.correspondent)
         // Make the scrollable stick to bottom
         setTimeout(()=>{
           this.discussionFlow = document.querySelector('.discussion-flow')
