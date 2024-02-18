@@ -4,7 +4,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
 import {catchError, throwError} from "rxjs";
-import {Router} from "@angular/router";
+import {NavigationEnd, Router} from "@angular/router";
 
 @Component({
   selector: 'app-subscribe',
@@ -37,6 +37,12 @@ export class SubscribePage extends FormComponent implements OnInit {
     private router: Router
   ) {
     super()
+    router.events.subscribe(async(event: any)=>{
+      if (event instanceof NavigationEnd) {
+        // Clear the form
+        this.resetForm()
+      }
+    })
   }
 
   ngOnInit() {
