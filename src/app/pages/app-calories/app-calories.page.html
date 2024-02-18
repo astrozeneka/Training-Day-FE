@@ -75,23 +75,23 @@
         </tr>
         <tr>
           <th scope="row">Sédentaire</th>
-          <td>{{ calory_to_consume.sedentary }} cal.</td>
+          <td>{{ calory_to_consume.sedentary | number:'1.0-0' }} cal.</td>
         </tr>
         <tr>
           <th scope="row">Légèrement actif</th>
-          <td>{{ calory_to_consume.light }} cal.</td>
+          <td>{{ calory_to_consume.light | number:'1.0-0' }} cal.</td>
         </tr>
         <tr>
           <th scope="row">Modérément actif</th>
-          <td>{{ calory_to_consume.moderate }} cal.</td>
+          <td>{{ calory_to_consume.moderate | number:'1.0-0' }} cal.</td>
         </tr>
         <tr>
           <th scope="row">Très actif</th>
-          <td>{{ calory_to_consume.intense }} cal.</td>
+          <td>{{ calory_to_consume.intense | number:'1.0-0' }} cal.</td>
         </tr>
         <tr>
           <th scope="row">Athlète (+2h de sport intensif par jour)</th>
-          <td>{{ calory_to_consume.extreme }} cal.</td>
+          <td>{{ calory_to_consume.extreme | number:'1.0-0' }} cal.</td>
         </tr>
       </table>
     </div>
