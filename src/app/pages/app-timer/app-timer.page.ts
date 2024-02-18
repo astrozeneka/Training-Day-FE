@@ -3,6 +3,7 @@ import {interval, Subject, takeUntil} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {NativeAudio} from "@capacitor-community/native-audio";
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import {NavigationStart, Router} from "@angular/router";
 
 async function wait(ms: number): Promise<void> {
   return new Promise<void>(resolve => setTimeout(resolve, ms));
@@ -27,7 +28,16 @@ export class AppTimerPage implements OnInit {
     this.destroy$.complete();
   }
 
-  constructor() { }
+  constructor(
+    private router: Router,
+  ) {
+    router.events.subscribe((event:any)=>{
+      if(event instanceof NavigationStart){
+        this.stop_round();
+        this.form.reset();
+      }
+    })
+  }
 
   ngOnInit() {
     // Load audio
