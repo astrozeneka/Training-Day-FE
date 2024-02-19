@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
+	<string>fr</string>
 	<key>CFBundleDisplayName</key>
-	<string>Training-Day-FE</string>
+	<string>Training-Day</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -57,7 +57,5 @@
 	<string>The photo library access allows the users to select profile picture from their device.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>The camera usage allows the users to take profile picture using their camera.</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>The tracking usage data will be used for giving better fitness experience, especially with the fitness tracking section.</string>
 </dict>
 </plist>
