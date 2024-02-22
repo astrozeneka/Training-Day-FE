@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormComponent} from "../../components/form.component";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ContentService} from "../../content.service";
@@ -17,6 +17,8 @@ export class AppImcPage extends FormComponent {
     'weight': new FormControl('', [Validators.required]),
     'height': new FormControl('', [Validators.required]),
   })
+
+  @ViewChild('cursor') cursor: any;
 
   override displayedError = {
     'weight': undefined,
@@ -79,11 +81,57 @@ export class AppImcPage extends FormComponent {
   }
 
   imc:any = undefined
-
+  imcLabel = ""
+  imcColor = ""
+  imcDescription = ""
   calculate(){
     let w = parseInt(this.form.value.weight as any)
     let h = parseInt(this.form.value.height as any) / 100 // Because in centimeter
     this.imc  = w / (h * h)
+
+    // Categorize the IMC in categories
+    if(this.imc < 16.5){
+      this.imcLabel = "Famine"
+      this.imcColor = "danger"
+      this.imcDescription = "Votre IMC est très bas, vous êtes en état de famine. Vous devriez consulter un médecin."
+    }else if(this.imc < 18.5){
+      this.imcLabel = "Maigreur"
+      this.imcColor = "warning"
+      this.imcDescription = "Votre IMC est bas, vous êtes en état de maigreur. Vous devriez consulter un médecin."
+    }else if(this.imc < 25) {
+      this.imcLabel = "Normal"
+      this.imcColor = "success"
+      this.imcDescription = "Votre IMC est normal, vous êtes en bonne santé."
+    }else if(this.imc < 30) {
+      this.imcLabel = "Surpoids"
+      this.imcColor = "warning"
+      this.imcDescription = "Votre IMC est élevé, vous êtes en surpoids. Vous devriez consulter un médecin."
+    }else if(this.imc < 35) {
+      this.imcLabel = "Obésité modérée"
+      this.imcColor = "danger"
+      this.imcDescription = "Votre IMC est très élevé, vous êtes en état d'obésité modérée. Vous devriez consulter un médecin."
+    }else if(this.imc >= 40) {
+      this.imcLabel = "Obésité sévère"
+      this.imcColor = "danger"
+      this.imcDescription = "Votre IMC est très élevé, vous êtes en état d'obésité sévère. Vous devriez consulter un médecin."
+    }
+
+    // Calculate the cursor index depending on the IMC following this linear gradient
+    // 16.5 or lower -> 0%
+    // 40 or higher -> 100%
+    let cursorIndex = 0
+    if(this.imc < 16.5){
+      cursorIndex = 0
+    }else if(this.imc > 40){
+      cursorIndex = 100
+    }else{
+      cursorIndex = (this.imc - 16.5) / (40 - 16.5) * 100
+    }
+    setTimeout(()=>{
+      console.log(this.cursor)
+      this.cursor.nativeElement.style.left = `calc(${cursorIndex}% - 10px)`
+    }, 100)
+
   }
 
 

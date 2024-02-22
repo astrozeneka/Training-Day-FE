@@ -43,11 +43,30 @@
       </div>
     </form>
 
+      <!--
     <div class="imc-output" *ngIf="imc">
       <h2 class="display-1 ion-text-center">
         Votre Indice de masse corporelle est de <br/>
         <em>{{ imc | number: '1.2-2' }}</em>
       </h2>
     </div>
+    -->
+
+      <br/><br/>
+      <div class="imc-indicator" *ngIf="imc">
+          <h2 class="display-1 ion-text-center">
+              Votre Indice de masse corporelle est de <br/>
+              <em>{{ imc | number: '1.2-2' }}</em> <br/>
+              <em [class]="'ion-text-' + imcColor">({{ imcLabel }})</em>
+          </h2>
+          <div class="slider">
+              <div class="gradient"></div>
+              <img src="/assets/cursor.png" width="20px" #cursor/>
+          </div>
+          <br/>
+          <p class="ion-text-center">
+              {{ imcDescription }}
+          </p>
+      </div>
   </div>
 </ion-content>

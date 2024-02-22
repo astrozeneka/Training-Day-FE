@@ -7,3 +7,31 @@ h1, .display-1{
 .display-1 em{
   font-size: 1.5em;
 }
+
+.imc-indicator{
+
+  p{
+
+  }
+
+  .slider {
+    position: relative;
+
+    .gradient {
+      display: inline-block;
+      height: 1em;
+      width: 100%;
+
+      background: hsla(0, 88%, 67%, 1);
+      background: linear-gradient(0deg, hsla(0, 88%, 67%, 1) 0%, hsla(44, 96%, 70%, 1) 6%, hsla(129, 32%, 46%, 1) 15%, hsla(129, 32%, 46%, 1) 35%, hsla(44, 96%, 70%, 1) 60%, hsla(0, 100%, 72%, 1) 80%, hsla(0, 100%, 72%, 1) 100%);
+      background: -moz-linear-gradient(0deg, hsla(0, 88%, 67%, 1) 0%, hsla(44, 96%, 70%, 1) 6%, hsla(129, 32%, 46%, 1) 15%, hsla(129, 32%, 46%, 1) 35%, hsla(44, 96%, 70%, 1) 60%, hsla(0, 100%, 72%, 1) 80%, hsla(0, 100%, 72%, 1) 100%);
+      background: -webkit-linear-gradient(0deg, hsla(0, 88%, 67%, 1) 0%, hsla(44, 96%, 70%, 1) 6%, hsla(129, 32%, 46%, 1) 15%, hsla(129, 32%, 46%, 1) 35%, hsla(44, 96%, 70%, 1) 60%, hsla(0, 100%, 72%, 1) 80%, hsla(0, 100%, 72%, 1) 100%);
+    }
+
+    img {
+      position: absolute;
+      left: calc(0% - 10px);
+      top: 1em;
+    }
+  }
+}

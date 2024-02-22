@@ -50,3 +50,15 @@
 .display-1{
   @include display-1;
 }
+
+.ion-text-danger{
+  color: var(--ion-color-danger);
+}
+
+.ion-text-warning{
+  color: var(--ion-color-warning);
+}
+
+.ion-text-success{
+  color: var(--ion-color-success);
+}
