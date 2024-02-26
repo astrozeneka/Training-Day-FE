@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormComponent} from "../../components/form.component";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ContentService} from "../../content.service";
-import {NavigationEnd, Router} from "@angular/router";
+import {NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {FeedbackService} from "../../feedback.service";
 
 @Component({
@@ -17,13 +17,15 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
     'weight': new FormControl('', [Validators.required]),
     'height': new FormControl('', [Validators.required]),
     'age': new FormControl('', [Validators.required]),
-    'sex': new FormControl('', [Validators.required])
+    'sex': new FormControl('', [Validators.required]),
+    'activity': new FormControl('', [Validators.required])
   })
   override displayedError = {
     'weight': undefined,
     'height': undefined,
     'age': undefined,
     'sex': undefined,
+    'activity': undefined,
 
     'duration': undefined
   }
@@ -55,6 +57,9 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
           extreme: 0
         }
         this.physicalValidated = false
+      }else if(event instanceof NavigationStart){
+        this.form.reset()
+        this.calory_needed = undefined
       }
     })
   }
@@ -95,6 +100,9 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
   }
 
   // Quantité de calories à consommer
+  /**
+   * @deprecated will be removed in the future
+   */
   calory_to_consume = {
     sedentary: 0,
     light: 0,
@@ -102,6 +110,7 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
     intense: 0,
     extreme: 0
   }
+  calory_needed:any = undefined
 
   calculate(){
     let base = 0
@@ -114,6 +123,27 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
         + 6.25 * parseInt(this.form.value.height as any)
         - 5 * parseInt(this.form.value.age as any) - 161
     }
+
+    let multiplicator = 1
+    switch (this.form.value.activity){
+      case "sedentary":
+        multiplicator = 1.2
+        break
+      case "light":
+        multiplicator = 1.375
+        break
+      case "moderate":
+        multiplicator = 1.55
+        break
+      case "intense":
+        multiplicator = 1.725
+        break
+      case "extreme":
+        multiplicator = 1.9
+        break
+    }
+    this.calory_needed = base * multiplicator
+
     this.calory_to_consume.sedentary = base * 1.2
     this.calory_to_consume.light = base * 1.375
     this.calory_to_consume.moderate = base * 1.55

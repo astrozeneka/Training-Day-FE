@@ -54,6 +54,19 @@
         </ion-select>
         <ion-text color="danger" *ngIf="displayedError.sex">{{ displayedError.sex }}</ion-text>
       </ion-item>
+        <ion-item>
+            <ion-select
+                label="Activité"
+                label-placement="floating"
+                formControlName="activity"
+            >
+                <ion-select-option value="sedentary">Sédentaire</ion-select-option>
+                <ion-select-option value="light">Légèrement actif</ion-select-option>
+                <ion-select-option value="moderate">Modérément actif</ion-select-option>
+                <ion-select-option value="intense">Très actif</ion-select-option>
+                <ion-select-option value="extreme">Athlète (+2h de sport intensif par jour)</ion-select-option>
+            </ion-select>
+        </ion-item>
       <div>
         <ion-button
           expand="full"
@@ -65,6 +78,14 @@
       </div>
     </form>
 
+      <div class="calories-needed ion-padding ion-text-center" *ngIf="calory_needed">
+          <p class="helper">
+              You need to consume
+          </p>
+          <h1 class="display-1">{{ calory_needed | number:'1.0-0' }} cal.</h1>
+      </div>
+
+      <!--
     <div class="calories-output" *ngIf="physicalValidated">
       <br/><br/><br/>
       <h1>Quantité de calories à consommer</h1>
@@ -95,6 +116,7 @@
         </tr>
       </table>
     </div>
+    -->
     <!-- We hide this old form for onw
     <div *ngIf="physicalValidated">
       <br/>

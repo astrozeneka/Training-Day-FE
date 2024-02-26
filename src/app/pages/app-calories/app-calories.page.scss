@@ -6,6 +6,15 @@ h1{
   padding-bottom: .5em;
 }
 
+.display-1{
+  @include display-1;
+  font-size: 2.2em;
+}
+
+.helper{
+  color: var(--ion-color-medium);
+}
+
 .calories-output{
   table{
     margin-top: 1em;
