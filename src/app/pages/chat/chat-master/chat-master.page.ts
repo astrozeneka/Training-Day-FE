@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {ContentService} from "../../../content.service";
 import {AlertController, ModalController} from "@ionic/angular";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
 
 @Component({
@@ -22,8 +22,11 @@ export class ChatMasterPage implements OnInit {
     private feeedbackService:FeedbackService,
     private router:Router
   ) {
-    this.route.params.subscribe(()=>{
-      this.loadData()
+    this.route.params.subscribe((event:any)=>{
+      if(event instanceof NavigationEnd){
+        this.entityList = null
+        this.loadData()
+      }
     })
   }
 
@@ -32,7 +35,6 @@ export class ChatMasterPage implements OnInit {
   }
 
   loadData(){
-    this.entityList = null
     this.contentService.get('/chat', 0, this.searchControl.value, "f_name")
       .subscribe(([data, metaInfo])=>{
         this.entityList = data as unknown as Array<any>

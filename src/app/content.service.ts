@@ -197,6 +197,9 @@ export class ContentService {
     })
   }
 
+  /**
+   * @deprecated, do not use this function
+   */
   async _reloadUserMessageData(){
     return new Promise(async (resolve, reject)=>{
       this.getOne(`/chat/unread`, {})

@@ -20,15 +20,16 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
     contentService: ContentService
   ) {
     super(contentService);
-    let observer = async(event:any)=>{
+    this.router.events.subscribe(async(event:any)=>{
       if (event instanceof NavigationEnd) {
         this.user = await this.contentService.storage.get('user')
-        this.unreadMessages = await this.contentService.storage.get('unreadMessages')
+        // Load the new unread messages from the server
+        this.contentService.getOne('/chat/unread', {})
+          .subscribe((data:any)=>{
+            this.unreadMessages = data.unread
+          })
       }
-    };
-    if(!(this.router.events as any).observers.includes(observer)){
-      this.router.events.subscribe(observer)
-    }
+    })
   }
 
   ngOnInit() {}

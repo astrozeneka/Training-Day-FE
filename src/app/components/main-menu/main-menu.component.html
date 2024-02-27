@@ -37,11 +37,19 @@
         <!--<ion-button (click)="menuNavigate('/communities')" expand="full" fill="clear">Mes communautés</ion-button>-->
         <ion-button (click)="menuNavigate('/profile')" expand="full" fill="clear">Mon profil</ion-button>
         <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
-            Chat
+            Mon coach
             <ion-chip *ngIf="unreadMessages" color="danger">{{ unreadMessages }}</ion-chip>
         </ion-button>
         <!--<ion-button (click)="menuNavigate('/goals')" expand="full" fill="clear">Mes suivis</ion-button>-->
         <!--<ion-button (click)="menuNavigate('/programs')" expand="full" fill="clear">Programmes</ion-button>-->
+    </div>
+    <div *ngIf="user?.role_id === 1">
+        <h4>Espace Admin</h4>
+        <ion-button (click)="menuNavigate('/profile')" expand="full" fill="clear">Mon profil</ion-button>
+        <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
+            Messagerie
+            <ion-chip *ngIf="unreadMessages" color="danger">{{ unreadMessages }}</ion-chip>
+        </ion-button>
     </div>
     <div *ngIf="user?.role === 'coach'">
         <h4>Espace coaching</h4>
