@@ -189,7 +189,7 @@ export class ContentService {
       if(token && user){
         this.getOne(`/users/${user.id}`, {})
           .subscribe(async (user:any)=>{
-            await this._reloadUserMessageData()
+            //await this._reloadUserMessageData()
             this.storage.set('user', user)
             resolve(user)
           })
@@ -201,13 +201,13 @@ export class ContentService {
    * @deprecated, do not use this function
    */
   async _reloadUserMessageData(){
-    return new Promise(async (resolve, reject)=>{
+    /*return new Promise(async (resolve, reject)=>{
       this.getOne(`/chat/unread`, {})
         .subscribe((res:any)=>{
           this.storage.set('unreadMessages', res.unread)
           resolve(res)
         })
-    })
+    })*/
   }
   
 }

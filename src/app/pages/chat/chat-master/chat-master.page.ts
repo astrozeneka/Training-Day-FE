@@ -22,7 +22,7 @@ export class ChatMasterPage implements OnInit {
     private feeedbackService:FeedbackService,
     private router:Router
   ) {
-    this.route.params.subscribe((event:any)=>{
+    this.router.events.subscribe((event:any)=>{
       if(event instanceof NavigationEnd){
         this.entityList = null
         this.loadData()
