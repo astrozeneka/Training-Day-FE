@@ -23,14 +23,14 @@
 <ion-list lines="none">
 
     <ion-button (click)="menuNavigate('/home')" expand="full" fill="clear">Accueil</ion-button>
-    <ion-button (click)="menuNavigate('/app-timer')" expand="full" fill="clear">Chronomètre</ion-button>
-    <ion-button (click)="menuNavigate('/app-gps')" expand="full" fill="clear">GPS</ion-button>
+    <ion-button (click)="menuNavigate('/app-timer')" expand="full" fill="clear">Timer</ion-button>
+    <ion-button (click)="menuNavigate('/app-gps')" expand="full" fill="clear">Course</ion-button>
     <ion-button (click)="menuNavigate('/app-imc')" expand="full" fill="clear">Calcul IMC</ion-button>
     <ion-button (click)="menuNavigate('/app-calories')" expand="full" fill="clear">Calc. calories</ion-button>
+    <ion-button (click)="menuNavigate('/shop')" expand="full" fill="clear">Boutique</ion-button>
 
     <div *ngIf="!user">
         <ion-button (click)="menuNavigate('/login')" expand="full" fill="clear">Se connecter</ion-button>
-        <ion-button (click)="menuNavigate('/subscribe')" expand="full" fill="clear">S'inscrire</ion-button>
     </div>
     <div *ngIf="user?.role === 'customer' || user?.role_id === 2 || user?.role_id === 3">
         <h4>Espace personnel</h4>
