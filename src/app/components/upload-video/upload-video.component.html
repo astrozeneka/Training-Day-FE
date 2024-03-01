@@ -1,0 +1,13 @@
+<div class="upload-video">
+    <input type="file" #fileInput class="ion-hide" accept="video/*" (change)="uploadVideo($event)">
+    <ion-button
+        color="medium"
+        fill="solid"
+        expand="block"
+        size="small"
+        (click)="clickButton($event)"
+    >
+        <ion-icon name="cloud-upload-outline"></ion-icon>
+        <ion-label>{{ label }}</ion-label>
+    </ion-button>
+</div>

@@ -20,6 +20,7 @@ import {UserViewComponent} from "./entity-views/user-view/user-view.component";
 import {UnavailableComponent} from "./unavailable/unavailable.component";
 import {GoalViewComponent} from "./entity-views/goal-view/goal-view.component";
 import {PasswordConfirmationModalComponent} from "./password-confirmation-modal/password-confirmation-modal.component";
+import {UploadVideoComponent} from "./upload-video/upload-video.component";
 
 
 
@@ -32,6 +33,7 @@ import {PasswordConfirmationModalComponent} from "./password-confirmation-modal/
     MainMenuComponent,
     DeleteModalComponent,
     PasswordConfirmationModalComponent,
+    UploadVideoComponent,
 
     FileViewComponent,
     AgencyViewComponent,
@@ -61,7 +63,8 @@ import {PasswordConfirmationModalComponent} from "./password-confirmation-modal/
     FileViewComponent,
     GoalViewComponent,
 
-    UnavailableComponent
+    UnavailableComponent,
+    UploadVideoComponent
   ]
 })
 export class UtilitiesModule { }

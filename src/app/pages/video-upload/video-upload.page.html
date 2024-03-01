@@ -1,0 +1,33 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Uploader une vidéo</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <h1 class="display-1 ion-padding">Uploader une vidéo</h1>
+    <form [formGroup]="form">
+        <ion-item>
+            <ion-input
+                label="Titre"
+                label-placement="floating"
+                formControlName="title"
+                [errorText]="displayedError.title"
+            ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-textarea
+                    label="Description"
+                    label-placement="floating"
+                    formControlName="description"
+                    [errorText]="displayedError.description"
+            ></ion-textarea>
+        </ion-item>
+        <app-upload-video></app-upload-video>
+        <br/>
+        <ion-button expand="block" (click)="submit()">Envoyer</ion-button>
+    </form>
+</ion-content>

@@ -209,5 +209,10 @@ export class ContentService {
         })
     })*/
   }
+
+  postFormData(url:string, formData:FormData){
+    let headers = this.bearerHeaders()
+    return this.httpClient.post(`${this.apiEndpoint}${url}`, formData, {headers})
+  }
   
 }
