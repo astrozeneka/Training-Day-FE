@@ -154,6 +154,22 @@ const routes: Routes = [
   {
     path: 'video-upload',
     loadChildren: () => import('./pages/video-upload/video-upload.module').then(m => m.VideoUploadPageModule)
+  },
+  {
+    path: 'subscriptions-duration',
+    loadChildren: () => import('./pages/subscriptions-duration/subscriptions-duration.module').then(m => m.SubscriptionsDurationPageModule)
+  },
+  {
+    path: 'subscriptions-invoice',
+    loadChildren: () => import('./pages/subscriptions-invoice/subscriptions-invoice.module').then( m => m.SubscriptionsInvoicePageModule)
+  },
+  {
+    path: 'subscriptions-verify-payment',
+    loadChildren: () => import('./pages/subscriptions-verify-payment/subscriptions-verify-payment.module').then( m => m.SubscriptionsVerifyPaymentPageModule)
+  },
+  {
+    path: 'subscriptions-verify-complete',
+    loadChildren: () => import('./pages/subscriptions-verify-complete/subscriptions-verify-complete.module').then( m => m.SubscriptionsVerifyCompletePageModule)
   }
 ];
 

@@ -1,0 +1,35 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>S'abonner à nos services</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+    <h1 class="display-1 ion-padding">Quelle durée sera votre abonnement ?</h1>
+
+    <div class="ion-text-center">
+        <div class="ion-padding">
+            <h2 class="display-1">Un mois d'abonnement <ion-chip color="primary">2 euros</ion-chip></h2>
+            <ion-button size="normal" color="primary" expand="block" fill='outline' (click)="clickOption(30)">Choisir</ion-button>
+        </div>
+        <div class="ion-padding">
+            <h2 class="display-1">Trois mois d'abonnement <ion-chip color="primary">5 euros</ion-chip></h2>
+            <p>Au lieu de 6 euros</p>
+            <ion-button size="normal" color="primary" expand="block" fill="outline" (click)="clickOption(92)">Choisir</ion-button>
+        </div>
+        <div class="ion-padding">
+            <h2 class="display-1">Six mois d'abonnement <ion-chip color="primary">10 euros</ion-chip></h2>
+            <p>Au lieu de 12 euros</p>
+            <ion-button size="normal" color="primary" expand="block" fill="outline" (click)="clickOption(183)">Choisir</ion-button>
+        </div>
+        <div class="ion-padding">
+            <h2 class="display-1">Un an d'abonnement <ion-chip color="primary">20 euros</ion-chip></h2>
+            <p>Au lieu de 24 euros</p>
+            <ion-button size="normal" color="primary" expand="block"  fill='outline' (click)="clickOption(365)">Choisir</ion-button>
+        </div>
+    </div>
+</ion-content>

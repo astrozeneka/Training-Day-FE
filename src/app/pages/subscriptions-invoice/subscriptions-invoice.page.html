@@ -1,0 +1,62 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>S'abonner à nos services</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <h1 class="display-1 ion-padding">Choisissez un offre d'abonnement premium</h1>
+
+    <div class="ion-padding">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Désignation</th>
+                    <th>Prix TTC</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Abonnement mensuel
+                        <span class="helper">
+                            Abonnement mensuel sans engagement
+                        </span>
+                    </td>
+                    <td>10€</td>
+                </tr>
+            <!-- the total -->
+                <tr>
+                    <td></td>
+                    <td><strong>Total</strong></td>
+                    <td><strong>10€</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form>
+            <br/>
+            <!-- A fake checkbox for accepting the terms -->
+            <ion-item>
+                <ion-label>Accepter les conditions d'abonnement</ion-label>
+                <ion-checkbox slot="end" color="primary"></ion-checkbox>
+            </ion-item>
+            <!-- Another fake checkbox for accepting the terms -->
+            <ion-item>
+                <ion-label>Accepter les conditions d'utilisation</ion-label>
+                <ion-checkbox slot="end" color="primary"></ion-checkbox>
+            </ion-item>
+
+            <!-- Payer -->
+            <div class="ion-text-right">
+                <br/>
+                <ion-button color="primary" (click)="goToPayment()">Payer maintenant</ion-button>
+            </div>
+        </form>
+    </div>
+
+</ion-content>

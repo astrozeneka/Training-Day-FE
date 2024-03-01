@@ -51,6 +51,10 @@
   @include display-1;
 }
 
+.helper{
+  color: var(--ion-color-medium);
+}
+
 .ion-text-danger{
   color: var(--ion-color-danger);
 }

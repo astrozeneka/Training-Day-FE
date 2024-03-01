@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {Router} from "@angular/router";
+import {ContentService} from "../../content.service";
 
 @Component({
   selector: 'app-subscriptions',
@@ -7,9 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SubscriptionsPage implements OnInit {
 
-  constructor() { }
+  constructor(
+    private contentService: ContentService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
+  }
+
+  clickOption(option: string){
+    this.contentService.storage.set('subscription_option', option)
+    this.router.navigate(['/subscriptions-duration'])
+
   }
 
 }

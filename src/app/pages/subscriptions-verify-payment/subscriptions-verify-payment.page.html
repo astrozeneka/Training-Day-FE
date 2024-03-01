@@ -1,0 +1,29 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Vérifier le payiement</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <h1 class="display-1 ion-padding">Validez vitre payement</h1>
+
+    <div class="container ion-padding">
+        <div>
+            <div *ngIf="!validated">
+                <p class="helper">
+                    Veuillez effectuer le payement depuis la nouvelle fenêtre qui s'est ouverte.
+                </p>
+                <ion-button color="primary" fill="solid" expand="full" (click)="clickVerify()">Vérifier le payement</ion-button>
+            </div>
+            <div *ngIf="validated">
+                <p class="helper">
+                    Votre payement de {{ amount }} F été validé.
+                </p>
+                <ion-button color="primary" fill="solid" expand="full" (click)="next()">Continuer</ion-button>
+            </div>
+        </div>
+    </div>
+</ion-content>
