@@ -17,8 +17,9 @@ export class SubscriptionsDurationPage implements OnInit {
   ngOnInit() {
   }
 
-  clickOption(n_days:number){
+  clickOption(n_days:number, price:number){
     this.contentService.storage.set('subscription_duration', n_days)
+    this.contentService.storage.set('subscription_price', price)
     this.router.navigate(['/subscriptions-invoice'])
   }
 

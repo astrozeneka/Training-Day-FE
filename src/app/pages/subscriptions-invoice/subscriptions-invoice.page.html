@@ -11,7 +11,7 @@
     <h1 class="display-1 ion-padding">Choisissez un offre d'abonnement premium</h1>
 
     <div class="ion-padding">
-        <table>
+        <table *ngIf="invoice[0]">
             <thead>
                 <tr>
                     <th></th>
@@ -20,20 +20,20 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Abonnement mensuel
+                <tr *ngFor="let row of invoice">
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.title }}
                         <span class="helper">
                             Abonnement mensuel sans engagement
                         </span>
                     </td>
-                    <td>10€</td>
+                    <td>{{ row.price }} €</td>
                 </tr>
             <!-- the total -->
                 <tr>
                     <td></td>
                     <td><strong>Total</strong></td>
-                    <td><strong>10€</strong></td>
+                    <td><strong>{{ invoice[0].price }} €</strong></td>
                 </tr>
             </tbody>
         </table>
@@ -43,13 +43,15 @@
             <!-- A fake checkbox for accepting the terms -->
             <ion-item>
                 <ion-label>Accepter les conditions d'abonnement</ion-label>
-                <ion-checkbox slot="end" color="primary"></ion-checkbox>
+                <ion-checkbox [formControl]="acceptConditions" slot="end" color="primary"></ion-checkbox>
             </ion-item>
             <!-- Another fake checkbox for accepting the terms -->
+            <!--
             <ion-item>
                 <ion-label>Accepter les conditions d'utilisation</ion-label>
                 <ion-checkbox slot="end" color="primary"></ion-checkbox>
             </ion-item>
+            -->
 
             <!-- Payer -->
             <div class="ion-text-right">

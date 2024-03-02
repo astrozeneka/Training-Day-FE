@@ -15,9 +15,10 @@
         </p>
         <p>
             <!-- Ajoutez des exemples détails techniques sur la souscription -->
-            Numéro de souscription : 20240301001 <br/>
-            Mode de payement : Carte bancaire <br/>
-            Montant : 50€ <br/>
+            Référence d'abonnement : <b>{{ subscription_reference }}</b> <br/>
+            Montant : {{ subscription_price / 100 }}€ <br/>
+            Type d'abonnement : {{ subscription_option }} <br/>
+            Durée de l'abonnement : {{ subscription_duration }} jours <br/>
         </p>
         <p>
             <!-- Support -->

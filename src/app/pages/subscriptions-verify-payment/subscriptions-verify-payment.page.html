@@ -14,14 +14,20 @@
         <div>
             <div *ngIf="!validated">
                 <p class="helper">
-                    Veuillez effectuer le payement depuis la nouvelle fenêtre qui s'est ouverte.
+                    Veuillez effectuer le payement depuis la nouvelle fenêtre qui s'est ouverte. Effectuez votre payement, puis revenez sur cette page pour confirmer votre paiement.
                 </p>
+                <br/>
                 <ion-button color="primary" fill="solid" expand="full" (click)="clickVerify()">Vérifier le payement</ion-button>
             </div>
             <div *ngIf="validated">
                 <p class="helper">
                     Votre payement de {{ amount }} F été validé.
                 </p>
+                <ion-item>
+                    Télécharger votre reçu
+                    <ion-button color="warning" fill="solid" slot="end" (click)="download_receipt()">Télécharger</ion-button>
+                </ion-item>
+                <br/>
                 <ion-button color="primary" fill="solid" expand="full" (click)="next()">Continuer</ion-button>
             </div>
         </div>
