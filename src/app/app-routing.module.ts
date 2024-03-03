@@ -170,6 +170,10 @@ const routes: Routes = [
   {
     path: 'subscriptions-verify-complete',
     loadChildren: () => import('./pages/subscriptions-verify-complete/subscriptions-verify-complete.module').then( m => m.SubscriptionsVerifyCompletePageModule)
+  },
+  {
+    path: 'welcome-menu',
+    loadChildren: () => import('./pages/welcome-menu/welcome-menu.module').then(m => m.WelcomeMenuPageModule)
   }
 ];
 
