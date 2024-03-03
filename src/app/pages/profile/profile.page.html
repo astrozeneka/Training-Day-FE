@@ -100,6 +100,18 @@
     </div>
   </form>
 
+    <div *ngIf="entity">
+        <h3 class="display-1 ion-padding">Abonnement</h3>
+        <ion-item *ngIf="!entity.subscription">
+            Vous n'avez pas d'abonnement aux offres premium.
+            <ion-button slot="end" color="primary" (click)="navigate('/subscriptions')">Souscrire</ion-button>
+        </ion-item>
+        <ion-item *ngIf="entity.subscription">
+            <ion-label>Abonnement {{ entity.subscription.label }}</ion-label>
+            <ion-note slot="end">Expiré le {{ entity.expires_at }}</ion-note>
+        </ion-item>
+    </div>
+
     <div class="ion-padding">
         <h3 class="display-1">Suppression du compte</h3>
         <p>

@@ -9,6 +9,7 @@ import {ModalController} from "@ionic/angular";
 import {
   PasswordConfirmationModalComponent
 } from "../../components/password-confirmation-modal/password-confirmation-modal.component";
+import {navigate} from "ionicons/icons";
 
 @Component({
   selector: 'app-profile',
@@ -47,7 +48,7 @@ export class ProfilePage extends FormComponent implements OnInit {
   ) {
     super();
     router.events.subscribe(async(event: any)=>{
-      if (event instanceof NavigationEnd) {
+      if (event instanceof NavigationEnd && event.url == '/profile') {
         this.entity = await this.contentService.storage.get('user')
         this.user_id = this.entity?.id
         this.form.patchValue(this.entity)
@@ -163,5 +164,9 @@ export class ProfilePage extends FormComponent implements OnInit {
 
        */
     }
+  }
+
+  navigate(url:string){
+    this.router.navigate([url])
   }
 }
