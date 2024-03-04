@@ -140,17 +140,28 @@
     </form>
 
     <div *ngIf="round_started" style="text-align: center">
-      <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="'0'" aria-valuemin="0" aria-valuemax="100" [style.background]="'radial-gradient(closest-side, var(--ion-background-color, #fff) 79%, transparent 80% 100%), conic-gradient(var(--ion-color-primary) ' +(progress*100)+ '%, gray 0)'">
-        <span class="round-number">Round {{ round_number }} sur {{ form.value.round_number }}</span>
-        <span class="status">
-          {{ train_status }}
-        </span>
-
-        <!-- The elaspsed time formated -->
-        <span class="round-time">{{ work_or_rest_time * 1000 | date: 'mm:ss' }}</span>
-        <span class="total-time">{{ train_total_time * 1000 | date: 'mm:ss' }}</span>
-
-      </div>
+        <div *ngIf="train_status==='work'">
+            <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="'0'" aria-valuemin="0" aria-valuemax="100" [style.background]="'radial-gradient(closest-side, var(--ion-background-color, #fff) 79%, transparent 80% 100%), conic-gradient(var(--ion-color-primary) ' +(progress*100)+ '%, gray 0)'">
+                <span class="round-number">Round {{ round_number }} sur {{ form.value.round_number }}</span>
+                <span class="status">
+                    <b class="ion-color-primary">{{ train_status }}</b>
+                </span>
+                <!-- The elaspsed time formated -->
+                <span class="round-time">{{ work_or_rest_time * 1000 | date: 'mm:ss' }}</span>
+                <span class="total-time">{{ train_total_time * 1000 | date: 'mm:ss' }}</span>
+            </div>
+        </div>
+        <div *ngIf="train_status==='rest'" style="color: var(--ion-color-medium)">
+            <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="'0'" aria-valuemin="0" aria-valuemax="100" [style.background]="'radial-gradient(closest-side, var(--ion-background-color, #fff) 89%, transparent 90% 100%), conic-gradient(var(--ion-color-medium) ' +(progress*100)+ '%, gray 0)'">
+                <span class="round-number">Round {{ round_number }} sur {{ form.value.round_number }}</span>
+                <span class="status">
+                  {{ train_status }}
+                </span>
+                <!-- The elaspsed time formated -->
+                <span class="round-time">{{ work_or_rest_time * 1000 | date: 'mm:ss' }}</span>
+                <span class="total-time">{{ train_total_time * 1000 | date: 'mm:ss' }}</span>
+            </div>
+        </div>
     </div>
 
       <br/>
