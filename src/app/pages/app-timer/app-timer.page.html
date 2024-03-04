@@ -9,11 +9,15 @@
 
 <ion-content [fullscreen]="true">
   <br/>
-  <br/>
 
   <div class="timer-container">
     <form [formGroup]="form" *ngIf="!round_started">
+
+        <h1 class="display-1">
+            Configurez votre timer selon votre type d'entrainement
+        </h1>
       <!-- Select number of round -->
+        <!--
       <ion-item>
         <ion-select
           formControlName="round_number"
@@ -29,9 +33,78 @@
           <ion-select-option value="25">25</ion-select-option>
         </ion-select>
       </ion-item>
+      -->
+        <ion-item>
+            <div slot="start">
+                <ion-icon name="infinite-outline" size="large" color="primary"></ion-icon>
+            </div>
+            <ion-input
+                formControlName="round_number"
+                label-placement="floating"
+                label="Nombre de tours"
+                type="number"
+            ></ion-input>
+            <div slot="end">
+                <ion-button fill="clear" (click)="increment_round(-1)">
+                    <ion-icon name="remove-circle-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" (click)="increment_round(1)">
+                    <ion-icon name="add-circle-outline"></ion-icon>
+                </ion-button>
+            </div>
+        </ion-item>
+        <ion-item>
+            <div slot="start">
+                <ion-icon name="hourglass-outline" size="large" color="primary"></ion-icon>
+            </div>
+            <ion-input
+                formControlName="work_duration"
+                label-placement="floating"
+                label="Temps de travail"
+                readonly
+            ></ion-input>
+            <div slot="end">
+                <ion-button fill="clear" (click)="increment_duration(-10, 'work_duration')">
+                    <ion-icon name="remove-circle-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" (click)="increment_duration(+10, 'work_duration')">
+                    <ion-icon name="add-circle-outline"></ion-icon>
+                </ion-button>
+            </div>
+        </ion-item>
+        <ion-item>
+            <div slot="start">
+                <ion-icon name="hourglass-outline" size="large" color="primary"></ion-icon>
+            </div>
+            <ion-input
+                formControlName="rest_duration"
+                label-placement="floating"
+                label="Temps de repos"
+                readonly
+            ></ion-input>
+            <div slot="end">
+                <ion-button fill="clear" (click)="increment_duration(-10, 'rest_duration')">
+                    <ion-icon name="remove-circle-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" (click)="increment_duration(10, 'rest_duration')">
+                    <ion-icon name="add-circle-outline"></ion-icon>
+                </ion-button>
+            </div>
+        </ion-item>
+        <ion-item>
+            <div slot="start">
+                <ion-icon name="timer-outline" size="large" color="primary"></ion-icon>
+            </div>
+            <ion-input
+                formControlName="train_total_time"
+                label-placement="floating"
+                label="Temps total"
+                readonly
+            ></ion-input>
+        </ion-item>
 
       <!-- Select work duration (30s, 45s, 1min, 2min, 3min, 5min) -->
-      <ion-item>
+      <!--<ion-item>
         <ion-select
           formControlName="work_duration"
           label="Durée du travail"
@@ -45,9 +118,9 @@
           <ion-select-option value="180">3min</ion-select-option>
           <ion-select-option value="300">5min</ion-select-option>
         </ion-select>
-      </ion-item>
+      </ion-item>-->
 
-      <!-- Select rest duration (10s, 20s, 30s, 45s, 1min, 2min) -->
+        <!--
       <ion-item>
         <ion-select
           formControlName="rest_duration"
@@ -62,7 +135,7 @@
           <ion-select-option value="60">1min</ion-select-option>
           <ion-select-option value="120">2min</ion-select-option>
         </ion-select>
-      </ion-item>
+      </ion-item>-->
 
     </form>
 
@@ -80,8 +153,11 @@
       </div>
     </div>
 
+      <br/>
     <div>
-      <ion-button expand="" color="primary" (click)="start_round()" *ngIf="!round_started">Start</ion-button>
+      <ion-button expand="" color="primary" (click)="start_round()" *ngIf="!round_started">
+          Commencer
+      </ion-button>
 
       <ion-button expand="" color="medium" (click)="pause_round()" *ngIf="round_started && !round_paused">Pause</ion-button>
       <ion-button expand="" color="medium" (click)="resume_round()" *ngIf="round_started && round_paused">Resume</ion-button>
