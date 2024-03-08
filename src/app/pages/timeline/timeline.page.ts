@@ -29,8 +29,11 @@ export class TimelinePage implements OnInit {
   }
 
   goToVideo(permalink:any){
-    let url = environment.rootEndpoint + '/' + permalink
-    window.open(url, '_blank')
+    console.log(permalink)
+    let basename = permalink.split('/').pop()
+    this.router.navigate(['/video-view/', basename])
+    //let url = environment.rootEndpoint + '/' + permalink
+    //window.open(url, '_blank')
   }
 
 }
