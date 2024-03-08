@@ -1,0 +1,52 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Fil d'actualité</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <h1 class="display-1 ion-padding">Découvrez les nouvelles actualités sportifs sur Training-Day</h1>
+    <div class="list-container">
+
+        <div class="video-card ion-padding">
+            <div class="left">
+                <img src="https://hips.hearstapps.com/hmg-prod/images/hbz-billie-eilish-outfits-1508435074.jpg?crop=1xw:1xh;center,top&resize=980:*" alt="Vidéo thumbnail" class="card-image"/>
+                <ion-icon name="play-circle-outline"></ion-icon>
+            </div>
+            <div class="right">
+                <h3 class="card-title">Billie Eilish</h3>
+                <div class="stars">
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                </div>
+                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+            </div>
+        </div>
+
+
+        <div class="video-card ion-padding" *ngFor="let video of videos">
+            <div class="left" (click)="goToVideo(video['file']['permalink'])">
+                <img src="https://hips.hearstapps.com/hmg-prod/images/hbz-billie-eilish-outfits-1508435074.jpg?crop=1xw:1xh;center,top&resize=980:*" alt="Vidéo thumbnail" class="card-image"/>
+                <ion-icon name="play-circle-outline"></ion-icon>
+            </div>
+            <div class="right">
+                <h3 class="card-title">{{ video['title'] }}</h3>
+                <div class="stars">
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                </div>
+                <p>{{ video['description'] }}</p>
+            </div>
+        </div>
+    </div>
+
+</ion-content>

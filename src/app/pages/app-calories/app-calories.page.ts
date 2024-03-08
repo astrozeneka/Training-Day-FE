@@ -39,7 +39,7 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
   ) {
     super()
     router.events.subscribe(async(event: any)=>{
-      if (event instanceof NavigationEnd){
+      if (event instanceof NavigationEnd && event.url == '/app-calories'){
         this.user = await this.contentService.storage.get('user')
         if(this.user){
           this.contentService.getOne(`/users/body/${this.user.id}`, '')

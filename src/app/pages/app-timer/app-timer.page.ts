@@ -32,7 +32,7 @@ export class AppTimerPage implements OnInit {
     private router: Router,
   ) {
     router.events.subscribe((event:any)=>{
-      if(event instanceof NavigationStart){
+      if(event instanceof NavigationStart && this.router.url == '/app-timer'){
         this.stop_round();
         this.form.reset();
       }
@@ -41,12 +41,14 @@ export class AppTimerPage implements OnInit {
       this.updateTotalTime()
     })
     this.form.controls.work_duration.valueChanges.subscribe((value) => {
+      if(value == null) return
       let minutes = parseInt(value.split(":")[0])
       let seconds = parseInt(value.split(":")[1])
       this.work_duration = minutes * 60 + seconds
       this.updateTotalTime()
     })
     this.form.controls.rest_duration.valueChanges.subscribe((value) => {
+      if(value == null) return
       let minutes = parseInt(value.split(":")[0])
       let seconds = parseInt(value.split(":")[1])
       this.rest_duration = minutes * 60 + seconds

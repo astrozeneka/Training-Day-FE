@@ -34,7 +34,7 @@ export class AppImcPage extends FormComponent {
   ) {
     super()
     router.events.subscribe(async(event: any)=>{
-      if (event instanceof NavigationEnd) {
+      if (event instanceof NavigationEnd && event.url == '/app-imc') {
         this.user = await this.contentService.storage.get('user')
         if(this.user){
           this.contentService.getOne(`/users/body/${this.user.id}`, '')

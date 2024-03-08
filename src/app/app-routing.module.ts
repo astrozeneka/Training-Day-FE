@@ -174,6 +174,14 @@ const routes: Routes = [
   {
     path: 'welcome-menu',
     loadChildren: () => import('./pages/welcome-menu/welcome-menu.module').then(m => m.WelcomeMenuPageModule)
+  },
+  {
+    path: 'timeline',
+    loadChildren: () => import('./pages/timeline/timeline.module').then(m => m.TimelinePageModule)
+  },
+  {
+    path: 'video-view',
+    loadChildren: () => import('./video-view/video-view.module').then( m => m.VideoViewPageModule)
   }
 ];
 

@@ -112,6 +112,8 @@ export class ContentService {
           });
         })
     })
+
+
     /*
     return this.storage.get('token')
       .then((token)=>{
@@ -213,6 +215,38 @@ export class ContentService {
   postFormData(url:string, formData:FormData){
     let headers = this.bearerHeaders()
     return this.httpClient.post(`${this.apiEndpoint}${url}`, formData, {headers})
+  }
+
+  getCollection(suffix: string, offset:number=0, filter:any={}, limit=10){
+    return new Observable<any>(observer => {
+      this.storage.get('token')
+        .then(token => {
+          const headers:any = {}
+          headers['Authorization'] = `Bearer ${token}`;
+          let offset_limit_params = `offset=${offset}&limit=${limit}`
+          let filter_params = ""
+          for (const key in filter)
+          if (filter.hasOwnProperty(key)) {
+            if (filter_params !== '')
+              filter_params += '&';
+            filter_params += `${encodeURIComponent(key)}=${encodeURIComponent(filter[key])}`;
+          }
+          let debugParams = this.isDebug?'XDEBUG_SESSION_START=client':''
+          this.httpClient.get(`${this.apiEndpoint}${suffix}?${offset_limit_params}&${filter_params}&${debugParams}`, {headers}).subscribe({
+            next: (data) => {
+              observer.next(data);
+            },
+            error: (error) => {
+              // Handle errors here or pass them to the
+              observer.error(error);
+            }
+          });
+        })
+    })
+
+
+
+    //return this.httpClient.get(`${this.apiEndpoint}${suffix}?${offset_limit_params}&${filter_params}&${debugParams}`, {headers})
   }
   
 }

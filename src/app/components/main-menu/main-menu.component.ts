@@ -23,11 +23,12 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
     this.router.events.subscribe(async(event:any)=>{
       if (event instanceof NavigationEnd) {
         this.user = await this.contentService.storage.get('user')
-        // Load the new unread messages from the server
-        this.contentService.getOne('/chat/unread', {})
-          .subscribe((data:any)=>{
-            this.unreadMessages = data.unread
-          })
+        if(this.user) {
+          this.contentService.getOne('/chat/unread', {})
+            .subscribe((data: any) => {
+              this.unreadMessages = data.unread
+            })
+        }
       }
     })
   }
