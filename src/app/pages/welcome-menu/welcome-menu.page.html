@@ -9,33 +9,37 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-    <h2 class="display-1 ion-padding ion-text-lg">Bienvenue sur Training Day</h2>
+    <h1 class="display-1 ion-padding ion-text-lg ion-text-center">Bienvenue sur Training Day</h1>
     <div class="logo">
         <!-- Logo -->
         <!-- Show dark or light logo depending on the theme -->
-        <img src="assets/logo-light-1024x1024.png" alt="Training Day" class="ion-padding" style="width: 100%; max-width: 300px; margin: auto; display: block;">
+        <img src="assets/logo-infographic-only.png" alt="Training Day" class="ion-padding">
     </div>
 
     <div class="welcome-menu">
-        <ion-button expand="full" type="submit" (click)="goTo('/home')" color="primary" shape="round">Fil d'actualité</ion-button>
-        <ion-button expand="full" type="submit" (click)="goTo('/chat')" color="primary" shape="round">Mon coach</ion-button>
-        <ion-button expand="full" type="submit" (click)="goTo('/training')" color="primary" shape="round">Training</ion-button>
+        <ion-button expand="full" type="submit" (click)="goTo('/home')" color="primary" shape="round" fill="outline">Fil d'actualité</ion-button>
+        <ion-button expand="full" type="submit" (click)="goTo('/chat')" color="primary" shape="round" fill="outline">Mon coach</ion-button>
+        <ion-button expand="full" type="submit" (click)="goTo('/training')" color="primary" shape="round" fill="outline">Training</ion-button>
         <!-- IMC -->
-        <ion-button expand="full" type="submit" (click)="goTo('/app-imc')" color="primary" shape="round">Calculateur d'IMC</ion-button>
+        <ion-button expand="full" type="submit" (click)="goTo('/app-imc')" color="primary" shape="round" fill="outline">Calculateur d'IMC</ion-button>
         <!-- Calories -->
-        <ion-button expand="full" type="submit" (click)="goTo('/app-calories')" color="primary" shape="round">Calculateur de Calories</ion-button>
+        <ion-button expand="full" type="submit" (click)="goTo('/app-calories')" color="primary" shape="round" fill="outline">Calculateur de Calories</ion-button>
         <!-- Timer -->
-        <ion-button expand="full" type="submit" (click)="goTo('/app-timer')" color="primary" shape="round">Timer</ion-button>
+        <ion-button expand="full" type="submit" (click)="goTo('/app-timer')" color="primary" shape="round" fill="outline">Timer</ion-button>
         <!-- Course -->
-        <ion-button expand="full" type="submit" (click)="goTo('/app-gps')" color="primary" shape="round">Course</ion-button>
+        <ion-button expand="full" type="submit" (click)="goTo('/app-gps')" color="primary" shape="round" fill="outline">Course</ion-button>
         <!-- Boutique -->
-        <ion-button expand="full" type="submit" (click)="goTo('/shop')" color="primary" shape="round">Boutique</ion-button>
+        <ion-button expand="full" type="submit" (click)="goTo('/shop')" color="primary" shape="round" fill="outline">Boutique</ion-button>
         <!-- Se connecter -->
         <div *ngIf="user">
-            <ion-button expand="full" type="submit" (click)="goTo('/logout')" color="primary" shape="round">Se déconnecter</ion-button>
+            <ion-button expand="full" type="submit" (click)="goTo('/logout')" color="primary" shape="round" fill="outline">Se déconnecter</ion-button>
         </div>
         <div *ngIf="!user">
-            <ion-button expand="full" type="submit" (click)="goTo('/login')" color="primary" shape="round">Se connecter</ion-button>
+            <ion-button expand="full" type="submit" (click)="goTo('/login')" color="primary" shape="round" fill="outline">Se connecter</ion-button>
         </div>
     </div>
+    <img id="bg" src="assets/logo-infographic-only.png" alt="Training Day" class="ion-padding">
+    <p class="helper ion-text-center">
+        Tous droits réservés | Copyright &copy; 2024
+    </p>
 </ion-content>

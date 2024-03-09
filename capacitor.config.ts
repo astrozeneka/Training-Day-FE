@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'Training-Day-FE',
+  appId: 'me.codecrane.training-day',
+  appName: 'Training-Day',
   webDir: 'www',
   server: {
     androidScheme: 'https'

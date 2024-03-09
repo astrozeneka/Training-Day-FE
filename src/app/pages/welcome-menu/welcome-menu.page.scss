@@ -1,4 +1,22 @@
 
+ion-content{
+  //padding-bottom: 300px;
+  position: relative;
+  overflow: hidden;
+
+  #bg{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    // PUt it black and white
+    filter: grayscale(100%);
+    // Make it bigger
+    scale: 200%;
+    z-index: -999;
+    opacity: .09;
+  }
+}
+
 ion-button{
   margin-top: 1.5em;
   margin-bottom: 1.5em;
@@ -6,4 +24,7 @@ ion-button{
 
 .logo img{
   border-radius: 1em;
+  max-width: 50vw;
+  width: 100%;
+  margin: auto; display: block;
 }
