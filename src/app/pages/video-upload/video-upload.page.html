@@ -26,8 +26,8 @@
                     [errorText]="displayedError.description"
             ></ion-textarea>
         </ion-item>
-        <app-upload-video></app-upload-video>
+        <app-upload-video [formControl]="fileControl"></app-upload-video>
         <br/>
-        <ion-button expand="block" (click)="submit()">Envoyer</ion-button>
+        <ion-button expand="block" (click)="submit()" [disabled]="!valid">Envoyer</ion-button>
     </form>
 </ion-content>
