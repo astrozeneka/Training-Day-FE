@@ -180,7 +180,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/timeline/timeline.module').then(m => m.TimelinePageModule)
   },
   {
-    path: 'video-view/:basename',
+    path: 'video-view/:id',
     loadChildren: () => import('./pages/video-view/video-view.module').then(m => m.VideoViewPageModule)
   }
 ];

@@ -9,12 +9,16 @@
 
 
 <ion-content>
-    <h1 class="display-1 ion-padding">Vidéo</h1>
+    <h1 class="display-1 ion-padding">{{ video?.title }}</h1>
     <!-- Video reader -->
-    <video width="100%" controls>
-        <source [src]="videoUrl" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <div *ngIf="video">
+
+        <video width="100%" controls>
+            <source [src]="videoUrl" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
     <p class="ion-padding">
+        {{ video?.description }}
     </p>
 </ion-content>

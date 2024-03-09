@@ -11,8 +11,9 @@
     <h1 class="display-1 ion-padding">Découvrez les nouvelles actualités sportifs sur Training-Day</h1>
     <div class="list-container">
         <div class="video-card ion-padding" *ngFor="let video of videos">
-            <div class="left" (click)="goToVideo(video['file']['permalink'])">
-                <img src="/assets/logo-light-1024x1024-noalpha.jpg" alt="Vidéo thumbnail" class="card-image"/>
+            <div class="left" (click)="goToVideo(video.id)">
+                <img src="/assets/logo-light-1024x1024-noalpha.jpg" alt="Vidéo thumbnail" class="card-image" *ngIf="!video.thumbnail"/>
+                <img [src]="getUrl(video.thumbnail.permalink)" alt="Vidéo thumbnail" class="card-image" *ngIf="video.thumbnail"/>
                 <ion-icon name="play-circle-outline"></ion-icon>
             </div>
             <div class="right">
