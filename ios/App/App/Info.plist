@@ -28,6 +28,8 @@
 	<string>Used for tracking the running distance in the GPS section of the application.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Used for tracking the running distance in the GPS section of the application.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Used for tracking the running distance in the GPS section of the application.</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -57,5 +59,9 @@
 	<string>The photo library access allows the users to select profile picture from their device.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>The camera usage allows the users to take profile picture using their camera.</string>
+	<key>UIBackgroundModes</key>
+    <array>
+      <string>location</string>
+    </array>
 </dict>
 </plist>

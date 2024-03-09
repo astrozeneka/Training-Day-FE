@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
 import {interval, Subject, takeUntil} from "rxjs";
+import {registerPlugin} from "@capacitor/core";
+import {BackgroundGeolocationPlugin} from "@capacitor-community/background-geolocation";
+const BackgroundGeolocation = registerPlugin<BackgroundGeolocationPlugin>("BackgroundGeolocation");
 
 @Component({
   selector: 'app-gps',
@@ -10,6 +13,8 @@ import {interval, Subject, takeUntil} from "rxjs";
 export class GpsPage implements OnInit {
   previousCoords:any = null
   distance = 0.0
+  steps:any[] = [] // Update, the new distance is programmatically calculated
+  running = false
 
   chronometerRunning = false
   chronometerValue = "00:00"
@@ -25,8 +30,44 @@ export class GpsPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    BackgroundGeolocation.addWatcher({
+      backgroundMessage: "Cancel to prevent battery drain.",
+      backgroundTitle: "Tracking You.",
+      requestPermissions: true,
+      stale: false,
+      distanceFilter: 50
+    }, (location, error)=>{
+      if (error) {
+        if (error.code === "NOT_AUTHORIZED") {
+          if (window.confirm(
+            "This app needs your location, " +
+            "but does not have permission.\n\n" +
+            "Open settings now?"
+          )) {
+            BackgroundGeolocation.openSettings();
+          }
+        }
+        return console.error(error);
+      }
+      /*{"accuracy":39.07406129257284,"altitudeAccuracy":20.20559310913086,"simulated":false,"speed":null,"bearing":null,"latitude":13.83881753587838,"longitude":100.57199800941332,"time":1709994738018,"altitude":8.1845121383667}*/
+      let step:any = location
+      //if(this.running){
+      if(true){
+        step.timestamp = new Date().getTime()
+        this.steps.push(step)
+      }
+      return console.log(location)
+    }).then(function after_the_watcher_has_been_added(watcher_id){
+      // This should be called when the user stops the tracking
+      /*BackgroundGeolocation.removeWatcher({
+        id: watcher_id
+      })*/
+    })
+
+
+    // Register the background geolocation
     // The chronometer
-    interval(1000)
+    /*interval(1000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         if (this.chronometerRunning) {
@@ -34,12 +75,14 @@ export class GpsPage implements OnInit {
           this.updateChronometer();
           this.updateHistory();
         }
-      });
+      });*/
   }
 
   tracking = false;
   watch: any = null;
   async startTracking(){
+    this.running = true
+    /*
     this.elapsedTime = 0
     this.chronometerRunning = true
     this.tracking = true;
@@ -54,7 +97,7 @@ export class GpsPage implements OnInit {
         this.distance += delta
       }
       this.previousCoords = {latitude, longitude}
-    });
+    });*/
   }
 
   async stopTracking(){
