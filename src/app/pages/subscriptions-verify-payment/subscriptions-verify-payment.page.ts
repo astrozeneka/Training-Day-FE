@@ -3,6 +3,7 @@ import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
 import {catchError, throwError} from "rxjs";
 import {Browser} from "@capacitor/browser";
+import {FeedbackService} from "../../feedback.service";
 
 @Component({
   selector: 'app-subscriptions-verify-payment',
@@ -20,6 +21,7 @@ export class SubscriptionsVerifyPaymentPage implements OnInit {
   constructor(
     private router:Router,
     private contentService:ContentService,
+    private feedbackService:FeedbackService
   ) {
     this.router.events.subscribe(async (event)=>{
       if(event instanceof NavigationEnd && this.router.url == '/subscriptions-verify-payment'){
@@ -59,8 +61,12 @@ export class SubscriptionsVerifyPaymentPage implements OnInit {
     this.contentService.post('/verify-payment', data)
       .subscribe((res:any)=>{
         console.log(res)
-        this.receipt_url = res.receipt_url
-        this.validated = true
+        if(res.id){
+          this.receipt_url = res.receipt_url
+          this.validated = true
+        }else{
+          this.feedbackService.registerNow("Erreur lors de la vérification du paiement, veuillez réessayer", 'danger')
+        }
       })
   }
 
