@@ -62,7 +62,7 @@ export class UploadVideoComponent  implements ControlValueAccessor, OnInit {
 
       this.http.request(uploadReq).subscribe((event:any) => {
         if (event.type === HttpEventType.UploadProgress) {
-          this.progress = Math.round(100 * event.loaded / event.total);
+          this.progress = event.loaded / event.total;
           console.log('Upload Progress: ' + Math.round(event.loaded / event.total * 100) + '%');
         }else if (event.type === HttpEventType.Response) {
           // Update the component value
