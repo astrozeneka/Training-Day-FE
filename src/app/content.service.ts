@@ -190,6 +190,15 @@ export class ContentService {
       let user = await this.storage.get('user')
       if(token && user){
         this.getOne(`/users/${user.id}`, {})
+          .pipe(catchError((error:any)=>{
+            if(error.status == 404){
+              // Return null if the token is not usable anymore
+              // TODO: this part should need thorough test (maybe after many hours or days)
+              this.router.navigate(['/logout'])
+              return of(null)
+            }
+            return throwError(()=>error)
+          }))
           .subscribe(async (user:any)=>{
             //await this._reloadUserMessageData()
             this.storage.set('user', user)

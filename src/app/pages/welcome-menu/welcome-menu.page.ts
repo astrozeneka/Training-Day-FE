@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
+import {Browser} from "@capacitor/browser";
 
 @Component({
   selector: 'app-welcome-menu',
@@ -24,7 +25,11 @@ export class WelcomeMenuPage implements OnInit {
   ngOnInit() {
   }
 
-  goTo(url:string){
-    this.router.navigate([url]);
+  async goTo(url:string){
+    if("https://" === url.substr(0,8) || "http://" === url.substr(0,7)){
+      await Browser.open({url: url})
+    }else{
+      this.router.navigate([url]);
+    }
   }
 }

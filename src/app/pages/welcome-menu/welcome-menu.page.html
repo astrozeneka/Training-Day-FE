@@ -37,6 +37,19 @@
         <div *ngIf="!user">
             <ion-button expand="full" type="submit" (click)="goTo('/login')" color="primary" shape="round" fill="outline">Se connecter</ion-button>
         </div>
+        <hr/>
+        <div class="social-media">
+            <ion-button expand="full" color="primary" shape="round" fill="outline" (click)="goTo('https://www.instagram.com/trainingday_officiel/')">
+                <ion-icon name="logo-instagram"></ion-icon>
+                Suivez nous sur Instagram
+            </ion-button>
+            <ion-button expand="full" color="primary" shape="round" fill="outline" (click)="goTo('https://www.tiktok.com/@trainingday_officiel')">
+                <ion-icon name="logo-tiktok"></ion-icon>
+                Suivez nous sur Tiktok
+            </ion-button>
+        </div>
+
+        <hr/>
     </div>
     <img id="bg" src="assets/logo-infographic-only.png" alt="Training Day" class="ion-padding">
     <p class="helper ion-text-center">
