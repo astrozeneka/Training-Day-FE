@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/chat"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ correspondent?.firstname }} {{ correspondent?.lastname }}</ion-title>
+    <ion-title>{{ correspondent?.firstname }} {{ correspondent?.lastname === '_' ? '' : correspondent?.lastname }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
