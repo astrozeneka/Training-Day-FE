@@ -3,6 +3,9 @@ import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "./content.service";
 import {FeedbackService} from "./feedback.service";
 import {ToastController} from "@ionic/angular";
+import { PushNotifications } from '@capacitor/push-notifications';
+import {HttpClient} from "@angular/common/http";
+
 
 @Component({
   selector: 'app-root',
@@ -11,13 +14,16 @@ import {ToastController} from "@ionic/angular";
 })
 export class AppComponent {
   user: any = null;
+  device_token = {}
   constructor(
     private router:Router,
     private zone: NgZone,
     private contentService: ContentService,
     private feedbackService: FeedbackService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private httpClient: HttpClient
   ) {
+
     router.events.subscribe((event)=>{
       if (event instanceof NavigationEnd) {
         this.zone.run(() => {
@@ -31,6 +37,60 @@ export class AppComponent {
           this.user = u;
         })
     })
+
+
+    // Register the device notification
+    const addListeners = async () => {
+      await PushNotifications.addListener('registration', token => {
+        console.info('Registration token: ', token.value);
+        this.device_token = {
+          'ios_token': token.value
+        }
+        this.contentService.storage.get('token').then((token)=>{
+          let headers = {}
+          if(token)
+            headers = {
+              'Authorization': `Bearer ${token}`
+            }
+          const options = {
+            headers: headers
+          }
+          this.httpClient.post(`${this.contentService.apiEndpoint}/notifications/register-device`, this.device_token, options).subscribe((response:any)=>{
+            console.log('Device registered', response)
+          })
+        })
+      });
+      await PushNotifications.addListener('registrationError', err => {
+        console.error('Registration error: ', err.error);
+      });
+      await PushNotifications.addListener('pushNotificationReceived', notification => {
+        console.log('Push notification received: ', notification);
+      });
+      await PushNotifications.addListener('pushNotificationActionPerformed', notification => {
+        console.log('Push notification action performed', notification.actionId, notification.inputValue);
+      });
+    }
+
+    const registerNotifications = async () => {
+      let permStatus = await PushNotifications.checkPermissions();
+      if (permStatus.receive === 'prompt') {
+        permStatus = await PushNotifications.requestPermissions();
+      }
+      if (permStatus.receive !== 'granted') {
+        throw new Error('User denied permissions!');
+      }
+      await PushNotifications.register();
+    }
+
+    const getDeliveredNotifications = async () => {
+      const notificationList = await PushNotifications.getDeliveredNotifications();
+      console.log('delivered notifications', notificationList);
+    }
+
+    addListeners()
+    registerNotifications()
+    getDeliveredNotifications()
+
   }
 
   private onRouteChange(){
@@ -38,7 +98,6 @@ export class AppComponent {
 
     // Check if there is some message from the feedback service
     this.feedbackService.fetch().then((feedback)=>{
-
       if(feedback.message){
         let toast = this.toastController.create({
           message: feedback.message,
@@ -55,5 +114,6 @@ export class AppComponent {
 
     // We also update the user information from the database
     this.contentService.reloadUserData()
+
   }
 }

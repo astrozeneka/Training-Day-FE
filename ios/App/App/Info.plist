@@ -24,12 +24,21 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>The camera usage allows the users to take profile picture using their camera.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Used for tracking the running distance in the GPS section of the application.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Used for tracking the running distance in the GPS section of the application.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Used for tracking the running distance in the GPS section of the application.</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Used for tracking the running distance in the GPS section of the application.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>The photo library access allows the users to select profile picture from their device.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>location</string>
+	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -55,13 +64,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>The photo library access allows the users to select profile picture from their device.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>The camera usage allows the users to take profile picture using their camera.</string>
-	<key>UIBackgroundModes</key>
-    <array>
-      <string>location</string>
-    </array>
 </dict>
 </plist>
