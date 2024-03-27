@@ -169,4 +169,13 @@ export class ProfilePage extends FormComponent implements OnInit {
   navigate(url:string){
     this.router.navigate([url])
   }
+
+  sendVerificationEmail(){
+    this.contentService.getOne('/verifyEmail', {})
+      .subscribe((res)=>{
+        if(res){
+          this.feedbackService.registerNow("Un email de vérification a été envoyé", 'success')
+        }
+      })
+  }
 }
