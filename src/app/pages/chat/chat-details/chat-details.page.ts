@@ -1,10 +1,12 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ContentService} from "../../../content.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {AlertController, ModalController} from "@ionic/angular";
 import {FeedbackService} from "../../../feedback.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {send} from "ionicons/icons";
+import Pusher from "pusher-js";
+import Echo from "laravel-echo";
 
 @Component({
   selector: 'app-chat-details',
@@ -35,7 +37,24 @@ export class ChatDetailsPage implements OnInit {
     this.route.params.subscribe(async params=>{
       this.correspondentId = params['id']
       this.user = await this.contentService.storage.get('user')
-      this.loadData()
+      this.loadData();
+    })
+    this.router.events.subscribe(async event=>{
+      if(event instanceof NavigationEnd && this.router.url.includes('chat/details')) {
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('9918c0cd2a9e368dde8f', {
+          cluster: 'eu'
+        });
+
+        var channel = pusher.subscribe('my-channel');
+        channel.bind('my-event', function (data: any) {
+          alert(JSON.stringify(data));
+        });
+
+        console.log(pusher)
+        console.log(channel)
+      }
     })
   }
 
