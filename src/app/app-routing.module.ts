@@ -182,7 +182,39 @@ const routes: Routes = [
   {
     path: 'video-view/:id',
     loadChildren: () => import('./pages/video-view/video-view.module').then(m => m.VideoViewPageModule)
-  }
+  },
+  {
+    path: 'food-program',
+    loadChildren: () => import('./pages/shop/food-program/food-program.module').then(m => m.FoodProgramPageModule)
+  },
+  {
+    path: 'sport-program',
+    loadChildren: () => import('./pages/shop/sport-program/sport-program.module').then(m => m.SportProgramPageModule)
+  },
+  {
+    path: 'personal-trainer',
+    loadChildren: () => import('./pages/shop/personal-trainer/personal-trainer.module').then(m => m.PersonalTrainerPageModule)
+  },
+  {
+    path: 'nutrition',
+    loadChildren: () => import('./pages/shop/nutrition/nutrition.module').then(m => m.NutritionPageModule)
+  },
+  {
+    path: 'purchase-duration',
+    loadChildren: () => import('./pages/purchase/purchase-duration/purchase-duration.module').then( m => m.PurchaseDurationPageModule)
+  },
+  {
+    path: 'purchase-invoice',
+    loadChildren: () => import('./pages/purchase/purchase-invoice/purchase-invoice.module').then( m => m.PurchaseInvoicePageModule)
+  },
+  {
+    path: 'purchase-payment',
+    loadChildren: () => import('./pages/purchase/purchase-payment/purchase-payment.module').then( m => m.PurchasePaymentPageModule)
+  },
+  {
+    path: 'purchase-verify-complete',
+    loadChildren: () => import('./pages/purchase/purchase-verify-complete/purchase-verify-complete.module').then( m => m.PurchaseVerifyCompletePageModule)
+  },
 ];
 
 @NgModule({

@@ -21,6 +21,7 @@ import {UnavailableComponent} from "./unavailable/unavailable.component";
 import {GoalViewComponent} from "./entity-views/goal-view/goal-view.component";
 import {PasswordConfirmationModalComponent} from "./password-confirmation-modal/password-confirmation-modal.component";
 import {UploadVideoComponent} from "./upload-video/upload-video.component";
+import {ShopTabsComponent} from "./shop-tabs/shop-tabs.component";
 
 
 
@@ -34,6 +35,7 @@ import {UploadVideoComponent} from "./upload-video/upload-video.component";
     DeleteModalComponent,
     PasswordConfirmationModalComponent,
     UploadVideoComponent,
+    ShopTabsComponent,
 
     FileViewComponent,
     AgencyViewComponent,
@@ -64,7 +66,8 @@ import {UploadVideoComponent} from "./upload-video/upload-video.component";
     GoalViewComponent,
 
     UnavailableComponent,
-    UploadVideoComponent
+    UploadVideoComponent,
+    ShopTabsComponent
   ]
 })
 export class UtilitiesModule { }
