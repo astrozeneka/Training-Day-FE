@@ -43,17 +43,19 @@ export class ChatDetailsPage implements OnInit {
       if(event instanceof NavigationEnd && this.router.url.includes('chat/details')) {
         Pusher.logToConsole = true;
 
-        var pusher = new Pusher('9918c0cd2a9e368dde8f', {
+        let pusher = new Pusher('9918c0cd2a9e368dde8f', {
           cluster: 'eu'
         });
 
-        var channel = pusher.subscribe('my-channel');
-        channel.bind('my-event', function (data: any) {
-          alert(JSON.stringify(data));
-        });
+        this.contentService.storage.get('user').then(async user=>{
+          var channel = pusher.subscribe('messages.'+user.id);
+          channel.bind('message-dispatched',  (data: any)=>{
+            // The chat content should be updated with the new messages
+            this.entityList = data
+          });
+        })
 
-        console.log(pusher)
-        console.log(channel)
+
       }
     })
   }
