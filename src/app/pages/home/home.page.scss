@@ -103,12 +103,14 @@ swiper-slide{
     display: flex;
     justify-content: right;
     align-items: center;
+    text-shadow: 0 0 10px black;
     & span{
       @include display-1;
     }
   }
   & p{
-    color: var(--ion-color-medium);
+    color: white;
+    text-shadow: 0 0 10px black;
   }
 
   & svg{
@@ -117,6 +119,13 @@ swiper-slide{
 
   & ion-button{
     margin-bottom: 1em;
+  }
+
+  & .image-container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -999;
   }
 }
 
