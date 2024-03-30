@@ -100,6 +100,7 @@ swiper-slide{
     padding-right: 2em;
   }
   & h3{
+    color: white;
     display: flex;
     justify-content: right;
     align-items: center;
@@ -122,10 +123,15 @@ swiper-slide{
   }
 
   & .image-container{
+    overflow: hidden;
     position: absolute;
     top: 0;
     left: 0;
     z-index: -999;
+    height: 100%;
+    img{
+      scale: 1.9;
+    }
   }
 }
 
@@ -157,6 +163,7 @@ swiper-slide{
     }
 
     ion-icon{
+      display: none;
       // color: var(--ion-color-dark);
       color: var(--ion-color-medium);
       font-size: 5em;

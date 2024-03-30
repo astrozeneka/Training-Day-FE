@@ -17,9 +17,12 @@
     <div>
       <h1 class="ion-padding">{{ distance | number:'1.2-2' }} km</h1>
       <h2 class="ion-padding">{{ chronometerValue }}</h2>
-      <ion-button (click)="startTracking()" expand="full" *ngIf="!watch">Démarrer</ion-button>
-      <ion-button (click)="stopTracking()" expand="full" *ngIf="watch" fill="primary">Stopper</ion-button>
+        <div class="ion-padding">
 
+            <ion-button shape="round" (click)="startTracking()" expand="full" *ngIf="!watch">Démarrer</ion-button>
+            <ion-button shape="round" (click)="stopTracking()" expand="full" *ngIf="watch" fill="primary">Stopper</ion-button>
+
+        </div>
       <table>
         <tr>
           <th scope="col"></th>

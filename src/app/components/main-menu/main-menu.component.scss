@@ -50,12 +50,28 @@ ion-list h4{
 .profile-container{
   display: flex;
   align-items: center;
+  flex-direction: column;
+  // Put in center
+  align-content: center;
   .profile-image{
 
   }
   .profile-name{
     font-size: 1.3em;
-    padding-left: .5em;
+    padding: .5em;
   }
 }
 
+#menu-branding{
+
+  &:after {
+    content:"";
+    float:left;
+    background:var(--ion-color-primary);
+    width:60%;
+    margin-left: 20%;
+    margin-right: 20%;
+    height:6px;
+    border-radius: 3px;
+  }
+}
