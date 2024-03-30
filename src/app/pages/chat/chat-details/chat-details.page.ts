@@ -51,7 +51,9 @@ export class ChatDetailsPage implements OnInit {
           var channel = pusher.subscribe('messages.'+user.id);
           channel.bind('message-dispatched',  (data: any)=>{
             // The chat content should be updated with the new messages
+            data.reverse()
             this.entityList = data
+            this.scrollTop()
           });
         })
 
@@ -66,14 +68,18 @@ export class ChatDetailsPage implements OnInit {
   loadData() {
     this.contentService.get('/messages/details', 0, ""+this.correspondentId, "f_correspondent") // ไม่มี filter
       .subscribe(([data, metaInfo])=>{
+        data.reverse()
         this.entityList = data as unknown as Array<any>
         this.correspondent = metaInfo['correspondent'];
-        // Make the scrollable stick to bottom
-        setTimeout(()=>{
-          this.discussionFlow = document.querySelector('.discussion-flow')
-          this.discussionFlow.scrollTop = this.discussionFlow.scrollHeight - this.discussionFlow.clientHeight;
-        }, 20);
+        this.scrollTop()
       })
+  }
+
+  scrollTop(){
+    setTimeout(()=>{
+      this.discussionFlow = document.querySelector('.discussion-flow')
+      this.discussionFlow.scrollTop = this.discussionFlow.scrollHeight - this.discussionFlow.clientHeight;
+    }, 20);
   }
 
   async sendMessage(){
