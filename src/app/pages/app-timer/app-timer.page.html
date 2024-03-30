@@ -64,10 +64,10 @@
                 readonly
             ></ion-input>
             <div slot="end">
-                <ion-button fill="clear" (click)="increment_duration(-10, 'work_duration')">
+                <ion-button fill="clear" (click)="increment_duration(-5, 'work_duration')">
                     <ion-icon name="remove-circle-outline"></ion-icon>
                 </ion-button>
-                <ion-button fill="clear" (click)="increment_duration(+10, 'work_duration')">
+                <ion-button fill="clear" (click)="increment_duration(+5, 'work_duration')">
                     <ion-icon name="add-circle-outline"></ion-icon>
                 </ion-button>
             </div>
@@ -83,10 +83,10 @@
                 readonly
             ></ion-input>
             <div slot="end">
-                <ion-button fill="clear" (click)="increment_duration(-10, 'rest_duration')">
+                <ion-button fill="clear" (click)="increment_duration(-5, 'rest_duration')">
                     <ion-icon name="remove-circle-outline"></ion-icon>
                 </ion-button>
-                <ion-button fill="clear" (click)="increment_duration(10, 'rest_duration')">
+                <ion-button fill="clear" (click)="increment_duration(5, 'rest_duration')">
                     <ion-icon name="add-circle-outline"></ion-icon>
                 </ion-button>
             </div>
@@ -166,14 +166,14 @@
 
       <br/>
     <div>
-      <ion-button expand="" color="primary" (click)="start_round()" *ngIf="!round_started">
+      <ion-button shape="round" expand="" color="primary" (click)="start_round()" *ngIf="!round_started">
           Commencer
       </ion-button>
 
-      <ion-button expand="" color="medium" (click)="pause_round()" *ngIf="round_started && !round_paused">Pause</ion-button>
-      <ion-button expand="" color="medium" (click)="resume_round()" *ngIf="round_started && round_paused">Resume</ion-button>
+      <ion-button shape="round" expand="" color="medium" (click)="pause_round()" *ngIf="round_started && !round_paused">Pause</ion-button>
+      <ion-button shape="round" expand="" color="medium" (click)="resume_round()" *ngIf="round_started && round_paused">Resume</ion-button>
       <!-- Stop -->
-      <ion-button expand="" color="danger" (click)="stop_round()" *ngIf="round_started">Stop</ion-button>
+      <ion-button shape="round" expand="" color="danger" (click)="stop_round()" *ngIf="round_started">Stop</ion-button>
     </div>
   </div>
 </ion-content>

@@ -35,7 +35,7 @@ export class GpsPage implements OnInit {
       backgroundTitle: "Tracking You.",
       requestPermissions: true,
       stale: false,
-      distanceFilter: 50
+      distanceFilter: 0 // Minimum number of meter between two notification
     }, (location, error)=>{
       if (error) {
         if (error.code === "NOT_AUTHORIZED") {

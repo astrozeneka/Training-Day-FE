@@ -1,11 +1,12 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ContentService} from "../../content.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 
 import { register } from 'swiper/element/bundle';
 import {FormComponent} from "../../components/form.component";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FeedbackService} from "../../feedback.service";
+import {environment} from "../../../environments/environment";
 
 
 
@@ -17,6 +18,8 @@ import {FeedbackService} from "../../feedback.service";
 export class HomePage extends FormComponent {
   user:any = null
   content:any = null
+
+  videos:any = []
 
   override form = new FormGroup({
     'email': new FormControl('', [Validators.required, Validators.email])
@@ -32,6 +35,14 @@ export class HomePage extends FormComponent {
     super()
     this.route.params.subscribe(async (params)=>{
       await this.loadData()
+    })
+    this.router.events.subscribe(async (event)=>{
+      if(event instanceof NavigationEnd && this.router.url == '/home'){
+        this.contentService.getCollection('/videos').subscribe((res:any)=>{
+          console.log(res.data)
+          this.videos = res.data as object
+        })
+      }
     })
     register()
   }
@@ -69,5 +80,13 @@ export class HomePage extends FormComponent {
       .subscribe((data)=>{
         this.feedbackService.registerNow('Votre email à bien été enregistré.', 'success')
       })
+  }
+
+  goToVideo(video_id:number){
+    this.router.navigate(['/video-view/', video_id])
+  }
+
+  getUrl(suffix:string){
+    return environment.rootEndpoint + '/' + suffix
   }
 }
