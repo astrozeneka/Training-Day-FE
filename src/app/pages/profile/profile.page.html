@@ -101,7 +101,7 @@
   </form>
 
     <div *ngIf="entity">
-        <h3 class="display-1 ion-padding">Abonnement</h3>
+        <h3 class="display-1 ion-padding">Abonnement(s)</h3>
         <ion-item *ngIf="!entity.subscription">
             Vous n'avez pas d'abonnement aux offres premium.
             <ion-button slot="end" color="primary" (click)="navigate('/subscriptions')">Souscrire</ion-button>
@@ -109,6 +109,11 @@
         <ion-item *ngIf="entity.subscription">
             <ion-label>Abonnement {{ entity.subscription.label }}</ion-label>
             <ion-note slot="end">Expiré le {{ entity.expires_at }}</ion-note>
+        </ion-item>
+        <ion-item *ngFor="let perishable of entity.perishables">
+            <ion-label>{{ perishable.label }}</ion-label>
+            <ion-note slot="end" *ngIf="perishable.expires_at">Expiré le {{ perishable.expires_at }}</ion-note>
+            <ion-note slot="end" *ngIf="perishable.consumables">{{ perishable.consumables }} séance(s) disponinble</ion-note>
         </ion-item>
     </div>
 

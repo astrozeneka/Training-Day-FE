@@ -200,8 +200,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/shop/nutrition/nutrition.module').then(m => m.NutritionPageModule)
   },
   {
-    path: 'purchase-duration',
-    loadChildren: () => import('./pages/purchase/purchase-duration/purchase-duration.module').then( m => m.PurchaseDurationPageModule)
+    path: 'purchase-details',
+    loadChildren: () => import('./pages/purchase/purchase-details/purchase-details.module').then(m => m.PurchaseDetailsPageModule)
   },
   {
     path: 'purchase-invoice',

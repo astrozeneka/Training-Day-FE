@@ -1,13 +1,35 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>purchase-payment</ion-title>
-  </ion-toolbar>
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Procéder au paiement</ion-title>
+    </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">purchase-payment</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+    <h1 class="display-1 ion-padding">Validez votre payement</h1>
+
+    <div class="container ion-padding">
+        <div>
+            <div *ngIf="!validated">
+                <p class="helper">
+                    Veuillez effectuer le payement depuis la nouvelle fenêtre qui s'est ouverte. Effectuez votre payement, puis revenez sur cette page pour confirmer votre paiement.
+                </p>
+                <br/>
+                <ion-button expand="full" shape="round" color="primary" (click)="clickVerify()">Vérifier le paiement</ion-button>
+            </div>
+            <div *ngIf="validated">
+                <p class="helper">
+                    Votre payement de {{ amount / 100 }} € été validé.
+                </p>
+                <ion-item>
+                    Télécharger votre reçu
+                    <ion-button color="warning" fill="solid" slot="end" (click)="download_receipt()">Télécharger</ion-button>
+                </ion-item>
+                <br/>
+                <ion-button color="primary" expand="full" shape="round" (click)="next()">Continuer</ion-button>
+            </div>
+        </div>
+    </div>
 </ion-content>

@@ -50,6 +50,7 @@ export class ProfilePage extends FormComponent implements OnInit {
     router.events.subscribe(async(event: any)=>{
       if (event instanceof NavigationEnd && event.url == '/profile') {
         this.entity = await this.contentService.storage.get('user')
+        console.log(this.entity)
         this.user_id = this.entity?.id
         this.form.patchValue(this.entity)
       }

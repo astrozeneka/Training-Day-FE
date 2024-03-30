@@ -1,0 +1,16 @@
+
+table{
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  text-align: left;
+
+  td, th{
+    padding: 1em;
+
+    .helper{
+      display: block;
+      font-size: .9em;
+    }
+  }
+}

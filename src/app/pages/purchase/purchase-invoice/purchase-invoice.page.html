@@ -1,13 +1,54 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>purchase-invoice</ion-title>
-  </ion-toolbar>
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            Facture
+        </ion-title>
+    </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">purchase-invoice</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+    <h1 class="display-1 ion-padding">Facture</h1>
+
+    <div class="ion-padding">
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>Désignation</th>
+                <th>Prix TTC</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>
+                    Abonnement {{ subscriptionLabel }} ({{ subscriptionExtraInfo}})
+                </td>
+                <td>{{ subscriptionPrice / 100}} €</td>
+            </tr>
+            <!-- The total -->
+            <tr>
+                <td></td>
+                <td><strong>Total</strong></td>
+                <td><strong>{{ subscriptionPrice / 100 }} €</strong></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <form>
+        <ion-item>
+            <ion-label>Accepter les conditions d'abonnement</ion-label>
+            <ion-checkbox [formControl]="acceptConditions" slot="end" color="primary"></ion-checkbox>
+        </ion-item>
+    </form>
+    <br/>
+    <div class="ion-padding">
+        <ion-button expand="block" color="primary" shape="round" (click)="continueToPayment()" [disabled]="!acceptConditions.value">
+            Continuer
+        </ion-button>
+    </div>
 </ion-content>

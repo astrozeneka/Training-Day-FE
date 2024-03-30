@@ -1,0 +1,20 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Abonnement {{subscriptionLabel}} {{subscriptionExtraInfo}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="ion-padding">
+        <h1 class="display-1">Conditions d'abonnement</h1>
+        <p class="helper">
+            En souscrivant à notre programme d'abonnement, vous acceptez de payer le montant convenu selon la périodicité choisie (mensuelle, trimestrielle, annuelle, etc.). Les paiements seront prélevés automatiquement selon le mode de paiement sélectionné lors de l'inscription. Vous pouvez annuler votre abonnement à tout moment, mais aucun remboursement ne sera accordé pour les périodes déjà facturées. Nous nous réservons le droit de modifier les conditions de l'abonnement avec un préavis raisonnable.
+        </p>
+    </div>
+    <div class="ion-padding">
+        <ion-button expand="block" color="primary" shape="round" (click)="continue()">Continuer</ion-button>
+    </div>
+</ion-content>
