@@ -11,7 +11,35 @@
 <ion-content class="">
     <!-- Put three tab -->
     <app-shop-tabs selectedTab="tab2"></app-shop-tabs>
-    <p>
-        Programme alimentaire
-    </p>
+    <h1 class="display-1 ion-padding">Choisissez un offre de programme alimentaire</h1>
+
+    <div class="option-list">
+        <div class="card ion-padding">
+            <h2 class="display-1">Programme alimentaire 1 semaine (20 euros)</h2>
+            <p class="helper">
+                Profitez de l'offre de programme alimentaire pour une semaine.
+            </p>
+            <ion-button size="normal" color="primary" expand="block" shape="round" (click)="clickOption(7, 20)">
+                Choisir
+            </ion-button>
+        </div>
+        <div class="card ion-padding">
+            <h2 class="display-1">Programme alimentaire 1 mois (49 euros)</h2>
+            <p class="helper">
+                Profitez de l'offre de programme alimentaire pour un mois
+            </p>
+            <ion-button size="normal" color="danger" expand="block" shape="round" (click)="clickOption(31, 49)">
+                Choisir
+            </ion-button>
+        </div>
+        <div class="card ion-padding">
+            <h2 class="display-1">Programme alimentaire 6 semaines mois (59 euros)</h2>
+            <p class="helper">
+                Profitez de l'offre de programme alimentaire pour 6 semaines
+            </p>
+            <ion-button size="normal" color="secondary" expand="block" shape="round" (click)="clickOption(42, 59)">
+                Choisir
+            </ion-button>
+        </div>
+    </div>
 </ion-content>

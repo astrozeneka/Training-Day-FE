@@ -12,4 +12,8 @@ export class PersonalTrainerPage implements OnInit {
   ngOnInit() {
   }
 
+  clickCoachingOption(coachingNumber:number, price:number){
+    console.log("clickCoachingOption", coachingNumber, price);
+  }
+
 }
