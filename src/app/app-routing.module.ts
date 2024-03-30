@@ -215,6 +215,10 @@ const routes: Routes = [
     path: 'purchase-verify-complete',
     loadChildren: () => import('./pages/purchase/purchase-verify-complete/purchase-verify-complete.module').then( m => m.PurchaseVerifyCompletePageModule)
   },
+  {
+    path: 'forgot-password',
+    loadChildren: () => import('./pages/forgot-password/forgot-password.module').then(m => m.ForgotPasswordPageModule)
+  },
 ];
 
 @NgModule({
