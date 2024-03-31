@@ -38,7 +38,7 @@ export class AppComponent {
         })
     })
 
-
+    /*
     // Register the device notification
     const addListeners = async () => {
       await PushNotifications.addListener('registration', token => {
@@ -91,6 +91,7 @@ export class AppComponent {
     registerNotifications()
     getDeliveredNotifications()
 
+    */
   }
 
   private onRouteChange(){

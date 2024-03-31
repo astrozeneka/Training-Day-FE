@@ -15,7 +15,7 @@
         </p>
         <p>
             Référence de l'achat : {{ subscriptionReference }}<br/>
-            Montant : {{ subscriptionPrice }} €<br/>
+            Montant : {{ subscriptionPrice / 100 }} €<br/>
             Nom de l'abonnement : {{ subscriptionLabel }}<br/>
             <span *ngIf="subscriptionDays">
                 Durée de l'abonnement : {{ subscriptionDays }} jours<br/>

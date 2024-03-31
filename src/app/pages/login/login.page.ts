@@ -12,6 +12,7 @@ import {catchError, throwError} from "rxjs";
 import {FormComponent} from "../../components/form.component";
 import {FeedbackService} from "../../feedback.service";
 import {Router} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-login',
@@ -30,10 +31,13 @@ export class LoginPage extends FormComponent implements OnInit {
     'password': undefined
   }
 
+  device_token = {}
+
   constructor(
     private contentService: ContentService,
     private feedbackService: FeedbackService,
-    private router: Router
+    private router: Router,
+    private httpClient: HttpClient
   ) {
     super()
   }
@@ -138,10 +142,72 @@ export class LoginPage extends FormComponent implements OnInit {
         /*await this.contentService.storage.set('token', response.token) // Not in use
         await this.contentService.storage.set('user_id', response.user.id) // Not in use
         */
+
+        // Register the push notification token
+        try{
+          await this.reloadPushNotificationPermissions()
+        }catch (e){
+          console.error('Device not compatible with PushNotification', e)
+        }
         await this.feedbackService.register("Bonjour, vous êtes connecté", 'success')
         this.router.navigate(['/home'])
       })
   }
+
+  async reloadPushNotificationPermissions(){
+    const addListeners = async () => {
+      await PushNotifications.addListener('registration', token => {
+        console.info('Registration token: ', token.value);
+        this.device_token = {
+          'ios_token': token.value
+        }
+        this.contentService.storage.get('token').then((token)=>{
+          let headers = {}
+          if(token)
+            headers = {
+              'Authorization': `Bearer ${token}`
+            }
+          const options = {
+            headers: headers
+          }
+          this.httpClient.post(`${this.contentService.apiEndpoint}/notifications/register-device`, this.device_token, options).subscribe((response:any)=>{
+            console.log('Device registered', response)
+          })
+        })
+      });
+      await PushNotifications.addListener('registrationError', err => {
+        console.error('Registration error: ', err.error);
+      });
+      await PushNotifications.addListener('pushNotificationReceived', notification => {
+        console.log('Push notification received: ', notification);
+      });
+      await PushNotifications.addListener('pushNotificationActionPerformed', notification => {
+        console.log('Push notification action performed', notification.actionId, notification.inputValue);
+      });
+    }
+
+    const registerNotifications = async () => {
+      let permStatus = await PushNotifications.checkPermissions();
+      if (permStatus.receive === 'prompt') {
+        permStatus = await PushNotifications.requestPermissions();
+      }
+      if (permStatus.receive !== 'granted') {
+        throw new Error('User denied permissions!');
+      }
+      await PushNotifications.register();
+    }
+
+    const getDeliveredNotifications = async () => {
+      const notificationList = await PushNotifications.getDeliveredNotifications();
+      console.log('delivered notifications', notificationList);
+    }
+
+    await addListeners()
+    await registerNotifications()
+    await getDeliveredNotifications()
+  }
+
+
 
   getLogoSrc(){
     let darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
