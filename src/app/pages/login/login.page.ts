@@ -182,6 +182,11 @@ export class LoginPage extends FormComponent implements OnInit {
         console.log('Push notification received: ', notification);
       });
       await PushNotifications.addListener('pushNotificationActionPerformed', notification => {
+        let deepLink = notification.notification.data.deep_link
+        console.log('Deep link', deepLink) // TODO: Solve
+        this.feedbackService.register("Deep link received : " + deepLink + " / " + JSON.stringify(notification.notification.data), "secondary")
+        if(deepLink)
+          this.router.navigate([deepLink])
         console.log('Push notification action performed', notification.actionId, notification.inputValue);
       });
     }

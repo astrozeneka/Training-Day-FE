@@ -10,8 +10,25 @@
 <ion-content>
 
     {{ running }}
-    {{ steps }}
+    <div *ngIf="steps">
+        <p *ngFor="let step of steps">
+            <!-- JSON -->
+        </p>
+    </div>
+    <div>
+        <p>Distance : {{ overall_distance }} km</p>
+    </div>
+    <div>
+        <h2>Per kilometer stats</h2>
+        <p *ngFor="let km of per_kilometer_stats">
+            {{ km.distance }} km — {{ km.duration }} s — {{ km.speed }} km/s
+        </p>
+        <p style="font-weight: bold;">
+            {{ current_km_distance }} km — {{ current_km_time }} s
+        </p>
+    </div>
     {{ steps.length }}
+    <ion-button (click)="export_json()">Export JSON</ion-button>
   <div class="gps-container">
 
     <div>

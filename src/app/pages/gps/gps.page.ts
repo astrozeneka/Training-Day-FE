@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
-import {interval, Subject, takeUntil} from "rxjs";
+import {catchError, interval, Subject, takeUntil, throwError} from "rxjs";
 import {registerPlugin} from "@capacitor/core";
 import {BackgroundGeolocationPlugin} from "@capacitor-community/background-geolocation";
+import {ContentService} from "../../content.service";
+import {FeedbackService} from "../../feedback.service";
 const BackgroundGeolocation = registerPlugin<BackgroundGeolocationPlugin>("BackgroundGeolocation");
 
 @Component({
@@ -21,12 +23,21 @@ export class GpsPage implements OnInit {
   private destroy$ = new Subject<void>();
 
   elapsedTime = 0
+
+  // Stats
   per_kilometer: number[] = []
   per_kilometer_duration:number[] = [] // An array that show the history for each kilometer
   per_kilometer_distance:number[] = [] // It is normally an array of 1, except for the last item
   per_kilometer_speed:number[] = [] // It is normally an array of 1, except for the last item
 
+  overall_distance = 0
+  per_kilometer_stats:any[] = []
+  current_km_time = 0
+  current_km_distance = 0
+
   constructor(
+    private contentService:ContentService,
+    private feedbackService:FeedbackService
   ) { }
 
   ngOnInit() {
@@ -55,6 +66,12 @@ export class GpsPage implements OnInit {
       if(true){
         step.timestamp = new Date().getTime()
         this.steps.push(step)
+        this.calculateODO()
+        /*
+        longitude,
+        latitude,
+        timestamp
+         */
       }
       return console.log(location)
     }).then(function after_the_watcher_has_been_added(watcher_id){
@@ -76,6 +93,51 @@ export class GpsPage implements OnInit {
           this.updateHistory();
         }
       });*/
+  }
+
+  calculateODO(){
+    // This will use the steps array to calculate the overall distance
+    // And also, calculate the per_kilometer time (and speed)
+    this.overall_distance = 0
+    this.per_kilometer_stats = []
+    this.current_km_time = 0
+    this.current_km_distance = 0
+
+    for(let i = 1; i < this.steps.length; i++){
+      let A = this.steps[i-1]
+      let B = this.steps[i]
+      let AB_dist = this.calculateDistance(A.latitude, A.longitude, B.latitude, B.longitude)
+      let AB_time = B.timestamp - A.timestamp
+      this.overall_distance += AB_dist
+
+      this.current_km_distance += AB_dist
+      this.current_km_time += AB_time
+      if(this.current_km_distance >= 1){
+        this.per_kilometer_stats.push({
+          distance: this.current_km_distance,
+          time: this.current_km_time,
+          speed: this.current_km_distance / this.current_km_time
+        })
+        this.current_km_distance = 0
+        this.current_km_time = 0
+      }
+    }
+  }
+
+  export_json(){
+    // Send the steps array to the server
+    let data = {
+      'mail': 'ryanrasoarahona@gmail.com',
+      'data': JSON.stringify(this.steps)
+    }
+    this.contentService.post('/export-json', data)
+      .pipe(catchError((error)=>{
+        this.feedbackService.registerNow("Error while exporting", "danger")
+        return throwError(error)
+      }))
+      .subscribe((response:any)=>{
+        this.feedbackService.registerNow("Exported", "success")
+      })
   }
 
   tracking = false;
