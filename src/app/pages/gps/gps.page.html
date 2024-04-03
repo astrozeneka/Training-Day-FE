@@ -9,10 +9,10 @@
 
 <ion-content>
 
+    <!--
     {{ running }}
     <div *ngIf="steps">
         <p *ngFor="let step of steps">
-            <!-- JSON -->
         </p>
     </div>
     <div>
@@ -29,32 +29,33 @@
     </div>
     {{ steps.length }}
     <ion-button (click)="export_json()">Export JSON</ion-button>
+    -->
+
+
+    <ion-button (click)="load_json()">Load JSON</ion-button>
   <div class="gps-container">
 
     <div>
-      <h1 class="ion-padding">{{ distance | number:'1.2-2' }} km</h1>
+      <h1 class="ion-padding">{{ overall_distance | number:'1.2-2' }} km</h1>
       <h2 class="ion-padding">{{ chronometerValue }}</h2>
         <div class="ion-padding">
 
-            <ion-button shape="round" (click)="startTracking()" expand="full" *ngIf="!watch">Démarrer</ion-button>
-            <ion-button shape="round" (click)="stopTracking()" expand="full" *ngIf="watch" fill="primary">Stopper</ion-button>
+            <ion-button shape="round" (click)="startTracking()" expand="full" *ngIf="!running">Démarrer</ion-button>
+            <ion-button shape="round" (click)="stopTracking()" expand="full" *ngIf="running" fill="primary">Stopper</ion-button>
 
         </div>
-      <table>
-        <tr>
-          <th scope="col"></th>
-          <th scope="col">Durée</th>
-          <th scope="col">Vitesse</th>
-        </tr>
-        <tr *ngFor="let index of per_kilometer.slice().reverse(); let isFirst=first">
-          <!-- Show the index -->
-          <th scope="row">{{ index+1 }}<sup>e</sup> km
-            <span *ngIf="isFirst">({{ Math.round((distance % 1) * 1000) }} m)</span></th>
-          <td>{{ per_kilometer_duration[index] }} s</td>
-          <!-- Make it 2 zero after the comma -->
-          <td>{{ Math.round(per_kilometer_speed[index] * 3600 * 100)/100 }} km/h</td>
-        </tr>
-      </table>
+          <div>
+              <table class="gps-stats">
+                  <tr>
+                      <th>Section</th>
+                      <th>Vitesse</th>
+                  </tr>
+                  <tr *ngFor="let km of per_kilometer_stats">
+                      <td>{{ km.index }} km - {{ km.index+1 }} km</td>
+                      <td>{{ km.speed_kmh | number:'1.2-2' }} km/s</td>
+                  </tr>
+              </table>
+          </div>
         <!--
           <button (click)="_add_100m()">+ 100M</button>
           -->

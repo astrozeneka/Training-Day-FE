@@ -155,6 +155,7 @@ export class LoginPage extends FormComponent implements OnInit {
   }
 
   async reloadPushNotificationPermissions(){
+    /*
     const addListeners = async () => {
       await PushNotifications.addListener('registration', token => {
         console.info('Registration token: ', token.value);
@@ -210,6 +211,7 @@ export class LoginPage extends FormComponent implements OnInit {
     await addListeners()
     await registerNotifications()
     await getDeliveredNotifications()
+    */
   }
 
 

@@ -27,3 +27,16 @@ table{
   @include fancy-table;
   padding-top: 1em;
 }
+
+
+.gps-stats{
+    td,th{
+      padding: .5em;
+    }
+  th{
+    font-size: 1.2em;
+  }
+    tr:nth-child(odd){
+        background-color: rgba(152, 154, 162, 0.11);
+    }
+}
