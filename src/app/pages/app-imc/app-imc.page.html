@@ -11,6 +11,14 @@
 
   <div class="calories-container ion-padding">
     <h1>Pour commencer, entrez vos informations</h1>
+      <p class="helper">
+          L'IMC, ou indice de masse corporel, est un calcul qui permet d'estimer
+          rapidement votre corpulence. l'IMC permet aussi d'évaluer le risque
+          qu'a une personne de développer certaines pathologies associées au
+          surpoids et à l'obésité comme le diabète et les maladies
+          cardiovasculaires par exemple.
+      </p>
+      <br/>
     <form [formGroup]="form">
       <ion-item>
         <ion-input
@@ -32,6 +40,7 @@
           type="number"
         ></ion-input>
       </ion-item>
+        <br/>
       <div>
         <ion-button
                 shape="round"
@@ -53,7 +62,7 @@
     </div>
     -->
 
-      <br/><br/>
+      <br/>
       <div class="imc-indicator" *ngIf="imc">
           <h2 class="display-1 ion-text-center">
               Votre Indice de masse corporelle est de <br/>
@@ -78,7 +87,7 @@
                   shape="round"
                     expand="full"
           >
-              Prendre rendez-vous avec mon nutritionniste
+              Prendre rendez-vous avec mon coach
           </ion-button>
       </div>
   </div>
