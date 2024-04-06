@@ -20,10 +20,11 @@ export class Shop{
       this.feedbackService.registerNow('Pour continuer, veuillez créer un compte ou vous connecter.')
     }else{
       await this.contentService.storage.set('subscription_days', days)
+      await this.contentService.storage.set('subscription_consumable', undefined)
       await this.contentService.storage.set('subscription_price', price)
       await this.contentService.storage.set('subscription_slug', this.subscriptionSlug)
       await this.contentService.storage.set('subscription_label', this.subscriptionLabel)
-      this.router.navigate(['/purchase-details'])
+      this.router.navigate(['/purchase-invoice'])
     }
   }
 }

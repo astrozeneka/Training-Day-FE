@@ -121,6 +121,7 @@
             <ion-note slot="end" *ngIf="perishable.expires_at">Expiré le {{ perishable.expires_at | date }}</ion-note>
             <ion-note slot="end" *ngIf="perishable.consumables">{{ perishable.consumables }} séance(s) dispo.</ion-note>
         </ion-item>
+
     </div>
 
     <div *ngIf="entity">

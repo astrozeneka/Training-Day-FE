@@ -25,11 +25,12 @@ export class PersonalTrainerPage implements OnInit {
       this.router.navigate(['/login'])
       this.feedbackService.registerNow('Pour continuer, veuillez créer un compte ou vous connecter.')
     }else{
+      await this.contentService.storage.set('subscription_days', undefined);
       await this.contentService.storage.set('subscription_consumable', coachingNumber)
       await this.contentService.storage.set('subscription_price', price)
       await this.contentService.storage.set('subscription_slug', 'personal-trainer')
       await this.contentService.storage.set('subscription_label', 'Personal trainer')
-      this.router.navigate(['/purchase-details'])
+      this.router.navigate(['/purchase-invoice'])
     }
   }
 
