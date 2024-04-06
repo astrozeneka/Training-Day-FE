@@ -11,33 +11,37 @@
 <ion-content class="">
     <!-- Put three tab -->
     <app-shop-tabs selectedTab="tab3"></app-shop-tabs>
-    <h1 class="display-1 ion-padding">Choisissez un offre de programme sportif</h1>
-
+    <div class="ion-padding">
+        <h1 class="display-1">Choisissez un offre de programme sportif</h1>
+        <p class="helper">
+            Un programme sportif consiste en un entrainement de plus ou moins longue durée. Il se compose d'exercices physiques à réaliser chez soi ou en salle, à une fréquence et selon une intensité définie à l'avance. Un « bon » programme sportif comprend également des phases de repos et de récupération.
+        </p>
+    </div>
     <div class="option-list">
         <div class="card ion-padding">
-            <h2 class="display-1">Programme sportif 1 semaine (20 euros)</h2>
+            <h2 class="display-1">Programme sportif 1 semaine (29,99 euros)</h2>
             <p class="helper">
-                Profitez de l'offre de programme sportif pour une semaine.
+                Profitez d’un programme sportif adapté à vos besoins pour une semaine
             </p>
-            <ion-button size="normal" color="primary" expand="block" shape="round" (click)="clickOption(7, 2000)">
+            <ion-button size="normal" color="dark" expand="block" shape="round" (click)="clickOption(7, 2000)">
                 Choisir
             </ion-button>
         </div>
         <div class="card ion-padding">
-            <h2 class="display-1">Programme sportif 1 mois (49 euros)</h2>
+            <h2 class="display-1">Programme sportif 1 mois (49,99 euros)</h2>
             <p class="helper">
-                Profitez de l'offre de programme sportif pour un mois
+                Organisons ensemble vos semaine et profitez d’un programme sportif adapté à vos besoins pour un mois
             </p>
-            <ion-button size="normal" color="danger" expand="block" shape="round" (click)="clickOption(31, 4900)">
+            <ion-button size="normal" color="warning" expand="block" shape="round" (click)="clickOption(31, 4900)">
                 Choisir
             </ion-button>
         </div>
         <div class="card ion-padding">
-            <h2 class="display-1">Programme sportif 6 semaines mois (59 euros)</h2>
+            <h2 class="display-1">Programme sportif 6 semaines mois (59,99 euros)</h2>
             <p class="helper">
-                Profitez de l'offre de programme sportif pour 6 semaines
+                Planifions ensemble votre cycle d’entrainement et profitez d’un programme sportif adapté à vos besoins pour six semaines
             </p>
-            <ion-button size="normal" color="secondary" expand="block" shape="round" (click)="clickOption(42, 5900)">
+            <ion-button size="normal" color="primary" expand="block" shape="round" (click)="clickOption(42, 5900)">
                 Choisir
             </ion-button>
         </div>
