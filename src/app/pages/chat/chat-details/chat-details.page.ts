@@ -14,12 +14,13 @@ import Echo from "laravel-echo";
   styleUrls: ['./chat-details.page.scss'],
 })
 export class ChatDetailsPage implements OnInit {
-  entityList:Array<any>|null = []
+  entityList:Array<any> = []
   entityOffset:any = 0
 
   correspondentId = null
   correspondent:any|null = null
   user:any|null = null;
+  avatar_url:any = undefined
 
   @ViewChild('discussionFlow') discussionFlow:any = undefined;
 
@@ -67,6 +68,16 @@ export class ChatDetailsPage implements OnInit {
   }
 
   loadData() {
+    // 1. Load the correspondent data
+    this.contentService.getOne('/users/'+this.correspondentId, {})
+      .subscribe((data:any)=>{
+        let profile_image = data.profile_image
+        this.avatar_url = profile_image ? this.contentService.addPrefix(profile_image.permalink) : undefined
+          //this.contentService.addPrefix(data.profile_image?.permalink)
+        this.correspondent = data
+      })
+
+    // 2. Load the message data
     this.contentService.get('/messages/details', this.entityOffset, ""+this.correspondentId, "f_correspondent") // ไม่มี filter
       .subscribe(([data, metaInfo])=>{
         data.reverse()
@@ -92,7 +103,8 @@ export class ChatDetailsPage implements OnInit {
     obj.sender_id = (await this.contentService.storage.get('user')).id
     this.contentService.post('/messages', obj)
       .subscribe(async(res)=>{
-        this.loadData();
+        this.entityList = this.entityList?.concat(res)
+        this.entityOffset = this.entityList?.length
       })
     this.form.reset()
   }

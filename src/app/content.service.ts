@@ -258,5 +258,11 @@ export class ContentService {
 
     //return this.httpClient.get(`${this.apiEndpoint}${suffix}?${offset_limit_params}&${filter_params}&${debugParams}`, {headers})
   }
+
+
+  addPrefix(suffix:string){
+    // Load form the environment
+    return environment.rootEndpoint + '/storage/' + suffix
+  }
   
 }

@@ -23,7 +23,7 @@ export class ChatMasterPage implements OnInit {
     private router:Router
   ) {
     this.router.events.subscribe((event:any)=>{
-      if(event instanceof NavigationEnd){
+      if(event instanceof NavigationEnd && this.router.url == '/chat'){
         this.entityList = null
         this.loadData()
       }
@@ -37,7 +37,12 @@ export class ChatMasterPage implements OnInit {
   loadData(){
     this.contentService.get('/chat', 0, this.searchControl.value, "f_name")
       .subscribe(([data, metaInfo])=>{
+        for(let i = 0; i < data.length; i++){
+          let url = data[i].profile_image?.permalink
+          data[i].avatar_url = url ? this.contentService.addPrefix(url) : undefined
+        }
         this.entityList = data as unknown as Array<any>
+        console.log(data)
       })
   }
 
