@@ -15,6 +15,7 @@ import Echo from "laravel-echo";
 })
 export class ChatDetailsPage implements OnInit {
   entityList:Array<any>|null = []
+  entityOffset:any = 0
 
   correspondentId = null
   correspondent:any|null = null
@@ -66,10 +67,11 @@ export class ChatDetailsPage implements OnInit {
   }
 
   loadData() {
-    this.contentService.get('/messages/details', 0, ""+this.correspondentId, "f_correspondent") // ไม่มี filter
+    this.contentService.get('/messages/details', this.entityOffset, ""+this.correspondentId, "f_correspondent") // ไม่มี filter
       .subscribe(([data, metaInfo])=>{
         data.reverse()
         this.entityList = data as unknown as Array<any>
+        this.entityOffset = this.entityList.length
         this.correspondent = metaInfo['correspondent'];
         this.scrollTop()
       })
@@ -95,5 +97,16 @@ export class ChatDetailsPage implements OnInit {
     this.form.reset()
   }
 
-  protected readonly send = send;
+  onIonInfinite(event:any){
+    this.entityOffset = this.entityList?.length // Refresh, because the entityList array might be updated by pusher
+    console.log("On Ion Infinite")
+    // Load additionnal content from the backend
+    this.contentService.get('/messages/details', this.entityOffset, ""+this.correspondentId, "f_correspondent")
+      .subscribe(([data, metaInfo])=>{
+        data.reverse()
+        this.entityList = data.concat(this.entityList)
+        this.entityOffset = this.entityList?.length
+        event.target.complete()
+      })
+  }
 }

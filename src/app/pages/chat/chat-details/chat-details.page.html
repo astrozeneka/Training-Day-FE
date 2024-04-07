@@ -7,9 +7,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content scroll-y="false">
   <div class="messaging">
-    <div class="discussion-flow" #discussionFlow><!-- The discussion flow -->
+    <div class="discussion-flow ion-content-scroll-host" #discussionFlow><!-- The discussion flow -->
+        <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)" position="top">
+            <div class="ion-text-center ion-padding helper">
+                ...
+            </div>
+        </ion-infinite-scroll>
       <div *ngFor="let entity of entityList" class="message" [class.received]="entity.recipient_id === user.id" [class.sent]="entity.recipient_id !== user.id">
         <ion-avatar slot="start" *ngIf="entity.recipient_id === user.id">
           <img src="../../../assets/samples/profile-sample-1.jpg" alt="Profile Picture">
