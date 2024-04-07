@@ -11,7 +11,16 @@
 }
 
 .controls{
-  height: 60px;
+  height: 80px;
+
+  ion-item{
+    background: var(--ion-color-base) !important;
+    padding-bottom: 30px!important;
+  }
+
+  ion-input{
+    background: var(--ion-color-base) !important;
+  }
 }
 
 .message{

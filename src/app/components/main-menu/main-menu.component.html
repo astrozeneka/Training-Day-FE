@@ -57,6 +57,9 @@
             Messagerie
             <ion-chip *ngIf="unreadMessages" color="danger">{{ unreadMessages }}</ion-chip>
         </ion-button>
+        <ion-button (click)="menuNavigate('/video-upload')" expand="full" fill="clear">
+            Uploader une vidéo
+        </ion-button>
     </div>
     <div *ngIf="user?.role === 'coach'">
         <h4>Espace coaching</h4>
@@ -106,11 +109,7 @@
     <div *ngIf="user">
         <ion-button (click)="menuNavigate('/logout')" expand="full" fill="clear">Se déconnecter</ion-button>
     </div>
-    <ion-button (click)="menuNavigate('/subscriptions')" expand="full" fill="clear">Abonnements</ion-button>
 
-    <ion-button (click)="menuNavigate('/video-upload')" expand="full" fill="clear">
-        Uploader une vidéo
-    </ion-button>
 </ion-list>
 
 <ion-footer>
