@@ -39,7 +39,7 @@ export class SubscriptionsInvoicePage implements OnInit {
   goToPayment(){
     // Expect to have checked the conditions
     if(this.acceptConditions.valid){
-      this.router.navigate(['subscriptions-verify-payment'])
+      this.router.navigate(['subscriptions-payment'])
     }else{
       this.feedbackService.registerNow("Vous devez accepter les conditions", "danger")
     }
