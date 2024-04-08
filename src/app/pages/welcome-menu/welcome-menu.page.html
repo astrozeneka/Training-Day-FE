@@ -19,7 +19,7 @@
     <div class="welcome-menu">
         <ion-button expand="full" type="submit" (click)="goTo('/home')" color="primary" shape="round" fill="outline">Fil d'actualité</ion-button>
         <ion-button expand="full" type="submit" (click)="goTo('/chat')" color="primary" shape="round" fill="outline">
-            {{user?.role_id===2?'Mon coach':'Messagerie'}}
+            {{(user?.role_id===2)?'Mon coach':'Messagerie'}}
         </ion-button>
         <ion-button expand="full" type="submit" (click)="goTo('/training')" color="primary" shape="round" fill="outline">Training</ion-button>
         <!-- IMC -->
