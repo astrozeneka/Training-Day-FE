@@ -8,27 +8,81 @@
 </ion-header>
 
 <ion-content class="">
-  <ion-searchbar [formControl]="searchControl"
-                 animated="true"
-                 placeholder="Rechercher"
-                 (keydown.enter)="loadData()"></ion-searchbar>
   <!-- This section should be infinite scroll -->
-  <div class="ion-text-center">
-    <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
-  </div>
-  <div *ngIf="entityList">
-    <ion-item
-      *ngFor="let entity of entityList"
-      (click)="navigateTo('/chat/details/' + entity.id)"
-      style="cursor:pointer"
-    >
-      <ion-avatar slot="start">
-        <img src="{{entity.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
-      </ion-avatar>
-      {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
-        <ion-chip *ngIf="entity.unread" color="danger" slot="end">{{ entity.unread }}</ion-chip>
-    </ion-item>
-  </div>
+    <div *ngIf="user?.role_id !== 2">
+        <ion-searchbar [formControl]="searchControl"
+                       animated="true"
+                       placeholder="Rechercher"
+                       (keydown.enter)="loadData()"></ion-searchbar>
+        <div class="ion-text-center">
+            <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
+        </div>
+        <div *ngIf="entityList">
+            <ion-item
+                    *ngFor="let entity of entityList"
+                    (click)="navigateTo('/chat/details/' + entity.id)"
+                    style="cursor:pointer"
+            >
+                <ion-avatar slot="start">
+                    <img src="{{entity.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
+                </ion-avatar>
+                {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
+                <ion-chip *ngIf="entity.unread" color="danger" slot="end">{{ entity.unread }}</ion-chip>
+            </ion-item>
+        </div>
+    </div>
+    <div *ngIf="user?.role_id === 2" class="ion-padding">
+        <h2 class="display-1">Discuter avec mon coach</h2>
+        <div *ngIf="user?.subscription?.slug === 'pack-moreno' || user?.subscription?.slug === 'pack-alonzo'">
+            <p class="helper">
+                Vous pouvez discuter avec votre coach à tout moment. Il vous répondra dans les plus brefs délais.
+            </p>
+            <div *ngIf="coachList">
+                <ion-item
+                        *ngFor="let entity of coachList"
+                        (click)="navigateTo('/chat/details/' + entity.id)"
+                        style="cursor:pointer"
+                >
+                    <ion-avatar slot="start">
+                        <img src="{{entity.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
+                    </ion-avatar>
+                    {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
+                    <ion-chip *ngIf="entity.unread" color="danger" slot="end">{{ entity.unread }}</ion-chip>
+                </ion-item>
+            </div>
+        </div>
+        <div *ngIf="user?.subscription?.slug !== 'pack-moreno' && user?.subscription?.slug !== 'pack-alonzo'">
+            <p class="helper">
+                Vous n'avez pas accès à cette fonctionnalité. Veuillez souscrire à un Pack Moreno ou Alonzo pour en bénéficier.
+            </p>
+        </div>
+
+        <br/><br/>
+        <h2 class="display-1">Discuter avec mon nutrionniste</h2>
+        <div *ngIf="user?.subscription?.slug === 'pack-alonzo'">
+            <p class="helper">
+                Vous pouvez discuter avec votre nutrionniste à tout moment. Il vous répondra dans les plus brefs délais.
+            </p>
+            <div *ngIf="nutritionistList">
+                <ion-item
+                        *ngFor="let entity of nutritionistList"
+                        (click)="navigateTo('/chat/details/' + entity.id)"
+                        style="cursor:pointer"
+                >
+                    <ion-avatar slot="start">
+                        <img src="{{entity.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
+                    </ion-avatar>
+                    {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
+                    <ion-chip *ngIf="entity.unread" color="danger" slot="end">{{ entity.unread }}</ion-chip>
+                </ion-item>
+            </div>
+        </div>
+        <div *ngIf="user?.subscription?.slug !== 'pack-alonzo'">
+            <p class="helper">
+                Vous n'avez pas accès à cette fonctionnalité. Veuillez souscrire à un Pack Alonzo pour en bénéficier.
+            </p>
+        </div>
+    </div>
 
   <!-- No fab -->
 

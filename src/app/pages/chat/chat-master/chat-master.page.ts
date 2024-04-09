@@ -12,7 +12,10 @@ import {FeedbackService} from "../../../feedback.service";
 })
 export class ChatMasterPage implements OnInit {
   entityList:Array<any>|null = []
+  coachList:Array<any> = []
+  nutritionistList:Array<any> = []
   searchControl:FormControl = new FormControl("")
+  user:any = null
 
   constructor(
     private contentService:ContentService,
@@ -22,9 +25,10 @@ export class ChatMasterPage implements OnInit {
     private feeedbackService:FeedbackService,
     private router:Router
   ) {
-    this.router.events.subscribe((event:any)=>{
+    this.router.events.subscribe(async(event:any)=>{
       if(event instanceof NavigationEnd && this.router.url == '/chat'){
         this.entityList = null
+        this.user = await this.contentService.storage.get('user')
         this.loadData()
       }
     })
@@ -42,6 +46,8 @@ export class ChatMasterPage implements OnInit {
           data[i].avatar_url = url ? this.contentService.addPrefix(url) : undefined
         }
         this.entityList = data as unknown as Array<any>
+        this.coachList = this.entityList.filter((item:any)=>item.role_id == 3)
+        this.nutritionistList = this.entityList.filter((item:any)=>item.role_id == 4)
         console.log(data)
       })
   }
