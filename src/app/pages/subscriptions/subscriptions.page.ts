@@ -9,12 +9,19 @@ import {FeedbackService} from "../../feedback.service";
   styleUrls: ['./subscriptions.page.scss'],
 })
 export class SubscriptionsPage implements OnInit {
+  user:any = null
 
   constructor(
     private contentService: ContentService,
     private router: Router,
     private feedbackService: FeedbackService
   ) {
+    this.router.events.subscribe(async (event) => {
+      if(event instanceof NavigationEnd && event.url == '/subscriptions'){
+        this.user = await this.contentService.storage.get('user')
+        console.log(this.user)
+      }
+    })
   }
 
   ngOnInit() {

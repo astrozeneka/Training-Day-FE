@@ -9,9 +9,9 @@
 
 <ion-content>
     <app-shop-tabs selectedTab="tab1"></app-shop-tabs>
-    <h1 class="display-1 ion-padding">Maîtrisez votre budget et choisissez l’offre d’abonnement qui vous convient</h1>
 
-    <div class="option-list">
+    <div class="option-list" *ngIf="!user || !user?.subscription">
+        <h1 class="display-1 ion-padding">Maîtrisez votre budget et choisissez l’offre d’abonnement qui vous convient</h1>
         <div class="card ion-padding">
             <h2 class="display-1">Pack Hoylt (14,99 euros / mois)</h2>
             <p class="helper">
@@ -39,6 +39,12 @@
                 Choisir
             </ion-button>
         </div>
+    </div>
+    <div class="option-list ion-padding" *ngIf="user && user?.subscription">
+        <h1 class="display-1">Vous disposez actuellement d'un {{ user.subscription.label }}</h1>
+        <p class="helper">
+            Votre abonnement est actif jusqu'au {{ user.expires_at | date }}
+        </p>
     </div>
 
 </ion-content>
