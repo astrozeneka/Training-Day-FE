@@ -116,7 +116,18 @@
                     Date d'expiration
                 </ion-label>
                 <ion-note slot="end">
-                    {{ entity.expires_at | date }} (Renouvellement automatique)
+                    {{ entity.expires_at | date }}
+                </ion-note>
+            </ion-item>
+            <ion-item>
+                <ion-label>
+                    Terminer l'abonnement
+                </ion-label>
+                <ion-button slot="end" color="danger" (click)="endSubscription()" *ngIf="entity.subscription_is_active">
+                    Annuler l'abonnement
+                </ion-button>
+                <ion-note slot="end" *ngIf="!entity.subscription_is_active">
+                    Votre abonnement prendra fin le {{ entity.expires_at | date }}
                 </ion-note>
             </ion-item>
         </div>

@@ -179,4 +179,13 @@ export class ProfilePage extends FormComponent implements OnInit {
         }
       })
   }
+
+  endSubscription(){
+    this.contentService.post('/cancel-subscription', {})
+      .subscribe((res)=>{
+        if(res){
+          console.log(res)
+        }
+      })
+  }
 }

@@ -12,7 +12,7 @@ import {Browser} from "@capacitor/browser";
 })
 export class SubscriptionsPaymentPage implements OnInit {
   validated = false
-  amount = undefined
+  amount:any = 0
   reference = ""
   receipt_url = ""
 
@@ -26,6 +26,7 @@ export class SubscriptionsPaymentPage implements OnInit {
         let subscription_option = await this.contentService.storage.get('subscription_option')
         let subscription_duration = await this.contentService.storage.get('subscription_duration')
         let subscription_price = await this.contentService.storage.get('subscription_price')
+        this.amount = subscription_price
         if (!subscription_option || !subscription_duration || !subscription_price) {
           this.router.navigate(['/subscriptions-duration'])
           return
