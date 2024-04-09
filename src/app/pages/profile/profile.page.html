@@ -101,7 +101,37 @@
   </form>
 
     <div *ngIf="entity">
-        <h3 class="display-1 ion-padding">Abonnement(s)</h3>
+        <h3 class="display-1 ion-padding">Abonnement</h3>
+        <div *ngIf="entity.subscription">
+            <ion-item>
+                <ion-label>
+                    Votre abonnement actuel
+                </ion-label>
+                <ion-note class="text-bigger" slot="end">
+                    {{ entity.subscription.label }}
+                </ion-note>
+            </ion-item>
+            <ion-item>
+                <ion-label>
+                    Date d'expiration
+                </ion-label>
+                <ion-note slot="end">
+                    {{ entity.expires_at | date }} (Renouvellement automatique)
+                </ion-note>
+            </ion-item>
+        </div>
+        <div *ngIf="!entity.subscription">
+            <ion-item>
+                <ion-label>
+                    Vous n'avez pas d'abonnement actif
+                </ion-label>
+                <ion-button slot="end" color="primary" (click)="navigate('/subscriptions')">Souscrire</ion-button>
+            </ion-item>
+        </div>
+    </div>
+
+    <div *ngIf="entity">
+        <h3 class="display-1 ion-padding">Privilèges(s)</h3>
         <!--
         <ion-item *ngIf="!entity.subscription">
             Vous n'avez pas d'abonnement aux offres premium.
@@ -114,7 +144,7 @@
         -->
         <ion-item *ngIf="entity.perishables.length === 0">
             Vous n'avez pas d'abonnement aux offres premium.
-            <ion-button slot="end" color="primary" (click)="navigate('/subscriptions')">Souscrire</ion-button>
+            <ion-button slot="end" color="primary" (click)="navigate('/food-program')">Souscrire</ion-button>
         </ion-item>
         <ion-item *ngFor="let perishable of entity.perishables">
             <ion-label>{{ perishable.label }}</ion-label>

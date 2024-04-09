@@ -4,6 +4,11 @@ import {ContentService} from "../../content.service";
 import {FormControl, Validators} from "@angular/forms";
 import {FeedbackService} from "../../feedback.service";
 
+
+function capitalize(string:any) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 @Component({
   selector: 'app-subscriptions-invoice',
   templateUrl: './subscriptions-invoice.page.html',
@@ -23,9 +28,10 @@ export class SubscriptionsInvoicePage implements OnInit {
     this.router.events.subscribe(async (event) => {
       if(event instanceof NavigationEnd){
         let price = await this.contentService.storage.get('subscription_price') / 100
+        let packageName = (await this.contentService.storage.get('subscription_option')).replace('pack-', '')
         this.invoice = [{
           'id': 1,
-          'title': "Abonnement " + await this.contentService.storage.get('subscription_duration') + " jours",
+          'title': "Abonnement Pack " + capitalize(packageName)+ ' ' + await this.contentService.storage.get('subscription_duration') + " jours",
           'price': price,
         }]
         this.invoice_total = price

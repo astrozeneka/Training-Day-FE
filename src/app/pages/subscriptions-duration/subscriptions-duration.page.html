@@ -10,31 +10,46 @@
 
 <ion-content>
     <h1 class="display-1 ion-padding">Quelle durée sera votre abonnement ?</h1>
-    <p class="ion-padding helper">
-        La fonction "abonnement" est actuellement en cours de développement.
-    </p>
-
-        <!--
-    <div class="ion-text-center">
+    <div class="ion-text-center" *ngIf="subscription_option === 'pack-hoylt'">
         <div class="ion-padding">
             <h2 class="display-1">Un mois d'abonnement — PACK HOYLT<ion-chip color="dark">14,99 euros</ion-chip></h2>
+            <p class="helper">
+                Profitez d'un mois d'abonnement renouvellé mensuellement à 14,99 euros seulement.
+            </p>
             <ion-button size="normal" color="dark" expand="block" fill='outline' shape="round" (click)="clickOption(30, 1499)">Choisir</ion-button>
         </div>
-        <div class="ion-padding">
-            <h2 class="display-1">Trois mois d'abonnement <ion-chip color="primary">5 euros</ion-chip></h2>
-            <p>Économisez 1 euros</p>
-            <ion-button size="normal" color="primary" expand="block" fill="outline" (click)="clickOption(92, 500)">Choisir</ion-button>
-        </div>
-        <div class="ion-padding">
-            <h2 class="display-1">Six mois d'abonnement <ion-chip color="primary">10 euros</ion-chip></h2>
-            <p>Économisez 2 euros</p>
-            <ion-button size="normal" color="primary" expand="block" fill="outline" (click)="clickOption(183, 1200)">Choisir</ion-button>
-        </div>
-        <div class="ion-padding">
-            <h2 class="display-1">Un an d'abonnement <ion-chip color="primary">20 euros</ion-chip></h2>
-            <p>Économisez 4 euros</p>
-            <ion-button size="normal" color="primary" expand="block"  fill='outline' (click)="clickOption(365, 2000)">Choisir</ion-button>
+        <div>
+            <p class="helper">
+                D'autres formules seront bientôt disponible sur notre plateforme.
+            </p>
         </div>
     </div>
-    -->
+    <div class="ion-text-center" *ngIf="subscription_option === 'pack-moreno'">
+        <div class="ion-padding">
+            <h2 class="display-1">Un mois d'abonnement — PACK MORENO<ion-chip color="dark">29,99 euros</ion-chip></h2>
+            <p class="helper">
+                Profitez d'un mois d'abonnement renouvellé mensuellement à 29,99 euros seulement.
+            </p>
+            <ion-button size="normal" color="warning" expand="block" fill='outline' shape="round" (click)="clickOption(30, 2999)">Choisir</ion-button>
+        </div>
+        <div>
+            <p class="helper">
+                D'autres formules seront bientôt disponible sur notre plateforme.
+            </p>
+        </div>
+    </div>
+    <div class="ion-text-center" *ngIf="subscription_option === 'pack-alonzo'">
+        <div class="ion-padding">
+            <h2 class="display-1">Un mois d'abonnement — PACK MORENO<ion-chip color="dark">69,99 euros</ion-chip></h2>
+            <p class="helper">
+                Profitez d'un mois d'abonnement renouvellé mensuellement à 69,99 euros seulement.
+            </p>
+            <ion-button size="normal" color="primary" expand="block" fill='outline' shape="round" (click)="clickOption(30, 6999)">Choisir</ion-button>
+        </div>
+        <div>
+            <p class="helper">
+                D'autres formules seront bientôt disponible sur notre plateforme.
+            </p>
+        </div>
+    </div>
 </ion-content>

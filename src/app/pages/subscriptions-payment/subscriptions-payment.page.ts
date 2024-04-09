@@ -23,7 +23,7 @@ export class SubscriptionsPaymentPage implements OnInit {
   ) {
     this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd && this.router.url == '/subscriptions-payment') {
-        let subscription_option = 'pack-hoylt' // TODO update
+        let subscription_option = await this.contentService.storage.get('subscription_option')
         let subscription_duration = await this.contentService.storage.get('subscription_duration')
         let subscription_price = await this.contentService.storage.get('subscription_price')
         if (!subscription_option || !subscription_duration || !subscription_price) {
@@ -52,7 +52,7 @@ export class SubscriptionsPaymentPage implements OnInit {
 
   async clickVerify(){
     let data = {
-      'subscription_option': 'pack-hoylt', // TODO update
+      'subscription_option': await this.contentService.storage.get('subscription_option'),
       'subscription_duration': await this.contentService.storage.get('subscription_duration'),
       'subscription_price': await this.contentService.storage.get('subscription_price'),
       'reference': this.reference
@@ -62,6 +62,7 @@ export class SubscriptionsPaymentPage implements OnInit {
         if(res.id){
           this.receipt_url = res.receipt_url
           this.validated = true
+          this.feedbackService.registerNow("Le paiement a été enregistré", 'success')
         }else{
           this.feedbackService.registerNow("Erreur lors de la vérification du paiement, veuillez réessayer", 'danger')
         }
