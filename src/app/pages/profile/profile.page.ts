@@ -185,6 +185,8 @@ export class ProfilePage extends FormComponent implements OnInit {
       .subscribe((res)=>{
         if(res){
           console.log(res)
+          this.feedbackService.register("Votre abonnement a été annulé", "success")
+          this.router.navigate(['/home'])
         }
       })
   }
