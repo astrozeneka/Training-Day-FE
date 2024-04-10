@@ -16,6 +16,7 @@ export class VideoUploadPage extends FormComponent{
   override form = new FormGroup({
     'title': new FormControl('', [Validators.required]),
     'description': new FormControl('', [Validators.required]),
+    'tags': new FormControl('', []),
     'file': this.fileControl
   });
   valid = false;
@@ -23,6 +24,7 @@ export class VideoUploadPage extends FormComponent{
   override displayedError = {
     'title': undefined,
     'description': undefined,
+    'tags': undefined,
   }
 
   constructor(

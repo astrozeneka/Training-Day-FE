@@ -26,6 +26,14 @@
                     [errorText]="displayedError.description"
             ></ion-textarea>
         </ion-item>
+        <ion-item>
+            <ion-input
+                label="Tags"
+                label-placement="floating"
+                formControlName="tags"
+                [errorText]="displayedError.tags"
+            ></ion-input>
+        </ion-item>
         <app-upload-video [formControl]="fileControl"></app-upload-video>
         <br/>
         <ion-button expand="block" (click)="submit()" [disabled]="!valid">Envoyer</ion-button>
