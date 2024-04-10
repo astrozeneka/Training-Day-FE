@@ -31,10 +31,10 @@
             </ion-item>
         </div>
     </div>
-    <div *ngIf="user?.role_id === 2" class="ion-padding">
-        <h2 class="display-1">Discuter avec mon coach</h2>
+    <div *ngIf="user?.role_id === 2" class="ion-padding-vertical">
+        <h2 class="display-1 ion-padding-horizontal">Discuter avec mon coach</h2>
         <div *ngIf="user?.subscription?.slug === 'pack-moreno' || user?.subscription?.slug === 'pack-alonzo'">
-            <p class="helper">
+            <p class="helper ion-padding-horizontal">
                 Vous pouvez discuter avec votre coach à tout moment. Il vous répondra dans les plus brefs délais.
             </p>
             <div *ngIf="coachList">
@@ -52,15 +52,15 @@
             </div>
         </div>
         <div *ngIf="user?.subscription?.slug !== 'pack-moreno' && user?.subscription?.slug !== 'pack-alonzo'">
-            <p class="helper">
+            <p class="helper ion-padding-horizontal">
                 Vous n'avez pas accès à cette fonctionnalité. Veuillez souscrire à un Pack Moreno ou Alonzo pour en bénéficier.
             </p>
         </div>
 
         <br/><br/>
-        <h2 class="display-1">Discuter avec mon nutrionniste</h2>
+        <h2 class="display-1 ion-padding-horizontal">Discuter avec mon nutrionniste</h2>
         <div *ngIf="user?.subscription?.slug === 'pack-alonzo'">
-            <p class="helper">
+            <p class="helper ion-padding-horizontal">
                 Vous pouvez discuter avec votre nutrionniste à tout moment. Il vous répondra dans les plus brefs délais.
             </p>
             <div *ngIf="nutritionistList">
@@ -78,7 +78,7 @@
             </div>
         </div>
         <div *ngIf="user?.subscription?.slug !== 'pack-alonzo'">
-            <p class="helper">
+            <p class="helper ion-padding-horizontal">
                 Vous n'avez pas accès à cette fonctionnalité. Veuillez souscrire à un Pack Alonzo pour en bénéficier.
             </p>
         </div>
