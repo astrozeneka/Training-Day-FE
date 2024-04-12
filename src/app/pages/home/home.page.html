@@ -123,14 +123,14 @@
                         <ion-icon name="play-circle-outline"></ion-icon>
                     </div>
                     <div class="right">
-                        <h3 class="card-title">{{ video['title'] }}</h3>
-                        <div class="stars">
+                        <h3 class="card-title" (click)="goToVideo(video.id)">{{ video['title'] }}</h3>
+                        <!--<div class="stars">
                             <ion-icon name="star-outline"></ion-icon>
                             <ion-icon name="star-outline"></ion-icon>
                             <ion-icon name="star-outline"></ion-icon>
                             <ion-icon name="star-outline"></ion-icon>
                             <ion-icon name="star-outline"></ion-icon>
-                        </div>
+                        </div>-->
                         <p>{{ video['description'] }}</p>
                     </div>
                 </div>

@@ -178,6 +178,7 @@ swiper-slide{
   .right{
     h3{
       @include display-1;
+      cursor: pointer;
     }
 
     .stars{
