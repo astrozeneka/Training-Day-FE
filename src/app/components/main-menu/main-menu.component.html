@@ -34,23 +34,25 @@
     <ion-button (click)="menuNavigate('/app-gps')" expand="full" fill="clear">Course</ion-button>
     <ion-button (click)="menuNavigate('/app-imc')" expand="full" fill="clear">Calcul IMC</ion-button>
     <ion-button (click)="menuNavigate('/app-calories')" expand="full" fill="clear">Calc. calories</ion-button>
-    <ion-button (click)="menuNavigate('/subscriptions')" expand="full" fill="clear">Boutique</ion-button>
+    <ion-button (click)="menuNavigate('/subscriptions')" expand="full" fill="clear" *ngIf="user?.function === 'customer'">
+        Boutique
+    </ion-button>
 
     <div *ngIf="!user">
         <ion-button (click)="menuNavigate('/login')" expand="full" fill="clear">Se connecter</ion-button>
     </div>
-    <div *ngIf="user?.role === 'customer' || user?.role_id === 2 || user?.role_id === 3">
+    <div *ngIf="user?.function === 'customer' || user?.function === 'coach' || user?.function === 'nutritionist'">
         <h4>Espace personnel</h4>
         <!--<ion-button (click)="menuNavigate('/communities')" expand="full" fill="clear">Mes communautés</ion-button>-->
         <ion-button (click)="menuNavigate('/profile')" expand="full" fill="clear">Mon profil</ion-button>
         <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
-            {{user.role_id===2?'Mon coach':'Messagerie'}}
+            {{user.function==='customer'?'Mon coach':'Messagerie'}}
             <ion-chip *ngIf="unreadMessages" color="danger">{{ unreadMessages }}</ion-chip>
         </ion-button>
         <!--<ion-button (click)="menuNavigate('/goals')" expand="full" fill="clear">Mes suivis</ion-button>-->
         <!--<ion-button (click)="menuNavigate('/programs')" expand="full" fill="clear">Programmes</ion-button>-->
     </div>
-    <div *ngIf="user?.role_id === 1">
+    <div *ngIf="user?.function === 'admin'">
         <h4>Espace Admin</h4>
         <ion-button (click)="menuNavigate('/profile')" expand="full" fill="clear">Mon profil</ion-button>
         <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
@@ -61,15 +63,8 @@
             Uploader une vidéo
         </ion-button>
     </div>
-    <div *ngIf="user?.role === 'coach'">
-        <h4>Espace coaching</h4>
-        <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
-            Messagerie
-        </ion-button>
-        <ion-button (click)="menuNavigate('/profile')" expand="full" fill="clear">Mon profil</ion-button>
-    </div>
 
-  <div *ngIf="user?.role === 'admin'">
+  <div *ngIf="user?.function === 'admin'">
   <h4>Administration</h4>
 
   <ion-button (click)="menuNavigate('/manage/')" expand="full" fill="clear">

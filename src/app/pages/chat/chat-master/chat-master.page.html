@@ -9,7 +9,7 @@
 
 <ion-content class="">
   <!-- This section should be infinite scroll -->
-    <div *ngIf="user?.role_id !== 2">
+    <div *ngIf="user?.function !== 'customer'">
         <ion-searchbar [formControl]="searchControl"
                        animated="true"
                        placeholder="Rechercher"
@@ -31,7 +31,7 @@
             </ion-item>
         </div>
     </div>
-    <div *ngIf="user?.role_id === 2" class="ion-padding-vertical">
+    <div *ngIf="user?.function === 'customer'" class="ion-padding-vertical">
         <h2 class="display-1 ion-padding-horizontal">Discuter avec mon coach</h2>
         <div *ngIf="user?.subscription?.slug === 'pack-moreno' || user?.subscription?.slug === 'pack-alonzo'">
             <p class="helper ion-padding-horizontal">

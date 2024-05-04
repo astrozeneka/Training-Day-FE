@@ -39,7 +39,7 @@ export class ChatMasterPage implements OnInit {
   }
 
   loadData(){
-    this.contentService.get('/chat', 0, this.searchControl.value, "f_name")
+    this.contentService.get('/chat', 0, this.searchControl.value, "f_name", 1000)
       .subscribe(([data, metaInfo])=>{
         for(let i = 0; i < data.length; i++){
           let url = data[i].profile_image?.permalink
