@@ -50,7 +50,9 @@ export class SubscriptionsVerifyPaymentPage implements OnInit {
   ngOnInit() {
   }
 
+  verifying = false
   async clickVerify(){
+    this.verifying = true
     let data = {
       'subscription_option': await this.contentService.storage.get('subscription_option'),
       'subscription_duration': await this.contentService.storage.get('subscription_duration'),
@@ -60,6 +62,7 @@ export class SubscriptionsVerifyPaymentPage implements OnInit {
     }
     this.contentService.post('/verify-payment', data)
       .subscribe((res:any)=>{
+        this.verifying = false
         console.log(res)
         if(res.id){
           this.receipt_url = res.receipt_url

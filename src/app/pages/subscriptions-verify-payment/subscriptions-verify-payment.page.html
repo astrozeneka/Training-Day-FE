@@ -17,7 +17,12 @@
                     Veuillez effectuer le payement depuis la nouvelle fenêtre qui s'est ouverte. Effectuez votre payement, puis revenez sur cette page pour confirmer votre paiement.
                 </p>
                 <br/>
-                <ion-button color="primary" fill="solid" expand="full" (click)="clickVerify()">Vérifier le paiement</ion-button>
+                <ion-button color="primary" fill="solid" expand="full" (click)="clickVerify()" [disabled]="verifying">
+                    <span *ngIf="!verifying">
+                        Vérifier le paiement
+                    </span>
+                    <ion-spinner name="dots" *ngIf="verifying"></ion-spinner>
+                </ion-button>
             </div>
             <div *ngIf="validated">
                 <p class="helper">
