@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { GpsPageRoutingModule } from './gps-routing.module';
 
 import { GpsPage } from './gps.page';
+import {UtilitiesModule} from "../../components/utilities.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    GpsPageRoutingModule
+    GpsPageRoutingModule,
+    UtilitiesModule
   ],
   declarations: [GpsPage]
 })

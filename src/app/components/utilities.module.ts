@@ -22,6 +22,7 @@ import {GoalViewComponent} from "./entity-views/goal-view/goal-view.component";
 import {PasswordConfirmationModalComponent} from "./password-confirmation-modal/password-confirmation-modal.component";
 import {UploadVideoComponent} from "./upload-video/upload-video.component";
 import {ShopTabsComponent} from "./shop-tabs/shop-tabs.component";
+import {BackButtonComponent} from "./back-button/back-button.component";
 
 
 
@@ -47,6 +48,7 @@ import {ShopTabsComponent} from "./shop-tabs/shop-tabs.component";
     ThreadViewComponent,
     UserViewComponent,
     GoalViewComponent,
+    BackButtonComponent,
 
     UnavailableComponent
   ],
@@ -64,6 +66,7 @@ import {ShopTabsComponent} from "./shop-tabs/shop-tabs.component";
     MainMenuComponent,
     FileViewComponent,
     GoalViewComponent,
+    BackButtonComponent,
 
     UnavailableComponent,
     UploadVideoComponent,

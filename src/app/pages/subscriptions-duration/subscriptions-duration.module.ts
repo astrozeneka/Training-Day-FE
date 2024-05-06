@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { SubscriptionsDurationPageRoutingModule } from './subscriptions-duration-routing.module';
 
 import { SubscriptionsDurationPage } from './subscriptions-duration.page';
+import {UtilitiesModule} from "../../components/utilities.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SubscriptionsDurationPageRoutingModule
+    SubscriptionsDurationPageRoutingModule,
+    UtilitiesModule
   ],
   declarations: [SubscriptionsDurationPage]
 })

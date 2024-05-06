@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ChatDetailsPageRoutingModule } from './chat-details-routing.module';
 
 import { ChatDetailsPage } from './chat-details.page';
+import {UtilitiesModule} from "../../../components/utilities.module";
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { ChatDetailsPage } from './chat-details.page';
     FormsModule,
     IonicModule,
     ChatDetailsPageRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    UtilitiesModule
   ],
   declarations: [ChatDetailsPage]
 })

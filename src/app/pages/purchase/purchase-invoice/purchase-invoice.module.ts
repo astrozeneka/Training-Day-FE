@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { PurchaseInvoicePageRoutingModule } from './purchase-invoice-routing.module';
 
 import { PurchaseInvoicePage } from './purchase-invoice.page';
+import {UtilitiesModule} from "../../../components/utilities.module";
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { PurchaseInvoicePage } from './purchase-invoice.page';
     FormsModule,
     IonicModule,
     PurchaseInvoicePageRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    UtilitiesModule
   ],
   declarations: [PurchaseInvoicePage]
 })

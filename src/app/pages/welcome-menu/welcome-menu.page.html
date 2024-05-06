@@ -2,6 +2,7 @@
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
+            <app-back-button></app-back-button>
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Welcome</ion-title>
@@ -31,7 +32,7 @@
         <!-- Course -->
         <ion-button expand="full" type="submit" (click)="goTo('/app-gps')" color="primary" shape="round" fill="outline">Course</ion-button>
         <!-- Boutique -->
-        <ion-button expand="full" type="submit" (click)="goTo('/shop')" color="primary" shape="round" fill="outline">Boutique</ion-button>
+        <ion-button expand="full" type="submit" (click)="goTo('/subscriptions')" color="primary" shape="round" fill="outline">Boutique</ion-button>
         <!-- Se connecter -->
         <div *ngIf="user">
             <ion-button expand="full" type="submit" (click)="goTo('/logout')" color="primary" shape="round" fill="outline">Se déconnecter</ion-button>

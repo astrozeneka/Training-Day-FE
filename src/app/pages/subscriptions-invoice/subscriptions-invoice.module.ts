@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { SubscriptionsInvoicePageRoutingModule } from './subscriptions-invoice-routing.module';
 
 import { SubscriptionsInvoicePage } from './subscriptions-invoice.page';
+import {UtilitiesModule} from "../../components/utilities.module";
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { SubscriptionsInvoicePage } from './subscriptions-invoice.page';
     FormsModule,
     IonicModule,
     SubscriptionsInvoicePageRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    UtilitiesModule
   ],
   declarations: [SubscriptionsInvoicePage]
 })
