@@ -7,6 +7,8 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {send} from "ionicons/icons";
 import Pusher from "pusher-js";
 import Echo from "laravel-echo";
+import { Badge } from '@capawesome/capacitor-badge';
+
 
 @Component({
   selector: 'app-chat-details',
@@ -58,8 +60,7 @@ export class ChatDetailsPage implements OnInit {
             this.scrollTop()
           });
         })
-
-
+        Badge.clear();
       }
     })
   }

@@ -4,6 +4,7 @@ import {ContentService} from "../../../content.service";
 import {AlertController, ModalController} from "@ionic/angular";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
+import { Badge } from '@capawesome/capacitor-badge';
 
 @Component({
   selector: 'app-chat-master',
@@ -30,6 +31,7 @@ export class ChatMasterPage implements OnInit {
         this.entityList = null
         this.user = await this.contentService.storage.get('user')
         this.loadData()
+        Badge.clear()
       }
     })
   }
