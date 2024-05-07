@@ -118,7 +118,7 @@ export class AppComponent {
     this.contentService.reloadUserData()
 
     // If the push notification listener is not yet configured, make them works
-    if(!this.push_notification_ready && this.user){
+    if(this.user){ // TODO: optimize this algorithm
       console.log("Init notification listener")
 
       const addListeners = async () => {

@@ -32,11 +32,13 @@ export class ForgotPasswordPage implements OnInit {
       .pipe(catchError(error=>{
         if(error.status == 403){
           this.feedbackService.register('Email not found or not verified')
+          this.router.navigate(['/login'])
         }
         return throwError(error)
       }))
       .subscribe(async(res)=>{
-        console.log(res)
+        this.feedbackService.register('Password reset email sent')
+        this.router.navigate(['/login'])
       })
   }
 
