@@ -154,13 +154,20 @@ swiper-slide{
   gap: 1em;
 
   .left{
-    min-width: 100px;
-    max-width: 200px;
+    //min-width: 100px;
+    //max-width: 200px;
     overflow: hidden;
-    position: relative;
+    //position: relative;
+
+    display: flex;
+    height: 120px;
+    width: 200px;
+    min-width: 200px;
+    align-items: center;
+    flex-direction: row;
 
     img{
-      scale: 1.2;
+      scale: 1.0;
     }
 
     ion-icon{
