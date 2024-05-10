@@ -12,16 +12,23 @@
     <h1 class="display-1 ion-padding">{{ video?.title }}</h1>
     <!-- Video reader -->
     <div *ngIf="video">
+        <div>
 
-        <video width="100%" controls>
-            <source [src]="videoUrl" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+            <video width="100%" controls>
+                <source [src]="videoUrl" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <p class="ion-padding helper">
+            <b>Tags: </b> {{ video?.tags }}
+        </p>
+        <p class="ion-padding helper">
+            {{ video?.description }}
+        </p>
     </div>
-    <p class="ion-padding helper">
-        <b>Tags: </b> {{ video?.tags }}
-    </p>
-    <p class="ion-padding helper">
-        {{ video?.description }}
+    <!-- Ionic spiner -->
+    <p class="ion-text-center helper" *ngIf="!video">
+        Chargement <br/><br/><br/>
+        <ion-spinner></ion-spinner>
     </p>
 </ion-content>
