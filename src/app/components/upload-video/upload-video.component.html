@@ -1,5 +1,6 @@
 <div class="upload-video">
-    <input type="file" #fileInput class="ion-hide" accept="video/mp4" (change)="uploadVideo($event)">
+    <!-- Accept mp4 and mov -->
+    <input type="file" #fileInput class="ion-hide" accept="video/mp4,video/quicktime" (change)="uploadVideo($event)">
     <ion-button
         color="medium"
         fill="solid"
