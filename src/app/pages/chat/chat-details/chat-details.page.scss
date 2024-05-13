@@ -36,6 +36,10 @@
     padding: .8em;
     border-radius: 1em;
     margin-left: .2em;
+
+    &.undelivered{
+      opacity: 0.9;
+    }
   }
 
   &.received{

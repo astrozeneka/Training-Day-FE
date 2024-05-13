@@ -104,10 +104,13 @@ export class ChatDetailsPage implements OnInit {
     obj.sender_id = (await this.contentService.storage.get('user')).id
     this.contentService.post('/messages', obj)
       .subscribe(async(res)=>{
+        this.entityList = this.entityList.filter((message:any)=>!message.undelivered)
         this.entityList = this.entityList?.concat(res)
         this.entityOffset = this.entityList?.length
       })
     this.form.reset()
+    obj.undelivered = true
+    this.entityList.push(obj)
   }
 
   onIonInfinite(event:any){
@@ -117,6 +120,7 @@ export class ChatDetailsPage implements OnInit {
     this.contentService.get('/messages/details', this.entityOffset, ""+this.correspondentId, "f_correspondent")
       .subscribe(([data, metaInfo])=>{
         data.reverse()
+        this.entityList = this.entityList.filter((message:any)=>!message.undelivered) // Remove the undelivered messages
         this.entityList = data.concat(this.entityList)
         this.entityOffset = this.entityList?.length
         event.target.complete()
