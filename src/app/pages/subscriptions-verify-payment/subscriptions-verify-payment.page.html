@@ -8,13 +8,13 @@
 </ion-header>
 
 <ion-content>
-    <h1 class="display-1 ion-padding">Validez votre payement</h1>
+    <h1 class="display-1 ion-padding">Validez votre paiement</h1>
 
     <div class="container ion-padding">
         <div>
             <div *ngIf="!validated">
                 <p class="helper">
-                    Veuillez effectuer le payement depuis la nouvelle fenêtre qui s'est ouverte. Effectuez votre payement, puis revenez sur cette page pour confirmer votre paiement.
+                    Veuillez effectuer le paiement depuis la nouvelle fenêtre qui s'est ouverte. Effectuez votre paiement, puis revenez sur cette page pour confirmer votre paiement.
                 </p>
                 <br/>
                 <ion-button color="primary" fill="solid" expand="full" (click)="clickVerify()" [disabled]="verifying">
@@ -26,7 +26,7 @@
             </div>
             <div *ngIf="validated">
                 <p class="helper">
-                    Votre payement de {{ amount }} € été validé.
+                    Votre paiement de {{ amount }} € été validé.
                 </p>
                 <ion-item>
                     Télécharger votre reçu
