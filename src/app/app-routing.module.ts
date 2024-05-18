@@ -223,6 +223,10 @@ const routes: Routes = [
     path: 'subscriptions-payment',
     loadChildren: () => import('./pages/subscriptions-payment/subscriptions-payment.module').then(m => m.SubscriptionsPaymentPageModule)
   },
+  {
+    path: 'videos/:category',
+    loadChildren: () => import('./pages/videos/videos.module').then(m => m.VideosPageModule)
+  },
 ];
 
 @NgModule({

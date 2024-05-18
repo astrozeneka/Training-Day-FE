@@ -1,0 +1,63 @@
+@import "../../../mixins";
+
+.video-card{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  gap: 1em;
+
+  .left{
+    //min-width: 100px;
+    //max-width: 200px;
+    overflow: hidden;
+    //position: relative;
+
+    display: flex;
+    height: 120px;
+    width: 200px;
+    min-width: 200px;
+    align-items: center;
+    flex-direction: row;
+
+    img{
+      scale: 1.0;
+    }
+
+    ion-icon{
+      display: none;
+      // color: var(--ion-color-dark);
+      color: var(--ion-color-medium);
+      font-size: 5em;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .right{
+    h3{
+      @include display-1;
+      cursor: pointer;
+    }
+
+    .stars{
+      color: var(--ion-color-warning);
+    }
+
+    p{
+      color: var(--ion-color-medium);
+      font-size: .8em;
+    }
+  }
+
+  p, h3{
+    margin: 0;
+  }
+}
+
+.video-card:hover .left ion-icon{
+  color: var(--ion-color-secondary);
+}
+
