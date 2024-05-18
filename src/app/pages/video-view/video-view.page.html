@@ -20,12 +20,57 @@
                 Your browser does not support the video tag.
             </video>
         </div>
-        <p class="ion-padding helper">
-            <b>Tags: </b> {{ video?.tags }}
-        </p>
-        <p class="ion-padding helper">
-            {{ video?.description }}
-        </p>
+        <div *ngIf="!user || user?.function !== 'admin'">
+            <p class="ion-padding helper">
+                <b>Tags: </b> {{ video?.tags }}
+            </p>
+            <p class="ion-padding helper">
+                {{ video?.description }}
+            </p>
+        </div>
+
+        <!-- If the user is an admin, he can edit the video -->
+        <div *ngIf="user?.function === 'admin'">
+            <form [formGroup]="form">
+                <ion-item>
+                    <ion-input
+                            label="Titre"
+                            label-placement="floating"
+                            formControlName="title"
+                            [errorText]="displayedError.title"
+                    ></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-select
+                        formControlName="category"
+                        label="Categorie"
+                        label-placement="floating"
+                    >
+                        <ion-select-option value="undefined">Non défini</ion-select-option>
+                        <ion-select-option value="training">Training</ion-select-option>
+                        <ion-select-option value="boxing">Boxing</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-textarea
+                        label="Description"
+                        formControlName="description"
+                        placeholder="Description de la vidéo"
+                        [rows]="5"
+                        [errorText]="displayedError.description"
+                    ></ion-textarea>
+                </ion-item>
+                <ion-item>
+                    <ion-input
+                            label="Tags"
+                            label-placement="floating"
+                            formControlName="tags"
+                            [errorText]="displayedError.tags"
+                    ></ion-input>
+                </ion-item>
+                <ion-button expand="block" (click)="submit()" [disabled]="!formValid" shape="round">Mettre à jour</ion-button>
+            </form>
+        </div>
     </div>
     <!-- Ionic spiner -->
     <p class="ion-text-center helper" *ngIf="!video">

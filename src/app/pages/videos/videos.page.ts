@@ -12,6 +12,7 @@ export class VideosPage {
   title = '';
   category = ''
   videos:any = []
+  videoLoading = false
 
   constructor(
     private router: Router,
@@ -32,9 +33,14 @@ export class VideosPage {
   }
 
   loadVideoList() {
+    if (this.videoLoading) return
     console.log("Loading videos")
+    this.videoLoading = true
     this.contentService.getCollection(`/videos`, undefined, {'f_category': this.category}).subscribe((res: any) => {
       this.videos = res.data as object
+      setTimeout(() => {
+        this.videoLoading = false
+      }, 1000)
     })
   }
 
