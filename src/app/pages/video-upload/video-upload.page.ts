@@ -17,6 +17,7 @@ export class VideoUploadPage extends FormComponent{
     'title': new FormControl('', [Validators.required]),
     'description': new FormControl('', [Validators.required]),
     'tags': new FormControl('', []),
+    'category': new FormControl('', []),
     'file': this.fileControl
   });
   valid = false;
@@ -25,6 +26,7 @@ export class VideoUploadPage extends FormComponent{
     'title': undefined,
     'description': undefined,
     'tags': undefined,
+    'category': undefined,
   }
 
   constructor(
@@ -43,6 +45,11 @@ export class VideoUploadPage extends FormComponent{
 
   submit(){
     let data:any = this.form.value
+    if (data.category == 'training'){
+      data.tags = 'training,' + data.tags
+    }else if(data.category == 'boxing'){
+      data.tags = 'boxing,' + data.tags
+    }
     data.file_id = data.file.id
     this.contentService.post('/video', data)
       .subscribe((response:any)=>{

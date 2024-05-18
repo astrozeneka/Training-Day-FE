@@ -36,6 +36,17 @@
                 [errorText]="displayedError.tags"
             ></ion-input>
         </ion-item>
+        <ion-item>
+            <ion-select
+                    formControlName="category"
+                    label="Categorie"
+                    label-placement="floating"
+            >
+                <ion-select-option value="undefined">Non défini</ion-select-option>
+                <ion-select-option value="training">Training</ion-select-option>
+                <ion-select-option value="boxing">Boxing</ion-select-option>
+            </ion-select>
+        </ion-item>
         <app-upload-video [formControl]="fileControl"></app-upload-video>
         <br/>
         <ion-button expand="block" (click)="submit()" [disabled]="!valid">Envoyer</ion-button>
