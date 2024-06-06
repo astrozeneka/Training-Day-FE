@@ -94,7 +94,7 @@ export class VideoViewPage implements OnInit {
   deleteVideo(){
     this.contentService.delete(`/video`, `${this.videoId}`)
       .subscribe((response:any)=>{
-        if(response.id){
+        if(response.message){
           this.feedbackService.register('Le vidéo a été supprimé avec succes', 'success')
           this.router.navigate(['/home'])
         }else{
