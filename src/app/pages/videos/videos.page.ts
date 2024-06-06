@@ -42,7 +42,7 @@ export class VideosPage {
     if (this.videoLoading) return
     console.log("Loading videos")
     this.videoLoading = true
-    this.contentService.getCollection(`/videos`, undefined, {'f_category': this.category}).subscribe((res: any) => {
+    this.contentService.getCollection(`/videos`, undefined, {'f_category': this.category}, 100).subscribe((res: any) => {
       this.videos = res.data as object
       setTimeout(() => {
         this.videoLoading = false
