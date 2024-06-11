@@ -22,12 +22,12 @@ export class VideosPage {
     console.log("Subscribe video loading")
     let subscription = router.events.subscribe((event) => {
       if(event instanceof NavigationEnd && event.url.includes('/videos/training')){
-        this.title = "Découvrez les vidéo sur les entrainements"
+        this.title = "Découvrez les vidéos sur les entrainements"
         this.category = 'training'
         this.loadVideoList()
       }
       if(event instanceof NavigationEnd && event.url.includes('/videos/boxing')){
-        this.title = "Découvrez les vidéo sur les boxes"
+        this.title = "Découvrez les vidéos sur les boxes"
         this.category = 'boxing'
         this.loadVideoList()
       }

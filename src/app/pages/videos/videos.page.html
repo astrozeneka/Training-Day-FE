@@ -28,6 +28,9 @@
                 <p>{{ video['description'] }}</p>
             </div>
         </div>
+        <div *ngIf="videos.length === 0" class="ion-padding">
+            <p>Aucune vidéo disponible pour le moment</p>
+        </div>
     </div>
 
 </ion-content>
