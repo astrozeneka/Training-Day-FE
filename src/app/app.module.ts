@@ -10,6 +10,7 @@ import {QuillModule} from "ngx-quill";
 import {HttpClientModule} from "@angular/common/http";
 import {IonicStorageModule} from "@ionic/storage-angular";
 import {UtilitiesModule} from "./components/utilities.module";
+import { InAppPurchase2 } from "@ionic-native/in-app-purchase-2/ngx";
 
 @NgModule({
   declarations: [
@@ -23,7 +24,10 @@ import {UtilitiesModule} from "./components/utilities.module";
         IonicStorageModule.forRoot(),
         UtilitiesModule
     ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    InAppPurchase2
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

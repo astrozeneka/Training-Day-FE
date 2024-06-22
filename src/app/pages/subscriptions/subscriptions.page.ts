@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
+import {PurchaseService} from "../../purchase.service";
 
 @Component({
   selector: 'app-subscriptions',
@@ -14,7 +15,8 @@ export class SubscriptionsPage implements OnInit {
   constructor(
     private contentService: ContentService,
     private router: Router,
-    private feedbackService: FeedbackService
+    private feedbackService: FeedbackService,
+    private purchaseService: PurchaseService
   ) {
     this.router.events.subscribe(async (event) => {
       if(event instanceof NavigationEnd && event.url == '/subscriptions'){
@@ -37,6 +39,11 @@ export class SubscriptionsPage implements OnInit {
       this.router.navigate(['/subscriptions-duration'])
     }
 
+  }
+
+  testPurchase(productId:string){
+    console.log("Click button")
+    this.purchaseService.purchase(productId)
   }
 
 }
