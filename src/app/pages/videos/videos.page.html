@@ -10,7 +10,7 @@
 <ion-content>
     <h1 class="display-1 ion-padding">{{ title }}</h1>
     <div class="list-container">
-        <div class="video-card ion-padding" *ngFor="let video of videos">
+        <!--<div class="video-card ion-padding" *ngFor="let video of videos">
             <div class="left" (click)="goToVideo(video.id)">
                 <img src="/assets/logo-light-1024x1024-noalpha.jpg" alt="Vidéo thumbnail" class="card-image" *ngIf="!video.thumbnail"/>
                 <img [src]="getUrl(video.thumbnail.permalink)" alt="Vidéo thumbnail" class="card-image" *ngIf="video.thumbnail"/>
@@ -27,10 +27,39 @@
                 </div>
                 <p>{{ video['description'] }}</p>
             </div>
-        </div>
+        </div>-->
+        <app-infinite-list
+            [httpHeaders]="{ 'Authorization': 'Bearer ' + jwtToken }"
+            [httpUrl]="contentService.apiEndpoint + '/videos'"
+            [filter]="{ 'f_category': this.category}"
+            *ngIf="jwtToken"
+        >
+            <ng-template let-item>
+                <div class="video-card ion-padding">
+                    <div class="left" (click)="goToVideo(item.id)">
+                        <img src="/assets/logo-light-1024x1024-noalpha.jpg" alt="Vidéo thumbnail" class="card-image" *ngIf="!item.thumbnail"/>
+                        <img [src]="getUrl(item.thumbnail.permalink)" alt="Vidéo thumbnail" class="card-image" *ngIf="item.thumbnail"/>
+                        <ion-icon name="play-circle-outline"></ion-icon>
+                    </div>
+                    <div class="right">
+                        <h3 class="card-title" (click)="goToVideo(item.id)">{{ item['title'] }}</h3>
+                        <div class="stars">
+                            <ion-icon name="star-outline"></ion-icon>
+                            <ion-icon name="star-outline"></ion-icon>
+                            <ion-icon name="star-outline"></ion-icon>
+                            <ion-icon name="star-outline"></ion-icon>
+                            <ion-icon name="star-outline"></ion-icon>
+                        </div>
+                        <p>{{ item['description'] }}</p>
+                    </div>
+                </div>
+            </ng-template>
+        </app-infinite-list>-
+        <!--
         <div *ngIf="videos.length === 0" class="ion-padding">
             <p>Aucune vidéo disponible pour le moment</p>
         </div>
+        -->
     </div>
 
 </ion-content>

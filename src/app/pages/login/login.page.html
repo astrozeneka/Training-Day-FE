@@ -40,7 +40,17 @@
             [errorText]="displayedError.password"
           ></ion-input>
         </ion-item>
+          <!--
         <ion-button expand="full" type="submit" shape="round">Se connecter</ion-button>
+        -->
+          <app-ux-button
+            expand="full"
+            type="submit"
+            shape="round"
+            [loading]="formIsLoading"
+          >
+              Se connecter
+          </app-ux-button>
           <p>
                <a href="/forgot-password">Mot de passe oublié ?</a>
           </p>

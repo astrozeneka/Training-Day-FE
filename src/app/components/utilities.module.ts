@@ -23,6 +23,8 @@ import {PasswordConfirmationModalComponent} from "./password-confirmation-modal/
 import {UploadVideoComponent} from "./upload-video/upload-video.component";
 import {ShopTabsComponent} from "./shop-tabs/shop-tabs.component";
 import {BackButtonComponent} from "./back-button/back-button.component";
+import {UxButtonComponent} from "../components-submodules/angular-ux-button/ux-button.component";
+import {InfiniteListComponent} from "../components-submodules/angular-infinite-list/infinite-list.component";
 
 
 
@@ -50,7 +52,9 @@ import {BackButtonComponent} from "./back-button/back-button.component";
     GoalViewComponent,
     BackButtonComponent,
 
-    UnavailableComponent
+    UnavailableComponent,
+    UxButtonComponent,
+    InfiniteListComponent,
   ],
   imports: [
     CommonModule,
@@ -70,7 +74,9 @@ import {BackButtonComponent} from "./back-button/back-button.component";
 
     UnavailableComponent,
     UploadVideoComponent,
-    ShopTabsComponent
+    ShopTabsComponent,
+    UxButtonComponent,
+    InfiniteListComponent,
   ]
 })
 export class UtilitiesModule { }

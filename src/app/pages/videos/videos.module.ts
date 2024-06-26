@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { VideosPageRoutingModule } from './videos-routing.module';
 
 import { VideosPage } from './videos.page';
+import {UtilitiesModule} from "../../components/utilities.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    VideosPageRoutingModule
+    VideosPageRoutingModule,
+    UtilitiesModule
   ],
   declarations: [VideosPage]
 })

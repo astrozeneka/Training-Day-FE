@@ -8,7 +8,7 @@ import {
   Token,
 } from '@capacitor/push-notifications';
 import {ContentService} from "../../content.service";
-import {catchError, throwError} from "rxjs";
+import {catchError, finalize, throwError} from "rxjs";
 import {FormComponent} from "../../components/form.component";
 import {FeedbackService} from "../../feedback.service";
 import {Router} from "@angular/router";
@@ -25,6 +25,7 @@ export class LoginPage extends FormComponent implements OnInit {
     "email": new FormControl('', [Validators.required, Validators.email]),
     "password": new FormControl('', Validators.required)
   })
+  formIsLoading = false;
 
   override displayedError = {
     'email': undefined,
@@ -128,6 +129,8 @@ export class LoginPage extends FormComponent implements OnInit {
   }
 
   submit(){
+    console.log("Submit")
+    this.formIsLoading = true;
     this.contentService.requestLogin(this.form.value)
       .pipe(catchError((error)=>{
         if(error.status == 422){
@@ -137,7 +140,11 @@ export class LoginPage extends FormComponent implements OnInit {
           this.feedbackService.registerNow("Le nom d'utilisateur ou le mot de passe est incorrect", 'danger')
         }
         return throwError(error)
-      }))
+      }),
+        finalize(()=>{
+          // It will be executed no matter what
+          this.formIsLoading = false
+        }))
       .subscribe(async (response:any)=>{
         /*await this.contentService.storage.set('token', response.token) // Not in use
         await this.contentService.storage.set('user_id', response.user.id) // Not in use
@@ -152,6 +159,7 @@ export class LoginPage extends FormComponent implements OnInit {
         await this.feedbackService.register("Bonjour, vous êtes connecté", 'success')
         this.router.navigate(['/home'])
       })
+
   }
 
   async reloadPushNotificationPermissions(){

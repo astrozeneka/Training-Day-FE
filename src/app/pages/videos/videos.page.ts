@@ -14,10 +14,11 @@ export class VideosPage {
   category = ''
   videos:any = []
   videoLoading = false
+  jwtToken = undefined
 
   constructor(
     private router: Router,
-    private contentService: ContentService
+    protected contentService: ContentService
   ) {
     console.log("Subscribe video loading")
     let subscription = router.events.subscribe((event) => {
@@ -38,16 +39,21 @@ export class VideosPage {
     })
   }
 
-  loadVideoList() {
+  async loadVideoList() {
+    this.jwtToken = await this.contentService.storage.get('token')
+
+    // Should fire event to update the video content
+    /*
     if (this.videoLoading) return
     console.log("Loading videos")
     this.videoLoading = true
-    this.contentService.getCollection(`/videos`, undefined, {'f_category': this.category}, 100).subscribe((res: any) => {
+    this.contentService.getCollection(`/videos`, undefined, {'f_category': this.category}, 3).subscribe((res: any) => {
       this.videos = res.data as object
       setTimeout(() => {
         this.videoLoading = false
       }, 1000)
     })
+     */
   }
 
   goToVideo(video_id:number){

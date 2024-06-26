@@ -10,7 +10,7 @@
 
 <ion-content>
     <h1 class="display-1 ion-padding">Uploader une vidéo</h1>
-    <form [formGroup]="form">
+    <form [formGroup]="form" (submit)="submit()">
         <ion-item>
             <ion-input
                 label="Titre"
@@ -49,6 +49,6 @@
         </ion-item>
         <app-upload-video [formControl]="fileControl"></app-upload-video>
         <br/>
-        <ion-button expand="block" (click)="submit()" [disabled]="!valid" shape="round">Envoyer</ion-button>
+        <app-ux-button expand="block" [disabled]="!valid" shape="round" [loading]="isFormLoading">Envoyer</app-ux-button>
     </form>
 </ion-content>

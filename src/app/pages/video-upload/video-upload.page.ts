@@ -4,6 +4,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
+import {finalize} from "rxjs";
 
 @Component({
   selector: 'app-video-upload',
@@ -20,6 +21,7 @@ export class VideoUploadPage extends FormComponent{
     'category': new FormControl('', []),
     'file': this.fileControl
   });
+  isFormLoading = false;
   valid = false;
 
   override displayedError = {
@@ -44,6 +46,7 @@ export class VideoUploadPage extends FormComponent{
   }
 
   submit(){
+    this.isFormLoading = true
     let data:any = this.form.value
     if (data.category == 'training'){
       data.tags = 'training,' + data.tags
@@ -52,9 +55,13 @@ export class VideoUploadPage extends FormComponent{
     }
     data.file_id = data.file.id
     this.contentService.post('/video', data)
+      .pipe(finalize(()=>{
+        this.isFormLoading = false
+      }))
       .subscribe((response:any)=>{
-        console.log('response')
-        // If the return object has an id, make it success
+        // Destroy all properties
+        this.form.reset()
+        this.fileControl.reset()
         if(response.id){
           this.feedbackService.register('Votre vidéo a été ajoutée avec succès', 'success')
           this.router.navigate(['/home'])
