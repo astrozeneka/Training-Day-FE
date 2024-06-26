@@ -3,6 +3,7 @@ import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
 import {PurchaseService} from "../../purchase.service";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-subscriptions',
@@ -46,4 +47,5 @@ export class SubscriptionsPage implements OnInit {
     this.purchaseService.purchase(productId)
   }
 
+  protected readonly environment = environment;
 }

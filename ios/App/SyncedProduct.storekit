@@ -4,26 +4,7 @@
 
   ],
   "products" : [
-    {
-      "displayPrice" : "24.99",
-      "familyShareable" : false,
-      "internalID" : "6504214945",
-      "localizations" : [
-        {
-          "description" : "Pack moreno",
-          "displayName" : "Pack Moreno",
-          "locale" : "fr"
-        },
-        {
-          "description" : "A Training pack provided by Training Day",
-          "displayName" : "Pack Moreno",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "pack_moreno",
-      "referenceName" : "Pack Moreno",
-      "type" : "NonConsumable"
-    }
+
   ],
   "settings" : {
     "_applicationInternalID" : "6477325664",

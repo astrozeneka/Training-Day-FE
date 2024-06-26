@@ -9,46 +9,50 @@
 </ion-header>
 
 <ion-content>
+    <!--
     <app-shop-tabs selectedTab="tab1"></app-shop-tabs>
-
-    <div class="option-list" *ngIf="!user || !user?.subscription">
-        <h1 class="display-1 ion-padding">Maîtrisez votre budget et choisissez l’offre d’abonnement qui vous convient</h1>
-        <!--<div class="card ion-padding">
-            <h2 class="display-1">Pack Hoylt (14,99 euros / mois)</h2>
-            <p class="helper">
-                Découvrez notre offre de base incluant un accès illimité aux trainings sur la plateforme pour vous accompagner dans votre parcours.
-            </p>
-            <ion-button size="normal" color="dark" expand="block" (click)="clickOption('pack-hoylt')" shape="round">
-                Choisir
-            </ion-button>
-        </div>-->
-        <div class="card ion-padding">
-            <h2 class="display-1">Pack Moreno (29,99 euros / mois)</h2>
-            <p class="helper">
-                Accédez à une expérience premium avec un accompagnement et un suivi personnalisé avec votre coach. Accès à la messagerie, pour un accompagnement et un suivi personnalisé. Prenez rendez-vous avec votre coach.
-            </p>
-            <!--
-            <ion-button size="normal" color="warning" expand="block" (click)="clickOption('pack-moreno')" shape="round">
-                Choisir
-            </ion-button>
-            -->
-            <ion-button size="normal" color="warning" expand="block" (click)="testPurchase('pack_moreno')">Acheter Moreno<!-- Testing in-app purchase --></ion-button>
-        </div>
-        <!--<div class="card ion-padding">
-            <h2 class="display-1">Pack alonzo (69,99 euros / mois)</h2>
-            <p class="helper">
-                Optez pour notre pack complet comprenant des vidéos enrichissantes, un coach dédié pour vous guider et un nutritionniste pour vous aider à atteindre vos objectifs santé et de bien-être.
-            </p>
-            <ion-button size="normal" color="primary" expand="block" (click)="clickOption('pack-alonzo')" shape="round">
-                Choisir
-            </ion-button>
-        </div>-->
-    </div>
-    <div class="option-list ion-padding" *ngIf="user && user?.subscription">
-        <h1 class="display-1">Vous disposez actuellement d'un {{ user.subscription.label }}</h1>
-        <p class="helper">
-            Votre abonnement est actif jusqu'au {{ user.expires_at | date }}
+    -->
+    <div *ngIf="!environment.paymentServiceEnabled">
+        <h2 class="ion-padding-horizontal display-1">Boutique</h2>
+        <p class="helper ion-padding-horizontal">
+            La boutique sera disponible prochainement. Vous pourrez y retrouver des produits et services pour vous accompagner dans votre parcours de remise en forme.
         </p>
+    </div>
+    <div *ngIf="environment.paymentServiceEnabled">
+        <div class="option-list" *ngIf="!user || !user?.subscription">
+            <h1 class="display-1 ion-padding">Maîtrisez votre budget et choisissez l’offre d’abonnement qui vous convient</h1>
+            <div class="card ion-padding">
+                <h2 class="display-1">Pack Hoylt (14,99 euros / mois)</h2>
+                <p class="helper">
+                    Découvrez notre offre de base incluant un accès illimité aux trainings sur la plateforme pour vous accompagner dans votre parcours.
+                </p>
+                <ion-button size="normal" color="dark" expand="block" (click)="clickOption('pack-hoylt')" shape="round">
+                    Choisir
+                </ion-button>
+            </div>
+            <div class="card ion-padding">
+                <h2 class="display-1">Pack Moreno (29,99 euros / mois)</h2>
+                <p class="helper">
+                    Accédez à une expérience premium avec un accompagnement et un suivi personnalisé avec votre coach. Accès à la messagerie, pour un accompagnement et un suivi personnalisé. Prenez rendez-vous avec votre coach.
+                </p>
+                <ion-button size="normal" color="warning" expand="block" (click)="testPurchase('pack_moreno')">Acheter Moreno</ion-button>
+            </div>
+            <div class="card ion-padding">
+                <h2 class="display-1">Pack alonzo (69,99 euros / mois)</h2>
+                <p class="helper">
+                    Optez pour notre pack complet comprenant des vidéos enrichissantes, un coach dédié pour vous guider et un nutritionniste pour vous aider à atteindre vos objectifs santé et de bien-être.
+                </p>
+                <ion-button size="normal" color="primary" expand="block" (click)="clickOption('pack-alonzo')" shape="round">
+                    Choisir
+                </ion-button>
+            </div>
+        </div>
+        <div class="option-list ion-padding" *ngIf="user && user?.subscription">
+            <h1 class="display-1">Vous disposez actuellement d'un {{ user.subscription.label }}</h1>
+            <p class="helper">
+                Votre abonnement est actif jusqu'au {{ user.expires_at | date }}
+            </p>
+        </div>
     </div>
 
 </ion-content>
