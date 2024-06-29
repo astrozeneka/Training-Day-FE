@@ -1,10 +1,11 @@
-import {Component, NgZone} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "./content.service";
 import {FeedbackService} from "./feedback.service";
 import {ToastController} from "@ionic/angular";
 import { PushNotifications } from '@capacitor/push-notifications';
 import {HttpClient} from "@angular/common/http";
+import StorePlugin from './custom-plugins/store.plugin'
 
 
 @Component({
@@ -12,7 +13,7 @@ import {HttpClient} from "@angular/common/http";
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   user: any = null;
   device_token = {}
   push_notification_ready = false
@@ -179,5 +180,33 @@ export class AppComponent {
       this.push_notification_ready = true
     }
 
+  }
+
+  async ngOnInit() {
+
+    //console.log("Initializing store plugin...") // 不用了
+    //await StorePlugin.initStore({});
+
+
+    // Add some kind of listener
+    /* (StorePlugin as any).addListener('productsLoaded', (info:any)=>{
+      console.log("Products loaded")
+      console.log(info)
+      console.log("Intercepted Listener")
+    }).then((response:any)=>{
+      console.log("Listener added", response)
+    })*/ // 不用了
+
+    StorePlugin.getProducts({}).then((response:any)=>{
+      console.log("Products loaded from getProducts", response)
+    });
+
+
+
+    //const {value} = await StorePlugin.echo({value: 'Hello from the store !'});
+    //console.log("Requesting product list...")
+    //const {value} = await StorePlugin.getProducts({})
+    //console.log("Product list: ", value)
+    //StorePlugin.initStore({})
   }
 }

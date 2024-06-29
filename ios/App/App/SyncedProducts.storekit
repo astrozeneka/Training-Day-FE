@@ -1,32 +1,16 @@
 {
-  "identifier" : "C144167D",
+  "identifier" : "896DAFBB",
   "nonRenewingSubscriptions" : [
 
   ],
   "products" : [
-    {
-      "displayPrice" : "49.99",
-      "familyShareable" : false,
-      "internalID" : "6505013808",
-      "localizations" : [
-        {
-          "description" : "Personal Trainer",
-          "displayName" : "Personal Trainer",
-          "locale" : "fr"
-        }
-      ],
-      "productID" : "trainer",
-      "referenceName" : "Personal Trainer",
-      "type" : "Consumable"
-    }
+
   ],
   "settings" : {
     "_applicationInternalID" : "6477325664",
     "_developerTeamID" : "K8FHK5UWGD",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 741340961.96262896,
-    "_locale" : "en_US",
-    "_storefront" : "USA",
+    "_lastSynchronizedDate" : 741338964.75008297,
     "_storeKitErrors" : [
       {
         "current" : null,
