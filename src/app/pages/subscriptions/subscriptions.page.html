@@ -9,9 +9,7 @@
 </ion-header>
 
 <ion-content>
-    <!--
     <app-shop-tabs selectedTab="tab1"></app-shop-tabs>
-    -->
     <div *ngIf="!environment.paymentServiceEnabled">
         <h2 class="ion-padding-horizontal display-1">Boutique</h2>
         <p class="helper ion-padding-horizontal">
@@ -35,7 +33,7 @@
                 <p class="helper">
                     Accédez à une expérience premium avec un accompagnement et un suivi personnalisé avec votre coach. Accès à la messagerie, pour un accompagnement et un suivi personnalisé. Prenez rendez-vous avec votre coach.
                 </p>
-                <ion-button size="normal" color="warning" expand="block" (click)="testPurchase('pack_moreno')">Acheter Moreno</ion-button>
+                <ion-button size="normal" color="warning" expand="block" (click)="testPurchase('pack_moreno')" shape="round">Acheter Moreno</ion-button>
             </div>
             <div class="card ion-padding">
                 <h2 class="display-1">Pack alonzo (69,99 euros / mois)</h2>
