@@ -40,6 +40,7 @@ export class PersonalTrainerPage implements OnInit {
 
   async confirmPurchase(productID:string){
     let res = await StorePlugin.purchaseProductById({productId: productID})
+    console.log("Purchase result:")
     console.log(res)
   }
 

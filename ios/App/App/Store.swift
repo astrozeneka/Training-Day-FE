@@ -11,6 +11,8 @@ import StoreKit
 class Store:NSObject {
     private var productIDs = ["trainer1", "trainer5"]
     @Published var products = [Product]()
+    @Published var purchasedConsumables = [Product]()
+    
     var transactionListener: Task<Void, Error>?
     
     // The constructor
@@ -44,31 +46,45 @@ class Store:NSObject {
         }
     }
     
-    @MainActor
-    func purchase(_ product: Product) async throws {
-        let result = try await product.purchase()
-        switch result {
-        case .success(let transactionVerification):
-            await handle(transactionVerification: transactionVerification)
+    private func addPurchased(_ product: Product){
+        switch product.type {
+        case .consumable:
+            print("addPurchased: consumable")
+            purchasedConsumables.append(product)
+            // TODO: persistence
         default:
-            print("Unsuccessful purchase")
+            return
         }
     }
     
     @MainActor
-    private func handle(transactionVerification result: VerificationResult <Transaction> ) async {
-        print("Handle transaction")
+    func purchase(_ product: Product) async throws -> Transaction? {
+        let result = try await product.purchase()
+        switch result {
+        case .success(let transactionVerification):
+            let handledTransaction = await handle(transactionVerification: transactionVerification)
+            return handledTransaction
+        default:
+            print("Unsuccessful purchase")
+            return nil
+        }
+    }
+    
+    @MainActor
+    private func handle(transactionVerification result: VerificationResult <Transaction> ) async -> Transaction? {
         switch result{
             case let.verified(transaction):
                 guard
                 let product = self.products.first(where: { $0.id == transaction.productID })
                 else{
-                    return
+                    return nil
                 }
-                print("Continue to process the purchase")
-                // Add more code here
+                self.addPurchased(product)
+                await transaction.finish()
+                return transaction
             case .unverified:
                 print("Transaction unverified")
+                return nil
         }
     }
     
