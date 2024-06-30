@@ -11,14 +11,27 @@ import StoreKit
 class Store:NSObject {
     private var productIDs = ["trainer1", "trainer5"]
     @Published var products = [Product]()
+    var transactionListener: Task<Void, Error>?
     
     // The constructor
     override init(){
         super.init()
         // Should run the cancellable code
+        transactionListener = listenForTransactions()
         Task{
             // TODO, add the listener loop here
             await requestProducts()
+        }
+    }
+    
+    func listenForTransactions() -> Task <Void, Error> {
+        return Task.detached {
+            for await result in Transaction.updates {
+                // For now the program doesn't execute this portion of code
+                print("listenForTransactions: a transaction has been intercepted")
+                // Capacitor Event should be fired at this step
+                await self.handle(transactionVerification: result)
+            }
         }
     }
     
