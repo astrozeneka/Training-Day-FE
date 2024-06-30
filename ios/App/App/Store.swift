@@ -9,7 +9,7 @@ import Foundation
 import StoreKit
 
 class Store:NSObject {
-    private var productIDs = ["trainer"]
+    private var productIDs = ["trainer1", "trainer5"]
     @Published var products = [Product]()
     
     // The constructor
