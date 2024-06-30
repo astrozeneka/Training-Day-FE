@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A3F21992C31107B000B0D4A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A3F21982C31107B000B0D4A /* StoreKit.framework */; };
+		2A3F219B2C31109E000B0D4A /* StorePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3F219A2C31109E000B0D4A /* StorePlugin.swift */; };
+		2A3F219D2C3110ED000B0D4A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3F219C2C3110ED000B0D4A /* Store.swift */; };
 		2A5B7E6F2AE6DADB00B23720 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2A5B7E6E2AE6DADB00B23720 /* GoogleService-Info.plist */; };
 		2AF935BE2C21643F00833B65 /* SyncedProduct.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 2AF935BD2C21643F00833B65 /* SyncedProduct.storekit */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
@@ -20,6 +23,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2A3F21982C31107B000B0D4A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		2A3F219A2C31109E000B0D4A /* StorePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePlugin.swift; sourceTree = "<group>"; };
+		2A3F219C2C3110ED000B0D4A /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		2A5B7E6C2AE6D0C300B23720 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		2A5B7E6E2AE6DADB00B23720 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2AF935BD2C21643F00833B65 /* SyncedProduct.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = SyncedProduct.storekit; sourceTree = "<group>"; };
@@ -43,6 +49,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */,
+				2A3F21992C31107B000B0D4A /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +59,7 @@
 		27E2DDA53C4D2A4D1A88CE4A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2A3F21982C31107B000B0D4A /* StoreKit.framework */,
 				AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */,
 			);
 			name = Frameworks;
@@ -82,6 +90,8 @@
 				2A5B7E6E2AE6DADB00B23720 /* GoogleService-Info.plist */,
 				2A5B7E6C2AE6D0C300B23720 /* App.entitlements */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
+				2A3F219A2C31109E000B0D4A /* StorePlugin.swift */,
+				2A3F219C2C3110ED000B0D4A /* Store.swift */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
 				504EC30E1FED79650016851F /* Assets.xcassets */,
@@ -217,6 +227,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A3F219D2C3110ED000B0D4A /* Store.swift in Sources */,
+				2A3F219B2C31109E000B0D4A /* StorePlugin.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -363,7 +375,7 @@
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Training Day";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.12;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
@@ -389,7 +401,7 @@
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Training Day";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.12;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.codecrane.training-day";

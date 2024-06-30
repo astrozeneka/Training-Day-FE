@@ -5,6 +5,7 @@ import {FeedbackService} from "./feedback.service";
 import {ToastController} from "@ionic/angular";
 import { PushNotifications } from '@capacitor/push-notifications';
 import {HttpClient} from "@angular/common/http";
+import StorePlugin from "./custom-plugins/store.plugin";
 
 
 @Component({
@@ -38,6 +39,8 @@ export class AppComponent {
           this.user = u;
         })
     })
+
+    // Initialize the StorePlugin together with the Store component
 
     /*
     // Register the device notification

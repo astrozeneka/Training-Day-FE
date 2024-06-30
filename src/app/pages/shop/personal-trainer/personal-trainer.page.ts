@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ContentService} from "../../../content.service";
 import {Router} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
+import StorePlugin from "../../../custom-plugins/store.plugin";
 
 @Component({
   selector: 'app-personal-trainer',
@@ -16,7 +17,10 @@ export class PersonalTrainerPage implements OnInit {
     private feedbackService: FeedbackService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    // Load the product list from the Store
+    let productList = await StorePlugin.getProducts({})
+    console.log(productList)
   }
 
   async clickCoachingOption(coachingNumber:number, price:number){
