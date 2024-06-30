@@ -31,7 +31,8 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
                 "id": product.id,
                 "displayName": product.displayName,
                 "description": product.description,
-                "price": product.price
+                "price": product.price,
+                "displayPrice": product.displayPrice
             ]
         } ?? []
         call.resolve([
@@ -65,7 +66,8 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
                         //"purchaseDate": handledTransaction?.purchaseDate.formatted() ?? "", // Still have errors
                         "quantity": handledTransaction?.purchasedQuantity ?? 0,
                         "signedDate": handledTransaction?.signedDate ?? "",
-                        "transactionId": handledTransaction?.id ?? ""
+                        "transactionId": handledTransaction?.id ?? "",
+                        //"currency": handledTransaction?.currency ?? ""
                     ]
                 ])
             } catch {

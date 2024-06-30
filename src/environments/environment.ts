@@ -2,11 +2,17 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+enum paymentMethod {
+  stripe = 'stripe',
+  inAppPurchase = 'inAppPurchase'
+}
+
 export const environment = {
   production: false,
   apiEndpoint: 'http://localhost:8000/api',
   rootEndpoint: 'http://localhost:8000',
-  paymentServiceEnabled: true
+  paymentServiceEnabled: true,
+  paymentMethod: paymentMethod.inAppPurchase
 };
 
 /*
