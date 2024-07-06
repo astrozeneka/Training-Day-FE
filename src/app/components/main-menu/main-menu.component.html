@@ -34,9 +34,15 @@
     <ion-button (click)="menuNavigate('/app-gps')" expand="full" fill="clear">Course</ion-button>
     <ion-button (click)="menuNavigate('/app-imc')" expand="full" fill="clear">Calcul IMC</ion-button>
     <ion-button (click)="menuNavigate('/app-calories')" expand="full" fill="clear">Calc. calories</ion-button>
-    <ion-button (click)="menuNavigate('/subscriptions')" expand="full" fill="clear" *ngIf="user?.function === 'customer'">
+
+    <!-- TODO: Uncomment the following line -->
+    <!--<ion-button (click)="menuNavigate('/subscriptions')" expand="full" fill="clear" *ngIf="user?.function === 'customer'">
+        Boutique
+    </ion-button>-->
+    <ion-button (click)="menuNavigate('/personal-trainer')" expand="full" fill="clear" *ngIf="user?.function === 'customer'">
         Boutique
     </ion-button>
+
     <!-- ion-accordeon -->
     <ion-accordion-group>
         <ion-accordion value="first">
