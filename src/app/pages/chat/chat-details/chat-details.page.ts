@@ -8,7 +8,7 @@ import {send} from "ionicons/icons";
 import Pusher from "pusher-js";
 import Echo from "laravel-echo";
 import { Badge } from '@capawesome/capacitor-badge';
-
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-chat-details',
@@ -30,6 +30,8 @@ export class ChatDetailsPage implements OnInit {
     'content': new FormControl('', Validators.required)
   })
 
+  echo: Echo = undefined;
+
   constructor(
     private contentService:ContentService,
     private modalController: ModalController,
@@ -46,9 +48,17 @@ export class ChatDetailsPage implements OnInit {
     this.router.events.subscribe(async event=>{
       if(event instanceof NavigationEnd && this.router.url.includes('chat/details')) {
         Pusher.logToConsole = true;
+        let pusher = new Pusher('app-key', {
+          cluster: environment.pusher_cluster,
+          httpHost: environment.pusher_host,
+          wsHost: environment.pusher_host,
+          httpPort: environment.pusher_port,
+          wsPort: environment.pusher_port,
+          wssPort: environment.pusher_port,
+          forceTLS: false, // Hard coded
+          disableStats: true, // hard coded
+          enabledTransports: ['ws', 'wss'], // Hard coded
 
-        let pusher = new Pusher('9918c0cd2a9e368dde8f', {
-          cluster: 'eu'
         });
 
         this.contentService.storage.get('user').then(async user=>{

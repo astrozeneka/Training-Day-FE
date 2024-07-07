@@ -12,7 +12,13 @@ export const environment = {
   apiEndpoint: 'http://localhost:8000/api',
   rootEndpoint: 'http://localhost:8000',
   paymentServiceEnabled: true,
-  paymentMethod: paymentMethod.inAppPurchase
+  paymentMethod: paymentMethod.inAppPurchase,
+
+  // Pusher configuration
+  pusher_app_key: 'app-key',
+  pusher_host: 'localhost',
+  pusher_port: 6001,
+  pusher_cluster: 'eu'
 };
 
 /*
