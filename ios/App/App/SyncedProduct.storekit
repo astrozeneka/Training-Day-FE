@@ -7,16 +7,31 @@
     {
       "displayPrice" : "49.99",
       "familyShareable" : false,
-      "internalID" : "6505013808",
+      "internalID" : "6505030169",
       "localizations" : [
         {
-          "description" : "Personal Trainer",
-          "displayName" : "Personal Trainer",
+          "description" : "Personal Trainer (1 Séance)",
+          "displayName" : "Personal Trainer (1 Séance)",
           "locale" : "fr"
         }
       ],
-      "productID" : "trainer",
-      "referenceName" : "Personal Trainer",
+      "productID" : "trainer1",
+      "referenceName" : "Personal Trainer (1 séance)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "249.99",
+      "familyShareable" : false,
+      "internalID" : "6505030021",
+      "localizations" : [
+        {
+          "description" : "Personal Trainer (5 séances)",
+          "displayName" : "Personal Trainer (5 séances)",
+          "locale" : "fr"
+        }
+      ],
+      "productID" : "trainer5",
+      "referenceName" : "Personal Trainer (5 séances)",
       "type" : "Consumable"
     }
   ],
@@ -24,7 +39,7 @@
     "_applicationInternalID" : "6477325664",
     "_developerTeamID" : "K8FHK5UWGD",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 741340961.96262896,
+    "_lastSynchronizedDate" : 742054476.74509704,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [

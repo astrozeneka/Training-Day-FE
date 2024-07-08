@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {ContentService} from "../../../content.service";
 import {FormControl} from "@angular/forms";
 import {Router} from "@angular/router";
+import StorePlugin from "../../../custom-plugins/store.plugin";
+import {environment} from "../../../../environments/environment";
+import {FeedbackService} from "../../../feedback.service";
+import {catchError} from "rxjs";
 
 @Component({
   selector: 'app-purchase-invoice',
@@ -16,10 +20,14 @@ export class PurchaseInvoicePage implements OnInit {
   subscriptionExtraInfo: string = ""; // Duration or quantity
   subscriptionPrice: number = 0;
 
+  productList:any = {} // Bound to the Store
+  productId:string|undefined = undefined
+
   acceptConditions: FormControl = new FormControl(false);
 
   constructor(
     private contentService: ContentService,
+    private feedbackService: FeedbackService,
     private router: Router
   ) {
     this.contentService.storage.get('subscription_slug').then((value) => {
@@ -43,13 +51,42 @@ export class PurchaseInvoicePage implements OnInit {
     this.contentService.storage.get('subscription_price').then((value) => {
       this.subscriptionPrice = value;
     });
+    this.contentService.storage.get('productId').then((value) => {
+      this.productId = value;
+    });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    let productList = (await StorePlugin.getProducts({})).products
+    for(let product of productList){
+      this.productList[product.id] = product
+    }
   }
 
-  continueToPayment(){
-    this.router.navigate(['/purchase-payment'])
+  async continueToPayment(){
+    if(environment.paymentMethod == 'stripe') {
+      this.router.navigate(['/purchase-payment'])
+    }else if(environment.paymentMethod == 'inAppPurchase'){
+      // Confirm purchase
+      let res = await StorePlugin.purchaseProductById({productId: this.productId!});
+      (res.transaction as any).currency = 'EUR';
+      (res.transaction as any).amount = this.productList[this.productId as string].price
+      this.contentService.post('/payments/registerIAPTransaction', res.transaction)
+        .pipe(catchError(err => {
+          // Print error code
+          console.log("Error when processing to purchase")
+          console.log(err)
+          return err
+        }))
+        .subscribe((response:any)=> {
+          console.log("Retrieve response after purchase")
+          this.feedbackService.register('Votre achat a été enregistré. Vous pouvez maintenant profiter de votre achat.')
+          this.router.navigate(['/home'])
+        })
+      console.log("Purchase result:")
+      console.log(res)
+    }
   }
 
+  protected readonly environment = environment;
 }

@@ -2,32 +2,27 @@
 //  StorePlugin.swift
 //  App
 //
-//  Created by Ryan Rasoarahona on 29/6/2567 BE.
+//  Created by Ryan Rasoarahona on 30/6/2567 BE.
 //
 
 import Foundation
 import Capacitor
-import StoreKit
 
-@objc(StorePluhin)
+@objc(StorePlugin)
 public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
-    private var store: Store?
-    
     public let identifier = "StorePlugin"
     public let jsName = "Store"
     public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "initStore", returnType: CAPPluginReturnNone),
         CAPPluginMethod(name: "getProducts", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "purchaseProductById", returnType: CAPPluginReturnPromise)
     ]
     
-    override public func load() {
-        self.store = Store()
-        NotificationCenter.default.addObserver(self, selector: #selector(handleProductsLoaded(_:)), name: .productsLoaded, object: nil)
-    }
+    private var store: Store?
     
-    @objc func initStore(_ call: CAPPluginCall){
-        // Coulnd't be used anymore
+    
+    override public func load() {
+        store = Store()
+        // Init the notification listener
     }
     
     @objc func getProducts(_ call: CAPPluginCall){
@@ -36,36 +31,48 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
                 "id": product.id,
                 "displayName": product.displayName,
                 "description": product.description,
-                "price": product.price
+                "price": product.price,
+                "displayPrice": product.displayPrice
             ]
         } ?? []
         call.resolve([
-            "value": products
+            "products": products
         ])
     }
     
-    @objc func echo(_ call: CAPPluginCall){
-        let value = call.getString("value") ?? ""
-        call.resolve([
-            "value": value
-        ])
-    }
-    
-    @objc func handleProductsLoaded(_ notification: Notification) {
-        // A function for asynchronous loading (ok)
-        print("handleProductsLoaded called")
-        guard let products = notification.userInfo?["products"] as? [Product] else {
+    @objc func purchaseProductById(_ call: CAPPluginCall){
+        guard let productID = call.getString("productId") else {
+            call.reject("productId is required")
             return
         }
-        let jsProducts = products.map { product in
-            return [
-                "id": product.id,
-                "displayName": product.displayName,
-                "description": product.description,
-                "price": product.price
-            ]
+        guard let product = self.store?.products.first(where: {$0.id == productID}) else {
+            call.reject("Product not found")
+            return
         }
-        print("Notify the 'productsLoaded' listener")
-        notifyListeners("productsLoaded", data: ["products": "Hello world"])
+        Task <Void, Never> { // Type of expression is ambiguous without a type annotation
+            do { // Sometimes throw, the compiler is unable to type-check the expression ina reasonable amount of time
+                let handledTransaction = try await self.store?.purchase(product)
+                call.resolve([
+                    "success": true,
+                    "transaction": [
+                        "bundleId": handledTransaction?.appBundleID ?? "",
+                        "deviceVerification": handledTransaction?.deviceVerification.base64EncodedString() ?? "",
+                        "deviceVerificationNonce": handledTransaction?.deviceVerificationNonce.uuidString ?? "",
+                        // "environment": handledTransaction?.environment,
+                        "inAppOwnershipType": handledTransaction?.ownershipType.rawValue ?? "",
+                        //"originalPurchaseDate": handledTransaction?.originalPurchaseDate.formatted() ?? "", // Still have errors
+                        //"originalTransactionId": handledTransaction?.originalID ?? 0,
+                        //"productId": handledTransaction?.productID ?? "",
+                        //"purchaseDate": handledTransaction?.purchaseDate.formatted() ?? "", // Still have errors
+                        "quantity": handledTransaction?.purchasedQuantity ?? 0,
+                        "signedDate": handledTransaction?.signedDate ?? "",
+                        "transactionId": handledTransaction?.id ?? "",
+                        //"currency": handledTransaction?.currency ?? ""
+                    ]
+                ])
+            } catch {
+                call.reject(error.localizedDescription)
+            }
+        }
     }
 }

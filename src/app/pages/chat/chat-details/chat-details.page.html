@@ -15,13 +15,18 @@
                 ...
             </div>
         </ion-infinite-scroll>
-      <div *ngFor="let entity of entityList" class="message" [class.received]="entity.recipient_id === user.id" [class.sent]="entity.recipient_id !== user.id">
-          <ion-avatar slot="start" *ngIf="entity.recipient_id === user.id">
-          <img src="{{avatar_url??'../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
-        </ion-avatar>
-          <div class="message-content" *ngIf="!entity.undelivered">{{ entity.content }}</div>
-          <div class="message-content undelivered" *ngIf="entity.undelivered">{{ entity.content }}</div>
-      </div>
+        <div *ngIf="!entityList">
+            <ion-spinner class="ion-padding" style="padding-top: 20vh"></ion-spinner>
+        </div>
+        <div *ngIf="entityList">
+          <div *ngFor="let entity of entityList" class="message" [class.received]="entity.recipient_id === user.id" [class.sent]="entity.recipient_id !== user.id">
+              <ion-avatar slot="start" *ngIf="entity.recipient_id === user.id">
+              <img src="{{avatar_url??'../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
+            </ion-avatar>
+              <div class="message-content" *ngIf="!entity.undelivered">{{ entity.content }}</div>
+              <div class="message-content undelivered" *ngIf="entity.undelivered">{{ entity.content }}</div>
+          </div>
+        </div>
     </div>
     <div class="controls"><!-- The message input -->
       <form (submit)="$event.preventDefault()" [formGroup]="form">

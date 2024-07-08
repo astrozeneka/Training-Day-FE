@@ -44,7 +44,7 @@ export class ChatMasterPage implements OnInit {
     this.contentService.get('/chat', 0, this.searchControl.value, "f_name", 1000)
       .subscribe(([data, metaInfo])=>{
         for(let i = 0; i < data.length; i++){
-          let url = data[i].profile_image?.permalink
+          let url = data[i].thumbnail64 || data[i].profile_image?.permalink
           data[i].avatar_url = url ? this.contentService.addPrefix(url) : undefined
         }
         this.entityList = data as unknown as Array<any>
