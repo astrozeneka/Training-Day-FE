@@ -23,6 +23,7 @@ class Store:NSObject {
         Task{
             // TODO, add the listener loop here
             await requestProducts()
+            await updateCurrentEntitlements()
         }
     }
     
@@ -85,6 +86,27 @@ class Store:NSObject {
             case .unverified:
                 print("Transaction unverified")
                 return nil
+        }
+    }
+    
+    @MainActor
+    private func updateCurrentEntitlements() async {
+        // ONLY INTERCEPT THE non-consumables, the non-renewing subscription and auto-renewing subscription
+        // But not the consumables
+        do {
+            for await result in Transaction.currentEntitlements {
+                switch result {
+                case let.verified(transaction):
+                    guard let product = self.products.first(where: {$0.id == transaction.productID }) else {
+                        continue
+                    }
+                    await handle(transactionVerification: .verified(transaction))
+                case .unverified:
+                    print("Unverified transaction found")
+                }
+            }
+        } catch {
+            print("Error:updateCurrentEntitlements: \(error)")
         }
     }
     

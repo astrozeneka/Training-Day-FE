@@ -36,7 +36,7 @@
         <h2 class="display-1 ion-padding-horizontal">Discuter avec mon coach</h2>
         <!-- TODO: uncomment the following comment -->
         <!--<div *ngIf="user?.subscription?.slug === 'pack-moreno' || user?.subscription?.slug === 'pack-alonzo'">-->
-        <div>
+        <div *ngIf="user?.subscription_is_active">
             <p class="helper ion-padding-horizontal">
                 Vous pouvez discuter avec votre coach à tout moment. Il vous répondra dans les plus brefs délais.
             </p>
@@ -61,6 +61,11 @@
                 Vous n'avez pas accès à cette fonctionnalité. Veuillez souscrire à un Pack Moreno ou Alonzo pour en bénéficier.
             </p>
         </div>-->
+        <div *ngIf="!user.subscription_is_active">
+            <p class="helper ion-padding-horizontal">
+                Vous n'avez pas accès à cette fonctionnalité. Veuillez souscrire à un Pack Moreno ou Alonzo pour en bénéficier.
+            </p>
+        </div>
 
         <br/><br/>
         <h2 class="display-1 ion-padding-horizontal">Discuter avec mon nutrionniste</h2>

@@ -10,6 +10,7 @@
 		2A3F21992C31107B000B0D4A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A3F21982C31107B000B0D4A /* StoreKit.framework */; };
 		2A3F219B2C31109E000B0D4A /* StorePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3F219A2C31109E000B0D4A /* StorePlugin.swift */; };
 		2A3F219D2C3110ED000B0D4A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3F219C2C3110ED000B0D4A /* Store.swift */; };
+		2A4BB2662C3ADA6A0077D0B7 /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 2A4BB2652C3ADA6A0077D0B7 /* StoreKitTestCertificate.cer */; };
 		2A5B7E6F2AE6DADB00B23720 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2A5B7E6E2AE6DADB00B23720 /* GoogleService-Info.plist */; };
 		2AF935BE2C21643F00833B65 /* SyncedProduct.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 2AF935BD2C21643F00833B65 /* SyncedProduct.storekit */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
@@ -26,6 +27,7 @@
 		2A3F21982C31107B000B0D4A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		2A3F219A2C31109E000B0D4A /* StorePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePlugin.swift; sourceTree = "<group>"; };
 		2A3F219C2C3110ED000B0D4A /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		2A4BB2652C3ADA6A0077D0B7 /* StoreKitTestCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = StoreKitTestCertificate.cer; sourceTree = "<group>"; };
 		2A5B7E6C2AE6D0C300B23720 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		2A5B7E6E2AE6DADB00B23720 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2AF935BD2C21643F00833B65 /* SyncedProduct.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = SyncedProduct.storekit; sourceTree = "<group>"; };
@@ -68,7 +70,6 @@
 		504EC2FB1FED79650016851F = {
 			isa = PBXGroup;
 			children = (
-				2AF935BD2C21643F00833B65 /* SyncedProduct.storekit */,
 				504EC3061FED79650016851F /* App */,
 				504EC3051FED79650016851F /* Products */,
 				7F8756D8B27F46E3366F6CEA /* Pods */,
@@ -87,6 +88,8 @@
 		504EC3061FED79650016851F /* App */ = {
 			isa = PBXGroup;
 			children = (
+				2AF935BD2C21643F00833B65 /* SyncedProduct.storekit */,
+				2A4BB2652C3ADA6A0077D0B7 /* StoreKitTestCertificate.cer */,
 				2A5B7E6E2AE6DADB00B23720 /* GoogleService-Info.plist */,
 				2A5B7E6C2AE6D0C300B23720 /* App.entitlements */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
@@ -178,6 +181,7 @@
 				50B271D11FEDC1A000F3C39B /* public in Resources */,
 				504EC30F1FED79650016851F /* Assets.xcassets in Resources */,
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
+				2A4BB2662C3ADA6A0077D0B7 /* StoreKitTestCertificate.cer in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
 				2A5B7E6F2AE6DADB00B23720 /* GoogleService-Info.plist in Resources */,
@@ -377,7 +381,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.13;
+				MARKETING_VERSION = 1.14;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.codecrane.training-day";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -403,7 +407,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.13;
+				MARKETING_VERSION = 1.14;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.codecrane.training-day";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

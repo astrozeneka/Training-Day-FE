@@ -82,8 +82,9 @@ export class ChatDetailsPage implements OnInit {
     // 1. Load the correspondent data
     this.contentService.getOne('/users/'+this.correspondentId, {})
       .subscribe((data:any)=>{
-        let profile_image = data.profile_image
-        this.avatar_url = profile_image ? this.contentService.addPrefix(profile_image.permalink) : undefined
+        // let profile_image = data.profile_image
+        let url = data.thumbnail64 || data.profile_image?.permalink
+        this.avatar_url = url ? this.contentService.addPrefix(url) : undefined
           //this.contentService.addPrefix(data.profile_image?.permalink)
         this.correspondent = data
       })
