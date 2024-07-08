@@ -42,7 +42,12 @@
                         <ion-icon name="play-circle-outline"></ion-icon>
                     </div>
                     <div class="right">
-                        <h3 class="card-title" (click)="goToVideo(item.id)">{{ item['title'] }}</h3>
+                        <h3 class="card-title" (click)="goToVideo(item.id)">
+                            {{ item['title'] }}
+                        </h3>
+                        <p>
+                            <ion-badge color="medium" *ngIf="item.hidden">Private</ion-badge>
+                        </p>
                         <div class="stars">
                             <ion-icon name="star-outline"></ion-icon>
                             <ion-icon name="star-outline"></ion-icon>
@@ -54,7 +59,7 @@
                     </div>
                 </div>
             </ng-template>
-        </app-infinite-list>-
+        </app-infinite-list>
         <!--
         <div *ngIf="videos.length === 0" class="ion-padding">
             <p>Aucune vidéo disponible pour le moment</p>

@@ -4,6 +4,7 @@ import {environment} from "../../../environments/environment";
 import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {finalize} from "rxjs";
 
 @Component({
   selector: 'app-video-view',
@@ -20,15 +21,18 @@ export class VideoViewPage implements OnInit {
     'title': new FormControl('', [Validators.required]),
     'description': new FormControl('', [Validators.required]),
     'tags': new FormControl('', []),
-    'category': new FormControl('undefined', [])
+    'category': new FormControl('undefined', []),
+    'hidden': new FormControl(false, [])
   })
   displayedError = {
     'title': undefined,
     'description': undefined,
     'tags': undefined,
     'category': undefined
+    // 'hidden': undefined
   }
   formValid = false
+  isFormLoading = false
 
   constructor(
     public router: Router,
@@ -58,7 +62,8 @@ export class VideoViewPage implements OnInit {
             title: this.video.title,
             description: this.video.description,
             tags: this.video.tags,
-            category: category
+            category: category,
+            hidden: this.video.hidden
           })
         })
       }
@@ -71,20 +76,28 @@ export class VideoViewPage implements OnInit {
   ngOnInit() {
   }
 
-  submit(){
+  submit(event:any){
+    event.preventDefault()
+    this.isFormLoading = true
     let data:any = this.form.value
     data.id = this.videoId
-    if (this.video.category == 'training'){
+    if (this.form.value.category == 'training'){
       data.tags = 'training,' + data.tags
-    }else{
+    }else if (this.form.value.category == 'boxing'){
       data.tags = 'boxing,' + data.tags
+    }else{
+      data.tags = data.tags
     }
     data.video_id = this.video.id
     this.contentService.put('/video', data)
+      .pipe(finalize(()=>this.isFormLoading = false))
       .subscribe((response:any)=>{
         if(response.id){
-          this.feedbackService.register('Le vidéo a été uploadé avec succes', 'success')
-          this.router.navigate(['/home'])
+          this.feedbackService.register('Le vidéo a été mis à jour avec succes', 'success')
+          // Go back if possible
+          window.history.back()
+
+          // this.router.navigate(['/home'])
         }else{
           this.feedbackService.registerNow('Erreur lors de la mise à jour de la vidéo', 'danger')
         }

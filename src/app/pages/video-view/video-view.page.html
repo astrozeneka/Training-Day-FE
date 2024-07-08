@@ -31,7 +31,7 @@
 
         <!-- If the user is an admin, he can edit the video -->
         <div *ngIf="user?.function === 'admin'">
-            <form [formGroup]="form">
+            <form [formGroup]="form" (submit)="submit($event)">
                 <ion-item>
                     <ion-input
                             label="Titre"
@@ -52,6 +52,16 @@
                     </ion-select>
                 </ion-item>
                 <ion-item>
+                    <ion-select
+                        label="Visibilité"
+                        label-placement="floating"
+                        formControlName="hidden"
+                    >
+                        <ion-select-option [value]="0">Publique</ion-select-option>
+                        <ion-select-option [value]="1">Privée</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
                     <ion-textarea
                         label="Description"
                         formControlName="description"
@@ -68,7 +78,17 @@
                             [errorText]="displayedError.tags"
                     ></ion-input>
                 </ion-item>
+                <app-ux-button
+                    expand="block"
+                    [disabled]="!formValid"
+                    shape="round"
+                    [loading]="isFormLoading"
+                >
+                    Mettre à jour
+                </app-ux-button>
+                <!--
                 <ion-button expand="block" (click)="submit()" [disabled]="!formValid" shape="round">Mettre à jour</ion-button>
+                -->
             </form>
 
             <br/>
