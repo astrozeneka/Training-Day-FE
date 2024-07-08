@@ -15,7 +15,7 @@ import {environment} from "../../../environments/environment";
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage extends FormComponent {
+export class HomePage extends FormComponent implements OnInit {
   user:any = null
   content:any = null
 
@@ -34,7 +34,7 @@ export class HomePage extends FormComponent {
   ) {
     super()
     this.route.params.subscribe(async (params)=>{
-      await this.loadData()
+      //await this.loadData()
     })
     this.router.events.subscribe(async (event)=>{
       if(event instanceof NavigationEnd && this.router.url == '/home'){
@@ -48,20 +48,13 @@ export class HomePage extends FormComponent {
   }
 
   async ngOnInit() {
-    this.loadData()
-  }
-
-  async loadData(){
-    /*
-    this.user = await this.contentService.storage.get('user')
-    this.cdRef.detectChanges()
-
-    // Load the content
-    this.contentService.getOne('/posts/details', {'f_permalink': `${this.user.role}-home`})
-      .subscribe((data)=>{
-        this.content = data
-      })
-     */
+    let hiddeableIds = ['calory', 'reequilibrage']
+    let hiddeableElts = hiddeableIds.map((id)=>document.getElementById(id))
+    hiddeableElts.forEach((elt)=>{
+      if(elt){
+        elt.style.display = 'none'
+      }
+    })
   }
 
   onSwiper(event: any){
@@ -88,5 +81,17 @@ export class HomePage extends FormComponent {
 
   getUrl(suffix:string){
     return environment.rootEndpoint + '/' + suffix
+  }
+
+  toggleContent(element: HTMLElement, event: any): void {
+    if (element.style.display === 'none') {
+      element.style.display = 'block';
+      event.target.innerText = 'Cacher';
+    } else {
+      element.style.display = 'none';
+      event.target.innerText = 'Voir plus';
+    }
+
+    // get the button element
   }
 }
