@@ -9,6 +9,7 @@ import Pusher from "pusher-js";
 import Echo from "laravel-echo";
 import { Badge } from '@capawesome/capacitor-badge';
 import {environment} from "../../../../environments/environment";
+import {BroadcastingService} from "../../../broadcasting.service";
 
 @Component({
   selector: 'app-chat-details',
@@ -38,7 +39,8 @@ export class ChatDetailsPage implements OnInit {
     private route:ActivatedRoute,
     private alertController:AlertController,
     private feedbackService:FeedbackService,
-    private router:Router
+    private router:Router,
+    private broadcastingService: BroadcastingService
   ) {
     this.route.params.subscribe(async params=>{
       this.correspondentId = params['id']
@@ -47,8 +49,8 @@ export class ChatDetailsPage implements OnInit {
     })
     this.router.events.subscribe(async event=>{
       if(event instanceof NavigationEnd && this.router.url.includes('chat/details')) {
-        Pusher.logToConsole = true;
-        let pusher = new Pusher('app-key', {
+        //Pusher.logToConsole = true;
+        /*let pusher = new Pusher('app-key', {
           cluster: environment.pusher_cluster,
           httpHost: environment.pusher_host,
           wsHost: environment.pusher_host,
@@ -59,10 +61,10 @@ export class ChatDetailsPage implements OnInit {
           disableStats: true, // hard coded
           enabledTransports: ['ws', 'wss'], // Hard coded
 
-        });
-
+        });*/
+        /*
         this.contentService.storage.get('user').then(async user=>{
-          var channel = pusher.subscribe('messages.'+user.id);
+          var channel = broadcastingService.pusher.subscribe('messages.'+user.id);
           channel.bind('message-dispatched',  (data: any)=>{
             // The chat content should be updated with the new messages
             data.reverse()
@@ -70,15 +72,89 @@ export class ChatDetailsPage implements OnInit {
             this.scrollTop()
           });
         })
+
+         */
         Badge.clear();
+
       }
     })
   }
 
-  ngOnInit() {
+  prepareDiscussionDetailsData({data, metadata}){
+    let newMessageAdded = false
+    const maxId = Math.max(...this.entityList.map((item:any)=>item.id))
+    const shouldScrollTop = this.entityList.length == 0
+    this.entityList = data.slice().reverse().concat(this.entityList.slice())
+    // Filter by unique id
+    let unique = {}
+    this.entityList = this.entityList.filter((item:any)=>{
+      if(unique[item.id])
+        return false
+      unique[item.id] = true
+      return true
+    })
+    // Only show undelivered is false
+    this.entityList = this.entityList.filter((item:any)=>!item.undelivered)
+    this.entityList.sort((a, b)=>a.id - b.id)
+    this.entityOffset = this.entityList.length
+    shouldScrollTop?this.scrollTop():"";
+    const newMaxId = Math.max(...this.entityList.map((item:any)=>item.id))
+    if (newMaxId > maxId) {
+      newMessageAdded = true
+      this.scrollTop()
+    }
+  }
+
+  async ngOnInit() {
+    console.log("Here, ngOnInit")
+    let user = await this.contentService.storage.get('user')
+    // CorrespondentId is already loaded
+    // 1. Load from the localstorage to make the app run faster (moved below)
+    let shouldInitUpdate = true
+    let discussionDetailsData = await this.contentService.storage.get('discussionDetailsData-' + this.correspondentId)
+    console.log(discussionDetailsData)
+    if(discussionDetailsData && (discussionDetailsData.length > 0)){
+      console.log("Retrieve saved data", discussionDetailsData)
+      this.entityList = discussionDetailsData.slice().reverse()
+      this.entityOffset = this.entityList.length
+      this.scrollTop()
+
+    }
+
+
+    // 2. register listener to listen update from the server
+    // 2.a. correspondent data (no need to listen, only load once)
+    this.contentService.getOne('/users/'+this.correspondentId, {})
+      .subscribe((data:any)=>{
+        let url = data.thumbnail64 || data.profile_image?.permalink
+        this.avatar_url = url ? this.contentService.addPrefix(url) : undefined
+        this.correspondent = data
+      })
+    // 2.b. message data (need to listen)
+    console.log('event-name: ', `message-details-updated-${this.correspondentId}`)
+    this.broadcastingService.pusher.subscribe(`messages.${user.id}`)
+      .bind( `message-details-updated-${this.correspondentId}`, (res)=>{ // TODO, should use the same format {data, metainfo}
+        console.log("Message details updated: ", res)
+        this.prepareDiscussionDetailsData(res)
+        //console.log("Save data to local storage " + 'discussionDetailsData-' + this.correspondentId, this.entityList.slice())
+
+        this.contentService.storage.set('discussionDetailsData-' + this.correspondentId, this.entityList.slice().reverse())
+        if(this.ionInfiniteEvent)
+          this.ionInfiniteEvent.target.complete()
+      })
+    await new Promise((resolve)=>setTimeout(resolve, 1000)) // Wait 1 second
+
+    // 3. Request the server to get the latest data
+    if(true){ // Should refresh everytime
+      this.contentService.post('/messages/request-update/'+this.correspondentId, {correspondent_id: this.correspondentId})
+        .subscribe((data)=>{
+          console.log('Request message update: ', data)
+        })
+    }
   }
 
   loadData() {
+    /*
     // 1. Load the correspondent data
     this.contentService.getOne('/users/'+this.correspondentId, {})
       .subscribe((data:any)=>{
@@ -98,6 +174,8 @@ export class ChatDetailsPage implements OnInit {
         this.correspondent = metaInfo['correspondent'];
         this.scrollTop()
       })
+
+     */
   }
 
   scrollTop(){
@@ -110,6 +188,21 @@ export class ChatDetailsPage implements OnInit {
   async sendMessage(){
     if (!this.form.valid)
       return
+
+    let obj:any = this.form.value;
+    obj.recipient_id = this.correspondentId;
+    obj.sender_id = (await this.contentService.storage.get('user')).id
+    this.contentService.post('/messages', obj)
+      .subscribe(async(res)=>{
+        console.log("Message sent")
+      })
+
+    obj.undelivered = true
+    this.entityList.push(obj)
+    this.scrollTop()
+    this.form.reset()
+
+    /*
     let obj:any = this.form.value;
     obj.recipient_id = this.correspondentId;
     obj.sender_id = (await this.contentService.storage.get('user')).id
@@ -122,9 +215,20 @@ export class ChatDetailsPage implements OnInit {
     this.form.reset()
     obj.undelivered = true
     this.entityList.push(obj)
+
+     */
   }
 
+  ionInfiniteEvent = null
   onIonInfinite(event:any){
+    this.ionInfiniteEvent = event
+    console.log("On Ion Infinite, send a request to the server to get more messages")
+    this.contentService.post(`/messages/request-update/${this.correspondentId}`, {correspondent_id: this.correspondentId, offset: this.entityOffset})
+      .subscribe((data)=>{
+        console.log('Request message update (onIonInfinite): ', data)
+      })
+
+    /*
     this.entityOffset = this.entityList?.length // Refresh, because the entityList array might be updated by pusher
     console.log("On Ion Infinite")
     // Load additionnal content from the backend
@@ -136,5 +240,7 @@ export class ChatDetailsPage implements OnInit {
         this.entityOffset = this.entityList?.length
         event.target.complete()
       })
+
+     */
   }
 }
