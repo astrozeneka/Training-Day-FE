@@ -18,7 +18,11 @@ export const environment = {
   pusher_app_key: 'app-key',
   pusher_host: 'localhost',
   pusher_port: 6001,
-  pusher_cluster: 'eu'
+  pusher_cluster: 'eu',
+
+  // CREDENTIALS
+  GITHUB_CLIENT_ID: "Ov23li5nl0PxQzCvyJKE",
+  GITHUB_AUTH_REDIRECT_URI: ''
 };
 
 /*

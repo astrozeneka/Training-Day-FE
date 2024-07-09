@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import { Browser } from "@capacitor/browser";
+
 //import { PushNotifications } from '@capacitor/push-notifications';
 import {
   ActionPerformed,
@@ -13,6 +15,7 @@ import {FormComponent} from "../../components/form.component";
 import {FeedbackService} from "../../feedback.service";
 import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-login',
@@ -237,4 +240,19 @@ export class LoginPage extends FormComponent implements OnInit {
   }
 
   protected readonly document = document;
+
+  // TODO here, use the server broadcasting to update the UI when the server get a response + Universal URL
+  registerWithGithub(){
+    let GITHUB_CLIENT_ID = environment.GITHUB_CLIENT_ID
+    const authenticationAuthUrl = `http://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user`
+    Browser.open({url: authenticationAuthUrl})
+  }
+
+  exchangeGithubToken(){
+    let code = "38df53072bf0b8270d6e" // hardcoded to test our flow
+    this.httpClient.post(`${environment.apiEndpoint}/github/register`, {code: code}).subscribe((response:any)=>{
+      console.log(response)
+    })
+
+  }
 }
