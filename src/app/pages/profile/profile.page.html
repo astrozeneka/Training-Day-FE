@@ -103,42 +103,50 @@
 
     <div *ngIf="entity">
         <h3 class="display-1 ion-padding">Abonnement</h3>
+
+        <p class="helper ion-padding">
+            Les offres d'abonnement n'est pas encore disponible pour le moment.
+        </p>
         <div *ngIf="entity.subscription">
-            <ion-item>
-                <ion-label>
-                    Votre abonnement actuel
-                </ion-label>
-                <ion-note class="text-bigger" slot="end">
-                    {{ entity.subscription.label }}
-                </ion-note>
-            </ion-item>
-            <ion-item>
-                <ion-label>
-                    Date d'expiration
-                </ion-label>
-                <ion-note slot="end">
-                    {{ entity.expires_at | date }}
-                </ion-note>
-            </ion-item>
-            <ion-item>
-                <ion-label>
-                    Terminer l'abonnement
-                </ion-label>
-                <ion-button slot="end" color="danger" (click)="endSubscription()" *ngIf="entity.subscription_is_active">
-                    Annuler l'abonnement
-                </ion-button>
-                <ion-note slot="end" *ngIf="!entity.subscription_is_active">
-                    Votre abonnement prendra fin le {{ entity.expires_at | date }}
-                </ion-note>
-            </ion-item>
+            <!--
+                <ion-item>
+                    <ion-label>
+                        Votre abonnement actuel
+                    </ion-label>
+                    <ion-note class="text-bigger" slot="end">
+                        {{ entity.subscription.label }}
+                    </ion-note>
+                </ion-item>
+                <ion-item>
+                    <ion-label>
+                        Date d'expiration
+                    </ion-label>
+                    <ion-note slot="end">
+                        {{ entity.expires_at | date }}
+                    </ion-note>
+                </ion-item>
+                <ion-item>
+                    <ion-label>
+                        Terminer l'abonnement
+                    </ion-label>
+                    <ion-button slot="end" color="danger" (click)="endSubscription()" *ngIf="entity.subscription_is_active">
+                        Annuler l'abonnement
+                    </ion-button>
+                    <ion-note slot="end" *ngIf="!entity.subscription_is_active">
+                        Votre abonnement prendra fin le {{ entity.expires_at | date }}
+                    </ion-note>
+                </ion-item>
+                -->
         </div>
         <div *ngIf="!entity.subscription">
+            <!--
             <ion-item>
                 <ion-label>
                     Vous n'avez pas d'abonnement actif
                 </ion-label>
                 <ion-button slot="end" color="primary" (click)="navigate('/subscriptions')">Souscrire</ion-button>
             </ion-item>
+            -->
         </div>
     </div>
 
@@ -154,6 +162,8 @@
             <ion-note slot="end">Expiré le {{ entity.expires_at | date }}</ion-note>
         </ion-item>
         -->
+
+        <!--
         <ion-item *ngIf="entity.perishables.length === 0">
             Vous n'avez pas d'abonnement aux offres premium.
             <ion-button slot="end" color="primary" (click)="navigate('/food-program')">Souscrire</ion-button>
@@ -163,7 +173,10 @@
             <ion-note slot="end" *ngIf="perishable.expires_at">Expiré le {{ perishable.expires_at | date }}</ion-note>
             <ion-note slot="end" *ngIf="perishable.consumables">{{ perishable.consumables }} séance(s) dispo.</ion-note>
         </ion-item>
-
+           -->
+        <p class="helper ion-padding">
+            Les offres d'abonnement n'est pas encore disponible pour le moment.
+        </p>
     </div>
 
     <div *ngIf="entity">
