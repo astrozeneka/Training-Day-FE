@@ -3,7 +3,7 @@ import {FormComponent} from "../../components/form.component";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
-import {catchError, throwError} from "rxjs";
+import {catchError, finalize, throwError} from "rxjs";
 import {NavigationEnd, Router} from "@angular/router";
 
 @Component({
@@ -12,14 +12,21 @@ import {NavigationEnd, Router} from "@angular/router";
   styleUrls: ['./subscribe.page.scss'],
 })
 export class SubscribePage extends FormComponent implements OnInit {
+  headerHeadline: string = "Créez un compte gratuitement"
+  headerHelper: string = ""
+  passwordlessLogin: boolean = false // default is false
+
   override form: FormGroup = new FormGroup({
-    'email': new FormControl('', [Validators.required, Validators.email]),
-    'password': new FormControl('', [Validators.required]),
-    'password_confirm': new FormControl('', [Validators.required]),
+    'email': new FormControl('', this.passwordlessLogin?[]:[Validators.required, Validators.email]),
+    'password': new FormControl('', this.passwordlessLogin?[]:[Validators.required]),
+    'password_confirm': new FormControl('', this.passwordlessLogin?[]:[Validators.required]),
     'firstname': new FormControl('', [Validators.required]),
     'lastname': new FormControl('', [Validators.required]),
     'phone': new FormControl(''),
-    'address': new FormControl('')
+    'address': new FormControl(''),
+
+    // Special form (used by passwordless login)
+    'username': new FormControl('', [])
   })
   override displayedError = {
     'email': undefined, // ไม่ต้องใส่ Role
@@ -45,8 +52,20 @@ export class SubscribePage extends FormComponent implements OnInit {
     })
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     // ไม่ต้องทำ patchValue
+    // check if tmp-user-info is available
+    let tmpUserDataBndl = await this.contentService.storage.get('tmp-user-info');
+    if (tmpUserDataBndl['next-step'] == 'prompt-user-info'){
+      let tmpUser = tmpUserDataBndl['user']
+      if (['github', 'google', 'facebook'].includes(tmpUser['provider'])) {
+        this.passwordlessLogin = true
+        this.headerHelper = "Créez un compte training-day en quelques clics"
+        this.form.patchValue({
+          'username': tmpUser['provider_uid']
+        })
+      }
+    }
   }
 
   // ไม่ต้องโหลดข้อมูล
@@ -56,8 +75,12 @@ export class SubscribePage extends FormComponent implements OnInit {
     this.form.reset()
   }
 
-  submitForm() {
+  async submitForm() {
     let obj = this.form.value
+    if(this.passwordlessLogin){
+      let tmpUser = (await this.contentService.storage.get('tmp-user-info'))['user']
+      obj['email_verification_token'] = tmpUser['email_verification_token']
+    }
     // ต้องใส่โคตเพิ่มสำหรับรูปโปรไฟล์ฯลฯ
     this.contentService.post('/users', obj)
       .pipe(catchError((error)=>{
@@ -71,6 +94,8 @@ export class SubscribePage extends FormComponent implements OnInit {
           this.manageValidationFeedback(error, 'address')
         }
         return throwError(error)
+      }), finalize(async ()=>{
+        await this.contentService.storage.remove('tmp-user-info')
       }))
       .subscribe(async(res)=>{
         await this.feedbackService.registerNow("Inscription effectuée, vous pouvez désormais vous connecter")

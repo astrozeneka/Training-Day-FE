@@ -65,6 +65,23 @@
 
         <div>
             <h3 class="helper">Experimental features</h3>
+            <ion-button (click)="continueWith('github')" color="medium">
+                <!-- Used both registering or login -->
+                Continue with Github
+                <ion-icon  name="logo-github"></ion-icon>
+            </ion-button>
+            <ion-button (click)="continueWith('google')" color="medium">
+                <!-- Used both registering or login -->
+                Continue with Google
+                <ion-icon  name="logo-google"></ion-icon>
+            </ion-button>
+            <ion-button (click)="continueWith('facebook')" color="medium">
+                <!-- Used both registering or login -->
+                Continue with Facebook
+                <ion-icon  name="logo-facebook"></ion-icon>
+            </ion-button><br/>
+
+
             <ion-button (click)="registerWithGithub()">
                 Register with Github
             </ion-button>

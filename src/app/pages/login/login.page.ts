@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import { Browser } from "@capacitor/browser";
-
+import { v4 as uuidv4 } from 'uuid';
 //import { PushNotifications } from '@capacitor/push-notifications';
 import {
   ActionPerformed,
@@ -16,6 +16,7 @@ import {FeedbackService} from "../../feedback.service";
 import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
+import {BroadcastingService} from "../../broadcasting.service";
 
 @Component({
   selector: 'app-login',
@@ -41,12 +42,16 @@ export class LoginPage extends FormComponent implements OnInit {
     private contentService: ContentService,
     private feedbackService: FeedbackService,
     private router: Router,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private broadcastingService: BroadcastingService
   ) {
     super()
   }
 
   async ngOnInit() {
+    // Clear cache
+    await this.contentService.storage.remove('tmp-user-info')
+
     // Check if the user is connected, then redirect it to the Home
     if(await this.contentService.storage.get('token') != undefined)
       this.router.navigate(['/home'])
@@ -129,12 +134,27 @@ export class LoginPage extends FormComponent implements OnInit {
 
      */
 
+    // This will handle some passwordless login (when the user came back to the page)
+    window.addEventListener('focus', async ev => {
+      console.log("The user is back")
+      let tmpUserInfo = await this.contentService.storage.get('tmp-user-info')
+      if(tmpUserInfo && tmpUserInfo['next-step'] == 'prompt-user-info'){
+        this.router.navigate(['/subscribe'])
+      }else if(tmpUserInfo && tmpUserInfo['next-step'] == 'request-token'){
+        let tmpUser = tmpUserInfo['user'];
+        this.requestLogin({
+          'email': tmpUser['email'],
+          'password': tmpUser['password']
+        })
+      }
+    })
   }
 
-  submit(){
-    console.log("Submit")
-    this.formIsLoading = true;
-    this.contentService.requestLogin(this.form.value)
+  requestLogin({email, password}){
+    this.contentService.requestLogin({
+      'email': email,
+      'password': password
+    })
       .pipe(catchError((error)=>{
         if(error.status == 422){
           this.manageValidationFeedback(error, 'email');
@@ -143,17 +163,10 @@ export class LoginPage extends FormComponent implements OnInit {
           this.feedbackService.registerNow("Le nom d'utilisateur ou le mot de passe est incorrect", 'danger')
         }
         return throwError(error)
-      }),
-        finalize(()=>{
-          // It will be executed no matter what
-          this.formIsLoading = false
-        }))
-      .subscribe(async (response:any)=>{
-        /*await this.contentService.storage.set('token', response.token) // Not in use
-        await this.contentService.storage.set('user_id', response.user.id) // Not in use
-        */
-
-        // Register the push notification token
+      }), finalize(()=>{
+        this.formIsLoading = false;
+      }))
+      .subscribe(async (response: any) => {
         try{
           await this.reloadPushNotificationPermissions()
         }catch (e){
@@ -162,7 +175,12 @@ export class LoginPage extends FormComponent implements OnInit {
         await this.feedbackService.register("Bonjour, vous êtes connecté", 'success')
         this.router.navigate(['/home'])
       })
+  }
 
+  submit(){
+    console.log("Submit")
+    this.formIsLoading = true;
+    this.requestLogin(this.form.value as any)
   }
 
   async reloadPushNotificationPermissions(){
@@ -253,6 +271,27 @@ export class LoginPage extends FormComponent implements OnInit {
     this.httpClient.post(`${environment.apiEndpoint}/github/register`, {code: code}).subscribe((response:any)=>{
       console.log(response)
     })
+  }
 
+  continueWith(provider:string){
+    // Provider: google, github or facebook
+    let provider_client_id = environment[`${provider.toUpperCase()}_CLIENT_ID`]
+    const uniqueSessionId = uuidv4();
+    if(provider == 'github'){
+      const authenticationAuthUrl = `http://github.com/login/oauth/authorize?client_id=${provider_client_id}&scope=user&state=${uniqueSessionId}`
+      // Listen to the corresponding socket
+      console.log("Channel name " + `github.${uniqueSessionId}`)
+      this.broadcastingService.pusher.subscribe(`github.${uniqueSessionId}`)
+        .bind('updated', async (res)=>{
+          // If the user is not registered the server will ask for additionnal information
+          console.log(res)
+          if(['prompt-user-info', 'request-token'].includes(res['next-step'])){
+            console.log("Store tmp-user-info to local storage")
+            await this.contentService.storage.set('tmp-user-info', res)
+          }
+          console.log(res)
+        })
+      Browser.open({url: authenticationAuthUrl})
+    }
   }
 }

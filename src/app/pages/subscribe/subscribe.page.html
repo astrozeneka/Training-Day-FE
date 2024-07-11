@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true">
   <form [formGroup]="form">
     <ion-header collapse="condense">
       <ion-toolbar>
@@ -20,8 +20,21 @@
       </ion-toolbar>
     </ion-header>
 
-    <h2>Créez un compte gratuitement</h2>
+      <div class="ion-padding">
+          <h2>{{ headerHeadline }}</h2>
+          <p class="helper">
+              {{ headerHelper }}
+          </p>
+      </div>
 
+      <ion-item *ngIf="passwordlessLogin">
+          <ion-input
+                  label="username"
+                  label-placement="floating"
+                  formControlName="username"
+                  readonly
+          ></ion-input>
+      </ion-item>
     <ion-item>
       <ion-input
         label="Prénom"
@@ -39,32 +52,34 @@
       ></ion-input>
     </ion-item>
 
-    <ion-item>
-      <ion-input
-        label="Email"
-        label-placement="floating"
-        formControlName="email"
-        [errorText]="displayedError.email"
-      ></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input
-        type="password"
-        label="Mot de passe"
-        label-placement="floating"
-        formControlName="password"
-        [errorText]="displayedError.password"
-      ></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input
-        type="password"
-        label="Confirmez le mot de passe"
-        label-placement="floating"
-        formControlName="password_confirm"
-        [errorText]="displayedError.password_confirm"
-      ></ion-input>
-    </ion-item>
+      <div *ngIf="!passwordlessLogin">
+        <ion-item>
+          <ion-input
+            label="Email"
+            label-placement="floating"
+            formControlName="email"
+            [errorText]="displayedError.email"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            type="password"
+            label="Mot de passe"
+            label-placement="floating"
+            formControlName="password"
+            [errorText]="displayedError.password"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            type="password"
+            label="Confirmez le mot de passe"
+            label-placement="floating"
+            formControlName="password_confirm"
+            [errorText]="displayedError.password_confirm"
+          ></ion-input>
+        </ion-item>
+      </div>
     <ion-item>
       <ion-input
         label="Téléphone"
@@ -83,7 +98,7 @@
     </ion-item>
 
     <div class="ion-text-center ion-padding">
-      <ion-button (click)="resetForm()" color="medium">Réinitialiser</ion-button>
+      <ion-button (click)="resetForm()" color="medium" *ngIf="!passwordlessLogin">Réinitialiser</ion-button>
       <ion-button (click)="submitForm()">S'inscrire</ion-button>
     </div>
   </form>
