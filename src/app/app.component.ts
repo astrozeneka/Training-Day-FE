@@ -1,4 +1,4 @@
-import {Component, NgZone} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "./content.service";
 import {FeedbackService} from "./feedback.service";
@@ -13,7 +13,7 @@ import StorePlugin from "./custom-plugins/store.plugin";
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   user: any = null;
   device_token = {}
   push_notification_ready = false
@@ -42,6 +42,11 @@ export class AppComponent {
     })
   }
 
+  ngOnInit() {
+    if(this.platform.is('ios') || this.platform.is('android'))
+      this.initializePushNotifications()
+  }
+
   private async onRouteChange(){
     this.contentService.reloadUserData()
 
@@ -65,71 +70,80 @@ export class AppComponent {
     this.contentService.reloadUserData()
 
     // If the push notification listener is not yet configured, make them works
-    if(this.user){ // TODO: optimize this algorithm
-      // For the push notification
-      const addListeners = async () => {
-        await PushNotifications.addListener('registration', token => {
-          console.info('Registration token: ', token.value);
-          this.device_token = {
-            'ios_token': token.value
-          }
-          this.contentService.storage.get('token').then((token)=>{
-            let headers = {}
-            if(token)
-              headers = {
-                'Authorization': `Bearer ${token}`
-              }
-            const options = {
-              headers: headers
+    /*if(this.user){
+      this.preparePushNotifications()
+    }*/
+
+  }
+
+  async initializePushNotifications(){
+    console.log("AppComponent: Initializing push notifications")
+    // For the push notification
+    const addListeners = async () => {
+      await PushNotifications.addListener('registration', token => {
+        console.info('Registration token: ', token.value);
+        this.device_token = {
+          'ios_token': token.value
+        }
+        this.contentService.storage.set('device_token', this.device_token)
+        // The code below is unused anymore because the device-token is registered to the server at login time
+        /*this.contentService.storage.get('token').then((token)=>{
+          let headers = {}
+          if(token)
+            headers = {
+              'Authorization': `Bearer ${token}`
             }
-            this.httpClient.post(`${this.contentService.apiEndpoint}/notifications/register-device`, this.device_token, options).subscribe((response:any)=>{
-              console.log('Device registered', response)
-            })
+          const options = {
+            headers: headers
+          }
+          this.httpClient.post(`${this.contentService.apiEndpoint}/notifications/register-device`, this.device_token, options).subscribe((response:any)=>{
+            console.log('Device registered', response)
           })
-        });
-        await PushNotifications.addListener('registrationError', err => {
-          console.error('Registration error: ', err.error);
-        });
-        await PushNotifications.addListener('pushNotificationReceived', notification => {
-          console.log('Push notification received: ', notification);
-        });
-        await PushNotifications.addListener('pushNotificationActionPerformed', notification => {
-          let deepLink = notification.notification.data.deep_link
-          console.log('Deep link', deepLink) // TODO: Solve
-          this.feedbackService.register("Deep link received : " + deepLink + " / " + JSON.stringify(notification.notification.data), "secondary")
-          if(deepLink)
-            this.router.navigate([deepLink])
-          console.log('Push notification action performed', notification.actionId, notification.inputValue);
-        });
+        })*/
+      });
+      await PushNotifications.addListener('registrationError', err => {
+        console.error('Registration error: ', err.error);
+      });
+      await PushNotifications.addListener('pushNotificationReceived', notification => {
+        console.log('Push notification received: ', notification);
+      });
+      await PushNotifications.addListener('pushNotificationActionPerformed', notification => {
+        let deepLink = notification.notification.data.deep_link
+        console.log('Deep link', deepLink) // TODO: Solve
+        this.feedbackService.register("Deep link received : " + deepLink + " / " + JSON.stringify(notification.notification.data), "secondary")
+        if(deepLink)
+          this.router.navigate([deepLink])
+        console.log('Push notification action performed', notification.actionId, notification.inputValue);
+      });
+    }
+    const registerNotifications = async () => {
+      let permStatus = await PushNotifications.checkPermissions();
+      if (permStatus.receive === 'prompt') {
+        permStatus = await PushNotifications.requestPermissions();
       }
-      const registerNotifications = async () => {
-        let permStatus = await PushNotifications.checkPermissions();
-        if (permStatus.receive === 'prompt') {
-          permStatus = await PushNotifications.requestPermissions();
-        }
-        if (permStatus.receive !== 'granted') {
-          throw new Error('User denied permissions!');
-        }
-        await PushNotifications.register();
+      if (permStatus.receive !== 'granted') {
+        throw new Error('User denied permissions!');
       }
-
-      const getDeliveredNotifications = async () => {
-        const notificationList = await PushNotifications.getDeliveredNotifications();
-        console.log('delivered notifications', notificationList);
-      }
-
-
-      if (this.platform.is('ios') || this.platform.is('android')) {
-        await addListeners()
-        await registerNotifications()
-        await getDeliveredNotifications()
-
-        this.push_notification_ready = true
-      }else{
-        //console.warn("Push notifications are not available on web platform")
-        //this.feedbackService.registerNow("Push notifications are not available on web platform", "warning")
-      }
+      await PushNotifications.register();
+    }
+    const getDeliveredNotifications = async () => {
+      const notificationList = await PushNotifications.getDeliveredNotifications();
+      console.log('delivered notifications', notificationList);
     }
 
+    if (this.platform.is('ios') || this.platform.is('android')) {
+      await addListeners()
+      await registerNotifications()
+      await getDeliveredNotifications()
+
+      this.push_notification_ready = true
+
+    }else{
+      // For the web, we will registerNotification for testing
+      await registerNotifications()
+      //console.warn("Push notifications are not available on web platform")
+      //this.feedbackService.registerNow("Push notifications are not available on web platform", "warning")
+
+    }
   }
 }

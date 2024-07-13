@@ -151,10 +151,12 @@ export class LoginPage extends FormComponent implements OnInit {
     })
   }
 
-  requestLogin({email, password}){
+  async requestLogin({email, password}){
+    let deviceToken = await this.contentService.storage.get('device_token')
     this.contentService.requestLogin({
       'email': email,
-      'password': password
+      'password': password,
+      'device_token':  deviceToken
     })
       .pipe(catchError((error)=>{
         if(error.status == 422){
