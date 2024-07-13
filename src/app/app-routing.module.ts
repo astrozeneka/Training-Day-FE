@@ -227,6 +227,10 @@ const routes: Routes = [
     path: 'videos/:category',
     loadChildren: () => import('./pages/videos/videos.module').then(m => m.VideosPageModule)
   },
+  {
+    path: 'manage-personal-trainer',
+    loadChildren: () => import('./pages/manage-personal-trainer/manage-personal-trainer.module').then(m => m.ManagePersonalTrainerPageModule)
+  },
 ];
 
 @NgModule({

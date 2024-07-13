@@ -1,0 +1,15 @@
+<div [ngClass]="'trainer-card ion-padding ' + (columns ? 'columns' : 'no-columns')" *ngIf="entity">
+    <!-- conditionnal class depending on angular variable -->
+    <div>
+        <h4 class="display-3">
+            Personal Trainer x{{ entity.consumables }}
+        </h4>
+        <p>
+            Présentez cette carte pour utiliser les services de votre coach personnel.
+        </p>
+    </div>
+    <div>
+        <!-- qr code using like qr-api -->
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TRAINING_DAY_USER_{{ entity.id }}" alt="QR Code">
+    </div>
+</div>

@@ -1,0 +1,40 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <app-back-button></app-back-button>
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Gérer les entraînement</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+    <div>
+        <h2 class="display-1 ion-padding-horizontal">Enregistrer une séance</h2>
+        <form (submit)="submit($event)">
+
+            <ion-searchbar [formControl]="searchUserControl"
+                           animated="true"
+                           placeholder="Rechercher par nom, prénom ou email"
+                           (keydown.enter)="searchUser($event)"></ion-searchbar>
+            <ion-item *ngFor="let user of searchUserResult">
+                <ion-label>{{ user.firstname }} {{ user.lastname }}</ion-label>
+                <ion-button fill="clear" (click)="selectUser($event, user)">Sélectionner</ion-button>
+            </ion-item>
+
+            <div *ngIf="selectedUser" class="ion-padding">
+                <h3 class="display-1">Détails</h3>
+                <app-trainer-card
+                        [entity]="selectedUser.personalTrainer"
+                        [coachMode]="true"
+                        [columns]="false"
+                ></app-trainer-card>
+                <!-- Information sur l'abonnement/consomables -->
+
+                <app-ux-button expand="block" shape="round" type="submit" [loading]="isFormLoading">Enregistrer</app-ux-button>
+            </div>
+
+        </form>
+    </div>
+</ion-content>

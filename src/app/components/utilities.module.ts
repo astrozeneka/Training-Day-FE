@@ -25,6 +25,7 @@ import {ShopTabsComponent} from "./shop-tabs/shop-tabs.component";
 import {BackButtonComponent} from "./back-button/back-button.component";
 import {UxButtonComponent} from "../components-submodules/angular-ux-button/ux-button.component";
 import {InfiniteListComponent} from "../components-submodules/angular-infinite-list/infinite-list.component";
+import {TrainerCardComponent} from "./trainer-card/trainer-card.component";
 
 
 
@@ -55,6 +56,7 @@ import {InfiniteListComponent} from "../components-submodules/angular-infinite-l
     UnavailableComponent,
     UxButtonComponent,
     InfiniteListComponent,
+    TrainerCardComponent,
   ],
   imports: [
     CommonModule,
@@ -77,6 +79,7 @@ import {InfiniteListComponent} from "../components-submodules/angular-infinite-l
     ShopTabsComponent,
     UxButtonComponent,
     InfiniteListComponent,
+    TrainerCardComponent,
   ]
 })
 export class UtilitiesModule { }

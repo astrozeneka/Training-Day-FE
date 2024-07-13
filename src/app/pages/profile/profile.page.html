@@ -154,21 +154,7 @@
         <h3 class="display-1 ion-padding">Privilèges(s)</h3>
 
         <div *ngIf="grouped_perishables">
-            <div class="trainer-card ion-padding" *ngIf="grouped_perishables['personal-trainer']">
-                <!-- declare variable -->
-                <div>
-                    <h4 class="display-3">
-                        Personal Trainer x{{ grouped_perishables['personal-trainer'].consumables }}
-                    </h4>
-                    <p>
-                        Présentez cette carte pour utiliser les services de votre coach personnel.
-                    </p>
-                </div>
-                <div>
-                    <!-- qr code using like qr-api -->
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TRAINING_DAY_USER_{{ entity.id }}" alt="QR Code">
-                </div>
-            </div>
+            <app-trainer-card [entity]="grouped_perishables['personal-trainer']"></app-trainer-card>
         </div>
         <p class="helper ion-padding" *ngIf="Object.keys(grouped_perishables).length === 0">
             Les offres d'abonnement n'est pas encore disponible pour le moment.
