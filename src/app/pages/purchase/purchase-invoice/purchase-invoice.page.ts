@@ -68,14 +68,15 @@ export class PurchaseInvoicePage implements OnInit {
       this.router.navigate(['/purchase-payment'])
     }else if(environment.paymentMethod == 'inAppPurchase'){
       // Confirm purchase
-      let res = await StorePlugin.purchaseProductById({productId: this.productId!});
-      (res.transaction as any).currency = 'EUR';
-      (res.transaction as any).amount = this.productList[this.productId as string].price
+      let res:any = (await StorePlugin.purchaseProductById({productId: this.productId!})) as any;
+      res.transaction.currency = 'EUR'
+      res.transaction.amount = this.productList[this.productId as string].price * 100
+      res.transaction.product_id = this.productId
       this.contentService.post('/payments/registerIAPTransaction', res.transaction)
         .pipe(catchError(err => {
           // Print error code
-          console.log("Error when processing to purchase")
-          console.log(err)
+          console.error(err)
+          this.feedbackService.registerNow("Erreur: " + err.error.message, "error")
           return err
         }))
         .subscribe((response:any)=> {

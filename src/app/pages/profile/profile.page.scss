@@ -19,3 +19,19 @@
   font-size: .9rem;
   font-weight: 600;
 }
+
+/**
+ * Trainer card
+ */
+.trainer-card{
+  display: flex;
+  align-items: center;
+  border-top: 1px dashed var(--ion-color-medium);
+  border-bottom: 1px dashed var(--ion-color-medium);
+  &>div:first-child{
+    flex: 3;
+  }
+  &>div:last-child{
+    flex: 1;
+  }
+}

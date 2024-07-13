@@ -39,6 +39,8 @@ export class ProfilePage extends FormComponent implements OnInit {
   user_id: any = null;
   entity: any = null;
   old_profile_picture: any = null;
+  grouped_perishables: { [key: string]: any; } = {
+  };
 
   constructor(
     private router:Router,
@@ -50,6 +52,11 @@ export class ProfilePage extends FormComponent implements OnInit {
     router.events.subscribe(async(event: any)=>{
       if (event instanceof NavigationEnd && event.url == '/profile') {
         this.entity = await this.contentService.storage.get('user')
+        // Define one dictionnary by mapping the this.entity.grouped_perishables
+        this.grouped_perishables = this.entity.grouped_perishables.reduce((acc:any, item:any)=>{
+          acc[item.slug] = item
+          return acc
+        }, {})
         console.log(this.entity)
         this.user_id = this.entity?.id
         this.form.patchValue(this.entity)
@@ -190,4 +197,6 @@ export class ProfilePage extends FormComponent implements OnInit {
         }
       })
   }
+
+  protected readonly Object = Object;
 }
