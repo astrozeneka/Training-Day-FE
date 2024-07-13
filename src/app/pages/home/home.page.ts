@@ -39,7 +39,6 @@ export class HomePage extends FormComponent implements OnInit {
     this.router.events.subscribe(async (event)=>{
       if(event instanceof NavigationEnd && this.router.url == '/home'){
         this.contentService.getCollection('/videos').subscribe((res:any)=>{
-          console.log(res.data)
           this.videos = res.data as object
         })
       }

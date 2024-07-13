@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import {ContentService} from "./content.service";
 import {ToastController} from "@ionic/angular";
+import {environment} from "../environments/environment";
+
+// log levels
+export const DEBUG = 0
+export const INFO = 1
 
 @Injectable({
   providedIn: 'root'
@@ -18,14 +23,16 @@ export class FeedbackService {
     this.contentService.storage.set('feedbackColor', color)
   }
 
-  async registerNow(message:string, color:string = 'secondary'){
-    let toast = await this.toastController.create({
-      message: message,
-      position: 'bottom',
-      duration: 5000,
-      color: color
-    })
-    await toast.present()
+  async registerNow(message:string, color:string = 'secondary', logLevel:number = INFO){
+    if(logLevel == INFO || (environment.production == false && logLevel == DEBUG)) {
+      let toast = await this.toastController.create({
+        message: message,
+        position: 'bottom',
+        duration: 5000,
+        color: color
+      })
+      await toast.present()
+    }
   }
 
   clear(){

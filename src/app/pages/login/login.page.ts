@@ -12,7 +12,7 @@ import {
 import {ContentService} from "../../content.service";
 import {catchError, finalize, throwError} from "rxjs";
 import {FormComponent} from "../../components/form.component";
-import {FeedbackService} from "../../feedback.service";
+import {DEBUG, FeedbackService} from "../../feedback.service";
 import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
@@ -41,6 +41,7 @@ export class LoginPage extends FormComponent implements OnInit {
   constructor(
     private contentService: ContentService,
     private feedbackService: FeedbackService,
+    private fs: FeedbackService,
     private router: Router,
     private httpClient: HttpClient,
     private broadcastingService: BroadcastingService
@@ -162,6 +163,7 @@ export class LoginPage extends FormComponent implements OnInit {
         }else if(error.status == 401){ // 401 Unauthorized
           this.feedbackService.registerNow("Le nom d'utilisateur ou le mot de passe est incorrect", 'danger')
         }
+        this.fs.registerNow("Error :" + error.message, "danger", DEBUG)
         return throwError(error)
       }), finalize(()=>{
         this.formIsLoading = false;
