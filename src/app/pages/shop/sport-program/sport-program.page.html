@@ -11,39 +11,80 @@
 
 
 <ion-content class="">
-    <div class="ion-padding">
-        <h1 class="display-1">Choisissez un offre de programme sportif</h1>
-        <p class="helper">
-            Un programme sportif consiste en un entrainement de plus ou moins longue durée. Il se compose d'exercices physiques à réaliser chez soi ou en salle, à une fréquence et selon une intensité définie à l'avance. Un « bon » programme sportif comprend également des phases de repos et de récupération.
+    <div *ngIf="user && user.grouped_perishables && user.grouped_perishables['sport-coach']">
+        <p class="helper ion-padding">
+            Vous disposez déjà d'un programme sportif en cours.
         </p>
+        <app-subscription-card
+            [entity]="user.grouped_perishables['sport-coach']"
+            [title]="'Programme sportif'"
+            [description]="'Vous pouvez utiliser cette abonnement pour accéder à un programme sportif personnalisé de Training-Day.'"
+            [expiresAt]="user.grouped_perishables['sport-coach']['expires_at']"
+            [columns]="true"
+        ></app-subscription-card>
     </div>
-    <div class="option-list">
-        <div class="card ion-padding">
-            <h2 class="display-1">Programme sportif 1 semaine (29,99 euros)</h2>
+    <div *ngIf="!user || (user && user.grouped_perishables && !user.grouped_perishables['sport-coach'])">
+        <div class="ion-padding">
+            <h1 class="display-1">Choisissez un offre de programme sportif</h1>
             <p class="helper">
-                Profitez d’un programme sportif adapté à vos besoins pour une semaine
+                Un programme sportif consiste en un entrainement de plus ou moins longue durée. Il se compose d'exercices physiques à réaliser chez soi ou en salle, à une fréquence et selon une intensité définie à l'avance. Un « bon » programme sportif comprend également des phases de repos et de récupération.
             </p>
-            <ion-button size="normal" color="dark" expand="block" shape="round" (click)="clickOption(7, 2999)">
-                Choisir
-            </ion-button>
         </div>
-        <div class="card ion-padding">
-            <h2 class="display-1">Programme sportif 1 mois (49,99 euros)</h2>
-            <p class="helper">
-                Organisons ensemble vos semaine et profitez d’un programme sportif adapté à vos besoins pour un mois
-            </p>
-            <ion-button size="normal" color="warning" expand="block" shape="round" (click)="clickOption(31, 4999)">
-                Choisir
-            </ion-button>
-        </div>
-        <div class="card ion-padding">
-            <h2 class="display-1">Programme sportif 6 semaines mois (59,99 euros)</h2>
-            <p class="helper">
-                Planifions ensemble votre cycle d’entrainement et profitez d’un programme sportif adapté à vos besoins pour six semaines
-            </p>
-            <ion-button size="normal" color="primary" expand="block" shape="round" (click)="clickOption(42, 5999)">
-                Choisir
-            </ion-button>
+        <div class="option-list">
+            <div class="card ion-padding">
+                <h2 class="display-1">Programme sportif 1 semaine (
+                    {{ productList.hasOwnProperty('sportcoach_1w') ? productList['sportcoach_1w'].displayPrice : 'Temporairement indisponible' }}
+                    )</h2>
+                <p class="helper">
+                    Profitez d’un programme sportif adapté à vos besoins pour une semaine
+                </p>
+                <ion-button
+                        size="normal"
+                        color="dark"
+                        expand="block"
+                        shape="round"
+                        (click)="clickSportCoachOption('sportcoach_1w')"
+                        [disabled]="!productList.hasOwnProperty('sportcoach_1w')"
+                >
+                    Choisir
+                </ion-button>
+            </div>
+            <div class="card ion-padding">
+                <h2 class="display-1">Programme sportif 1 mois (
+                    {{ productList.hasOwnProperty('sportcoach_4w') ? productList['sportcoach_4w'].displayPrice : 'Temporairement indisponible' }}
+                    )</h2>
+                <p class="helper">
+                    Organisons ensemble vos semaine et profitez d’un programme sportif adapté à vos besoins pour un mois
+                </p>
+                <ion-button
+                        size="normal"
+                        color="warning"
+                        expand="block"
+                        shape="round"
+                        (click)="clickSportCoachOption('sportcoach_4w')"
+                        [disabled]="!productList.hasOwnProperty('sportcoach_4w')"
+                >
+                    Choisir
+                </ion-button>
+            </div>
+            <div class="card ion-padding">
+                <h2 class="display-1">Programme sportif 6 semaines mois (
+                    {{ productList.hasOwnProperty('sportcoach_6w') ? productList['sportcoach_6w'].displayPrice : 'Temporairement indisponible' }}
+                    )</h2>
+                <p class="helper">
+                    Planifions ensemble votre cycle d’entrainement et profitez d’un programme sportif adapté à vos besoins pour six semaines
+                </p>
+                <ion-button
+                        size="normal"
+                        color="primary"
+                        expand="block"
+                        shape="round"
+                        (click)="clickSportCoachOption('sportcoach_6w')"
+                        [disabled]="!productList.hasOwnProperty('sportcoach_6w')"
+                >
+                    Choisir
+                </ion-button>
+            </div>
         </div>
     </div>
 </ion-content>
