@@ -177,6 +177,7 @@ export class LoginPage extends FormComponent implements OnInit {
           console.error('Device not compatible with PushNotification', e)
         }
         await this.feedbackService.register("Bonjour, vous êtes connecté", 'success')
+        // Update user data from the server
         this.router.navigate(['/home'])
       })
   }

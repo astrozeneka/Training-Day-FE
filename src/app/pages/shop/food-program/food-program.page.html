@@ -11,68 +11,82 @@
 
 
 <ion-content class="">
-    <div class="ion-padding">
-        <h1 class="display-1">Choisissez un offre de programme alimentaire</h1>
-        <p class="helper">
-            Le rééquilibrage alimentaire est un processus qui permet de retrouver une alimentation saine et équilibrée. Grâce à quelques modifications des habitudes alimentaires, il permet d'apporter à l'organisme ce dont il a besoin.
+    <div *ngIf="user && user.grouped_perishables && user.grouped_perishables['food-coach']">
+        <p class="helper ion-padding">
+            Vous disposez déjà d'un programme alimentaire en cours.
         </p>
-        <!--
-        <p class="helper">
-            L'un des objectifs d'un rééquilibrage alimentaire peut, bien évidemment, être une perte de poids, mais également simplement viser une amélioration de la santé par l'alimentation.
-        </p>
-        -->
+        <app-subscription-card
+            [entity]="user.grouped_perishables['food-coach']"
+            [title]="'Programme alimentaire'"
+            [description]="'Vous pouvez utiliser cette abonnement pour accéder à un programme alimentaire personnalisé de Training-Day.'"
+            [expiresAt]="user.grouped_perishables['food-coach']['expires_at']"
+            [columns]="true"
+        ></app-subscription-card>
     </div>
-    <div class="option-list">
-        <div class="card ion-padding">
-            <h2 class="display-1">Programme alimentaire hebdomadaire (
-                {{ productList.hasOwnProperty('foodcoach_1w') ? productList['foodcoach_1w'].displayPrice : 'Temporairement indisponible' }}
-                )</h2>
+    <div *ngIf="!user || (user && user.grouped_perishables && !user.grouped_perishables['food-coach'])">
+        <div class="ion-padding">
+            <h1 class="display-1">Choisissez un offre de programme alimentaire</h1>
             <p class="helper">
-                Profitez d’un programme alimentaire pour 1 semaine.
+                Le rééquilibrage alimentaire est un processus qui permet de retrouver une alimentation saine et équilibrée. Grâce à quelques modifications des habitudes alimentaires, il permet d'apporter à l'organisme ce dont il a besoin.
             </p>
-            <ion-button
-                    color="dark"
-                    expand="block"
-                    shape="round"
-                    (click)="clickFoodCoachOption('foodcoach_1w')"
-                    [disabled]="!productList.hasOwnProperty('foodcoach_1w')"
-            >
-                Choisir
-            </ion-button>
+            <!--
+            <p class="helper">
+                L'un des objectifs d'un rééquilibrage alimentaire peut, bien évidemment, être une perte de poids, mais également simplement viser une amélioration de la santé par l'alimentation.
+            </p>
+            -->
         </div>
-        <div class="card ion-padding">
-            <h2 class="display-1">Programme alimentaire mensuel (
-                {{ productList.hasOwnProperty('foodcoach_4w') ? productList['foodcoach_4w'].displayPrice : 'Temporairement indisponible' }}
-                )</h2>
-            <p class="helper">
-                Profitez d’un programme alimentaire pour 1 mois
-            </p>
-            <ion-button size="normal"
-                        color="warning"
+        <div class="option-list">
+            <div class="card ion-padding">
+                <h2 class="display-1">Programme alimentaire hebdomadaire (
+                    {{ productList.hasOwnProperty('foodcoach_1w') ? productList['foodcoach_1w'].displayPrice : 'Temporairement indisponible' }}
+                    )</h2>
+                <p class="helper">
+                    Profitez d’un programme alimentaire pour 1 semaine.
+                </p>
+                <ion-button
+                        color="dark"
                         expand="block"
                         shape="round"
-                        (click)="clickFoodCoachOption('foodcoach_4w')"
-                        [disabled]="!productList.hasOwnProperty('foodcoach_4w')"
-            >
-                Choisir
-            </ion-button>
-        </div>
-        <div class="card ion-padding">
-            <h2 class="display-1">Programme alimentaire 6 semaines (
-                {{ productList.hasOwnProperty('foodcoach_6w') ? productList['foodcoach_6w'].displayPrice : 'Temporairement indisponible'}}
-                )</h2>
-            <p class="helper">
-                Profitez d’un programme alimentaire pour 6 semaines
-            </p>
-            <ion-button size="normal"
-                        color="primary"
-                        expand="block"
-                        shape="round"
-                        (click)="clickFoodCoachOption('foodcoach_6w')"
-                        [disabled]="!productList.hasOwnProperty('foodcoach_6w')"
-            >
-                Choisir
-            </ion-button>
+                        (click)="clickFoodCoachOption('foodcoach_1w')"
+                        [disabled]="!productList.hasOwnProperty('foodcoach_1w')"
+                >
+                    Choisir
+                </ion-button>
+            </div>
+            <div class="card ion-padding">
+                <h2 class="display-1">Programme alimentaire mensuel (
+                    {{ productList.hasOwnProperty('foodcoach_4w') ? productList['foodcoach_4w'].displayPrice : 'Temporairement indisponible' }}
+                    )</h2>
+                <p class="helper">
+                    Profitez d’un programme alimentaire pour 1 mois
+                </p>
+                <ion-button size="normal"
+                            color="warning"
+                            expand="block"
+                            shape="round"
+                            (click)="clickFoodCoachOption('foodcoach_4w')"
+                            [disabled]="!productList.hasOwnProperty('foodcoach_4w')"
+                >
+                    Choisir
+                </ion-button>
+            </div>
+            <div class="card ion-padding">
+                <h2 class="display-1">Programme alimentaire 6 semaines (
+                    {{ productList.hasOwnProperty('foodcoach_6w') ? productList['foodcoach_6w'].displayPrice : 'Temporairement indisponible'}}
+                    )</h2>
+                <p class="helper">
+                    Profitez d’un programme alimentaire pour 6 semaines
+                </p>
+                <ion-button size="normal"
+                            color="primary"
+                            expand="block"
+                            shape="round"
+                            (click)="clickFoodCoachOption('foodcoach_6w')"
+                            [disabled]="!productList.hasOwnProperty('foodcoach_6w')"
+                >
+                    Choisir
+                </ion-button>
+            </div>
         </div>
     </div>
 </ion-content>

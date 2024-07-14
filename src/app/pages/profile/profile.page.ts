@@ -49,7 +49,7 @@ export class ProfilePage extends FormComponent implements OnInit {
     private modalCtrl: ModalController
   ) {
     super();
-    router.events.subscribe(async(event: any)=>{
+    router.events.subscribe(async(event: any)=>{ // This way of loading data is not suitable for angular
       if (event instanceof NavigationEnd && event.url == '/profile') {
         this.entity = await this.contentService.storage.get('user')
         // Define one dictionnary by mapping the this.entity.grouped_perishables

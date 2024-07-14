@@ -35,11 +35,10 @@ export class ContentService {
         map(async (res:any)=>{
           if(res.token)
             await this.storage.set('token', res.token)
-          if(res.user)
+          if(res.user){
+            console.log("Reload user data")
             await this.storage.set('user', res.user)
-
-          // After login, make it load the unread message also
-          // await this.reloadUserData()
+          }
         }),
         mergeMap((res: any)=>from(res))
       )
@@ -263,6 +262,17 @@ export class ContentService {
   addPrefix(suffix:string){
     // Load form the environment
     return environment.rootEndpoint + '/storage/' + suffix
+  }
+
+  async getUserFromLocalStorage(){
+    let user = await this.storage.get('user')
+    if (!user) return null
+    let grouped_perishables = user.grouped_perishables.reduce((acc:any, item:any)=>{
+      acc[item.slug] = item
+      return acc
+    }, {})
+    user.grouped_perishables = grouped_perishables
+    return user
   }
   
 }

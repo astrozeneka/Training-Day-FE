@@ -15,6 +15,7 @@ export class FoodProgramPage implements OnInit{
   // override subscriptionSlug:string = "food-program"; // Deprecated
   // override subscriptionLabel:string = "Programme alimentaire"; // Deprecated
   productList: any = {}; // Bound to iOS/Android In-App Purchase
+  user: any;
 
   constructor(
     private contentService: ContentService,
@@ -24,8 +25,13 @@ export class FoodProgramPage implements OnInit{
   }
 
   async ngOnInit() {
+    // Load the user data (to check if there is already active subscription)
     let productList = (await StorePlugin.getProducts({})).products
     this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
+
+    // Check if the user has already subscribed to the food program
+    this.user = await this.contentService.getUserFromLocalStorage()
+    console.log(this.user)
   }
 
   async clickFoodCoachOption(productId:string){
