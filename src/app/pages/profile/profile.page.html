@@ -174,7 +174,9 @@
         </div>
 
         <div *ngIf="grouped_perishables && grouped_perishables['personal-trainer']">
-            <app-trainer-card [entity]="grouped_perishables['personal-trainer']"></app-trainer-card>
+            <app-trainer-card
+                    [entity]="grouped_perishables['personal-trainer']"
+            ></app-trainer-card>
         </div>
 
         <p class="helper ion-padding" *ngIf="Object.keys(grouped_perishables).length === 0">

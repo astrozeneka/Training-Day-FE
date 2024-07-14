@@ -12,6 +12,7 @@ import {environment} from "../../../../environments/environment";
 })
 export class PersonalTrainerPage implements OnInit {
   productList:any = {}
+  user: any;
 
   constructor(
     private contentService: ContentService,
@@ -22,10 +23,11 @@ export class PersonalTrainerPage implements OnInit {
   async ngOnInit() {
     // Load the product list from the Store
     let productList = (await StorePlugin.getProducts({})).products
-    console.log(productList)
-    for(let product of productList){
-      this.productList[product.id] = product
-    }
+    this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
+
+    // Check if the user has already subscribed to the food program
+    this.user = await this.contentService.getUserFromLocalStorage()
+    console.log(this.user)
   }
 
   /**

@@ -11,6 +11,12 @@
 
 
 <ion-content class="">
+    <div *ngIf="user && user.grouped_perishables && user.grouped_perishables['personal-trainer']">
+        <h1 class="display-1 ion-padding">Mes abonnements en cours</h1>
+        <app-trainer-card
+            [entity]="user.grouped_perishables['personal-trainer']"
+        ></app-trainer-card>
+    </div>
     <!-- Put three tab -->
     <h1 class="display-1 ion-padding">Choisissez un offre de coaching personnel</h1>
 
