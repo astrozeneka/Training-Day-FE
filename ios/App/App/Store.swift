@@ -9,14 +9,23 @@ import Foundation
 import StoreKit
 
 class Store:NSObject {
-    private var productIDs = ["trainer1", "trainer5"]
+    private var productIDs = ["trainer1", "trainer5", "foodcoach_1w"]
     @Published var products = [Product]()
+    
     @Published var purchasedConsumables = [Product]()
+    @Published var purchasedNonRenewables = Set<Product>()
+    @Published var purchasedSubscriptions = Set<Product>() // TODO, unimplemented yet
+    
+    // Experimental features (to be confirmed later)
+    var purchasedNonRenewablesEntitlements = [Transaction]()
     
     var transactionListener: Task<Void, Error>?
+    var plugin: StorePlugin
     
     // The constructor
-    override init(){
+    init(_ plugin: StorePlugin){
+        // Patch properties
+        self.plugin = plugin
         super.init()
         // Should run the cancellable code
         transactionListener = listenForTransactions()
@@ -47,12 +56,19 @@ class Store:NSObject {
         }
     }
     
-    private func addPurchased(_ product: Product){
+    private func addPurchased(_ product: Product, _ transaction: Transaction? = nil){
         switch product.type {
         case .consumable:
             print("addPurchased: consumable")
-            purchasedConsumables.append(product)
-            // TODO: persistence
+            purchasedConsumables.append(product) // Persistency is managed the backend server
+        case .nonRenewable:
+            print("addPurchashed: non-renewable")
+            purchasedNonRenewables.insert(product) // Persistency is managed by device entitlements
+            (transaction != nil) ? purchasedNonRenewablesEntitlements.append(transaction!) : nil
+        case .autoRenewable:
+            print("addPurchased: auto-renewable")
+            purchasedSubscriptions.insert(product) // Persistency is manage by device entitlements
+            // TODO: for autorenewable
         default:
             return
         }
@@ -80,7 +96,7 @@ class Store:NSObject {
                 else{
                     return nil
                 }
-                self.addPurchased(product)
+                self.addPurchased(product, transaction)
                 await transaction.finish()
                 return transaction
             case .unverified:
@@ -101,6 +117,17 @@ class Store:NSObject {
                         continue
                     }
                     await handle(transactionVerification: .verified(transaction))
+                    
+                    // TODO, here, should fire event to the iOS capacitor to notify about the currentEntitlements
+                    // TODO: the following code should be removed
+                    /*print("currentEntitlements")
+                    print("product registered: \(product.id)")
+                    print(transaction);
+                    print("bounded transaction: \(transaction.id)")*/
+                    /*self.plugin.notifyListeners("onEntitlements", data: [
+                        "Haha": "Hello world",
+                    ])*/
+                    
                 case .unverified:
                     print("Unverified transaction found")
                 }

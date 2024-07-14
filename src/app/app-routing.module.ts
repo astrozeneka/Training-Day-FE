@@ -197,7 +197,8 @@ const routes: Routes = [
   },
   {
     path: 'nutrition',
-    loadChildren: () => import('./pages/shop/nutrition/nutrition.module').then(m => m.NutritionPageModule)
+    loadChildren: () => import('./pages/shop/nutrition/nutrition.module').then(m => m.NutritionPageModule),
+    // Animation for later
   },
   {
     path: 'purchase-details',

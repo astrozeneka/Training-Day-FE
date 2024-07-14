@@ -14,14 +14,17 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
     public let jsName = "Store"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "getProducts", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "purchaseProductById", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "purchaseProductById", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getPurchasedNonRenewable", returnType: CAPPluginReturnPromise), // deprecated, will not be used anymore
+        
+        CAPPluginMethod(name: "getNonRenewableEntitlements", returnType: CAPPluginReturnPromise)
     ]
     
     private var store: Store?
     
     
     override public func load() {
-        store = Store()
+        store = Store(self)
         // Init the notification listener
     }
     
@@ -74,5 +77,46 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
                 call.reject(error.localizedDescription)
             }
         }
+    }
+    
+    @objc func getPurchasedNonRenewable(_ call: CAPPluginCall) {
+        // Deprecated function
+        let purchasedNonRenewables = self.store?.purchasedNonRenewables.map { product in
+            return [
+                // "itemID": product.itemID,
+                "id": product.id,
+                "type": product.type.rawValue,
+                "displayName": product.displayName,
+                "description": product.description,
+                "price": product.price,
+                "displayPrice": product.displayPrice,
+                "isFamilyShareable": product.isFamilyShareable,
+                "subscription": product.subscription,
+                "json": product.jsonRepresentation
+            ]
+        }
+    }
+    
+    @objc func getNonRenewableEntitlements(_ call: CAPPluginCall) {
+        let nonRenewableEntitlements = self.store?.purchasedNonRenewablesEntitlements.map { handledTransaction in
+            return [
+                "bundleId": handledTransaction.appBundleID,
+                "deviceVerification": handledTransaction.deviceVerification.base64EncodedString(),
+                "deviceVerificationNonce": handledTransaction.deviceVerificationNonce.uuidString,
+                // "environment": handledTransaction?.environment,
+                "inAppOwnershipType": handledTransaction.ownershipType.rawValue,
+                //"originalPurchaseDate": handledTransaction?.originalPurchaseDate.formatted() ?? "", // Still have errors
+                //"originalTransactionId": handledTransaction?.originalID ?? 0,
+                //"productId": handledTransaction?.productID ?? "",
+                //"purchaseDate": handledTransaction?.purchaseDate.formatted() ?? "", // Still have errors
+                "quantity": handledTransaction.purchasedQuantity,
+                "signedDate": handledTransaction.signedDate,
+                "transactionId": handledTransaction.id,
+                //"currency": handledTransaction?.currency ?? ""
+            ]
+        }
+        call.resolve([
+            "entitlements": nonRenewableEntitlements
+        ])
     }
 }

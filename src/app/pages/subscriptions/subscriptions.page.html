@@ -6,10 +6,10 @@
         </ion-buttons>
         <ion-title>S'abonner à nos services</ion-title>
     </ion-toolbar>
+    <app-shop-tabs selectedTab="tab1"></app-shop-tabs>
 </ion-header>
 
 <ion-content>
-    <app-shop-tabs selectedTab="tab1"></app-shop-tabs>
     <div *ngIf="!environment.paymentServiceEnabled">
         <h2 class="ion-padding-horizontal display-1">Boutique</h2>
         <p class="helper ion-padding-horizontal">
