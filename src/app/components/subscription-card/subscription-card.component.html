@@ -1,0 +1,14 @@
+<div [ngClass]="'subscription-card ion-padding ' + (columns ? 'columns' : 'no-columns')" *ngIf="entity">
+    <!-- conditionnal class depending on angular variable -->
+    <div>
+        <h4 class="display-3">
+            {{ title }}
+        </h4>
+        <p>{{ description }}</p>
+        <p class="helper">
+            <ion-badge color="warning">
+                Expire le {{ _expiresAt | date: 'longDate' }}
+            </ion-badge>
+        </p>
+    </div>
+</div>

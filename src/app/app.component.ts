@@ -42,9 +42,31 @@ export class AppComponent implements OnInit{
     })
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    let token = await this.contentService.storage.get('token'); // Wait for the user to be loaded first
+    (this.contentService as any)._token = token // By-passing the private variable
+
     if(this.platform.is('ios') || this.platform.is('android'))
       this.initializePushNotifications()
+
+    // Store
+    if(this.platform.is('ios') || true){
+      let entitlements = (await StorePlugin.getNonRenewableEntitlements({})).entitlements
+      // Unused, The verification and purchase registration is done at transaction for non-renewable
+      /*console.log("appComponent: Entitlements", entitlements)
+      let data = {
+        entitlements: entitlements
+      }
+      this.contentService.post('/payments/synchronize-entitlements', data).subscribe((response:any)=>{
+        console.log(response)
+        if(response.success){
+          console.info("Device entitlements verified from the server")
+        }else{
+          this.feedbackService.registerNow(response.error, "danger") // Still have a bug
+        }
+      })
+       */
+    }
   }
 
   private async onRouteChange(){

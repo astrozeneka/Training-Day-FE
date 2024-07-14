@@ -35,11 +35,7 @@
     <ion-button (click)="menuNavigate('/app-imc')" expand="full" fill="clear">Calcul IMC</ion-button>
     <ion-button (click)="menuNavigate('/app-calories')" expand="full" fill="clear">Calc. calories</ion-button>
 
-    <!-- TODO: Uncomment the following line -->
-    <!--<ion-button (click)="menuNavigate('/subscriptions')" expand="full" fill="clear" *ngIf="user?.function === 'customer'">
-        Boutique
-    </ion-button>-->
-    <ion-button (click)="menuNavigate('/personal-trainer')" expand="full" fill="clear" *ngIf="user?.function === 'customer'">
+    <ion-button (click)="menuNavigate('/subscriptions')" expand="full" fill="clear" *ngIf="user?.function === 'customer'">
         Boutique
     </ion-button>
 

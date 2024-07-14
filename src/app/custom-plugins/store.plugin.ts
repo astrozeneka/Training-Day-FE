@@ -3,8 +3,9 @@ const mockStorePlugin: StorePlugin = {
   getProducts: async() => {
     return {
       "products":[
-        {"description":"Personal Trainer (1 Séance)","displayName":"Personal Trainer (1 Séance)","price":49.99,"id":"trainer1", "displayPrice": "49.99 €"},
-        {"displayName":"Personal Trainer (5 séances)","id":"trainer5","price":249.99,"description":"Personal Trainer (5 séances)", "displayPrice": "249.99 €"},
+        {"displayPrice":"$249.99","description":"Personal Trainer (5 sessions)","displayName":"Personal Trainer (5 sessions)","id":"trainer5","price":249.99},
+        {"displayName":"Personal Trainer (1 session)","displayPrice":"$49.99","description":"Personal Trainer (1 session)","price":49.99,"id":"trainer1"},
+        {"displayPrice":"$17.99","description":"Food Coaching (1 Month)","id":"foodcoach_1w","displayName":"Food Coaching (1 Month)","price":17.99}
       ]
     }
   },
@@ -21,11 +22,43 @@ const mockStorePlugin: StorePlugin = {
         inAppOwnershipType: "PURCHASED"
       }
     }
+  },
+  addListener: (eventName: string, listenerFunc: Function) => {
+  },
+  getPurchasedNonRenewable: async() => {
+    return {products: []}
+  },
+  getNonRenewableEntitlements: async() => {
+    return {
+      "entitlements": [
+        /*{
+          "deviceVerification":"DqnyVPZHelalgo4cuKhPjhzJL3X1b/h1m/0Ou7I5TLp+RP0R7P/4jWT3mEcO2Hjf",
+          "inAppOwnershipType":"PURCHASED",
+          "bundleId":"com.codecrane.training-day",
+          "deviceVerificationNonce":"385028E3-0111-43C9-B2BC-23AE749434F9",
+          "transactionId":7,
+          "signedDate":"2024-07-13T16:33:10Z",
+          "quantity":1
+        }*/
+        {
+          "inAppOwnershipType":"PURCHASED",
+          "signedDate":"2024-07-14T06:53:47Z",
+          "bundleId":"com.codecrane.training-day",
+          "quantity":1,
+          "transactionId":8,
+          "deviceVerificationNonce":"327557D6-32F6-4813-BC43-984D071B9A30",
+          "deviceVerification":"YdmaWuQLg9b2vMlBmEPqJzZIa6lj5B5tyz0lLo1yMDuZ95RGOs8ZRHO1YKwFzJ9k"}
+      ]
+    }
   }
 }
 export interface StorePlugin {
   getProducts(options: { }): Promise<{ products: any[]}>
   purchaseProductById(options: { productId: string }): Promise<{ success: boolean, transaction: Transaction }>
+  addListener(eventName: string, listenerFunc: Function): void; // @deprecated
+  getPurchasedNonRenewable(options: { }): Promise<{ products: any[] }>,
+
+  getNonRenewableEntitlements(options: { }): Promise<{ entitlements: Transaction[]}> // Entitlements is same a previousl Transaction
 }
 export interface Transaction {
   bundleId: string;

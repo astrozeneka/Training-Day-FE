@@ -153,9 +153,30 @@
     <div *ngIf="entity">
         <h3 class="display-1 ion-padding">Privilèges(s)</h3>
 
-        <div *ngIf="grouped_perishables">
+        <div *ngIf="grouped_perishables && grouped_perishables['food-coach']">
+            <app-subscription-card
+                    [entity]="grouped_perishables['food-coach']"
+                    [title]="'Programme alimentaire'"
+                    [description]="'Vous pouvez utiliser cette abonnement pour accéder à un programme alimentaire personnalisé de Training-Day.'"
+                    [expiresAt]="grouped_perishables['food-coach']['expires_at']"
+                    [columns]="false"
+            ></app-subscription-card>
+        </div>
+
+        <div *ngIf="grouped_perishables && grouped_perishables['sport-coach']">
+            <app-subscription-card
+                    [entity]="grouped_perishables['food-coach']"
+                    [title]="'Programme alimentaire'"
+                    [description]="'Vous pouvez utiliser cette abonnement pour accéder à un programme alimentaire personnalisé de Training-Day.'"
+                    [expiresAt]="grouped_perishables['food-coach']['expires_at']"
+                    [columns]="false"
+            ></app-subscription-card>
+        </div>
+
+        <div *ngIf="grouped_perishables && grouped_perishables['personal-trainer']">
             <app-trainer-card [entity]="grouped_perishables['personal-trainer']"></app-trainer-card>
         </div>
+
         <p class="helper ion-padding" *ngIf="Object.keys(grouped_perishables).length === 0">
             Les offres d'abonnement n'est pas encore disponible pour le moment.
         </p>

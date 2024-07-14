@@ -65,7 +65,8 @@ export class PurchaseInvoicePage implements OnInit {
 
   async continueToPayment(){
     if(environment.paymentMethod == 'stripe') {
-      this.router.navigate(['/purchase-payment'])
+      this.feedbackService.registerNow('Stripe payment method is not supported', 'error')
+      // this.router.navigate(['/purchase-payment'])
     }else if(environment.paymentMethod == 'inAppPurchase'){
       // Confirm purchase
       let res:any = (await StorePlugin.purchaseProductById({productId: this.productId!})) as any;

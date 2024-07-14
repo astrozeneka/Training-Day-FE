@@ -3,24 +3,43 @@ import {Shop} from "../shop";
 import {ContentService} from "../../../content.service";
 import {Router} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
+import StorePlugin from "../../../custom-plugins/store.plugin";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-food-program',
   templateUrl: './food-program.page.html',
   styleUrls: ['./food-program.page.scss'],
 })
-export class FoodProgramPage extends Shop implements OnInit{
-  override subscriptionSlug:string = "food-program";
-  override subscriptionLabel:string = "Programme alimentaire";
+export class FoodProgramPage implements OnInit{
+  // override subscriptionSlug:string = "food-program"; // Deprecated
+  // override subscriptionLabel:string = "Programme alimentaire"; // Deprecated
+  productList: any = {}; // Bound to iOS/Android In-App Purchase
 
   constructor(
-    contentService: ContentService,
-    router: Router,
-    feedbackService: FeedbackService
+    private contentService: ContentService,
+    private router: Router,
+    private feedbackService: FeedbackService
   ) {
-    super(contentService, router, feedbackService);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    let productList = (await StorePlugin.getProducts({})).products
+    this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
+  }
+
+  async clickFoodCoachOption(productId:string){
+    let user = await this.contentService.storage.get('user')
+    if(!user){
+      this.router.navigate(['/login'])
+      this.feedbackService.registerNow('Pour continuer, veuillez créer un compte ou vous connecter.')
+    }else{
+      if (environment.paymentMethod == 'stripe'){
+        this.feedbackService.registerNow('Stripe payment method is not supported', 'method')
+      }else if(environment.paymentMethod === 'inAppPurchase'){
+        await this.contentService.storage.set('productId', productId)
+      }
+      this.router.navigate(['/purchase-invoice'])
+    }
   }
 }

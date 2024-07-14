@@ -26,6 +26,7 @@ import {BackButtonComponent} from "./back-button/back-button.component";
 import {UxButtonComponent} from "../components-submodules/angular-ux-button/ux-button.component";
 import {InfiniteListComponent} from "../components-submodules/angular-infinite-list/infinite-list.component";
 import {TrainerCardComponent} from "./trainer-card/trainer-card.component";
+import {SubscriptionCardComponent} from "./subscription-card/subscription-card.component";
 
 
 
@@ -57,6 +58,7 @@ import {TrainerCardComponent} from "./trainer-card/trainer-card.component";
     UxButtonComponent,
     InfiniteListComponent,
     TrainerCardComponent,
+    SubscriptionCardComponent,
   ],
   imports: [
     CommonModule,
@@ -80,6 +82,7 @@ import {TrainerCardComponent} from "./trainer-card/trainer-card.component";
     UxButtonComponent,
     InfiniteListComponent,
     TrainerCardComponent,
+    SubscriptionCardComponent,
   ]
 })
 export class UtilitiesModule { }
