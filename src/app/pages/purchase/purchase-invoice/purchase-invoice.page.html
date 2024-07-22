@@ -35,7 +35,9 @@
                 <td>
                     {{ productList[productId].displayName }}
                 </td>
-                <td>{{ productList[productId].displayPrice }}</td>
+                <td>{{ productList[productId].displayPrice }}
+                    <span *ngIf="['hoylt', 'alonzo', 'moreno'].includes(productId)">/ mois</span>
+                </td>
             </tr>
             <!-- The total -->
             <tr>
@@ -43,7 +45,9 @@
                 <td><strong>Total</strong></td>
                 <td *ngIf="environment.paymentMethod === 'stripe'"><strong>{{ subscriptionPrice / 100 }} €</strong></td>
                 <td *ngIf="environment.paymentMethod === 'inAppPurchase' && productList && productId">
-                    <strong>{{ productList[productId].displayPrice }}</strong>
+                    <strong>{{ productList[productId].displayPrice }}
+                        <span *ngIf="['hoylt', 'alonzo', 'moreno'].includes(productId)">/ mois</span>
+                    </strong>
                 </td>
             </tr>
             </tbody>

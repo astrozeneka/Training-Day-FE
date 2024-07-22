@@ -152,7 +152,6 @@
 
     <div *ngIf="entity">
         <h3 class="display-1 ion-padding">Privilèges(s)</h3>
-
         <div *ngIf="grouped_perishables && grouped_perishables['food-coach']">
             <app-subscription-card
                     [entity]="grouped_perishables['food-coach']"
@@ -165,10 +164,10 @@
 
         <div *ngIf="grouped_perishables && grouped_perishables['sport-coach']">
             <app-subscription-card
-                    [entity]="grouped_perishables['food-coach']"
+                    [entity]="grouped_perishables['sport-coach']"
                     [title]="'Programme Sportif'"
                     [description]="'Vous pouvez utiliser cette abonnement pour accéder à un programme sportif personnalisé de Training-Day.'"
-                    [expiresAt]="grouped_perishables['food-coach']['expires_at']"
+                    [expiresAt]="grouped_perishables['sport-coach']['expires_at']"
                     [columns]="false"
             ></app-subscription-card>
         </div>

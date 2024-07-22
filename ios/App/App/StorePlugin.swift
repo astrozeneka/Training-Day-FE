@@ -17,7 +17,8 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "purchaseProductById", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "getPurchasedNonRenewable", returnType: CAPPluginReturnPromise), // deprecated, will not be used anymore
         
-        CAPPluginMethod(name: "getNonRenewableEntitlements", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "getNonRenewableEntitlements", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getAutoRenewableEntitlements", returnType: CAPPluginReturnPromise)
     ]
     
     private var store: Store?
@@ -115,8 +116,51 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
                 //"currency": handledTransaction?.currency ?? ""
             ]
         }
+        let purchasedSubscriptions = self.store?.purchasedSubscriptions.map { product in
+            return [
+                "id": product.id,
+                "displayName": product.displayName,
+                "description": product.description,
+                "price": product.price,
+                "displayPrice": product.displayPrice
+            ]
+        }
         call.resolve([
-            "entitlements": nonRenewableEntitlements
+            "entitlements": nonRenewableEntitlements,
+            "subscriptions": purchasedSubscriptions // TODO, Fix this, but should not be purchased Subscriptions
+        ])
+    }
+    
+    @objc func getAutoRenewableEntitlements(_ call: CAPPluginCall) {
+        let autoRenewableEntitlements = self.store?.purchasedAutoRenewablesEntitlements.map { handledTransaction in
+            return [
+                "bundleId": handledTransaction.appBundleID,
+                "deviceVerification": handledTransaction.deviceVerification.base64EncodedString(),
+                "deviceVerificationNonce": handledTransaction.deviceVerificationNonce.uuidString,
+                // "environment": handledTransaction?.environment,
+                "inAppOwnershipType": handledTransaction.ownershipType.rawValue,
+                //"originalPurchaseDate": handledTransaction?.originalPurchaseDate.formatted() ?? "", // Still have errors
+                //"originalTransactionId": handledTransaction?.originalID ?? 0,
+                //"productId": handledTransaction?.productID ?? "",
+                //"purchaseDate": handledTransaction?.purchaseDate.formatted() ?? "", // Still have errors
+                "quantity": handledTransaction.purchasedQuantity,
+                "signedDate": handledTransaction.signedDate,
+                "transactionId": handledTransaction.id,
+                //"currency": handledTransaction?.currency ?? ""
+            ]
+        }
+        let purchasedSubscriptions = self.store?.purchasedSubscriptions.map { product in
+            return [
+                "id": product.id,
+                "displayName": product.displayName,
+                "description": product.description,
+                "price": product.price,
+                "displayPrice": product.displayPrice
+            ]
+        }
+        call.resolve([
+            "entitlements": autoRenewableEntitlements,
+            "subscriptions": purchasedSubscriptions
         ])
     }
 }

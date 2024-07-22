@@ -12,16 +12,18 @@ class Store:NSObject {
     private var productIDs = [
         "trainer1", "trainer5",
         "foodcoach_1w",
-        "sportcoach_1w"
+        "sportcoach_1w",
+        "hoylt"
     ]
     @Published var products = [Product]()
     
     @Published var purchasedConsumables = [Product]()
     @Published var purchasedNonRenewables = Set<Product>()
-    @Published var purchasedSubscriptions = Set<Product>() // TODO, unimplemented yet
+    @Published var purchasedSubscriptions = Set<Product>()
     
     // Experimental features (to be confirmed later)
     var purchasedNonRenewablesEntitlements = [Transaction]()
+    var purchasedAutoRenewablesEntitlements = [Transaction]()
     
     var transactionListener: Task<Void, Error>?
     var plugin: StorePlugin
@@ -72,7 +74,7 @@ class Store:NSObject {
         case .autoRenewable:
             print("addPurchased: auto-renewable")
             purchasedSubscriptions.insert(product) // Persistency is manage by device entitlements
-            // TODO: for autorenewable
+            (transaction != nil) ? purchasedAutoRenewablesEntitlements.append(transaction!) : nil
         default:
             return
         }

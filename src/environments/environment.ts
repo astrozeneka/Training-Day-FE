@@ -9,14 +9,17 @@ enum paymentMethod {
 
 export const environment = {
   production: false,
-  apiEndpoint: 'http://192.168.1.187:8000/api',
-  rootEndpoint: 'http://192.168.1.187:8000',
+  // apiEndpoint: 'http://192.168.1.187:8000/api',
+  // rootEndpoint: 'http://192.168.1.187:8000',
+  apiEndpoint: 'http://192.168.88.248:8000/api',
+  rootEndpoint: 'http://192.168.88.248:8000',
   paymentServiceEnabled: true,
   paymentMethod: paymentMethod.inAppPurchase,
 
   // Pusher configuration
   pusher_app_key: 'app-key',
-  pusher_host: '192.168.1.187',
+  // pusher_host: '192.168.1.187',
+  pusher_host: '192.168.88.248',
   pusher_port: 6001,
   pusher_cluster: 'eu',
 

@@ -3,9 +3,14 @@ const mockStorePlugin: StorePlugin = {
   getProducts: async() => {
     return {
       "products":[
-        {"displayPrice":"$249.99","description":"Personal Trainer (5 sessions)","displayName":"Personal Trainer (5 sessions)","id":"trainer5","price":249.99},
+        /*{"displayPrice":"$249.99","description":"Personal Trainer (5 sessions)","displayName":"Personal Trainer (5 sessions)","id":"trainer5","price":249.99},
         {"displayName":"Personal Trainer (1 session)","displayPrice":"$49.99","description":"Personal Trainer (1 session)","price":49.99,"id":"trainer1"},
-        {"displayPrice":"$17.99","description":"Food Coaching (1 Month)","id":"foodcoach_1w","displayName":"Food Coaching (1 Month)","price":17.99}
+        {"displayPrice":"$17.99","description":"Food Coaching (1 Month)","id":"foodcoach_1w","displayName":"Food Coaching (1 Month)","price":17.99}*/
+        {"description":"Sport Coaching (1 Week)","id":"sportcoach_1w","price":24.99,"displayPrice":"$24.99","displayName":"Sport Coaching (1 Week)"},
+        {"description":"Personal Trainer (5 sessions)","displayPrice":"$249.99","id":"trainer5","price":249.99,"displayName":"Personal Trainer (5 sessions)"},
+        {"price":12.99,"displayPrice":"$12.99","displayName":"Pack Hoylt","description":"Pack Hoylt","id":"hoylt"},
+        {"displayName":"Personal Trainer (1 session)","description":"Personal Trainer (1 session)","displayPrice":"$49.99","price":49.99,"id":"trainer1"},
+        {"displayName":"Food Coaching (1 Month)","description":"Food Coaching (1 Month)","price":17.99,"displayPrice":"$17.99","id":"foodcoach_1w"}
       ]
     }
   },
@@ -47,7 +52,19 @@ const mockStorePlugin: StorePlugin = {
           "quantity":1,
           "transactionId":8,
           "deviceVerificationNonce":"327557D6-32F6-4813-BC43-984D071B9A30",
-          "deviceVerification":"YdmaWuQLg9b2vMlBmEPqJzZIa6lj5B5tyz0lLo1yMDuZ95RGOs8ZRHO1YKwFzJ9k"}
+          "deviceVerification":"YdmaWuQLg9b2vMlBmEPqJzZIa6lj5B5tyz0lLo1yMDuZ95RGOs8ZRHO1YKwFzJ9k"
+        }
+      ],
+      "subscriptions": []
+    }
+  },
+  getAutoRenewableEntitlements: async() => {
+    return {
+      "entitlements": [
+        {"signedDate":"2024-07-21T11:14:31Z","deviceVerification":"3qH6g6BLdhxEHk4DtO7XpHHSY32buyobXLzZ9cwe8j1WLzU0YwNUGVepQicOWv8H","deviceVerificationNonce":"168F4790-4B95-4585-89FF-D35CE8773CFD","transactionId":14,"bundleId":"com.codecrane.training-day","inAppOwnershipType":"PURCHASED","quantity":1}
+      ],
+      "subscriptions": [
+        {"displayName":"Pack Hoylt","description":"Pack Hoylt","id":"hoylt","displayPrice":"$12.99","price":12.99}
       ]
     }
   }
@@ -56,9 +73,16 @@ export interface StorePlugin {
   getProducts(options: { }): Promise<{ products: any[]}>
   purchaseProductById(options: { productId: string }): Promise<{ success: boolean, transaction: Transaction }>
   addListener(eventName: string, listenerFunc: Function): void; // @deprecated
-  getPurchasedNonRenewable(options: { }): Promise<{ products: any[] }>,
+  getPurchasedNonRenewable(options: { }): Promise<{ products: any[] }>, // @deprecated
 
-  getNonRenewableEntitlements(options: { }): Promise<{ entitlements: Transaction[]}> // Entitlements is same a previousl Transaction
+  getNonRenewableEntitlements(options: { }): Promise<{
+    entitlements: Transaction[],
+    subscriptions: Product[]
+  }> // Entitlements is same a previousl Transaction
+  getAutoRenewableEntitlements(options: { }): Promise<{
+    entitlements: Transaction[],
+    subscriptions: Product[]
+  }>
 }
 export interface Transaction {
   bundleId: string;
@@ -68,6 +92,13 @@ export interface Transaction {
   signedDate: string;
   deviceVerification: string;
   inAppOwnershipType: string;
+}
+export interface Product {
+  displayPrice: string;
+  description: string;
+  displayName: string;
+  id: string;
+  price: number;
 }
 
 let Store: StorePlugin;

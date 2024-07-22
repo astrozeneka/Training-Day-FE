@@ -48,10 +48,11 @@ export class PersonalTrainerPage implements OnInit {
         await this.contentService.storage.set('subscription_price', price)
         await this.contentService.storage.set('subscription_slug', 'personal-trainer')
         await this.contentService.storage.set('subscription_label', 'Personal trainer')
+        this.feedbackService.registerNow('Stripe payment method is not supported', 'method')
       }else if(environment.paymentMethod === 'inAppPurchase'){
         await this.contentService.storage.set('productId', productId)
+        this.router.navigate(['/purchase-invoice'])
       }
-      this.router.navigate(['/purchase-invoice'])
     }
   }
 

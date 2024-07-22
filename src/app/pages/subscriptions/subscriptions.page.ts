@@ -4,6 +4,7 @@ import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
 import {PurchaseService} from "../../purchase.service";
 import {environment} from "../../../environments/environment";
+import StorePlugin from "../../custom-plugins/store.plugin";
 
 @Component({
   selector: 'app-subscriptions',
@@ -11,6 +12,7 @@ import {environment} from "../../../environments/environment";
   styleUrls: ['./subscriptions.page.scss'],
 })
 export class SubscriptionsPage implements OnInit {
+  productList: any = {}
   user:any = null
 
   constructor(
@@ -19,15 +21,21 @@ export class SubscriptionsPage implements OnInit {
     private feedbackService: FeedbackService,
     private purchaseService: PurchaseService
   ) {
-    this.router.events.subscribe(async (event) => {
+    /*this.router.events.subscribe(async (event) => {
       if(event instanceof NavigationEnd && event.url == '/subscriptions'){
         this.user = await this.contentService.storage.get('user')
         console.log(this.user)
-      }
-    })
+        this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
+  }
+    })*/
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    let productList = (await StorePlugin.getProducts({})).products
+    this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
+    this.user = await this.contentService.getUserFromLocalStorage()
+    console.log("load products from store")
+    console.log(this.productList)
   }
 
   async clickOption(option: string){
@@ -45,6 +53,21 @@ export class SubscriptionsPage implements OnInit {
   testPurchase(productId:string){
     console.log("Click button")
     this.purchaseService.purchase(productId)
+  }
+
+  async clickSubscriptionOption(productId: string){
+    let user = this.contentService.storage.get('user')
+    if(!user){
+      this.router.navigate(['/login'])
+      this.feedbackService.registerNow('Pour continuer, veuillez créer un compte ou vous connecter.')
+    }else{
+      if(environment.paymentMethod === 'stripe') {
+        this.feedbackService.registerNow('Stripe payment method is not supported', 'method')
+      }else if(environment.paymentMethod === 'inAppPurchase'){
+        await this.contentService.storage.set('productId', productId)
+        this.router.navigate(['/purchase-invoice'])
+      }
+    }
   }
 
   protected readonly environment = environment;

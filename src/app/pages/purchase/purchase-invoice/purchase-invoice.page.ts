@@ -70,7 +70,7 @@ export class PurchaseInvoicePage implements OnInit {
     }else if(environment.paymentMethod == 'inAppPurchase'){
       // Confirm purchase
       let res:any = (await StorePlugin.purchaseProductById({productId: this.productId!})) as any;
-      res.transaction.currency = 'EUR'
+      res.transaction.currency = 'EUR' // TODO, update to local currency
       res.transaction.amount = this.productList[this.productId as string].price * 100
       res.transaction.product_id = this.productId
       this.contentService.post('/payments/registerIAPTransaction', res.transaction)
