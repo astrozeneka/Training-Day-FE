@@ -5,11 +5,12 @@ import {ContentService} from "../../content.service";
 import {catchError, throwError} from "rxjs";
 import {FeedbackService} from "../../feedback.service";
 import {FormComponent} from "../../components/form.component";
-import {ModalController} from "@ionic/angular";
+import {ModalController, Platform} from "@ionic/angular";
 import {
   PasswordConfirmationModalComponent
 } from "../../components/password-confirmation-modal/password-confirmation-modal.component";
 import {navigate} from "ionicons/icons";
+import StorePlugin from "../../custom-plugins/store.plugin";
 
 @Component({
   selector: 'app-profile',
@@ -46,7 +47,8 @@ export class ProfilePage extends FormComponent implements OnInit {
     private router:Router,
     private contentService: ContentService,
     private feedbackService: FeedbackService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private platform: Platform
   ) {
     super();
     router.events.subscribe(async(event: any)=>{ // This way of loading data is not suitable for angular
@@ -196,6 +198,16 @@ export class ProfilePage extends FormComponent implements OnInit {
           this.router.navigate(['/home'])
         }
       })
+  }
+
+  presentManageModal(){
+    if(this.platform.is('ios') || true){
+      let res = StorePlugin.present({
+        message: "Manage subscription"
+      })
+    }else{
+      this.feedbackService.registerNow("La gestion des abonnements n'est pas disponible sur cette plateforme", 'danger')
+    }
   }
 
   protected readonly Object = Object;

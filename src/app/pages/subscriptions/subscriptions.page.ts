@@ -5,6 +5,7 @@ import {FeedbackService} from "../../feedback.service";
 import {PurchaseService} from "../../purchase.service";
 import {environment} from "../../../environments/environment";
 import StorePlugin from "../../custom-plugins/store.plugin";
+import {Platform} from "@ionic/angular";
 
 @Component({
   selector: 'app-subscriptions',
@@ -19,7 +20,8 @@ export class SubscriptionsPage implements OnInit {
     private contentService: ContentService,
     private router: Router,
     private feedbackService: FeedbackService,
-    private purchaseService: PurchaseService
+    private purchaseService: PurchaseService,
+    private platform: Platform
   ) {
     /*this.router.events.subscribe(async (event) => {
       if(event instanceof NavigationEnd && event.url == '/subscriptions'){
@@ -67,6 +69,17 @@ export class SubscriptionsPage implements OnInit {
         await this.contentService.storage.set('productId', productId)
         this.router.navigate(['/purchase-invoice'])
       }
+    }
+  }
+
+  manageSubscription(){
+
+    if(this.platform.is('ios') || true){
+      let res = StorePlugin.present({
+        message: "Manage subscription"
+      })
+    }else{
+      this.feedbackService.registerNow('This feature is not available on this platform', 'warning')
     }
   }
 

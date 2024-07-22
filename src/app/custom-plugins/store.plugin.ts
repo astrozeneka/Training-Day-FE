@@ -67,6 +67,10 @@ const mockStorePlugin: StorePlugin = {
         {"displayName":"Pack Hoylt","description":"Pack Hoylt","id":"hoylt","displayPrice":"$12.99","price":12.99}
       ]
     }
+  },
+  present: async(options: {message: String }) => {
+    return {success: true}
+
   }
 }
 export interface StorePlugin {
@@ -83,6 +87,9 @@ export interface StorePlugin {
     entitlements: Transaction[],
     subscriptions: Product[]
   }>
+
+  // Experimental features
+  present(options: {message: String }): Promise<{ success: boolean }>
 }
 export interface Transaction {
   bundleId: string;

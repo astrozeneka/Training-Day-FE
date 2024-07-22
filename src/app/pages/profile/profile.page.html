@@ -103,10 +103,17 @@
 
     <div *ngIf="entity">
         <h3 class="display-1 ion-padding">Abonnement</h3>
+        <div *ngIf="entity?.subscription">
+            <ion-item>
+                <span>
+                    Vous disposez d'un abonnement <b> {{ entity.renewable_id }}</b>
+                </span>
+                <ion-button slot="end" (click)="presentManageModal()">
+                    Gérer
+                </ion-button>
+            </ion-item>
+        </div>
 
-        <p class="helper ion-padding">
-            Les offres d'abonnement n'est pas encore disponible pour le moment.
-        </p>
         <div *ngIf="entity.subscription">
             <!--
                 <ion-item>

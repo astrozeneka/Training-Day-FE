@@ -79,9 +79,10 @@
                 </div>
             </div>
             <div class="option-list ion-padding" *ngIf="user && user?.subscription">
-                <h1 class="display-1">Vous disposez actuellement d'un {{ user.subscription.label }}</h1>
-                <p class="helper">
-                    Votre abonnement est actif jusqu'au {{ user.expires_at | date }}
+                <h1 class="display-1 ion-text-center">Vous disposez actuellement d'un abonnement {{ user.renewable_id }}</h1>
+
+                <p class="ion-text-center">
+                    <ion-button (click)="manageSubscription()">Gérer mes abonnements</ion-button>
                 </p>
             </div>
         </div>
