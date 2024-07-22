@@ -7,6 +7,7 @@
 
 import Foundation
 import Capacitor
+import SwiftUI
 
 @objc(StorePlugin)
 public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
@@ -17,8 +18,11 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "purchaseProductById", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "getPurchasedNonRenewable", returnType: CAPPluginReturnPromise), // deprecated, will not be used anymore
         
-        CAPPluginMethod(name: "getNonRenewableEntitlements", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "getAutoRenewableEntitlements", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "getNonRenewableEntitlements", returnType: CAPPluginReturnPromise), // deprecated
+        CAPPluginMethod(name: "getAutoRenewableEntitlements", returnType: CAPPluginReturnPromise),
+        
+        // Experimental features
+        CAPPluginMethod(name: "present", returnType: CAPPluginReturnPromise)
     ]
     
     private var store: Store?
@@ -162,5 +166,24 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
             "entitlements": autoRenewableEntitlements,
             "subscriptions": purchasedSubscriptions
         ])
+    }
+    
+    @objc func present(_ call: CAPPluginCall){
+        let message = call.getString("message") ?? ""
+        let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default))
+        
+        DispatchQueue.main.async {
+            print("Presenting alert controller")
+            print(self.bridge)
+            print(self.bridge?.viewController)
+            // self.bridge?.viewController?.present(alertController, animated: true, completion: nil)
+            
+            // Show ManageSubscriptionsSheetModifier View
+            let manageSubscriptionsSheetModifier = ManageSubscriptionsSheetModifier()
+            let hostingController = UIHostingController(rootView: manageSubscriptionsSheetModifier)
+            
+            self.bridge?.viewController?.present(hostingController, animated: true, completion: nil)
+        }
     }
 }

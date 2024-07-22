@@ -12,6 +12,7 @@
 		2A3F219D2C3110ED000B0D4A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3F219C2C3110ED000B0D4A /* Store.swift */; };
 		2A4BB2662C3ADA6A0077D0B7 /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 2A4BB2652C3ADA6A0077D0B7 /* StoreKitTestCertificate.cer */; };
 		2A5B7E6F2AE6DADB00B23720 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2A5B7E6E2AE6DADB00B23720 /* GoogleService-Info.plist */; };
+		2A9D092E2C4EA80F0044F47E /* ManageSubscriptionsSheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A9D092D2C4EA80F0044F47E /* ManageSubscriptionsSheetModifier.swift */; };
 		2AF935BE2C21643F00833B65 /* SyncedProduct.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 2AF935BD2C21643F00833B65 /* SyncedProduct.storekit */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
@@ -30,6 +31,7 @@
 		2A4BB2652C3ADA6A0077D0B7 /* StoreKitTestCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = StoreKitTestCertificate.cer; sourceTree = "<group>"; };
 		2A5B7E6C2AE6D0C300B23720 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		2A5B7E6E2AE6DADB00B23720 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		2A9D092D2C4EA80F0044F47E /* ManageSubscriptionsSheetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageSubscriptionsSheetModifier.swift; sourceTree = "<group>"; };
 		2AF935BD2C21643F00833B65 /* SyncedProduct.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = SyncedProduct.storekit; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				2A3F219A2C31109E000B0D4A /* StorePlugin.swift */,
 				2A3F219C2C3110ED000B0D4A /* Store.swift */,
+				2A9D092D2C4EA80F0044F47E /* ManageSubscriptionsSheetModifier.swift */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
 				504EC30E1FED79650016851F /* Assets.xcassets */,
@@ -233,6 +236,7 @@
 			files = (
 				2A3F219D2C3110ED000B0D4A /* Store.swift in Sources */,
 				2A3F219B2C31109E000B0D4A /* StorePlugin.swift in Sources */,
+				2A9D092E2C4EA80F0044F47E /* ManageSubscriptionsSheetModifier.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
