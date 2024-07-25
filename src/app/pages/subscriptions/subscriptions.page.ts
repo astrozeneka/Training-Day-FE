@@ -6,15 +6,17 @@ import {PurchaseService} from "../../purchase.service";
 import {environment} from "../../../environments/environment";
 import StorePlugin from "../../custom-plugins/store.plugin";
 import {Platform} from "@ionic/angular";
+import {EntitlementReady} from "../../abstract-components/EntitlementReady";
 
 @Component({
   selector: 'app-subscriptions',
   templateUrl: './subscriptions.page.html',
   styleUrls: ['./subscriptions.page.scss'],
 })
-export class SubscriptionsPage implements OnInit {
+export class SubscriptionsPage extends EntitlementReady implements OnInit {
   productList: any = {}
   user:any = null
+
 
   constructor(
     private contentService: ContentService,
@@ -23,13 +25,7 @@ export class SubscriptionsPage implements OnInit {
     private purchaseService: PurchaseService,
     private platform: Platform
   ) {
-    /*this.router.events.subscribe(async (event) => {
-      if(event instanceof NavigationEnd && event.url == '/subscriptions'){
-        this.user = await this.contentService.storage.get('user')
-        console.log(this.user)
-        this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
-  }
-    })*/
+    super()
   }
 
   async ngOnInit() {
@@ -38,6 +34,8 @@ export class SubscriptionsPage implements OnInit {
     this.user = await this.contentService.getUserFromLocalStorage()
     console.log("load products from store")
     console.log(this.productList)
+
+    await this.loadEntitlements()
   }
 
   async clickOption(option: string){

@@ -6,6 +6,7 @@ import {Platform, ToastController} from "@ionic/angular";
 import { PushNotifications } from '@capacitor/push-notifications';
 import {HttpClient} from "@angular/common/http";
 import StorePlugin from "./custom-plugins/store.plugin";
+import {environment} from "../environments/environment";
 
 
 @Component({
@@ -50,7 +51,7 @@ export class AppComponent implements OnInit{
       this.initializePushNotifications()
 
     // Store
-    if(this.platform.is('ios') || true){
+    if(this.platform.is('ios') || (!environment.production)){
       // The auto-renewable subscriptions are manage by the entitlements from the device
       /*let data = (await StorePlugin.getNonRenewableEntitlements({}))
       let entitlements = data.entitlements

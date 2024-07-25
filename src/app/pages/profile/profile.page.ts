@@ -11,6 +11,7 @@ import {
 } from "../../components/password-confirmation-modal/password-confirmation-modal.component";
 import {navigate} from "ionicons/icons";
 import StorePlugin from "../../custom-plugins/store.plugin";
+import {EntitlementReady} from "../../abstract-components/EntitlementReady";
 
 @Component({
   selector: 'app-profile',
@@ -18,6 +19,9 @@ import StorePlugin from "../../custom-plugins/store.plugin";
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage extends FormComponent implements OnInit {
+  entitlementComponent = new EntitlementReady()
+  active_entitled_subscription = null
+
   override form:any = new FormGroup({
     'email': new FormControl('', [Validators.required, Validators.email]), // readonly
     'password': new FormControl(''),
@@ -64,6 +68,11 @@ export class ProfilePage extends FormComponent implements OnInit {
         this.form.patchValue(this.entity)
       }
     });
+
+    (async()=>{
+      await this.entitlementComponent.loadEntitlements()
+      this.active_entitled_subscription = this.entitlementComponent.active_entitled_subscription
+    })();
   }
 
   ngOnInit() {

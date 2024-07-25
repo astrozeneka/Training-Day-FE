@@ -61,10 +61,11 @@ const mockStorePlugin: StorePlugin = {
   getAutoRenewableEntitlements: async() => {
     return {
       "entitlements": [
-        {"signedDate":"2024-07-21T11:14:31Z","deviceVerification":"3qH6g6BLdhxEHk4DtO7XpHHSY32buyobXLzZ9cwe8j1WLzU0YwNUGVepQicOWv8H","deviceVerificationNonce":"168F4790-4B95-4585-89FF-D35CE8773CFD","transactionId":14,"bundleId":"com.codecrane.training-day","inAppOwnershipType":"PURCHASED","quantity":1}
+        // Hoylt for ryanrasoarahona@gmail.com
+        //{"signedDate":"2024-07-21T11:14:31Z","transactionId":14,"bundleId":"com.codecrane.training-day","deviceVerification":"3qH6g6BLdhxEHk4DtO7XpHHSY32buyobXLzZ9cwe8j1WLzU0YwNUGVepQicOWv8H","deviceVerificationNonce":"168F4790-4B95-4585-89FF-D35CE8773CFD","inAppOwnershipType":"PURCHASED","quantity":1}
       ],
       "subscriptions": [
-        {"displayName":"Pack Hoylt","description":"Pack Hoylt","id":"hoylt","displayPrice":"$12.99","price":12.99}
+        //{"displayName":"Pack Hoylt","description":"Pack Hoylt","id":"hoylt","displayPrice":"$12.99","price":12.99}
       ]
     }
   },

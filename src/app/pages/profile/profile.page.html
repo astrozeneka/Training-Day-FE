@@ -103,7 +103,12 @@
 
     <div *ngIf="entity">
         <h3 class="display-1 ion-padding">Abonnement</h3>
-        <div *ngIf="entity?.subscription">
+        <div *ngIf="entity && !entity?.renewable_id && !active_entitled_subscription">
+            <p class="ion-padding helper">
+                Vous n'avez pas d'abonnement actif.
+            </p>
+        </div>
+        <div *ngIf="entity?.renewable_id && active_entitled_subscription">
             <ion-item>
                 <span>
                     Vous disposez d'un abonnement <b> {{ entity.renewable_id }}</b>
@@ -111,6 +116,23 @@
                 <ion-button slot="end" (click)="presentManageModal()">
                     Gérer
                 </ion-button>
+            </ion-item>
+        </div>
+        <div *ngIf="!entity.renewable_id && active_entitled_subscription">
+            <ion-item>
+                <span>
+                    Vous disposez actuellement d'un <b>{{ active_entitled_subscription.display_name }}</b> pour cet appareil iOS
+                </span>
+                <ion-button slot="end" (click)="presentManageModal()">
+                    Gérer
+                </ion-button>
+            </ion-item>
+        </div>
+        <div *ngIf="entity.renewable_id && !active_entitled_subscription">
+            <ion-item>
+                <span>
+                    Vous disposez d'un abonnement <b> {{ entity.renewable_id }}</b> pour ce compte utilisateur
+                </span>
             </ion-item>
         </div>
 
@@ -186,7 +208,7 @@
         </div>
 
         <p class="helper ion-padding" *ngIf="Object.keys(grouped_perishables).length === 0">
-            Les offres d'abonnement n'est pas encore disponible pour le moment.
+            Vous pouvez accéder à la boutique via le menu pour souscrire à des abonnements.
         </p>
         <!--
         <ion-item *ngIf="!entity.subscription">

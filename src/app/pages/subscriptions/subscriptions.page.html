@@ -17,13 +17,8 @@
         </p>
     </div>
     <div *ngIf="environment.paymentServiceEnabled">
-        <div *ngIf="environment.production">
-            <p class="ion-padding ion-text-center">
-                Cette section sera bientôt disponible
-            </p>
-        </div>
-        <div *ngIf="!environment.production">
-            <div class="option-list" *ngIf="!user || (user && ! user?.renewable_id)">
+        <div *ngIf="true">
+            <div class="option-list" *ngIf="!user || (user && !user?.renewable_id && !active_entitled_subscription )">
                 <h1 class="display-1 ion-padding">Maîtrisez votre budget et choisissez l’offre d’abonnement qui vous convient</h1>
                 <div class="card ion-padding">
                     <h2 class="display-1">Pack Hoylt (
@@ -78,12 +73,22 @@
                     </ion-button>
                 </div>
             </div>
-            <div class="option-list ion-padding" *ngIf="user && user?.subscription">
+            <div class="option-list ion-padding" *ngIf="user && user?.renewable_id && active_entitled_subscription">
                 <h1 class="display-1 ion-text-center">Vous disposez actuellement d'un abonnement {{ user.renewable_id }}</h1>
 
                 <p class="ion-text-center">
                     <ion-button (click)="manageSubscription()">Gérer mes abonnements</ion-button>
                 </p>
+            </div>
+            <div class="option-list ion-padding" *ngIf="user && !user?.renewable_id && active_entitled_subscription">
+                <h1 class="display-1 ion-text-center">Vous disposez actuellement d'un {{ active_entitled_subscription.display_name }} pour cet appareil iOS</h1>
+
+                <p class="ion-text-center">
+                    <ion-button (click)="manageSubscription()">Gérer mes abonnements</ion-button>
+                </p>
+            </div>
+            <div class="option-list ion-padding" *ngIf="user && user?.renewable_id && !active_entitled_subscription">
+                <h1 class="display-1 ion-text-center">Vous disposez actuellement d'un abonnement {{ user.renewable_id }} pour ce compte utilisateur</h1>
             </div>
         </div>
     </div>
