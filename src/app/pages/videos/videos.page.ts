@@ -40,7 +40,7 @@ export class VideosPage {
   }
 
   async loadVideoList() {
-    this.jwtToken = await this.contentService.storage.get('token')
+    this.jwtToken = await this.contentService.storage.get('token') // Used by the child ion-infinite loader
 
     // Should fire event to update the video content
     /*

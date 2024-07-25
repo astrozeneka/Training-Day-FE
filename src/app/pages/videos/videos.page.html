@@ -32,7 +32,7 @@
             [httpHeaders]="{ 'Authorization': 'Bearer ' + jwtToken }"
             [httpUrl]="contentService.apiEndpoint + '/videos'"
             [filter]="{ 'f_category': this.category}"
-            *ngIf="jwtToken"
+            *ngIf="jwtToken || true"
         >
             <ng-template let-item>
                 <div class="video-card ion-padding">
