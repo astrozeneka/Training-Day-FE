@@ -27,6 +27,7 @@ import {UxButtonComponent} from "../components-submodules/angular-ux-button/ux-b
 import {InfiniteListComponent} from "../components-submodules/angular-infinite-list/infinite-list.component";
 import {TrainerCardComponent} from "./trainer-card/trainer-card.component";
 import {SubscriptionCardComponent} from "./subscription-card/subscription-card.component";
+import {FeedbackModalComponent} from "./feedback-modal/feedback-modal.component";
 
 
 
@@ -59,6 +60,8 @@ import {SubscriptionCardComponent} from "./subscription-card/subscription-card.c
     InfiniteListComponent,
     TrainerCardComponent,
     SubscriptionCardComponent,
+
+    FeedbackModalComponent
   ],
   imports: [
     CommonModule,
@@ -83,6 +86,8 @@ import {SubscriptionCardComponent} from "./subscription-card/subscription-card.c
     InfiniteListComponent,
     TrainerCardComponent,
     SubscriptionCardComponent,
+
+
   ]
 })
 export class UtilitiesModule { }

@@ -1,7 +1,7 @@
 import {Component, NgZone, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "./content.service";
-import {FeedbackService} from "./feedback.service";
+import {FeedbackService, INFO} from "./feedback.service";
 import {Platform, ToastController} from "@ionic/angular";
 import { PushNotifications } from '@capacitor/push-notifications';
 import {HttpClient} from "@angular/common/http";
@@ -97,15 +97,7 @@ export class AppComponent implements OnInit{
     // Check if there is some message from the feedback service
     this.feedbackService.fetch().then((feedback)=>{
       if(feedback.message){
-        let toast = this.toastController.create({
-          message: feedback.message,
-          position: 'bottom',
-          duration: 5000,
-          color: feedback.color
-        })
-        toast.then((toast)=>{
-          toast.present()
-        })
+        this.feedbackService.displayFeedback(feedback.message, feedback.color, INFO, feedback.options)
         this.feedbackService.clear()
       }
     })

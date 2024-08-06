@@ -149,6 +149,20 @@ export class LoginPage extends FormComponent implements OnInit {
         })
       }
     })
+
+    this.feedbackService.registerNow(
+      null,
+      'success',
+      null,
+      {
+        type: 'modal',
+        modalTitle: 'Votre achat a été effectué',
+        modalContent: 'Votre coach prendra rendez-vous avec vous dans les prochaines 24h afin de programmer et ' +
+          'planifier vos attentes en fonction de vos attentes.',
+        modalImage: 'assets/logo-dark.png',
+        buttonText: 'OK'
+      }
+    )
   }
 
   async requestLogin({email, password}){

@@ -1,0 +1,18 @@
+<div class="centered ion-padding">
+    <div *ngIf="options.modalImage">
+        <img [src]="options.modalImage"/>
+    </div>
+    <h1 class="display-1">
+        {{ options.modalTitle }}
+    </h1>
+    <p>
+        {{
+            options.modalContent
+        }}
+    </p>
+    <div class="ion-padding-vertical">
+        <ion-button (click)="dismiss()">
+            {{ options.buttonText }}
+        </ion-button>
+    </div>
+</div>
