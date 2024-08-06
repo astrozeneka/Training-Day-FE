@@ -22,12 +22,11 @@
         <ion-button expand="full" type="submit" (click)="goTo('/chat')" color="primary" shape="round" fill="outline">
             {{(user?.role_id===2)?'Mon coach':'Messagerie'}}
         </ion-button>
-        <ion-button expand="full" type="submit" (click)="goTo('/training')" color="primary" shape="round" fill="outline">Training</ion-button>
 
         <!-- Videos -->
         <!-- Training every day -->
-        <ion-button expand="full" type="submit" (click)="goTo('/videos/training')" color="primary" shape="round" fill="outline">Training videos</ion-button>
-        <ion-button expand="full" type="submit" (click)="goTo('/videos/boxing')" color="primary" shape="round" fill="outline">Boxing videos</ion-button>
+        <ion-button expand="full" type="submit" (click)="goTo('/videos/training')" color="primary" shape="round" fill="outline">Training of the Day</ion-button>
+        <ion-button expand="full" type="submit" (click)="goTo('/videos/boxing')" color="primary" shape="round" fill="outline">Boxing Every Day</ion-button>
 
         <!-- IMC -->
         <ion-button expand="full" type="submit" (click)="goTo('/app-imc')" color="primary" shape="round" fill="outline">Calculateur d'IMC</ion-button>

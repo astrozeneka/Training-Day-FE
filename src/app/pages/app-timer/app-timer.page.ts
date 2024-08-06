@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import {interval, Subject, takeUntil} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {NativeAudio} from "@capacitor-community/native-audio";
+
+// import {NativeAudio} from "@capacitor-community/native-audio";
+import {NativeAudio} from '@capgo/native-audio'
+
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import {NavigationStart, Router} from "@angular/router";
+// import { Media, MediaObject } from '@ionic-native/media/ngx';
 
 async function wait(ms: number): Promise<void> {
   return new Promise<void>(resolve => setTimeout(resolve, ms));
@@ -30,6 +34,7 @@ export class AppTimerPage implements OnInit {
 
   constructor(
     private router: Router,
+    //private media: Media
   ) {
     router.events.subscribe((event:any)=>{
       if(event instanceof NavigationStart && this.router.url == '/app-timer'){
@@ -199,7 +204,9 @@ export class AppTimerPage implements OnInit {
   audio_rest: any = undefined
   audio_finish: any = undefined
 
-  load_audios = () => {
+  load_audios = async () => {
+    // Configure NativeAudio
+
     // For the web
     try{
       this.audio_work = new Audio()
@@ -212,10 +219,13 @@ export class AppTimerPage implements OnInit {
     }
     // For the native device
     try{
+      /*await NativeAudio.configure({
+        background: true
+      })*/
       NativeAudio.preload({
         assetId: "race-start-beeps-125125.mp3",
         assetPath: "public/assets/audio/race-start-beeps-125125.mp3",
-        audioChannelNum: 1,
+        audioChannelNum: 2,
         isUrl: false
       })
     }catch (e) {
@@ -225,7 +235,7 @@ export class AppTimerPage implements OnInit {
       NativeAudio.preload({
         assetId: "dream-99404.mp3",
         assetPath: "public/assets/audio/dream-99404.mp3",
-        audioChannelNum: 1,
+        audioChannelNum: 2,
         isUrl: false
       })
     }catch (e) {
@@ -235,7 +245,7 @@ export class AppTimerPage implements OnInit {
       NativeAudio.preload({
         assetId: "success-1-6297.mp3",
         assetPath: "public/assets/audio/success-1-6297.mp3",
-        audioChannelNum: 1,
+        audioChannelNum: 2,
         isUrl: false
       })
     }catch (e) {
@@ -254,11 +264,20 @@ export class AppTimerPage implements OnInit {
 
   sound_or_vibrate_work() {
     // Play audio when start
+
     NativeAudio.play({
       assetId: "race-start-beeps-125125.mp3"
     }).catch((e)=>{
       this.audio_work.play();
     });
+
+    /*const file = this.media.create('public/assets/audio/race-start-beeps-125125.mp3');
+    file.play();
+    file.onStatusUpdate.subscribe(status => console.log(status)); // fires when file status changes
+    file.onSuccess.subscribe(() => console.log('Action is successful'));
+    file.onError.subscribe(error => console.log('Error!', error));
+
+     */
   }
 
   sound_or_vibrate_pause() {
