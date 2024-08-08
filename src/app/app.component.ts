@@ -60,19 +60,20 @@ export class AppComponent implements OnInit{
 
 
       // Load the autoRenewableEntitlements
-      let renewableData = (await StorePlugin.getAutoRenewableEntitlements({}))
-      let renewableEntitlements = renewableData.entitlements
-      let renewableSubscriptions = renewableData.subscriptions
-      console.log("appComponent: autorenewable Entitlements", renewableEntitlements)
-      console.log("appComponent: autorenewable Subscriptions", renewableSubscriptions)
-      this.contentService.post('/users/sync-device-entitlements', {subscriptions: renewableSubscriptions}).subscribe((response:any)=>{
-        console.log(response)
-        if(response.success){
-          console.info("Device entitlements verified from the server")
-        }else{
-          this.feedbackService.registerNow(response.error, "danger") // Still have a bug
-        }
-      })
+      if(this.platform.is('ios')) {
+        let renewableData = (await StorePlugin.getAutoRenewableEntitlements({}))
+        let renewableEntitlements = renewableData.entitlements
+        let renewableSubscriptions = renewableData.subscriptions
+        console.log("appComponent: autorenewable Entitlements", renewableEntitlements)
+        console.log("appComponent: autorenewable Subscriptions", renewableSubscriptions)
+        this.contentService.post('/users/sync-device-entitlements', {subscriptions: renewableSubscriptions}).subscribe((response: any) => {
+          if (response.success) {
+            console.info("Device entitlements verified from the server")
+          } else {
+            this.feedbackService.registerNow(response.error, "danger") // Still have a bug
+          }
+        })
+      }
 
       // Unused, The verification and purchase registration is done at transaction for non-renewable
       /*console.log("appComponent: Entitlements", entitlements)
