@@ -36,6 +36,7 @@ export class FeedbackService {
   }
 
   async displayFeedback(message:string, color:string = 'secondary', logLevel:number = INFO, options:FeedbackOptions){
+    console.log("DisplayFeedback", message, color, logLevel, options)
     if (options.type == 'toast') {
       let toast = await this.toastController.create({
         message: message,

@@ -150,7 +150,7 @@ export class LoginPage extends FormComponent implements OnInit {
       }
     })
 
-    this.feedbackService.registerNow(
+    /*this.feedbackService.registerNow(
       null,
       'success',
       null,
@@ -162,7 +162,7 @@ export class LoginPage extends FormComponent implements OnInit {
         modalImage: 'assets/logo-dark.png',
         buttonText: 'OK'
       }
-    )
+    )*/
   }
 
   async requestLogin({email, password}){
@@ -179,7 +179,7 @@ export class LoginPage extends FormComponent implements OnInit {
         }else if(error.status == 401){ // 401 Unauthorized
           this.feedbackService.registerNow("Le nom d'utilisateur ou le mot de passe est incorrect", 'danger')
         }
-        this.fs.registerNow("Error :" + error.message, "danger", DEBUG)
+        // this.fs.registerNow("Error :" + error.message, "danger", DEBUG)
         return throwError(error)
       }), finalize(()=>{
         this.formIsLoading = false;

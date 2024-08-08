@@ -83,19 +83,32 @@ export class PurchaseInvoicePage implements OnInit {
         .subscribe((response:any)=> {
           console.log("Retrieve response after purchase")
           //this.feedbackService.register('Votre achat a été enregistré. Vous pouvez maintenant profiter de votre achat.')
-          // TODO: add condition to display various message depending on the purchase
-          this.feedbackService.register(
-            null,
-            'success',
-            {
-              type: 'modal',
-              modalTitle: 'Votre achat a été effectué',
-              modalContent: 'Votre coach prendra rendez-vous avec vous dans les prochaines 24h afin de programmer et ' +
-                'planifier vos attentes en fonction de vos attentes.',
-              modalImage: 'assets/logo-dark.png',
-              buttonText: 'OK'
-            }
-          )
+          if(["hoylt", "moreno", "alonzo"].includes(this.productId)){ // Auto-renewables
+            this.feedbackService.register(
+              null,
+              'success',
+              {
+                type: 'modal',
+                modalTitle: "Votre achat d'abonnement a été effectué",
+                modalContent: 'Bienvenue chez Training Day vous pouvez dès à présent prendre rendez-vous avez votre coach',
+                modalImage: 'assets/logo-dark.png',
+                buttonText: 'OK'
+              }
+            )
+          }else{ // Non-renewables
+            this.feedbackService.register(
+              null,
+              'success',
+              {
+                type: 'modal',
+                modalTitle: 'Votre achat a été effectué',
+                modalContent: 'Votre coach prendra rendez-vous avec vous dans les prochaines 24h afin de programmer et ' +
+                  'planifier vos attentes en fonction de vos attentes.',
+                modalImage: 'assets/logo-dark.png',
+                buttonText: 'OK'
+              }
+            )
+          }
           this.router.navigate(['/home'])
         })
       console.log("Purchase result:")

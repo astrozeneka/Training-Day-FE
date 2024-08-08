@@ -2,7 +2,7 @@
   "identifier" : "C144167D",
   "nonRenewingSubscriptions" : [
     {
-      "displayPrice" : "49.99",
+      "displayPrice" : "39.99",
       "familyShareable" : false,
       "internalID" : "6538727085",
       "localizations" : [
@@ -22,7 +22,7 @@
       "type" : "NonRenewingSubscription"
     },
     {
-      "displayPrice" : "17.99",
+      "displayPrice" : "12.99",
       "familyShareable" : false,
       "internalID" : "6538727303",
       "localizations" : [
@@ -42,7 +42,7 @@
       "type" : "NonRenewingSubscription"
     },
     {
-      "displayPrice" : "44.99",
+      "displayPrice" : "29.99",
       "familyShareable" : false,
       "internalID" : "6538727227",
       "localizations" : [
@@ -62,7 +62,7 @@
       "type" : "NonRenewingSubscription"
     },
     {
-      "displayPrice" : "49.99",
+      "displayPrice" : "39.99",
       "familyShareable" : false,
       "internalID" : "6538727482",
       "localizations" : [
@@ -82,7 +82,7 @@
       "type" : "NonRenewingSubscription"
     },
     {
-      "displayPrice" : "24.99",
+      "displayPrice" : "12.99",
       "familyShareable" : false,
       "internalID" : "6538727173",
       "localizations" : [
@@ -102,7 +102,7 @@
       "type" : "NonRenewingSubscription"
     },
     {
-      "displayPrice" : "44.99",
+      "displayPrice" : "29.99",
       "familyShareable" : false,
       "internalID" : "6538727349",
       "localizations" : [
@@ -188,7 +188,7 @@
     "_applicationInternalID" : "6477325664",
     "_developerTeamID" : "K8FHK5UWGD",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 742576082.89229405,
+    "_lastSynchronizedDate" : 744790592.13847494,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -254,7 +254,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "59.99",
+          "displayPrice" : "44.99",
           "familyShareable" : false,
           "groupNumber" : 3,
           "internalID" : "6538726957",
@@ -284,7 +284,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "12.99",
+          "displayPrice" : "6.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "6538726862",
@@ -314,7 +314,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "24.99",
+          "displayPrice" : "22.99",
           "familyShareable" : false,
           "groupNumber" : 2,
           "internalID" : "6538727000",

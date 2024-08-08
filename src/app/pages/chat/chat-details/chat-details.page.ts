@@ -139,18 +139,15 @@ export class ChatDetailsPage implements OnInit {
         //console.log("Save data to local storage " + 'discussionDetailsData-' + this.correspondentId, this.entityList.slice())
 
         this.contentService.storage.set('discussionDetailsData-' + this.correspondentId, this.entityList.slice().reverse())
-        if(this.ionInfiniteEvent)
-          this.ionInfiniteEvent.target.complete()
+        this.ionInfiniteEvent?.target.complete()
       })
     await new Promise((resolve)=>setTimeout(resolve, 1000)) // Wait 1 second
 
     // 3. Request the server to get the latest data
-    if(true){ // Should refresh everytime
-      this.contentService.post('/messages/request-update/'+this.correspondentId, {correspondent_id: this.correspondentId})
-        .subscribe((data)=>{
-          console.log('Request message update: ', data)
-        })
-    }
+    this.contentService.post('/messages/request-update/'+this.correspondentId, null)
+      .subscribe((data)=>{
+        console.log('Request message update: ', data)
+      })
   }
 
   loadData() {

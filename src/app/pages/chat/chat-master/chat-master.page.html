@@ -11,10 +11,11 @@
 <ion-content class="">
   <!-- This section should be infinite scroll -->
     <div *ngIf="user?.function !== 'customer'">
+        <!-- TODO: THE searchbar is actually not compatible with the optimized chat system
         <ion-searchbar [formControl]="searchControl"
                        animated="true"
-                       placeholder="Rechercher"
-                       (keydown.enter)="loadData()"></ion-searchbar>
+                       placeholder="Rechercher"></ion-searchbar>
+         -->
         <div class="ion-text-center">
             <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
         </div>

@@ -96,7 +96,7 @@ export class AppComponent implements OnInit{
 
     // Check if there is some message from the feedback service
     this.feedbackService.fetch().then((feedback)=>{
-      if(feedback.message){
+      if(feedback.message || feedback.options?.type == 'modal'){
         this.feedbackService.displayFeedback(feedback.message, feedback.color, INFO, feedback.options)
         this.feedbackService.clear()
       }
