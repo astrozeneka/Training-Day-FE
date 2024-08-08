@@ -35,7 +35,7 @@ export class ChatMasterPage implements OnInit {
   ) {
   }
 
-  prepareDiscussionData({data, metainfo}){ // Metainfo include a user_id key to unvalidate the data
+  prepareDiscussionData({data, metainfo}, searchTerm=""){ // Metainfo include a user_id key to unvalidate the data
     if(typeof data == "object") // Here data is an object, but should be array (This is from the way localStorage stores items)
       data = Object.values(data)
     for(let i = 0; i < data.length; i++){
@@ -43,6 +43,13 @@ export class ChatMasterPage implements OnInit {
       data[i].avatar_url = url ? this.contentService.addPrefix(url) : undefined
     }
     this.entityList = data as unknown as Array<any>
+    if(searchTerm != ""){
+      this.entityList = this.entityList.filter((item:any)=>{
+        return item.firstname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.lastname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.email.toLowerCase().includes(searchTerm.toLowerCase())
+      })
+    }
     this.coachList = this.entityList.filter((item:any)=>item.function == "coach")
     this.nutritionistList = this.entityList.filter((item:any)=>item.role_id == "nutritionist")
   }
@@ -56,13 +63,12 @@ export class ChatMasterPage implements OnInit {
       this.prepareDiscussionData(discussionData)
      */
     this.discussionStorageObservable.getStorageObservable().subscribe(
-      ({data, metainfo}) => {
-        this.prepareDiscussionData({
-          data,
-          metainfo: {...metainfo, user_id: this.user.id}
-        })
-      }
+      ({data, metainfo}) => this.prepareDiscussionData({
+        data,
+        metainfo: {...metainfo, user_id: this.user.id}
+      })
     )
+
     // 2. Register listener to listen update from the server
     this.broadcastingService.pusher.subscribe(`messages.${this.user.id}`)
       .bind('master-updated',
@@ -73,6 +79,17 @@ export class ChatMasterPage implements OnInit {
     // 3. Request the server to get the latest data
     this.contentService.post('/chat/request-update/'+this.user.id, {})
       .subscribe(data => null)
+
+    // 4. Manage the searchbar
+    this.searchControl.valueChanges.pipe(
+      debounceTime(700),
+      distinctUntilChanged()
+    ).subscribe((searchTerm)=>{
+      this.prepareDiscussionData(
+        this.discussionStorageObservable.getStorageValue(),
+        searchTerm
+      )
+    })
   }
 
   navigateTo(url:string) {
