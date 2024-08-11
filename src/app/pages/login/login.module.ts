@@ -8,6 +8,9 @@ import { LoginPageRoutingModule } from './login-routing.module';
 
 import { LoginPage } from './login.page';
 import {UtilitiesModule} from "../../components/utilities.module";
+import {DevComponentsModule} from "../../dev-prod-components/dev-components.module";
+import {environment} from "../../../environments/environment";
+import {ProdComponentsModule} from "../../dev-prod-components/prod-components.module";
 
 @NgModule({
   imports: [
@@ -16,7 +19,8 @@ import {UtilitiesModule} from "../../components/utilities.module";
     IonicModule,
     LoginPageRoutingModule,
     ReactiveFormsModule,
-    UtilitiesModule
+    UtilitiesModule,
+    ...(!environment.production ? [DevComponentsModule] : [ProdComponentsModule])
   ],
   declarations: [LoginPage]
 })

@@ -22,41 +22,45 @@
         </div>
         <h1>Se connecter au plateforme</h1>
       </div>
-      <form [formGroup]="form" (submit)="submit()">
-        <ion-item class="ion-margin-vertical">
-          <ion-input
-            label="Email"
-            label-placement="floating"
-            formControlName="email"
-            [errorText]="displayedError.email"
-          ></ion-input>
-        </ion-item>
-        <ion-item class="ion-margin-vertical">
-          <ion-input
-            label="Password"
-            label-placement="floating"
-            formControlName="password"
-            type="password"
-            [errorText]="displayedError.password"
-          ></ion-input>
-        </ion-item>
-          <!--
-        <ion-button expand="full" type="submit" shape="round">Se connecter</ion-button>
-        -->
-          <app-ux-button
-            expand="full"
-            type="submit"
-            shape="round"
-            [loading]="formIsLoading"
-          >
-              Se connecter
-          </app-ux-button>
-          <p>
-               <a href="/forgot-password">Mot de passe oublié ?</a>
-          </p>
-          <br/>
-        <hr/>
-      </form>
+        <app-m-form [formGroup]="form" (submit)="submit()">
+            <ion-item class="ion-margin-vertical">
+                <ion-input
+                        label="Email"
+                        label-placement="floating"
+                        formControlName="email"
+                        [errorText]="displayedError.email"
+                ></ion-input>
+            </ion-item>
+
+            <ion-item class="ion-margin-vertical">
+                <ion-input
+                        label="Password"
+                        label-placement="floating"
+                        formControlName="password"
+                        type="password"
+                        [errorText]="displayedError.password"
+                ></ion-input>
+            </ion-item>
+
+            <app-ux-button
+                    expand="full"
+                    type="submit"
+                    shape="round"
+                    [loading]="formIsLoading"
+            >
+                Se connecter
+            </app-ux-button>
+        </app-m-form>
+
+        <p>
+            <a href="/forgot-password">Mot de passe oublié ?</a>
+        </p>
+        <!--
+          <form [formGroup]="form" (submit)="submit()">
+              <br/>
+            <hr/>
+          </form>
+          -->
 
       <div>
         <ion-button expand="full" type="submit" color="medium" (click)="goTo('/subscribe')" shape="round">S'inscrire gratuitement</ion-button>
