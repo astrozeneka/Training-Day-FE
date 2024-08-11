@@ -4,6 +4,7 @@ import {Storage} from "@ionic/storage-angular";
 import {catchError, forkJoin, from, map, mergeMap, Observable, of, throwError} from "rxjs";
 import {ActivatedRoute, Route, Router} from "@angular/router";
 import {environment} from "../environments/environment";
+import StorageObservable from "./utils/StorageObservable";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,9 @@ export class ContentService {
   apiEndpoint = environment.apiEndpoint
   rootEndpoint = environment.rootEndpoint
   isDebug = true
+
+  // Experimental feature, using storageObservable object to manage user data
+  public userStorageObservable = new StorageObservable<any>('userData')
 
   private _token = null;
   bearerHeaders(){
@@ -37,6 +41,7 @@ export class ContentService {
             await this.storage.set('token', res.token)
           if(res.user){
             console.log("Reload user data")
+            this.userStorageObservable.updateStorage(res.user)
             await this.storage.set('user', res.user)
           }
         }),

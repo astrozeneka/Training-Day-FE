@@ -146,8 +146,8 @@ export class AppComponent implements OnInit{
       });
       await PushNotifications.addListener('pushNotificationActionPerformed', notification => {
         let deepLink = notification.notification.data.deep_link
-        console.log('Deep link', deepLink) // TODO: Solve
-        this.feedbackService.register("Deep link received : " + deepLink + " / " + JSON.stringify(notification.notification.data), "secondary")
+        console.log('Deep link', deepLink) // It already works
+        // this.feedbackService.register("Deep link received : " + deepLink + " / " + JSON.stringify(notification.notification.data), "secondary")
         if(deepLink)
           this.router.navigate([deepLink])
         console.log('Push notification action performed', notification.actionId, notification.inputValue);
@@ -159,7 +159,7 @@ export class AppComponent implements OnInit{
         permStatus = await PushNotifications.requestPermissions();
       }
       if (permStatus.receive !== 'granted') {
-        throw new Error('User denied permissions!');
+        this.feedbackService.registerNow("You need to allow the notifications to receive push notifications", "danger") // TODO: not yet tested
       }
       await PushNotifications.register();
     }
@@ -179,8 +179,6 @@ export class AppComponent implements OnInit{
       // For the web, we will registerNotification for testing
       await registerNotifications()
       //console.warn("Push notifications are not available on web platform")
-      //this.feedbackService.registerNow("Push notifications are not available on web platform", "warning")
-
     }
   }
 }
