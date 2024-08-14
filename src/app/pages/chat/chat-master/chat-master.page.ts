@@ -16,8 +16,8 @@ import StorageObservable from "../../../utils/StorageObservable";
 })
 export class ChatMasterPage implements OnInit {
   entityList:Array<any>|null = []
-  coachList:Array<any> = []
-  nutritionistList:Array<any> = []
+  coachList:Array<any> = null
+  nutritionistList:Array<any> = null
   searchControl:FormControl = new FormControl("")
   user:any = null
 
@@ -55,7 +55,13 @@ export class ChatMasterPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.user = await this.contentService.storage.get('user') // TODO, should use a more appropriate techniques
+    //this.user = await this.contentService.storage.get('user') // TODO, should use a more appropriate techniques
+    await (()=>new Promise(_=>{
+      this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
+        this.user = user;
+        _(null)
+      })
+    }))();
 
     this.discussionStorageObservable.updateStorage({data:[], metainfo:{}})
     /*let discussionData:any = await this.contentService.storage.get('discussionData')

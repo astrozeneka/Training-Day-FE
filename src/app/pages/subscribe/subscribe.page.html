@@ -1,4 +1,3 @@
-<script src="../profile/profile.page.ts"></script>
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
@@ -11,17 +10,9 @@
 
 <ion-content [fullscreen]="true">
   <form [formGroup]="form">
-    <ion-header collapse="condense">
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button></ion-back-button>
-        </ion-buttons>
-        <ion-title>Inscription</ion-title>
-      </ion-toolbar>
-    </ion-header>
 
       <div class="ion-padding">
-          <h2>{{ headerHeadline }}</h2>
+          <h2 class="display-1">{{ headerHeadline }}</h2>
           <p class="helper">
               {{ headerHelper }}
           </p>

@@ -80,13 +80,21 @@ export class ChatDetailsPage implements OnInit {
   }
 
   async ngOnInit() {
+    console.log("chat-details: ngOnInit")
+
     this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
       this.user = user
-      // Globally, it works fine, but still have some unreproductible bugs
-      // The chat on two devices are not the same, will be fixed later
-      // This probably need to be fixed by other projects, then we can use this feature
+
+      // Reset the entityList because we have a new user connected
+      console.log("Reset the entitylist due to a new user connected")
+      this.entityList = [] // Reset the component data
+      await this.contentService.storage.set(`discussionDetailsData-${this.user.id}-${this.correspondentId}`, []) // Reset the storage data
+
+      console.log("Fetch data from local storage")
+      console.log("user-id: ", this.user.id)
 
       // 1. Load the correspondent data
+      console.log("loading key: ", `discussionDetailsData-${this.user.id}-${this.correspondentId}`)
       let discussionDetailsData = await this.contentService.storage.get(`discussionDetailsData-${this.user.id}-${this.correspondentId}`)
       console.log(discussionDetailsData)
       if(discussionDetailsData && (discussionDetailsData.length > 0)){
@@ -97,7 +105,7 @@ export class ChatDetailsPage implements OnInit {
       }
 
       // 2. register listener to listen update from the server
-      this.contentService.getOne('/users/'+this.correspondentId, {})
+      this.contentService.getOne(`/users/`+this.correspondentId, {})
         .subscribe((data:any)=>{
           let url = data.thumbnail64 || data.profile_image?.permalink
           this.avatar_url = url ? this.contentService.addPrefix(url) : undefined
@@ -109,6 +117,9 @@ export class ChatDetailsPage implements OnInit {
       this.broadcastingService.pusher.subscribe(`messages.${user.id}`)
         .bind( `message-details-updated-${this.correspondentId}`, (res)=>{ // TODO, should use the same format {data, metainfo}
           this.prepareDiscussionDetailsData(res)
+          // TODO we are here
+          // The bug is that when we create a new user the stored data is still the same
+          console.log("Storing key: ", `discussionDetailsData-${this.user.id}-${this.correspondentId}`, this.entityList.slice().reverse())
           this.contentService.storage.set(`discussionDetailsData-${this.user.id}-${this.correspondentId}`, this.entityList.slice().reverse())
           this.ionInfiniteEvent?.target.complete()
         })

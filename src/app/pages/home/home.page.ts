@@ -54,6 +54,11 @@ export class HomePage extends FormComponent implements OnInit {
         elt.style.display = 'none'
       }
     })
+
+    // The user data
+    this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
+      this.user = user
+    })
   }
 
   onSwiper(event: any){
