@@ -86,19 +86,13 @@ export class ChatDetailsPage implements OnInit {
       this.user = user
 
       // Reset the entityList because we have a new user connected
-      console.log("Reset the entitylist due to a new user connected")
       this.entityList = [] // Reset the component data
       await this.contentService.storage.set(`discussionDetailsData-${this.user.id}-${this.correspondentId}`, []) // Reset the storage data
-
-      console.log("Fetch data from local storage")
-      console.log("user-id: ", this.user.id)
 
       // 1. Load the correspondent data
       console.log("loading key: ", `discussionDetailsData-${this.user.id}-${this.correspondentId}`)
       let discussionDetailsData = await this.contentService.storage.get(`discussionDetailsData-${this.user.id}-${this.correspondentId}`)
-      console.log(discussionDetailsData)
       if(discussionDetailsData && (discussionDetailsData.length > 0)){
-        console.log("Retrieve saved data", discussionDetailsData)
         this.entityList = discussionDetailsData.slice().reverse()
         this.entityOffset = this.entityList.length
         this.scrollTop()
@@ -117,9 +111,7 @@ export class ChatDetailsPage implements OnInit {
       this.broadcastingService.pusher.subscribe(`messages.${user.id}`)
         .bind( `message-details-updated-${this.correspondentId}`, (res)=>{ // TODO, should use the same format {data, metainfo}
           this.prepareDiscussionDetailsData(res)
-          // TODO we are here
-          // The bug is that when we create a new user the stored data is still the same
-          console.log("Storing key: ", `discussionDetailsData-${this.user.id}-${this.correspondentId}`, this.entityList.slice().reverse())
+          // console.log("Storing key: ", `discussionDetailsData-${this.user.id}-${this.correspondentId}`, this.entityList.slice().reverse())
           this.contentService.storage.set(`discussionDetailsData-${this.user.id}-${this.correspondentId}`, this.entityList.slice().reverse())
           this.ionInfiniteEvent?.target.complete()
         })

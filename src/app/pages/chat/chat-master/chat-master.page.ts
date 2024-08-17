@@ -54,37 +54,47 @@ export class ChatMasterPage implements OnInit {
     this.nutritionistList = this.entityList.filter((item:any)=>item.role_id == "nutritionist")
   }
 
+  async initPusherListener(){
+    this.broadcastingService.pusher.unsubscribe(`messages.${this.user.id}`)
+    this.broadcastingService.pusher.subscribe(`messages.${this.user.id}`)
+      .bind('master-updated',
+        ({data, metainfo}) => {
+          this.discussionStorageObservable.updateStorage({data, metainfo})
+        }
+      )
+
+    await new Promise((resolve)=>setTimeout(resolve, 500))
+
+    console.log("chat-master: Requesting the server to get the latest data")
+    this.contentService.post('/chat/request-update/'+this.user.id, {})
+      .subscribe(data => null)
+  }
+
   async ngOnInit() {
-    //this.user = await this.contentService.storage.get('user') // TODO, should use a more appropriate techniques
     await (()=>new Promise(_=>{
-      this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
+      this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
+        console.log("chat-master: The user was updated")
         this.user = user;
+
+        this.discussionStorageObservable.updateStorage({data:[], metainfo:{}})
+
+        await this.initPusherListener()
+
         _(null)
       })
     }))();
 
-    this.discussionStorageObservable.updateStorage({data:[], metainfo:{}})
-    /*let discussionData:any = await this.contentService.storage.get('discussionData')
-    if(discussionData)
-      this.prepareDiscussionData(discussionData)
-     */
+    // IMPORTANT, this should be done outside the subscription block, otherwise it will be called twice
     this.discussionStorageObservable.getStorageObservable().subscribe(
-      ({data, metainfo}) => this.prepareDiscussionData({
-        data,
-        metainfo: {...metainfo, user_id: this.user.id}
-      })
+      ({data, metainfo}) => {
+        this.prepareDiscussionData({
+          data,
+          metainfo: {...metainfo, user_id: this.user.id}
+        })
+      }
     )
 
-    // 2. Register listener to listen update from the server
-    this.broadcastingService.pusher.subscribe(`messages.${this.user.id}`)
-      .bind('master-updated',
-        ({data, metainfo}) => this.discussionStorageObservable.updateStorage({data, metainfo})
-      )
-    await new Promise((resolve)=>setTimeout(resolve, 1000)) // Wait 1 second
-
-    // 3. Request the server to get the latest data
-    this.contentService.post('/chat/request-update/'+this.user.id, {})
-      .subscribe(data => null)
+    this.initPusherListener()
 
     // 4. Manage the searchbar
     this.searchControl.valueChanges.pipe(
