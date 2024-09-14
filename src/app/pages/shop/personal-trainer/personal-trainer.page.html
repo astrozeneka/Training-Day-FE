@@ -64,7 +64,7 @@
         </div>
         <div class="card ion-padding">
             <h2 class="display-1">Programme 10 séances (
-                {{ productList.hasOwnProperty('trainer10') ? productList['trainer10'].displayPrice : 'Temporairement indisponible'}}
+                {{ productList.hasOwnProperty('trainermax') ? productList['trainermax'].displayPrice : 'Temporairement indisponible'}}
                 )</h2>
             <p class="helper">
                 Profitez de 10 séances de coaching personnalisées avec un coach sportif professionnel.
@@ -74,8 +74,8 @@
                     color="primary"
                     expand="block"
                     shape="round"
-                    (click)="clickCoachingOption(10, 49900, 'trainer10')"
-                    [disabled]="!productList.hasOwnProperty('trainer10')"
+                    (click)="clickCoachingOption(10, 49900, 'trainermax')"
+                    [disabled]="!productList.hasOwnProperty('trainermax')"
             >
                 Choisir
             </ion-button>

@@ -232,6 +232,10 @@ const routes: Routes = [
     path: 'manage-personal-trainer',
     loadChildren: () => import('./pages/manage-personal-trainer/manage-personal-trainer.module').then(m => m.ManagePersonalTrainerPageModule)
   },
+  {
+    path: 'app-weight-tracking',
+    loadChildren: () => import('./pages/app-weight-tracking/app-weight-tracking.module').then( m => m.AppWeightTrackingPageModule)
+  },
 ];
 
 @NgModule({

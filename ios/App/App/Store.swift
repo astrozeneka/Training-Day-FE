@@ -10,7 +10,7 @@ import StoreKit
 
 class Store:NSObject {
     private var productIDs = [
-        "trainer1", "trainer5", "trainer10",
+        "trainer1", "trainer5", "trainer10", "trainermax",
         "foodcoach_1w", "foodcoach_4w", "foodcoach_6w",
         "sportcoach_1w", "sportcoach_4w", "sportcoach_6w",
         "hoylt", "moreno", "alonzo"

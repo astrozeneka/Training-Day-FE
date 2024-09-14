@@ -67,5 +67,7 @@
 	<true/>
 	<key>AVAudioSessionCategoryOptionMixWithOthers</key>
 	<true/>
+	<key>LSMinimumSystemVersion</key>
+	<string>13.0.0</string>
 </dict>
 </plist>

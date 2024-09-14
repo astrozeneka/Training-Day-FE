@@ -13,7 +13,16 @@
   <div class="calories-container ion-padding">
     <h1>Pour commencer, entrez vos informations</h1>
       <p class="helper">
-          Vos besoins quotidiens en calories dépendent de votre âge, de votre sexe, de votre poids, de votre taille et de votre activité physique. Calculez dès maintenant l’apport quotidien en calories recommandé pour maintenir votre poids actuel.
+          Vos besoins quotidiens en calories dépendent de votre âge, de votre sexe, de votre poids, de votre taille et de votre activité physique.
+      </p>
+      <p class="helper">
+          La quantité de calorie sera calculée à partir de l'équation de Harris-Benedict.
+          <a href="#"
+             (click)="openExternal('https://en.wikipedia.org/wiki/Harris–Benedict_equation')"
+            target="_blank"
+          >
+                En savoir plus
+          </a>
       </p>
       <br/>
     <form [formGroup]="form">

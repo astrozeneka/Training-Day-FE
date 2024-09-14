@@ -4,6 +4,8 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ContentService} from "../../content.service";
 import {NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {FeedbackService} from "../../feedback.service";
+import {Browser} from "@capacitor/browser";
+import {Platform} from "@ionic/angular";
 
 @Component({
   selector: 'app-app-calories',
@@ -35,7 +37,8 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
   constructor(
     private contentService: ContentService,
     private router: Router,
-    private feedbackService: FeedbackService
+    private feedbackService: FeedbackService,
+    private platform: Platform
   ) {
     super()
     router.events.subscribe(async(event: any)=>{
@@ -151,4 +154,12 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
     this.calory_to_consume.extreme = base * 1.9
   }
 
+
+  openExternal(url){
+    if (this.platform.is('capacitor')) {
+      Browser.open({url: url})
+    }else{
+      window.open(url, '_blank')
+    }
+  }
 }

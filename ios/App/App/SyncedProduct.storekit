@@ -104,6 +104,26 @@
     {
       "displayPrice" : "29.99",
       "familyShareable" : false,
+      "internalID" : "6642652969",
+      "localizations" : [
+        {
+          "description" : "Programme Sportif Mensuel",
+          "displayName" : "Programme Sportif Mensuel",
+          "locale" : "fr"
+        },
+        {
+          "description" : "Sport Coaching (1 Month)",
+          "displayName" : "Sport Coaching (1 Month)",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "sportcoach_4w",
+      "referenceName" : "Programme Sportif Mensuel",
+      "type" : "NonRenewingSubscription"
+    },
+    {
+      "displayPrice" : "29.99",
+      "familyShareable" : false,
       "internalID" : "6538727349",
       "localizations" : [
         {
@@ -118,7 +138,7 @@
         }
       ],
       "productID" : "coachsport_4w",
-      "referenceName" : "Programme Sportif Mensuel",
+      "referenceName" : "Programme Sportif Mensuel (old)",
       "type" : "NonRenewingSubscription"
     }
   ],
@@ -164,7 +184,7 @@
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "249.99",
+      "displayPrice" : "249.0",
       "familyShareable" : false,
       "internalID" : "6505030021",
       "localizations" : [
@@ -188,7 +208,7 @@
     "_applicationInternalID" : "6477325664",
     "_developerTeamID" : "K8FHK5UWGD",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 744790592.13847494,
+    "_lastSynchronizedDate" : 745581590.22758603,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [

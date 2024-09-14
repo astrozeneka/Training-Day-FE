@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <app-back-button></app-back-button>
+          <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Suivi du poids</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content id="app-weight-tracking">
+<div class="ion-padding">
+  <h1 class="display-1">Suivez votre poids au quotiduen</h1>
+  <p class="helper">
+    L'application vous permet de suivre votre poids au quotidien.
+    Vous pouvez ajouter un poids à une date donnée, et consulter l'évolution de votre poids au fil du temps.
+  </p>
+  <br/>
+
+  <form [formGroup]="weightForm" (submit)="submitWeightForm($event)">
+    <ion-item>
+      <ion-input 
+        label="Date"
+        label-placement="floating"
+        formControlName="date"
+        [errorText]="displayedError.date"
+        type="date"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input 
+        label="Poids (kg)"
+        label-placement="floating"
+        formControlName="weight"
+        [errorText]="displayedError.weight"
+        type="number"
+      ></ion-input>
+    </ion-item>
+    <br/>
+    <app-ux-button
+      shape="round"
+      expand="full"
+      [loading]="isFormLoading"
+    >
+      Soumettre
+    </app-ux-button>
+  </form>
+</div>
+
+<div class="ion-padding">
+  <h1 class="display-1">Ma courbe de poids</h1>
+  <div style="display: block" id="canvas-container">
+    <canvas baseChart
+      [data]="lineChart.data"
+      [options]="lineChart.options"
+      [legend]="false"
+      [type]="'line'"
+      style="width: 100%; height: 100%;"
+    ></canvas>
+  </div>
+</div>
+
+<div class="ion-padding">
+  <h1 class="display-1">Historique des poids</h1>
+  <ion-list *ngIf="weightData.length > 0">
+    <ion-item>
+      <ion-label><b>Date</b></ion-label>
+      <ion-label><b>Poids</b></ion-label>
+      <ion-label></ion-label>
+    </ion-item>
+    <ion-item *ngFor="let row of weightData">
+      <ion-label>{{ row.date }}</ion-label>
+      <ion-label>{{ row.weight }}</ion-label>
+      <ion-label class="text-center">
+        <ion-button (click)="deleteWeight(row.id)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <p class="helper" *ngIf="weightData.length === 0">
+    Aucun poids enregistré pour le moment.
+  </p>
+</div>
+</ion-content>

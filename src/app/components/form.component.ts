@@ -1,13 +1,18 @@
+import { FormGroup } from "@angular/forms";
 
 
 export class FormComponent {
   protected displayedError:any = null
   protected form:any = null;
-  protected manageValidationFeedback(error:any, slug:string){
+  protected manageValidationFeedback(error:any, slug:string, form:FormGroup<any>=undefined){
+    if (!form) {
+      form = this.form
+    }
     if(error.error.errors[slug]){
+      console.log(form)
       this.displayedError[slug] = error.error.errors[slug]
-      this.form.controls[slug].setErrors(error.error.errors[slug])
-      this.form.controls[slug].markAsTouched()
+      form.controls[slug].setErrors(error.error.errors[slug])
+      form.controls[slug].markAsTouched()
     } else {
       this.displayedError[slug] = undefined
     }
