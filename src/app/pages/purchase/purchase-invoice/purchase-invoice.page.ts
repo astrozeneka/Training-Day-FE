@@ -5,7 +5,7 @@ import {Router} from "@angular/router";
 import StorePlugin from "../../../custom-plugins/store.plugin";
 import {environment} from "../../../../environments/environment";
 import {FeedbackService} from "../../../feedback.service";
-import {catchError} from "rxjs";
+import {catchError, finalize} from "rxjs";
 import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
 
 @Component({
@@ -25,6 +25,8 @@ export class PurchaseInvoicePage implements OnInit {
   productId:string|undefined = undefined
 
   acceptConditions: FormControl = new FormControl(false);
+
+  isLoading: boolean = false;
 
   constructor(
     private contentService: ContentService,
@@ -82,12 +84,15 @@ export class PurchaseInvoicePage implements OnInit {
       res.transaction.currency = 'EUR' // TODO, update to local currency
       res.transaction.amount = this.productList[this.productId as string].price * 100
       res.transaction.product_id = this.productId
+      this.isLoading = true
       this.contentService.post('/payments/registerIAPTransaction', res.transaction)
         .pipe(catchError(err => {
           // Print error code
           console.error(err)
           this.feedbackService.registerNow("Erreur: " + err.error.message, "error")
           return err
+        }), finalize(() => {
+          this.isLoading = false
         }))
         .subscribe((response:any)=> {
           console.log("Retrieve response after purchase")
@@ -97,8 +102,8 @@ export class PurchaseInvoicePage implements OnInit {
             buttonText: null,
             primaryButtonText: 'Prendre contact avec mon coach',
             secondaryButtonText: 'Retour à l\'accueil',
-            primaryButtonAction: '/home',
-            secondaryButtonAction: '/chat',
+            primaryButtonAction: '/chat',
+            secondaryButtonAction: '/home',
             modalImage: this.useDarkMode ? 'assets/logo-dark-cropped.png' : 'assets/logo-light-cropped.png',
           }
           if(["hoylt", "moreno", "alonzo"].includes(this.productId)){ // Auto-renewables
@@ -121,7 +126,6 @@ export class PurchaseInvoicePage implements OnInit {
                 modalTitle: 'Votre achat a été effectué',
                 modalContent: 'Votre coach prendra rendez-vous avec vous dans les prochaines 24h afin de programmer et ' +
                   'planifier vos attentes en fonction de vos attentes.',
-                // modalImage: 'assets/logo-dark.png',
                 ...feedbackOpts
               }
             )

@@ -62,8 +62,18 @@
     </form>
     <br/>
     <div class="ion-padding">
-        <ion-button expand="block" color="primary" shape="round" (click)="continueToPayment()" [disabled]="!acceptConditions.value">
+        <app-ux-button 
+            expand="block" 
+            color="primary" 
+            shape="round" 
+            (click)="continueToPayment()" 
+            [disabled]="!acceptConditions.value"
+            [loading]="isLoading"
+            >
             Continuer
-        </ion-button>
+        </app-ux-button>
+        <p class="helper ion-text-center" *ngIf="isLoading" style="font-size:smaller">
+            Enregistrement de votre commande en cours
+        </p>
     </div>
 </ion-content>
