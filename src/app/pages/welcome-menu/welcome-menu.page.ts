@@ -3,6 +3,7 @@ import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
 import {Browser} from "@capacitor/browser";
 import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
+import { FeedbackService } from 'src/app/feedback.service';
 
 @Component({
   selector: 'app-welcome-menu',
@@ -15,7 +16,8 @@ export class WelcomeMenuPage implements OnInit {
   constructor(
     private router:Router,
     private contentService:ContentService,
-    private themeDetection: ThemeDetection
+    private themeDetection: ThemeDetection,
+    private feedbackService: FeedbackService
   ) {
     this.router.events.subscribe(async (event:any)=>{
       if (event instanceof NavigationEnd && event.url === '/welcome-menu') {

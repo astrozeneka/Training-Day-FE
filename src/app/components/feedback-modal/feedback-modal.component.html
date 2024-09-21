@@ -10,9 +10,17 @@
             options.modalContent
         }}
     </p>
-    <div class="ion-padding-vertical">
+    <div class="ion-padding-vertical text-center" *ngIf="options.buttonText">
         <ion-button (click)="dismiss()">
             {{ options.buttonText }}
+        </ion-button>
+    </div>
+    <div class="ion-padding-vertical text-center" *ngIf="options.primaryButtonText">
+        <ion-button (click)="dismiss(options.primaryButtonAction);" expand="full" shape="round">
+            {{ options.primaryButtonText }}
+        </ion-button>
+        <ion-button (click)="dismiss(options.secondaryButtonAction);" *ngIf="options.secondaryButtonText" expand="full" fill="clear">
+            {{ options.secondaryButtonText }}
         </ion-button>
     </div>
 </div>

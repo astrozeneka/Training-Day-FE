@@ -3,6 +3,7 @@ import {ContentService} from "./content.service";
 import {ModalController, ToastController} from "@ionic/angular";
 import {environment} from "../environments/environment";
 import {FeedbackModalComponent} from "./components/feedback-modal/feedback-modal.component";
+import { Router } from '@angular/router';
 
 // log levels
 export const DEBUG = 0
@@ -10,11 +11,17 @@ export const INFO = 1
 
 export interface FeedbackOptions {
   type: string | null // toast, alert or modal
-  buttonText: string | null // text for the Button (only for modals)
+  buttonText?: string | null // text for the Button (only for modals)
 
   modalTitle: string | null // (only for modal)
   modalContent: string | null // (only for modal)
   modalImage: string | null // image to display (only for modals)
+
+  primaryButtonText?: string | null // (only for alerts)
+  secondaryButtonText?: string | null // (only for alerts)
+  primaryButtonAction?: string | null // (only for alerts)
+  secondaryButtonAction?: string | null // (only for alerts)
+  
 }
 
 @Injectable({
@@ -26,7 +33,8 @@ export class FeedbackService {
   constructor(
     private contentService: ContentService,
     private toastController: ToastController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private router: Router
   ) { }
 
   register(message:string, color:string = 'secondary', options:FeedbackOptions={type: 'toast', buttonText: null, modalTitle: null, modalContent: null, modalImage: null}){
@@ -44,7 +52,7 @@ export class FeedbackService {
         duration: 5000,
         color: color
       })
-      await toast.present()
+      await toast.present() // Unused
     } else if (options.type == 'modal') {
       // Display message using modalController
       let modal = await this.modalController.create({
@@ -55,7 +63,12 @@ export class FeedbackService {
           options: options
         }
       })
-      await modal.present()
+      let result = await modal.present() // sometimes the result is a deep-link where the user should be redirected
+      const { data, role } = await modal.onWillDismiss();
+      if (data != null) {
+        console.log("Navigate to : ", data)
+        this.router.navigate([data])
+      }
     }
   }
 

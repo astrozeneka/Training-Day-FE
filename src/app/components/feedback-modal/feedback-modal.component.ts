@@ -36,8 +36,8 @@ export class FeedbackModalComponent  implements OnInit {
 
   ngOnInit() {}
 
-  dismiss() {
-    this.modalController.dismiss(null, 'close')
+  dismiss(action?:string) {
+    this.modalController.dismiss(action, 'close')
   }
 
 }

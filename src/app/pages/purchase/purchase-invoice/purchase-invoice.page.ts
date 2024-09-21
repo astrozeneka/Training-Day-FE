@@ -92,6 +92,15 @@ export class PurchaseInvoicePage implements OnInit {
         .subscribe((response:any)=> {
           console.log("Retrieve response after purchase")
           //this.feedbackService.register('Votre achat a été enregistré. Vous pouvez maintenant profiter de votre achat.')
+          
+          let feedbackOpts = {
+            buttonText: null,
+            primaryButtonText: 'Prendre contact avec mon coach',
+            secondaryButtonText: 'Retour à l\'accueil',
+            primaryButtonAction: '/home',
+            secondaryButtonAction: '/chat',
+            modalImage: this.useDarkMode ? 'assets/logo-dark-cropped.png' : 'assets/logo-light-cropped.png',
+          }
           if(["hoylt", "moreno", "alonzo"].includes(this.productId)){ // Auto-renewables
             this.feedbackService.register(
               null,
@@ -100,8 +109,7 @@ export class PurchaseInvoicePage implements OnInit {
                 type: 'modal',
                 modalTitle: "Votre achat d'abonnement a été effectué",
                 modalContent: 'Bienvenue chez Training Day vous pouvez dès à présent prendre rendez-vous avez votre coach',
-                modalImage: 'assets/logo-dark.png',
-                buttonText: 'OK'
+                ...feedbackOpts
               }
             )
           }else{ // Non-renewables
@@ -114,8 +122,7 @@ export class PurchaseInvoicePage implements OnInit {
                 modalContent: 'Votre coach prendra rendez-vous avec vous dans les prochaines 24h afin de programmer et ' +
                   'planifier vos attentes en fonction de vos attentes.',
                 // modalImage: 'assets/logo-dark.png',
-                modalImage: this.useDarkMode ? 'assets/logo-dark-cropped.png' : 'assets/logo-light-cropped.png',
-                buttonText: 'OK'
+                ...feedbackOpts
               }
             )
           }
