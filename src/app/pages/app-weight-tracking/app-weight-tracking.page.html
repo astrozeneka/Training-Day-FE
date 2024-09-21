@@ -9,8 +9,29 @@
 </ion-header>
 
 <ion-content id="app-weight-tracking">
+
+  <div class="faded-cover" *ngIf="!user"></div>
+  <ion-card class="ion-padding cta" *ngIf="!user">
+    <ion-card-content>
+      <h1 class="display-1">Créer un compte gratuitement pour continuer</h1>
+      <br/>
+      <p class="helper">
+        L'enregistrement de votre historique de poids requiert un compte utilisateur.
+      </p>
+      <br/>
+      <app-ux-button
+        shape="round"
+        expand="full"
+        routerLink="/login"
+      >
+        Se connecter
+      </app-ux-button>
+    </ion-card-content>
+    </ion-card>
+
+
 <div class="ion-padding">
-  <h1 class="display-1">Suivez votre poids au quotiduen</h1>
+  <h1 class="display-1">Suivez votre poids au quotidien</h1>
   <p class="helper">
     L'application vous permet de suivre votre poids au quotidien.
     Vous pouvez ajouter un poids à une date donnée, et consulter l'évolution de votre poids au fil du temps.
@@ -64,14 +85,14 @@
   <h1 class="display-1">Historique des poids</h1>
   <ion-list *ngIf="weightData.length > 0">
     <ion-item>
-      <ion-label><b>Date</b></ion-label>
-      <ion-label><b>Poids</b></ion-label>
-      <ion-label></ion-label>
+      <ion-label class="ion-text-center"><b>Date</b></ion-label>
+      <ion-label class="ion-text-center"><b>Poids (kg)</b></ion-label>
+      <ion-label class="ion-text-center"></ion-label>
     </ion-item>
     <ion-item *ngFor="let row of weightData">
-      <ion-label>{{ row.date }}</ion-label>
-      <ion-label>{{ row.weight }}</ion-label>
-      <ion-label class="text-center">
+      <ion-label class="ion-text-center">{{ row.date | date:'dd MMMM yyyy' }}</ion-label>
+      <ion-label class="ion-text-center">{{ row.weight }}</ion-label>
+      <ion-label class="ion-text-center">
         <ion-button (click)="deleteWeight(row.id)">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
         </ion-button>

@@ -12,6 +12,12 @@ import { UtilitiesModule } from 'src/app/components/utilities.module';
 import { NgChartsModule } from 'ng2-charts';
 
 
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import { LOCALE_ID } from '@angular/core';
+
+registerLocaleData(localeFr);
+
 @NgModule({
   imports: [
     CommonModule,
@@ -21,6 +27,7 @@ import { NgChartsModule } from 'ng2-charts';
     UtilitiesModule,
     NgChartsModule
   ],
-  declarations: [AppWeightTrackingPage]
+  declarations: [AppWeightTrackingPage],
+  providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }]
 })
 export class AppWeightTrackingPageModule {}

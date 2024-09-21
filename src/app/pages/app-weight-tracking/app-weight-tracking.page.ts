@@ -3,6 +3,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
 import { catchError, throwError } from 'rxjs';
+import { Chart } from 'chart.js';
+import { fr } from 'date-fns/locale';
+import 'chartjs-adapter-date-fns';
 import { FormComponent } from 'src/app/components/form.component';
 import { ContentService } from 'src/app/content.service';
 import { FeedbackService } from 'src/app/feedback.service';
@@ -53,27 +56,40 @@ export class AppWeightTrackingPage extends FormComponent implements OnInit {
           borderColor: '#d05f23',
         }
       ],
-      labels: ['01/01/2020', '02/01/2020', '03/01/2020', '04/01/2020', '05/01/2020', '07/01/2020']
+      labels: ['2024-01-01', '2024-01-02', '2024-01-03', '2024-01-04', '2024-01-05', '2024-01-06']
     }
     this.lineChart.options = {
       plugins: {
       },
       responsive: true,
       maintainAspectRatio: false,
-      indexAxis: "x",
+      
       scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Date'
-          }
-        },
-        y: {
-          title: {
-            display: true,
-            text: 'Poids (kg)'
-          }
+      x: {
+        type: 'time',
+        time: {
+        unit: 'day',
+        tooltipFormat: 'dd MM yyyy',
+        displayFormats: {
+          day: 'dd MMM yy'
         }
+        },
+        title: {
+        display: true,
+        text: 'Date'
+        },
+        adapters: {
+        date: {
+          locale: fr
+        }
+        }
+      },
+      y: {
+        title: {
+        display: true,
+        text: 'Poids (kg)'
+        }
+      }
       }
     }
   }

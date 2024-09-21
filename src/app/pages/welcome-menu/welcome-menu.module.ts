@@ -8,6 +8,7 @@ import { WelcomeMenuPageRoutingModule } from './welcome-menu-routing.module';
 
 import { WelcomeMenuPage } from './welcome-menu.page';
 import {UtilitiesModule} from "../../components/utilities.module";
+import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
 
 @NgModule({
   imports: [
@@ -17,6 +18,9 @@ import {UtilitiesModule} from "../../components/utilities.module";
     WelcomeMenuPageRoutingModule,
     UtilitiesModule
   ],
-  declarations: [WelcomeMenuPage]
+  declarations: [WelcomeMenuPage],
+  providers: [
+    ThemeDetection
+  ]
 })
 export class WelcomeMenuPageModule {}

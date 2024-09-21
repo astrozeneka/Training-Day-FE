@@ -11,6 +11,11 @@ import { HomePageRoutingModule } from './home-routing.module';
 import {MainMenuComponent} from "../../components/main-menu/main-menu.component";
 import {UtilitiesModule} from "../../components/utilities.module";
 
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import { LOCALE_ID } from '@angular/core';
+registerLocaleData(localeFr);
+
 
 @NgModule({
   imports: [
@@ -20,7 +25,8 @@ import {UtilitiesModule} from "../../components/utilities.module";
     HomePageRoutingModule,
     UtilitiesModule,
   ],
-    declarations: [HomePage],
+  declarations: [HomePage],
+  providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomePageModule {

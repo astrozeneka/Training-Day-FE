@@ -95,7 +95,13 @@ export class HomePage extends FormComponent implements OnInit {
       element.style.display = 'none';
       event.target.innerText = 'Voir plus';
     }
+  }
 
-    // get the button element
+  getRemainingTrialDays(trialExpiresAt: string): number {
+    const trialEndDate = new Date(trialExpiresAt);
+    const currentDate = new Date();
+    const timeDifference = trialEndDate.getTime() - currentDate.getTime();
+    const days = timeDifference / (1000 * 3600 * 24);
+    return Math.ceil(days);
   }
 }

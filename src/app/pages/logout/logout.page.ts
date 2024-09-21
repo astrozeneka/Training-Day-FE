@@ -15,6 +15,7 @@ export class LogoutPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.contentService.userStorageObservable.updateStorage(null)
     this.contentService.storage.remove('token')
     this.contentService.storage.remove('user')
     this.router.navigate(['/login'])

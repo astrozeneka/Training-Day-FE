@@ -4,6 +4,8 @@ import {MenuController} from "@ionic/angular";
 import {Storage} from "@ionic/storage-angular";
 import {ContentService} from "../../content.service";
 import {AbstractComponent} from "../abstract-component";
+import { ThemeDetection, ThemeDetectionResponse } from "@ionic-native/theme-detection/ngx";
+
 
 @Component({
   selector: 'app-main-menu',
