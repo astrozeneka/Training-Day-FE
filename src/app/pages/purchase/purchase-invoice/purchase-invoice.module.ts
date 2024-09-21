@@ -8,6 +8,7 @@ import { PurchaseInvoicePageRoutingModule } from './purchase-invoice-routing.mod
 
 import { PurchaseInvoicePage } from './purchase-invoice.page';
 import {UtilitiesModule} from "../../../components/utilities.module";
+import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
 
 @NgModule({
   imports: [
@@ -18,6 +19,9 @@ import {UtilitiesModule} from "../../../components/utilities.module";
     ReactiveFormsModule,
     UtilitiesModule
   ],
-  declarations: [PurchaseInvoicePage]
+  declarations: [PurchaseInvoicePage],
+  providers: [
+    ThemeDetection
+  ]
 })
 export class PurchaseInvoicePageModule {}

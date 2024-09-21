@@ -10,11 +10,10 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-    <h1 class="display-1 ion-padding ion-text-lg ion-text-center">Bienvenue sur Training Day</h1>
+    <h1 class="display-1 ion-padding ion-text-lg ion-text-center">Bienvenue</h1>
     <div class="logo">
-        <!-- Logo -->
-        <!-- Show dark or light logo depending on the theme -->
-        <img src="assets/logo-infographic-only.png" alt="Training Day" class="ion-padding">
+        <img src="assets/logo-light-cropped.png" alt="Training Day" class="ion-padding" *ngIf="!useDarkMode">
+        <img src="assets/logo-dark-cropped.png" alt="Training Day" class="ion-padding" *ngIf="useDarkMode">
     </div>
 
     <div class="welcome-menu">

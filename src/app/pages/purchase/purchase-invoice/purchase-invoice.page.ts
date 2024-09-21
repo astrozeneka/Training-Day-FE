@@ -6,6 +6,7 @@ import StorePlugin from "../../../custom-plugins/store.plugin";
 import {environment} from "../../../../environments/environment";
 import {FeedbackService} from "../../../feedback.service";
 import {catchError} from "rxjs";
+import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
 
 @Component({
   selector: 'app-purchase-invoice',
@@ -28,7 +29,8 @@ export class PurchaseInvoicePage implements OnInit {
   constructor(
     private contentService: ContentService,
     private feedbackService: FeedbackService,
-    private router: Router
+    private router: Router,
+    private themeDetection: ThemeDetection
   ) {
     this.contentService.storage.get('subscription_slug').then((value) => {
       this.subscriptionSlug = value;
@@ -60,6 +62,13 @@ export class PurchaseInvoicePage implements OnInit {
     let productList = (await StorePlugin.getProducts({})).products
     for(let product of productList){
       this.productList[product.id] = product
+    }
+
+    // The dark mode (the code below is reused, should be refactored)
+    try {
+      this.useDarkMode = await this.isAvailable() && (await this.isDarkModeEnabled()).value;
+    } catch (e) {
+      console.log("Getting device theme not available on web");
     }
   }
 
@@ -104,7 +113,8 @@ export class PurchaseInvoicePage implements OnInit {
                 modalTitle: 'Votre achat a été effectué',
                 modalContent: 'Votre coach prendra rendez-vous avec vous dans les prochaines 24h afin de programmer et ' +
                   'planifier vos attentes en fonction de vos attentes.',
-                modalImage: 'assets/logo-dark.png',
+                // modalImage: 'assets/logo-dark.png',
+                modalImage: this.useDarkMode ? 'assets/logo-dark-cropped.png' : 'assets/logo-light-cropped.png',
                 buttonText: 'OK'
               }
             )
@@ -117,4 +127,28 @@ export class PurchaseInvoicePage implements OnInit {
   }
 
   protected readonly environment = environment;
+
+  useDarkMode: boolean = true;
+  /**
+   * The code below is redundant, should be refactored for better code quality
+   */
+  private async isAvailable(): Promise<any> {
+    try {
+      let dark_mode_available: ThemeDetectionResponse = await this.themeDetection.isAvailable();
+      return dark_mode_available;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  private async isDarkModeEnabled(): Promise<ThemeDetectionResponse> {
+    try {
+      let dark_mode_enabled: ThemeDetectionResponse = await this.themeDetection.isDarkModeEnabled();
+      return dark_mode_enabled;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
 }

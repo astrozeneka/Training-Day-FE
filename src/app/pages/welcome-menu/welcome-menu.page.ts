@@ -32,7 +32,6 @@ export class WelcomeMenuPage implements OnInit {
     } catch (e) {
       console.log("Getting device theme not available on web");
     }
-    console.log("Dark mode enabled: ", this.useDarkMode);
   }
 
   async goTo(url:string){
