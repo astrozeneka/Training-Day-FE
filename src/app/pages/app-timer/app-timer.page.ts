@@ -37,9 +37,9 @@ export class AppTimerPage implements OnInit {
     //private media: Media
   ) {
     router.events.subscribe((event:any)=>{
-      if(event instanceof NavigationStart && this.router.url == '/app-timer'){
-        this.stop_round();
-        this.form.reset();
+      if(event instanceof NavigationStart && this.router.url == '/app-timer'){  // When the user leave the page
+        // this.stop_round(); //
+        // this.form.reset(); //
       }
     })
     this.form.controls.round_number.valueChanges.subscribe((value) => {
@@ -62,8 +62,12 @@ export class AppTimerPage implements OnInit {
   }
 
   ngOnInit() {
+    // Initialize the round boolean variables
+    this.round_started = false;
+    this.round_paused = false;
     // Load audio
     this.load_audios();
+    console.log("NgOnInit")
   }
 
   startChronometer() {
@@ -127,8 +131,8 @@ export class AppTimerPage implements OnInit {
   work_duration:any = 30
   rest_duration:any = 10
 
-  round_started = false;
-  round_paused = false;
+  round_started;
+  round_paused;
   interval: any = undefined; // The interval object used to run the timer
   train_status = ""
   train_total_time = 0 // The total running time
@@ -253,6 +257,7 @@ export class AppTimerPage implements OnInit {
   }
 
   stop_round() {
+    console.log("Round stopped")
     this.round_started = false;
     this.round_paused = false;
     this.train_status = "";

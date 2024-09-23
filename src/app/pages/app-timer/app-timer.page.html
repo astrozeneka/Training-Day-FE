@@ -17,24 +17,6 @@
         <h1 class="display-1">
             Configurez votre timer selon votre type d'entrainement
         </h1>
-      <!-- Select number of round -->
-        <!--
-      <ion-item>
-        <ion-select
-          formControlName="round_number"
-          label="Nombre de tours"
-          label-placement="floating"
-        >
-          <ion-select-option value="1">1</ion-select-option>
-          <ion-select-option value="2">2</ion-select-option>
-          <ion-select-option value="3">3</ion-select-option>
-          <ion-select-option value="5">5</ion-select-option>
-          <ion-select-option value="7">7</ion-select-option>
-          <ion-select-option value="10">10</ion-select-option>
-          <ion-select-option value="25">25</ion-select-option>
-        </ion-select>
-      </ion-item>
-      -->
         <ion-item>
             <div slot="start">
                 <ion-icon name="infinite-outline" size="large" color="primary"></ion-icon>
@@ -103,43 +85,7 @@
                 readonly
             ></ion-input>
         </ion-item>
-
-      <!-- Select work duration (30s, 45s, 1min, 2min, 3min, 5min) -->
-      <!--<ion-item>
-        <ion-select
-          formControlName="work_duration"
-          label="Durée du travail"
-          label-placement="floating"
-        >
-          <ion-select-option value="5">5s</ion-select-option>
-          <ion-select-option value="30">30s</ion-select-option>
-          <ion-select-option value="45">45s</ion-select-option>
-          <ion-select-option value="60">1min</ion-select-option>
-          <ion-select-option value="120">2min</ion-select-option>
-          <ion-select-option value="180">3min</ion-select-option>
-          <ion-select-option value="300">5min</ion-select-option>
-        </ion-select>
-      </ion-item>-->
-
-        <!--
-      <ion-item>
-        <ion-select
-          formControlName="rest_duration"
-          label="Durée du repos"
-          label-placement="floating"
-        >
-          <ion-select-option value="3">3s</ion-select-option>
-          <ion-select-option value="10">10s</ion-select-option>
-          <ion-select-option value="20">20s</ion-select-option>
-          <ion-select-option value="30">30s</ion-select-option>
-          <ion-select-option value="45">45s</ion-select-option>
-          <ion-select-option value="60">1min</ion-select-option>
-          <ion-select-option value="120">2min</ion-select-option>
-        </ion-select>
-      </ion-item>-->
-
     </form>
-
     <div *ngIf="round_started" style="text-align: center">
         <div *ngIf="train_status==='work'">
             <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="'0'" aria-valuemin="0" aria-valuemax="100" [style.background]="'radial-gradient(closest-side, var(--ion-background-color, #fff) 79%, transparent 80% 100%), conic-gradient(var(--ion-color-primary) ' +(progress*100)+ '%, gray 0)'">
