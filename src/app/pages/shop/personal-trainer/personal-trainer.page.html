@@ -9,8 +9,14 @@
     <app-shop-tabs selectedTab="tab4"></app-shop-tabs>
 </ion-header>
 
+<ion-content class="" *ngIf="! environment.personalTrainerAvailable">
+    <!-- Put three tab -->
+    <p class="ion-padding ion-text-center">
+        Ce programme sera bientôt disponible
+    </p>
+</ion-content>
 
-<ion-content class="">
+<ion-content class="" *ngIf="environment.personalTrainerAvailable">
     <div *ngIf="user && user.grouped_perishables && user.grouped_perishables['personal-trainer']">
         <h1 class="display-1 ion-padding">Mes abonnements en cours</h1>
         <app-trainer-card

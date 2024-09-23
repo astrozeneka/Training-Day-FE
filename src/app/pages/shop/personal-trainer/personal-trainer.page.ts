@@ -13,6 +13,7 @@ import {environment} from "../../../../environments/environment";
 export class PersonalTrainerPage implements OnInit {
   productList:any = {}
   user: any;
+  environment = environment;
 
   constructor(
     private contentService: ContentService,

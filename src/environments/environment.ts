@@ -13,8 +13,6 @@ export const environment = {
   // rootEndpoint: 'http://192.168.1.187:8000',
   apiEndpoint: 'http://192.168.88.188:8000/api',
   rootEndpoint: 'http://192.168.88.188:8000',
-  paymentServiceEnabled: true,
-  paymentMethod: paymentMethod.inAppPurchase,
 
   // Pusher configuration
   pusher_app_key: 'app-key',
@@ -25,7 +23,12 @@ export const environment = {
 
   // CREDENTIALS
   GITHUB_CLIENT_ID: "Ov23li5nl0PxQzCvyJKE",
-  GITHUB_AUTH_REDIRECT_URI: ''
+  GITHUB_AUTH_REDIRECT_URI: '',
+
+  // FUNCTIONALITIES  
+  paymentServiceEnabled: true,                // Deprecated
+  paymentMethod: paymentMethod.inAppPurchase, // Deprecated, only inAppPurchase is maintained for the app
+  personalTrainerAvailable: false             // Whether or not the personal trainer tab is available from the shop page
 };
 
 /*

@@ -23,7 +23,8 @@
             [columns]="true"
         ></app-subscription-card>
     </div>
-    <div *ngIf="!user || (user && user.grouped_perishables && !user.grouped_perishables['food-coach'])">
+    <!--<div *ngIf="!user || (user && user.grouped_perishables && !user.grouped_perishables['food-coach'])">-->
+    <div><!-- always display whether or not the user have it already -->
         <div class="ion-padding">
             <h1 class="display-1">Choisissez un offre de programme alimentaire</h1>
             <p class="helper">
@@ -48,10 +49,13 @@
                         expand="block"
                         shape="round"
                         (click)="clickFoodCoachOption('foodcoach_1w')"
-                        [disabled]="!productList.hasOwnProperty('foodcoach_1w')"
+                        [disabled]="!productList.hasOwnProperty('foodcoach_1w') || (user && user.grouped_perishables && user.grouped_perishables['food-coach'])"
                 >
                     Choisir
                 </ion-button>
+                <p class="ion-text-center" style="font-size: small" *ngIf="user && user.grouped_perishables && user.grouped_perishables['food-coach']">
+                    Vous avez déjà un programme alimentaire en cours. Vous ne pouvez pas souscrire à un autre programme alimentaire.
+                </p>
             </div>
             <div class="card ion-padding">
                 <h2 class="display-1">Programme alimentaire mensuel (
@@ -65,10 +69,13 @@
                             expand="block"
                             shape="round"
                             (click)="clickFoodCoachOption('foodcoach_4w')"
-                            [disabled]="!productList.hasOwnProperty('foodcoach_4w')"
+                            [disabled]="!productList.hasOwnProperty('foodcoach_4w') && (user && user.grouped_perishables && user.grouped_perishables['food-coach'])"
                 >
                     Choisir
                 </ion-button>
+                <p class="ion-text-center" style="font-size: small" *ngIf="user && user.grouped_perishables && user.grouped_perishables['food-coach']">
+                    Vous avez déjà un programme alimentaire en cours. Vous ne pouvez pas souscrire à un autre programme alimentaire.
+                </p>
             </div>
             <div class="card ion-padding">
                 <h2 class="display-1">Programme alimentaire 6 semaines (
@@ -82,10 +89,13 @@
                             expand="block"
                             shape="round"
                             (click)="clickFoodCoachOption('foodcoach_6w')"
-                            [disabled]="!productList.hasOwnProperty('foodcoach_6w')"
+                            [disabled]="!productList.hasOwnProperty('foodcoach_6w') || (user && user.grouped_perishables && user.grouped_perishables['food-coach'])"
                 >
                     Choisir
                 </ion-button>
+                <p class="ion-text-center" style="font-size: small" *ngIf="user && user.grouped_perishables && user.grouped_perishables['food-coach']">
+                    Vous avez déjà un programme alimentaire en cours. Vous ne pouvez pas souscrire à un autre programme alimentaire.
+                </p>
             </div>
         </div>
     </div>

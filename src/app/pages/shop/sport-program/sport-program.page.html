@@ -23,7 +23,8 @@
             [columns]="true"
         ></app-subscription-card>
     </div>
-    <div *ngIf="!user || (user && user.grouped_perishables && !user.grouped_perishables['sport-coach'])">
+    <!--<div *ngIf="!user || (user && user.grouped_perishables && !user.grouped_perishables['sport-coach'])">-->
+    <div><!-- Always show the offer whether or not the user have purchased or not -->
         <div class="ion-padding">
             <h1 class="display-1">Choisissez un offre de programme sportif</h1>
             <p class="helper">
@@ -44,10 +45,14 @@
                         expand="block"
                         shape="round"
                         (click)="clickSportCoachOption('sportcoach_1w')"
-                        [disabled]="!productList.hasOwnProperty('sportcoach_1w')"
+                        [disabled]="!productList.hasOwnProperty('sportcoach_1w') || (user && user.grouped_perishables && user.grouped_perishables['sport-coach'])"
                 >
                     Choisir
                 </ion-button>
+                <p class="ion-text-center" style="font-size: small" *ngIf="user && user.grouped_perishables && user.grouped_perishables['sport-coach']">
+                    Vous avez déjà un programme sportif en cours. Vous ne pouvez pas souscrire à un autre programme sportif.
+                </p>
+
             </div>
             <div class="card ion-padding">
                 <h2 class="display-1">Programme sportif 1 mois (
@@ -62,10 +67,13 @@
                         expand="block"
                         shape="round"
                         (click)="clickSportCoachOption('sportcoach_4w')"
-                        [disabled]="!productList.hasOwnProperty('sportcoach_4w')"
+                        [disabled]="!productList.hasOwnProperty('sportcoach_4w') || (user && user.grouped_perishables && user.grouped_perishables['sport-coach'])"
                 >
                     Choisir
                 </ion-button>
+                <p class="ion-text-center" style="font-size: small" *ngIf="user && user.grouped_perishables && user.grouped_perishables['sport-coach']">
+                    Vous avez déjà un programme sportif en cours. Vous ne pouvez pas souscrire à un autre programme sportif.
+                </p>
             </div>
             <div class="card ion-padding">
                 <h2 class="display-1">Programme sportif 6 semaines mois (
@@ -80,10 +88,13 @@
                         expand="block"
                         shape="round"
                         (click)="clickSportCoachOption('sportcoach_6w')"
-                        [disabled]="!productList.hasOwnProperty('sportcoach_6w')"
+                        [disabled]="!productList.hasOwnProperty('sportcoach_6w') || (user && user.grouped_perishables && user.grouped_perishables['sport-coach'])"
                 >
                     Choisir
                 </ion-button>
+                <p class="ion-text-center" style="font-size: small" *ngIf="user && user.grouped_perishables && user.grouped_perishables['sport-coach']">
+                    Vous avez déjà un programme sportif en cours. Vous ne pouvez pas souscrire à un autre programme sportif.
+                </p>
             </div>
         </div>
     </div>
