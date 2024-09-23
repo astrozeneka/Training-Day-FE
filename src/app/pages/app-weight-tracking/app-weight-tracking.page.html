@@ -70,7 +70,12 @@
 
 <div class="ion-padding">
   <h1 class="display-1">Ma courbe de poids</h1>
-  <div style="display: block" id="canvas-container">
+  <div class="ion-text-center" *ngIf="loading">
+    <br/><br/>
+    <ion-spinner></ion-spinner>
+    <br/><br/>
+  </div>
+  <div style="display: block" id="canvas-container" *ngIf="!loading">
     <canvas baseChart
       [data]="lineChart.data"
       [options]="lineChart.options"

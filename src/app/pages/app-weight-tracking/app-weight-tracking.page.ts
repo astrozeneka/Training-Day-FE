@@ -18,6 +18,7 @@ import { FeedbackService } from 'src/app/feedback.service';
 export class AppWeightTrackingPage extends FormComponent implements OnInit {
   user: any
   weightData: Array<any> = []
+  loading: boolean
 
   isFormLoading = false
   lineChart = {
@@ -43,6 +44,8 @@ export class AppWeightTrackingPage extends FormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loading = true
+
     this.contentService.userStorageObservable.getStorageObservable().subscribe((user) => {
       this.user = user
       this.loadData()
@@ -96,6 +99,7 @@ export class AppWeightTrackingPage extends FormComponent implements OnInit {
 
   loadData() {
     this.contentService.getCollection('/weights').subscribe((response) => {
+      this.loading = false
       this.weightData = response
       let data = response.map((item) => item.weight)
       let labels = response.map((item) => item.date)
