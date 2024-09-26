@@ -17,6 +17,7 @@ import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {BroadcastingService} from "../../broadcasting.service";
+import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
 
 @Component({
   selector: 'app-login',
@@ -44,7 +45,9 @@ export class LoginPage extends FormComponent implements OnInit {
     private fs: FeedbackService,
     private router: Router,
     private httpClient: HttpClient,
-    private broadcastingService: BroadcastingService
+    private broadcastingService: BroadcastingService,
+
+    private themeDetection: ThemeDetection,
   ) {
     super()
   }
@@ -163,6 +166,13 @@ export class LoginPage extends FormComponent implements OnInit {
         buttonText: 'OK'
       }
     )*/
+
+    // Checking if the darkmode is enabled
+    try {
+      this.useDarkMode = await this.isDarkModeAvailable() && (await this.isDarkModeEnabled()).value;
+    } catch (e) {
+      console.log("Getting device theme not available on web");
+    }
   }
 
   async requestLogin({email, password}){
@@ -311,6 +321,27 @@ export class LoginPage extends FormComponent implements OnInit {
           console.log(res)
         })
       Browser.open({url: authenticationAuthUrl})
+    }
+  }
+
+  // For managing the logo depending on the dark/light mode
+  useDarkMode: boolean = true; // On web, Ionic use dark by default
+  private async isDarkModeAvailable(): Promise<any> {
+    try {
+      let dark_mode_available: ThemeDetectionResponse = await this.themeDetection.isAvailable();
+      return dark_mode_available;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+  private async isDarkModeEnabled(): Promise<ThemeDetectionResponse> {
+    try {
+      let dark_mode_enabled: ThemeDetectionResponse = await this.themeDetection.isDarkModeEnabled();
+      return dark_mode_enabled;
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
   }
 }

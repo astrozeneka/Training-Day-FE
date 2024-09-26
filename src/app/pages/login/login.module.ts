@@ -11,6 +11,7 @@ import {UtilitiesModule} from "../../components/utilities.module";
 import {DevComponentsModule} from "../../dev-prod-components/dev-components.module";
 import {environment} from "../../../environments/environment";
 import {ProdComponentsModule} from "../../dev-prod-components/prod-components.module";
+import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
 
 @NgModule({
   imports: [
@@ -22,6 +23,9 @@ import {ProdComponentsModule} from "../../dev-prod-components/prod-components.mo
     UtilitiesModule,
     ...(!environment.production ? [DevComponentsModule] : [ProdComponentsModule])
   ],
-  declarations: [LoginPage]
+  declarations: [LoginPage],
+  providers: [
+    ThemeDetection
+  ]
 })
 export class LoginPageModule {}

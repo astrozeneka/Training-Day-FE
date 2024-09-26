@@ -17,10 +17,12 @@
   <div class="centered-container">
     <div>
       <div class="login-header">
-        <div>
-          <img [src]="getLogoSrc()" alt="Logo" width="150px">
-        </div>
         <h1>Se connecter</h1>
+        <br/>
+        <div>
+          <img src="assets/logo-light-cropped.png" alt="Training Day" class="ion-padding" width="150px" *ngIf="!useDarkMode">
+          <img src="assets/logo-dark-cropped.png" alt="Training Day" class="ion-padding" width="150px" *ngIf="useDarkMode">
+        </div>
       </div>
         <app-m-form [formGroup]="form" (submit)="submit()">
             <ion-item class="ion-margin-vertical">
