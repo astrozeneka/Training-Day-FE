@@ -41,6 +41,16 @@
             <p class="helper ion-padding-horizontal">
                 Vous pouvez discuter avec votre coach à tout moment. Il vous répondra dans les plus brefs délais.
             </p>
+            <!--
+            <p class="helper">
+                Subscriptin : {{ user.subscription_is_active }} <br/>
+                Grouped_perishables : {{ user.grouped_perishables }} <br/>
+                Sport Coach : {{ (user.grouped_perishables && user.grouped_perishables['sport-coach']) }} <br/>
+                Food Coach : {{ (user.grouped_perishables && user.grouped_perishables['food-coach']) }} <br/>
+                Personal Trainer : {{ (user.grouped_perishables && user.grouped_perishables['personal-trainer']) }} <br/>
+                Json : {{ user | json }}
+            </p>
+            -->
             <ion-card color="warning" class="ion-padding" *ngIf="user.trial_is_active && !(user.subscription_is_active || (user.grouped_perishables && user.grouped_perishables['sport-coach']) || (user.grouped_perishables && user.grouped_perishables['food-coach']))">
                 Vous disposez d'un essai gratuit de 5 jours. Profitez-en pour discuter avec votre coach.
                 L'essai se terminera le {{ user.trial_expires_at | date: 'dd/MM/yyyy' }}.
