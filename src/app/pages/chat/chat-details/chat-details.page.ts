@@ -10,6 +10,7 @@ import Echo from "laravel-echo";
 import { Badge } from '@capawesome/capacitor-badge';
 import {environment} from "../../../../environments/environment";
 import {BroadcastingService} from "../../../broadcasting.service";
+import { ChatService } from 'src/app/chat.service';
 
 @Component({
   selector: 'app-chat-details',
@@ -34,13 +35,15 @@ export class ChatDetailsPage implements OnInit {
   echo: Echo = undefined;
 
   constructor(
-    private contentService:ContentService,
+    private contentService:ContentService, // As it is a universally used service, the name should be shortened
     private modalController: ModalController,
     private route:ActivatedRoute,
     private alertController:AlertController,
-    private feedbackService:FeedbackService,
+    private feedbackService:FeedbackService, // Same for here
     private router:Router,
-    private broadcastingService: BroadcastingService
+    private broadcastingService: BroadcastingService,
+
+    private chatService: ChatService
   ) {
     this.route.params.subscribe(async params=>{
       this.correspondentId = params['id']
@@ -54,7 +57,7 @@ export class ChatDetailsPage implements OnInit {
 
   prepareDiscussionDetailsData({data, metadata}){
     let newMessageAdded = false
-    const maxId = Math.max(...this.entityList.map((item:any)=>item.id))
+    const maxId = Math.max(...this.entityList.map((item:any)=>item.id)) // Not accurate, should use date instead (anyway, this function will be moved in another angular service)
     const shouldScrollTop = this.entityList.length == 0
     this.entityList = data.slice().reverse().concat(this.entityList.slice())
     // Filter by unique id
@@ -77,9 +80,29 @@ export class ChatDetailsPage implements OnInit {
       newMessageAdded = true
       this.scrollTop()
     }
+
+    this.ionInfiniteEvent?.target.complete()
   }
 
   async ngOnInit() {
+
+    this.entityList = []
+
+    this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
+      this.user = user
+    })
+
+    this.contentService.getOne(`/users/`+this.correspondentId, {})
+      .subscribe((data:any)=>{
+        let url = data.thumbnail64 || data.profile_image?.permalink
+        this.avatar_url = url ? this.contentService.addPrefix(url) : undefined
+        this.correspondent = data
+      })
+
+    this.chatService.registerChatEvents(this.correspondentId,  (p)=>{this.prepareDiscussionDetailsData(p)})
+
+
+    /*
     console.log("chat-details: ngOnInit")
 
     this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
@@ -110,6 +133,7 @@ export class ChatDetailsPage implements OnInit {
       console.log('event-name: ', `message-details-updated-${this.correspondentId}`)
       this.broadcastingService.pusher.subscribe(`messages.${user.id}`)
         .bind( `message-details-updated-${this.correspondentId}`, (res)=>{ // TODO, should use the same format {data, metainfo}
+          console.log("Request data from broadcasting: ", res)
           this.prepareDiscussionDetailsData(res)
           // console.log("Storing key: ", `discussionDetailsData-${this.user.id}-${this.correspondentId}`, this.entityList.slice().reverse())
           this.contentService.storage.set(`discussionDetailsData-${this.user.id}-${this.correspondentId}`, this.entityList.slice().reverse())
@@ -122,6 +146,7 @@ export class ChatDetailsPage implements OnInit {
       this.contentService.post('/messages/request-update/'+this.correspondentId, null)
         .subscribe(data => null)
     })
+    */
   }
 
   scrollTop(){
@@ -132,30 +157,34 @@ export class ChatDetailsPage implements OnInit {
   }
 
   async sendMessage(){
+    /*
+      For the app performance, this code shoudl update both the local cache
+      And the server database when sending message
+    */
     if (!this.form.valid)
       return
 
     let obj:any = this.form.value;
     obj.recipient_id = this.correspondentId;
-    obj.sender_id = (await this.contentService.storage.get('user')).id
+    obj.sender_id = (await this.contentService.storage.get('user')).id // Can be replaced by this.user.id (but need test first)
     this.contentService.post('/messages', obj)
-      .subscribe(async(res)=>{
+      .subscribe(async(res)=>{ // Should handle error here
         console.log("Message sent")
       })
 
     obj.undelivered = true
-    this.entityList.push(obj)
-    this.scrollTop()
+    this.entityList.push(obj) // Should use a function, not only push
+    this.scrollTop() // Should be included in the above described function
     this.form.reset()
   }
 
   ionInfiniteEvent = null
   onIonInfinite(event:any){
     this.ionInfiniteEvent = event
-    console.log("On Ion Infinite, send a request to the server to get more messages")
-    this.contentService.post(`/messages/request-update/${this.correspondentId}`, {correspondent_id: this.correspondentId, offset: this.entityOffset})
+    /*this.contentService.post(`/messages/request-update/${this.correspondentId}`, {correspondent_id: this.correspondentId, offset: this.entityOffset})
       .subscribe((data)=>{
         console.log('Request message update (onIonInfinite): ', data)
-      })
+      })*/
+    this.chatService.loadMessages(this.correspondentId, this.entityOffset, (p)=>{this.prepareDiscussionDetailsData(p)})
   }
 }
