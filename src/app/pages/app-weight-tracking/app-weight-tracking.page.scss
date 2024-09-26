@@ -35,3 +35,11 @@
         width: 80%;
     }
 }
+
+
+
+.long-button{
+    white-space: normal; /* Allow the text to wrap to a new line */
+    word-wrap: break-word;
+    font-size: 80%;
+  }

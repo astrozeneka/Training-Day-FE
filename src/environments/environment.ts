@@ -2,6 +2,8 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { ro } from "date-fns/locale";
+
 enum paymentMethod {
   stripe = 'stripe',
   inAppPurchase = 'inAppPurchase'
@@ -11,13 +13,16 @@ export const environment = {
   production: false,
   // apiEndpoint: 'http://192.168.1.187:8000/api',
   // rootEndpoint: 'http://192.168.1.187:8000',
-  apiEndpoint: 'http://192.168.88.188:8000/api',
-  rootEndpoint: 'http://192.168.88.188:8000',
+  // apiEndpoint: 'http://192.168.88.188:8000/api',
+  // rootEndpoint: 'http://192.168.88.188:8000',
+  apiEndpoint: 'http://192.168.1.231:8000/api',
+  rootEndpoint: 'http://192.168.1.231:8000',
 
   // Pusher configuration
   pusher_app_key: 'app-key',
   // pusher_host: '192.168.1.187',
-  pusher_host: '192.168.88.188',
+  // pusher_host: '192.168.88.188',
+  pusher_host : '192.168.1.231',
   pusher_port: 6001,
   pusher_cluster: 'eu',
 
