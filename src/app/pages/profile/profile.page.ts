@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
-import {catchError, throwError} from "rxjs";
+import {catchError, merge, of, throwError} from "rxjs";
 import {FeedbackService} from "../../feedback.service";
 import {FormComponent} from "../../components/form.component";
 import {ModalController, Platform} from "@ionic/angular";
@@ -63,7 +63,6 @@ export class ProfilePage extends FormComponent implements OnInit {
           acc[item.slug] = item
           return acc
         }, {})
-        console.log(this.entity)
         this.user_id = this.entity?.id
         this.form.patchValue(this.entity)
       }
@@ -76,7 +75,14 @@ export class ProfilePage extends FormComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    // This is the new way to retrieve user data from local
+    this.contentService.userStorageObservable.getStorageObservable().subscribe(async(user)=>{
+      this.entity = user // This is the correct way
+      // The other function should't be used in this component
+      if(this.entity.user_settings){
+        this.activityStatusForm.patchValue(this.entity.user_settings)
+      }
+    })
   }
 
   @ViewChild('fileInput') fileInput:any = undefined;
@@ -219,5 +225,58 @@ export class ProfilePage extends FormComponent implements OnInit {
     }
   }
 
-  protected readonly Object = Object;
+  protected readonly Object = Object; // Should be removed
+
+  // The form for activity (can be updated independantly from the main form)
+  activityStatusForm:FormGroup = new FormGroup({
+    'activeFrom': new FormControl(''),
+    'activeTo': new FormControl(''),
+    'pauseDays': new FormControl(''),
+  })
+  activityStatusDisplayedError = {
+    'activeFrom': undefined,
+    'activeTo': undefined,
+    'pauseDays': undefined
+  }
+  submitActivityStatusForm(){
+    let formData = this.activityStatusForm.value
+    // For each key in obj
+    let observables = []
+    for(let key in formData){
+      let obj = {
+        user_id: this.user_id,
+        key: key,
+        value: formData[key],
+      }
+      observables.push(this.contentService.put('/user-settings', obj)
+        .pipe(catchError(error=>{
+          if(error.status == 422){
+            this.manageValidationFeedback(error, key, this.activityStatusForm)
+          }
+          return throwError(error)
+        })))
+    }
+    // Run and merge all using forkJoin
+    merge(...observables)
+      .subscribe(async()=>{
+        await this.contentService.reloadUserData()
+        
+        this.feedbackService.registerNow("Vos paramètres ont été mises à jour", 'success')
+      })
+
+    /*
+    this.contentService.put('/settings/activityStatus', obj)
+    .pipe(catchError(error=>{
+      if(error.status == 422){
+        this.manageValidationFeedback(error, 'activeFrom', this.activityStatusForm)
+        this.manageValidationFeedback(error, 'activeTo', this.activityStatusForm)
+        this.manageValidationFeedback(error, 'pauseDays', this.activityStatusForm)
+      }
+      return throwError(error)
+    }))
+    .subscribe(async(res)=>{
+      this.feedbackService.registerNow("Vos paramètres ont été mises à jour", 'success')
+    })*/
+  }
+
 }

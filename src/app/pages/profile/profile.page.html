@@ -180,7 +180,7 @@
         </div>
     </div>
 
-    <div *ngIf="entity">
+    <div *ngIf="entity && entity.function === 'customer'">
         <h3 class="display-1 ion-padding">Privilèges(s)</h3>
         <div *ngIf="grouped_perishables && grouped_perishables['food-coach']">
             <app-subscription-card
@@ -211,31 +211,9 @@
         <p class="helper ion-padding" *ngIf="Object.keys(grouped_perishables).length === 0">
             Vous pouvez accéder à la boutique via le menu pour souscrire à des abonnements.
         </p>
-        <!--
-        <ion-item *ngIf="!entity.subscription">
-            Vous n'avez pas d'abonnement aux offres premium.
-            <ion-button slot="end" color="primary" (click)="navigate('/subscriptions')">Souscrire</ion-button>
-        </ion-item>
-        <ion-item *ngIf="entity.subscription">
-            <ion-label>Abonnement {{ entity.subscription.label }}</ion-label>
-            <ion-note slot="end">Expiré le {{ entity.expires_at | date }}</ion-note>
-        </ion-item>
-        -->
-
-        <!--
-        <ion-item *ngIf="entity.perishables.length === 0">
-            Vous n'avez pas d'abonnement aux offres premium.
-            <ion-button slot="end" color="primary" (click)="navigate('/food-program')">Souscrire</ion-button>
-        </ion-item>
-        <ion-item *ngFor="let perishable of entity.perishables">
-            <ion-label>{{ perishable.label }}</ion-label>
-            <ion-note slot="end" *ngIf="perishable.expires_at">Expiré le {{ perishable.expires_at | date }}</ion-note>
-            <ion-note slot="end" *ngIf="perishable.consumables">{{ perishable.consumables }} séance(s) dispo.</ion-note>
-        </ion-item>
-           -->
     </div>
 
-    <div *ngIf="entity">
+    <div *ngIf="entity && entity.function === 'customer'">
         <h3 class="display-1 ion-padding">Vérification de l'addresse e-mail</h3>
         <ion-item *ngIf="!entity.email_verified_at ">
             Votre adresse e-mail n'est pas encore vérifié.
@@ -244,6 +222,60 @@
         <ion-item *ngIf="entity.email_verified_at">
             Votre adresse e-mail a été vérifiée.
         </ion-item>
+    </div>
+
+    <!-- For the coach allowing him to set the "active" status -->
+    <div *ngIf="entity?.function === 'coach'">
+        <h3 class="display-1 ion-padding">Horaire d'activité</h3>
+        <form [formGroup]="activityStatusForm">
+            <ion-item>
+                <ion-label slot="start">
+                    Actif à partir de
+                </ion-label>
+                <ion-input
+                    slot="end"
+                    type="time"
+                    formControlName="activeFrom"
+                    [errorText]="activityStatusDisplayedError.activeFrom"
+                ></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label slot="start">
+                    Actif jusqu'à
+                </ion-label>
+                <ion-input
+                    slot="end"
+                    type="time"
+                    formControlName="activeTo"
+                    [errorText]="activityStatusDisplayedError.activeTo"
+                ></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Pause</ion-label>
+                <ion-select 
+                    slot="end" 
+                    formControlName="pauseDays"
+                >
+                    <ion-select-option value="[6]">Samedi</ion-select-option>
+                    <ion-select-option value="[0]">Dimanche</ion-select-option>
+                    <ion-select-option value="[6,0]">Samedi et Dimanche</ion-select-option>
+                    <ion-select-option value="[]">Pas de pause</ion-select-option>
+                </ion-select>
+                <ion-text color="danger" *ngIf="activityStatusDisplayedError.pauseDays && activityStatusForm.get('pauseDays').touched">
+                    {{ activityStatusDisplayedError.pauseDays }}
+                </ion-text>
+            </ion-item>
+            <div class="ion-text-center" *ngIf="activityStatusForm.touched">
+                <app-ux-button
+                    shape="round"
+                    fill="outline"
+                    (click)="submitActivityStatusForm()"
+                    [disabled]="activityStatusForm.invalid"
+                >
+                    Appliquer les modifications
+                </app-ux-button>
+            </div>
+        </form>
     </div>
 
     <div class="ion-padding">

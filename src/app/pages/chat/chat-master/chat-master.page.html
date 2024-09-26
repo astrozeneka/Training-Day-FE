@@ -11,6 +11,19 @@
 <ion-content class="">
   <!-- This section should be infinite scroll -->
     <div *ngIf="user?.function !== 'customer'">
+        <ion-item>
+            <ion-label slot="start">
+                Statut
+            </ion-label>
+            <ion-badge slot="end" color="success" *ngIf="isOnline">En ligne</ion-badge>
+            <ion-badge slot="end" color="medium" *ngIf="!isOnline">Hors ligne</ion-badge>
+        </ion-item>
+        <ion-item>
+            <ion-label>
+                Je ne suis pas disponible
+            </ion-label>
+            <ion-toggle slot="end"></ion-toggle>
+        </ion-item>
         <ion-searchbar [formControl]="searchControl"
                        animated="true"
                        placeholder="Rechercher"></ion-searchbar>

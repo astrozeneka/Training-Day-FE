@@ -73,12 +73,29 @@ export class ChatMasterPage implements OnInit {
   async ngOnInit() {
     await (()=>new Promise(_=>{
       this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
-        console.log("chat-master: The user was updated")
         this.user = user;
 
         this.discussionStorageObservable.updateStorage({data:[], metainfo:{}})
 
         await this.initPusherListener()
+
+        // Check whether the user is online or not
+        let userSettings = this.user.user_settings || {}
+        if(userSettings.activeFrom && userSettings.activeTo && userSettings.pauseDays){
+            let activeFrom = userSettings.activeFrom // e.g. 08:00
+            let activeTo = userSettings.activeTo // e.g. 18:00
+            let pauseDays = userSettings.pauseDays // e.g. [0, 6] for Sunday and Saturday
+            let now = new Date()
+
+            // Check if the user is active
+            let isPauseDay = pauseDays.includes(now.getDay())
+            let [activeFromHour, activeFromMinute] = activeFrom.split(':').map(Number);
+            let [activeToHour, activeToMinute] = activeTo.split(':').map(Number);
+            let isInActiveTime = (now.getHours() > activeFromHour || (now.getHours() === activeFromHour && now.getMinutes() >= activeFromMinute)) &&
+                                 (now.getHours() < activeToHour || (now.getHours() === activeToHour && now.getMinutes() < activeToMinute));
+            
+            this.isOnline = !isPauseDay && isInActiveTime
+        }
 
         _(null)
       })
@@ -111,4 +128,7 @@ export class ChatMasterPage implements OnInit {
   navigateTo(url:string) {
     this.router.navigate([url])
   }
+
+  // 5. The activity status
+  isOnline:boolean = undefined
 }

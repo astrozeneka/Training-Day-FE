@@ -207,6 +207,7 @@ export class ContentService {
           .subscribe(async (user:any)=>{
             //await this._reloadUserMessageData()
             this.storage.set('user', user)
+            this.userStorageObservable.updateStorage(user) // experimental feature for optimizing loading
             resolve(user)
           })
       }
