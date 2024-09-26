@@ -1,16 +1,24 @@
 
-<ion-header>
+<ion-header [translucent]="true">
     <ion-toolbar>
         <ion-buttons slot="start">
             <app-back-button></app-back-button>
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Welcome</ion-title>
+        <ion-title>Bienvenue</ion-title>
     </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-    <h1 class="display-1 ion-padding ion-text-lg ion-text-center">Bienvenue</h1>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title>
+        <h1 class="display-1 ion-padding ion-text-lg ion-text-center">Bienvenue</h1>
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+
     <div class="logo">
         <img src="assets/logo-light-cropped.png" alt="Training Day" class="ion-padding" *ngIf="!useDarkMode">
         <img src="assets/logo-dark-cropped.png" alt="Training Day" class="ion-padding" *ngIf="useDarkMode">

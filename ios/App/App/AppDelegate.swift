@@ -10,6 +10,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
+        // updateStatusBarStyle()
         return true
     }
     
@@ -56,6 +57,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
       NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
+    }
+  
+    func updateStatusBarStyle() {
+        let style: UIStatusBarStyle = UITraitCollection.current.userInterfaceStyle == .dark ? .lightContent : .darkContent
+        print("Printing content style:")
+        print(style)
+        UIApplication.shared.statusBarStyle = style
     }
 
 }

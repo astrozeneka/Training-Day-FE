@@ -114,7 +114,7 @@
             </p>
         </div>
         <div *ngIf="user">
-            <ion-card color="warning" class="ion-padding" *ngIf="user.trial_is_active && !user.subscription_is_active">
+            <ion-card color="warning" class="ion-padding" *ngIf="user.trial_is_active && !(user.subscription_is_active || (user.grouped_perishables && user.grouped_perishables['sport-coach']) || (user.grouped_perishables && user.grouped_perishables['food-coach']))">
                 Vous disposez d'un essai gratuit de {{ getRemainingTrialDays(user.trial_expires_at) }} jours. Profitez-en pour discuter avec votre coach.
                 L'essai se terminera le {{ user.trial_expires_at | date:'dd MMMM yyyy' }}.
             </ion-card>
