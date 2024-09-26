@@ -23,6 +23,56 @@
   }
 }
 
+.message>div{
+  padding-left: 16px;
+  padding-right: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: top;
+  margin-top: .4em;
+  margin-bottom: .4em;
+
+  & .message-content{
+    padding: .8em;
+    border-radius: 1em;
+    margin-left: .2em;
+    // Make the height fit the content
+    height: fit-content;
+
+    &.undelivered{ // unused
+      opacity: 0.9;
+    }
+  }
+}
+
+.message.received>div{
+  & ion-avatar{
+    height: 40px;
+    width: 40px;
+  }
+  & .message-content{
+    text-align: left;
+    margin-right: 20%;
+    background: rgba(170, 170, 170, 0.16);
+  }
+}
+
+.message.sent>div{
+    // Align right
+    justify-content: flex-end;
+    align-items: center;
+    & .message-content{
+      text-align: right;
+      //margin-left: 20%;
+      background: rgba(44, 146, 210, 0.41);
+    }
+
+    & .more-button{
+      color: rgba(44, 146, 210, 0.41);
+    }
+}
+
+/*
 .message{
   padding-left: 16px;
   padding-right: 16px;
@@ -59,10 +109,16 @@
   &.sent{
     // Align right
     justify-content: flex-end;
+    align-items: center;
     & .message-content{
       text-align: right;
-      margin-left: 20%;
+      //margin-left: 20%;
       background: rgba(44, 146, 210, 0.41);
+    }
+
+    & .more-button{
+      color: rgba(44, 146, 210, 0.41);
     }
   }
 }
+*/

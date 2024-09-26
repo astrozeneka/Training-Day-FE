@@ -54,10 +54,17 @@ export class ChatService {
     }
     // Add the new rows
     all_messages = all_messages.concat(rows)
+    // Sort as all message having '[deleted]' as content will be on top
+    all_messages = all_messages.sort((a, b) => {
+      if (a.content == '[deleted]') return -1
+      if (b.content == '[deleted]') return 1
+      return 0
+    })
     // Filter undefined
     all_messages = all_messages.filter((row)=>row)
     // Sort by 'created at'
     all_messages = all_messages.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    console.log(`All messages (${all_messages.length})`, all_messages)
     // Filter by unique id
     let unique = {}
     all_messages = all_messages.filter((row)=>{
@@ -67,14 +74,13 @@ export class ChatService {
       unique[row.id] = true
       return true
     })
-
-    console.log("All messages: ", all_messages)
+    console.log(`All messages (${all_messages.length})`, all_messages)
     // Update the cache
     for (const key of keys) {
       let offset = parseInt(key.split('.').pop())
       let _newData = all_messages.slice(offset, offset + 10)
       if (_newData.length == 0) continue
-      console.log("Update cache with new data: ", {
+      console.log(`Update cache (${key}) with new data: `, {
         data: _newData,
         expires_at: Date.now() + 1000 * 60 * 5 // 5 minutes
       })
@@ -104,7 +110,8 @@ export class ChatService {
             expires_at: Date.now() + 1000 * 60 * 5 // 5 minutes
           })
         }else{
-          this.updateCache(data, correspondent_id)
+          this.updateCache(data, correspondent_id) // This should be placed above
+          // And all code above should be deleted or idk
         }
         callback({data, metainfo})
       })

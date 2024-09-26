@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ContentService} from "../../../content.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {AlertController, ModalController} from "@ionic/angular";
+import {ActionSheetController, AlertController, ModalController} from "@ionic/angular";
 import {FeedbackService} from "../../../feedback.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {send} from "ionicons/icons";
@@ -42,6 +42,7 @@ export class ChatDetailsPage implements OnInit {
     private feedbackService:FeedbackService, // Same for here
     private router:Router,
     private broadcastingService: BroadcastingService,
+    private actionSheetController: ActionSheetController,
 
     private chatService: ChatService
   ) {
@@ -187,4 +188,38 @@ export class ChatDetailsPage implements OnInit {
       })*/
     this.chatService.loadMessages(this.correspondentId, this.entityOffset, (p)=>{this.prepareDiscussionDetailsData(p)})
   }
+
+  // 3. Managing the action sheets for seleting message
+  async presentActionSheet(messageId){
+    console.log("Present actionsheet, ", messageId)
+    let as = await this.actionSheetController.create({
+      'header': 'Action',
+      'buttons': [
+        {
+          text: 'Supprimer le message',
+          role: 'destructive',
+          data: {
+            action: 'delete',
+          },
+        },
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          data: {
+            action: 'cancel',
+          },
+        },
+      ]
+    })
+    // present
+    await as.present();
+    const { data } = await as.onDidDismiss();
+    if(data.action == 'delete'){
+      this.contentService.delete('/messages', messageId)
+      .subscribe((data)=>{
+        this.feedbackService.registerNow("Message supprimé", 'success')
+      })
+    }
+  }
+
 }

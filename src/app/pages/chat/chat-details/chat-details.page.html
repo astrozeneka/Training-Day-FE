@@ -19,16 +19,31 @@
             <ion-spinner class="ion-padding" style="padding-top: 20vh"></ion-spinner>
         </div>
         <div *ngIf="entityList">
-          <div *ngFor="let entity of entityList" class="message" [class.received]="entity.recipient_id === user.id" [class.sent]="entity.recipient_id !== user.id">
+          <div *ngFor="let entity of entityList" 
+            class="message" 
+            [class.received]="entity.recipient_id === user.id" 
+            [class.sent]="entity.recipient_id !== user.id"
+            >
+            <div *ngIf="entity.content !== '[deleted]'">
               <ion-avatar slot="start" *ngIf="entity.recipient_id === user.id">
-              <img src="{{avatar_url??'../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
-            </ion-avatar>
+                <img src="{{avatar_url??'../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
+              </ion-avatar>
+              <ion-button 
+                *ngIf="entity.recipient_id !== user.id"
+                fill="clear"
+                shape="round"
+                class="more-button"
+                (click)="presentActionSheet(entity.id)"
+                >
+                <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+              </ion-button>
               <div class="message-content" *ngIf="!entity.undelivered">
                   {{ entity.content }}
               </div>
               <div class="message-content undelivered" *ngIf="entity.undelivered">
                   {{ entity.content }}
               </div>
+            </div>
           </div>
         </div>
     </div>
