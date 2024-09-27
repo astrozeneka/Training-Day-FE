@@ -33,6 +33,8 @@ export class ChatDetailsPage implements OnInit {
   })
 
   echo: Echo = undefined;
+  environment: any;
+  recipient_id: any;
 
   constructor(
     private contentService:ContentService, // As it is a universally used service, the name should be shortened
@@ -47,13 +49,22 @@ export class ChatDetailsPage implements OnInit {
     private chatService: ChatService
   ) {
     this.route.params.subscribe(async params=>{
-      this.correspondentId = params['id']
+      // check if params['id'] begins with n_
+      if(params['id'].startsWith('n_')){
+        this.correspondentId = params['id'].replace('n_', '')
+        this.coachAsNutritionist = true
+        this.recipient_id = environment.nutritionistId
+      }else{
+        this.correspondentId = params['id']
+      }
     })
     this.router.events.subscribe(async event=>{
       if(event instanceof NavigationEnd && this.router.url.includes('chat/details')) {
         Badge.clear();
       }
     })
+
+    this.environment = environment
   }
 
   prepareDiscussionDetailsData({data, metadata}){
@@ -91,6 +102,9 @@ export class ChatDetailsPage implements OnInit {
 
     this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
       this.user = user
+      if (!this.coachAsNutritionist) {
+        this.recipient_id = this.user.id
+      }
     })
 
     this.contentService.getOne(`/users/`+this.correspondentId, {})
@@ -100,7 +114,7 @@ export class ChatDetailsPage implements OnInit {
         this.correspondent = data
       })
 
-    this.chatService.registerChatEvents(this.correspondentId,  (p)=>{this.prepareDiscussionDetailsData(p)})
+    this.chatService.registerChatEvents(this.correspondentId,  (p)=>{this.prepareDiscussionDetailsData(p)}, this.coachAsNutritionist)
 
 
     /*
@@ -221,5 +235,8 @@ export class ChatDetailsPage implements OnInit {
       })
     }
   }
+
+  // 7. Allow the coach to use the nutritionist chat
+  coachAsNutritionist: boolean = false
 
 }

@@ -28,13 +28,30 @@
                        animated="true"
                        placeholder="Rechercher"></ion-searchbar>
 
+        <ion-radio-group *ngIf="user.function === 'coach'" [formControl]="displayMessageForForm">
+            <ion-row>
+                <ion-col size="6">
+                    <ion-item>
+                        <ion-label>Coaches</ion-label>
+                        <ion-radio value="coach"></ion-radio>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="6">
+                    <ion-item>
+                        <ion-label>Nutritionnistes</ion-label>
+                        <ion-radio value="nutritionnist"></ion-radio>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-radio-group>
+
         <div class="ion-text-center">
             <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
         </div>
         <div *ngIf="entityList">
             <ion-item
                     *ngFor="let entity of entityList"
-                    (click)="navigateTo('/chat/details/' + entity.id)"
+                    (click)="navigateToChatDetails(entity.id)"
                     style="cursor:pointer"
             >
                 <ion-avatar slot="start">
@@ -96,7 +113,8 @@
 
         <br/><br/>
         <h2 class="display-1 ion-padding-horizontal">Discuter avec mon nutrionniste</h2>
-        <div *ngIf="user?.subscription?.slug === 'pack-alonzo'">
+        <!-- The variable has been changed from subscription.slug to just renewable_id -->
+        <div *ngIf="user?.renewable_id === 'alonzo'"> <!-- changed from pack-alonzo to alonzo เฉย ๆ -->
             <p class="helper ion-padding-horizontal">
                 Vous pouvez discuter avec votre nutrionniste à tout moment. Il vous répondra dans les plus brefs délais.
             </p>
@@ -114,7 +132,7 @@
                 </ion-item>
             </div>
         </div>
-        <div *ngIf="user?.subscription?.slug !== 'pack-alonzo'">
+        <div *ngIf="user?.renewable_id !== 'alonzo'">
             <p class="helper ion-padding-horizontal">
                 Vous n'avez pas accès à cette fonctionnalité. Veuillez souscrire à un Pack Alonzo pour en bénéficier.
             </p>

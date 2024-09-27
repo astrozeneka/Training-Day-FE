@@ -8,6 +8,7 @@ import { Badge } from '@capawesome/capacitor-badge';
 import {BroadcastingService} from "../../../broadcasting.service";
 import {debounceTime, distinctUntilChanged} from "rxjs";
 import StorageObservable from "../../../utils/StorageObservable";
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-chat-master',
@@ -31,11 +32,12 @@ export class ChatMasterPage implements OnInit {
     private alertController:AlertController,
     private feeedbackService:FeedbackService,
     private router:Router,
-    private broadcastingService: BroadcastingService
+    private broadcastingService: BroadcastingService,
   ) {
   }
 
   prepareDiscussionData({data, metainfo}, searchTerm=""){ // Metainfo include a user_id key to unvalidate the data
+    console.log("Receive data to display, ", data, metainfo)
     if(typeof data == "object") // Here data is an object, but should be array (This is from the way localStorage stores items)
       data = Object.values(data)
     for(let i = 0; i < data.length; i++){
@@ -50,8 +52,9 @@ export class ChatMasterPage implements OnInit {
           item.email.toLowerCase().includes(searchTerm.toLowerCase())
       })
     }
+    console.log("Load entity list, ", this.entityList)
     this.coachList = this.entityList.filter((item:any)=>item.function == "coach")
-    this.nutritionistList = this.entityList.filter((item:any)=>item.role_id == "nutritionist")
+    this.nutritionistList = this.entityList.filter((item:any)=>item.function == "nutritionist")
   }
 
   async initPusherListener(){
@@ -64,8 +67,8 @@ export class ChatMasterPage implements OnInit {
       )
 
     await new Promise((resolve)=>setTimeout(resolve, 500))
-
-    console.log("chat-master: Requesting the server to get the latest data")
+    
+    // The old way to load the data
     this.contentService.post('/chat/request-update/'+this.user.id, {})
       .subscribe(data => null)
   }
@@ -77,7 +80,14 @@ export class ChatMasterPage implements OnInit {
 
         this.discussionStorageObservable.updateStorage({data:[], metainfo:{}})
 
-        await this.initPusherListener()
+        if (user.function === "customer" || user.function === "nutritionist") {
+          await this.initPusherListener()
+        }
+        
+        if (user.function === "coach") {
+          this.displayMessageForFormInit()
+          this.displayMessageForForm.setValue(this.user.function == "coach" ? "coach" : "nutritionist")
+        }
 
         // Check whether the user is online or not
         let userSettings = this.user.user_settings || {}
@@ -102,7 +112,7 @@ export class ChatMasterPage implements OnInit {
     }))();
 
     // IMPORTANT, this should be done outside the subscription block, otherwise it will be called twice
-    this.discussionStorageObservable.getStorageObservable().subscribe(
+    this.discussionStorageObservable.getStorageObservable().subscribe( // Not a good way for loading cached data
       ({data, metainfo}) => {
         this.prepareDiscussionData({
           data,
@@ -123,6 +133,7 @@ export class ChatMasterPage implements OnInit {
         searchTerm
       )
     })
+
   }
 
   navigateTo(url:string) {
@@ -131,4 +142,37 @@ export class ChatMasterPage implements OnInit {
 
   // 5. The activity status
   isOnline:boolean = undefined
+
+  // 6. Showing messages for coach or for nutritionnist (only if the coach is connected)
+  messageDetailsPrefix = '/chat/details/'
+  displayMessageForForm = new FormControl(undefined)
+  displayMessageForFormInit(){
+    this.displayMessageForForm.valueChanges.subscribe((value)=>{
+      let userIdToLoad
+      if (value == "coach")
+        userIdToLoad = this.user.id
+      else{
+        userIdToLoad = environment.nutritionistId // WARNING, it shouldn't be hardcoded like this
+        this.messageDetailsPrefix = '/chat/details/n_'
+      }
+
+      // Reinitialize the pusher to allow loading
+      // The code below is redundant, should refactorized
+      this.broadcastingService.pusher.unsubscribe(`messages.${userIdToLoad}`)
+      this.broadcastingService.pusher.subscribe(`messages.${userIdToLoad}`)
+        .bind('master-updated',
+          ({data, metainfo}) => {
+            this.discussionStorageObservable.updateStorage({data, metainfo})
+          }
+        )
+      this.contentService.post('/chat/request-update/'+userIdToLoad, {})
+        .subscribe(data => null)
+
+    })
+  }
+
+  navigateToChatDetails(user_id){
+    let pref = this.displayMessageForForm.value!='nutritionnist'?'/chat/details/':'/chat/details/n_'
+    this.navigateTo(pref+user_id)
+  }
 }

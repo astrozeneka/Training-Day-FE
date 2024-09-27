@@ -21,15 +21,15 @@
         <div *ngIf="entityList">
           <div *ngFor="let entity of entityList" 
             class="message" 
-            [class.received]="entity.recipient_id === user.id" 
-            [class.sent]="entity.recipient_id !== user.id"
+            [class.received]="entity.recipient_id === recipient_id" 
+            [class.sent]="entity.recipient_id !== recipient_id"
             >
             <div *ngIf="entity.content !== '[deleted]'">
-              <ion-avatar slot="start" *ngIf="entity.recipient_id === user.id">
+              <ion-avatar slot="start" *ngIf="entity.recipient_id === recipient_id">
                 <img src="{{avatar_url??'../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
               </ion-avatar>
               <ion-button 
-                *ngIf="entity.recipient_id !== user.id"
+                *ngIf="entity.recipient_id !== recipient_id"
                 fill="clear"
                 shape="round"
                 class="more-button"
@@ -47,7 +47,7 @@
           </div>
         </div>
     </div>
-    <div class="controls"><!-- The message input -->
+    <div class="controls" *ngIf="!coachAsNutritionist"><!-- The message input -->
       <form (submit)="$event.preventDefault()" [formGroup]="form">
         <ion-item>
           <ion-input
@@ -64,6 +64,12 @@
           </ion-button>
         </ion-item>
       </form>
+    </div>
+    <div class="controls" *ngIf="coachAsNutritionist">
+      <p class="helper ion-text-center">
+        Le coach peut superviser les discussion du nutritionniste avec le client.
+      </p>
+      <br/>
     </div>
   </div>
 </ion-content>
