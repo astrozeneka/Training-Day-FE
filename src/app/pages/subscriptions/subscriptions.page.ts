@@ -29,7 +29,14 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
   }
 
   async ngOnInit() {
-    let productList = (await StorePlugin.getProducts({})).products
+    let productList
+    try {
+      productList = (await StorePlugin.getProducts({})).products
+      this.feedbackService.registerNow('loading products from native plugin ' + JSON.stringify(productList), 'success')
+    } catch (error) {
+      console.error('Error loading products:', error);
+      this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
+    }
     this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
     this.user = await this.contentService.getUserFromLocalStorage()
     console.log("load products from store")
