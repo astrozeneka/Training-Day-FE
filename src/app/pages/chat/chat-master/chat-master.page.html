@@ -95,6 +95,7 @@
                         <img src="{{entity.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
                     </ion-avatar>
                     {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
+                    <ion-badge *ngIf="entity.isActive" color="success">En ligne</ion-badge>
                     <ion-chip *ngIf="entity.unread" color="danger" slot="end">{{ entity.unread }}</ion-chip>
                 </ion-item>
             </div>
@@ -128,6 +129,7 @@
                         <img src="{{entity.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
                     </ion-avatar>
                     {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
+                    <ion-badge *ngIf="entity.isActive" color="success">En ligne</ion-badge>
                     <ion-chip *ngIf="entity.unread" color="danger" slot="end">{{ entity.unread }}</ion-chip>
                 </ion-item>
             </div>
