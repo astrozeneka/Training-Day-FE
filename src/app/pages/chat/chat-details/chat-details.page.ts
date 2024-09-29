@@ -107,61 +107,18 @@ export class ChatDetailsPage implements OnInit {
       }
     })
 
+    this.loadCorrespondent()
+
+    this.chatService.registerChatEvents(this.correspondentId,  (p)=>{this.prepareDiscussionDetailsData(p)}, this.coachAsNutritionist)
+  }
+
+  loadCorrespondent(){
     this.contentService.getOne(`/users/`+this.correspondentId, {})
       .subscribe((data:any)=>{
         let url = data.thumbnail64 || data.profile_image?.permalink
         this.avatar_url = url ? this.contentService.addPrefix(url) : undefined
         this.correspondent = data
       })
-
-    this.chatService.registerChatEvents(this.correspondentId,  (p)=>{this.prepareDiscussionDetailsData(p)}, this.coachAsNutritionist)
-
-
-    /*
-    console.log("chat-details: ngOnInit")
-
-    this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
-      this.user = user
-
-      // Reset the entityList because we have a new user connected
-      this.entityList = [] // Reset the component data
-      await this.contentService.storage.set(`discussionDetailsData-${this.user.id}-${this.correspondentId}`, []) // Reset the storage data
-
-      // 1. Load the correspondent data
-      console.log("loading key: ", `discussionDetailsData-${this.user.id}-${this.correspondentId}`)
-      let discussionDetailsData = await this.contentService.storage.get(`discussionDetailsData-${this.user.id}-${this.correspondentId}`)
-      if(discussionDetailsData && (discussionDetailsData.length > 0)){
-        this.entityList = discussionDetailsData.slice().reverse()
-        this.entityOffset = this.entityList.length
-        this.scrollTop()
-      }
-
-      // 2. register listener to listen update from the server
-      this.contentService.getOne(`/users/`+this.correspondentId, {})
-        .subscribe((data:any)=>{
-          let url = data.thumbnail64 || data.profile_image?.permalink
-          this.avatar_url = url ? this.contentService.addPrefix(url) : undefined
-          this.correspondent = data
-        })
-
-      // 2.b. message data (need to listen)
-      console.log('event-name: ', `message-details-updated-${this.correspondentId}`)
-      this.broadcastingService.pusher.subscribe(`messages.${user.id}`)
-        .bind( `message-details-updated-${this.correspondentId}`, (res)=>{ // TODO, should use the same format {data, metainfo}
-          console.log("Request data from broadcasting: ", res)
-          this.prepareDiscussionDetailsData(res)
-          // console.log("Storing key: ", `discussionDetailsData-${this.user.id}-${this.correspondentId}`, this.entityList.slice().reverse())
-          this.contentService.storage.set(`discussionDetailsData-${this.user.id}-${this.correspondentId}`, this.entityList.slice().reverse())
-          this.ionInfiniteEvent?.target.complete()
-        })
-
-      await new Promise((resolve)=>setTimeout(resolve, 1000)) // Wait 1 second
-
-      // 3. Request the server to get the latest data
-      this.contentService.post('/messages/request-update/'+this.correspondentId, null)
-        .subscribe(data => null)
-    })
-    */
   }
 
   scrollTop(){
@@ -241,6 +198,8 @@ export class ChatDetailsPage implements OnInit {
 
   // 8. Another action sheet allowing to delete the whole discussion, or the coach to block user
   async presentActionSheetGlobal(){
+    // Check if the correspondent have already disabled messages
+    let messagesDisabled = (this.correspondent?.user_settings?.disable_messages == 'true') ?? false
     let as = await this.actionSheetController.create({
       'header': 'Action',
       'buttons': [
@@ -251,12 +210,19 @@ export class ChatDetailsPage implements OnInit {
             action: 'delete',
           },
         },
-        {
-          text: "Bloquer l'accès à la messagerie",
+        ... (messagesDisabled?[{
+          text: 'Débloquer l\'utilisateur',
+          role: 'destructive',
+          data: {
+            action: 'unblock',
+          },
+        }]:[{
+          text: 'Bloquer l\'utilisateur',
+          role: 'destructive',
           data: {
             action: 'block',
           },
-        },
+        }]),
         {
           text: "Annuler",
           role: 'cancel',
@@ -271,10 +237,25 @@ export class ChatDetailsPage implements OnInit {
       this.contentService.delete('/messages/of-user', this.correspondentId)
         .subscribe((data)=>{
           this.feedbackService.registerNow("Discussion supprimée", 'success')
-          //this.router.navigate(['/chat'])
         })
     }else if(data.action == 'block'){
-      // TODO
+      this.contentService.post('/users/disable-messages', {
+        user_id: this.correspondentId, 
+        disabled: true
+      })
+      .subscribe((data)=>{
+        this.feedbackService.registerNow("Discussion bloquée", 'success')
+        this.loadCorrespondent()
+      })
+    }else if(data.action == 'unblock'){
+      this.contentService.post('/users/disable-messages', {
+        user_id: this.correspondentId, 
+        disabled: false
+      })
+      .subscribe((data)=>{
+        this.feedbackService.registerNow("Discussion débloquée", 'success')
+        this.loadCorrespondent()
+      }) 
     }else if(data.action == 'cancel'){
       // Nothing to do
     }

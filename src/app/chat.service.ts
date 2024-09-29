@@ -109,7 +109,7 @@ export class ChatService {
         let recipientId = coachAsNutritionist ? environment.nutritionistId : this.user.id
         let cache_slug = `messages.${recipientId}.${correspondent_id}.${metainfo.offset}`
         if (!metainfo.alter_cache){
-          console.log("Store cached data: ", {
+          console.log("Store cached data ("+cache_slug+"): ", {
             data: {data, metainfo},
             expires_at: Date.now() + 1000 * 60 * 5 // 5 minutes
           })

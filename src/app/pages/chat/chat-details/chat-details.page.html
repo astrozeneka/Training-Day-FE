@@ -3,7 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/chat"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ correspondent?.firstname }} {{ correspondent?.lastname === '_' ? '' : correspondent?.lastname }}</ion-title>
+    <ion-title>
+      <span>
+        {{ correspondent?.firstname }} {{ correspondent?.lastname === '_' ? '' : correspondent?.lastname }}
+      </span>
+      <ion-badge *ngIf="correspondent?.user_settings?.disable_messages == 'true'" color="medium">Message désactivés</ion-badge>
+    </ion-title>
     <ion-buttons slot="end">
       <!-- a vertical ellipse icon for a button -->
       <ion-button (click)="presentActionSheetGlobal()"><!-- We are here -->

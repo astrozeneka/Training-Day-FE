@@ -1,3 +1,10 @@
+
+ion-title{
+  &>*{
+    vertical-align: middle;
+  }
+}
+
 .messaging{
   height: 100%;
   display: flex;
