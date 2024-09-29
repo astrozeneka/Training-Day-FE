@@ -34,7 +34,7 @@ export class ChatService {
         expires_at: Date.now() + 1000 * 60 * 5 // 5 minutes
       })
       console.log(coachAsNutritionist)
-      console.log("Load data from cache", cached_data)
+      console.log("Load data from cache " + cache_slug + "", cached_data)
       callback(cached_data.data)
       return
     }

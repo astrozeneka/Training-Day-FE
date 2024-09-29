@@ -4,6 +4,12 @@
       <ion-back-button defaultHref="/chat"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ correspondent?.firstname }} {{ correspondent?.lastname === '_' ? '' : correspondent?.lastname }}</ion-title>
+    <ion-buttons slot="end">
+      <!-- a vertical ellipse icon for a button -->
+      <ion-button (click)="presentActionSheetGlobal()"><!-- We are here -->
+        <ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -48,7 +54,7 @@
         </div>
     </div>
     <div class="controls" *ngIf="!coachAsNutritionist"><!-- The message input -->
-      <form (submit)="$event.preventDefault()" [formGroup]="form">
+      <form (submit)="$event.preventDefault(); sendMessage()" [formGroup]="form">
         <ion-item>
           <ion-input
             name="content"
@@ -58,7 +64,6 @@
           <ion-button
             slot="end"
             type="submit"
-            (click)="sendMessage()"
           >
             <ion-icon name="send-outline"></ion-icon>
           </ion-button>

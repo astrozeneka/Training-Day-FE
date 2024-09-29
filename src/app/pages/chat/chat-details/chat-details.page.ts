@@ -239,4 +239,46 @@ export class ChatDetailsPage implements OnInit {
   // 7. Allow the coach to use the nutritionist chat
   coachAsNutritionist: boolean = false
 
+  // 8. Another action sheet allowing to delete the whole discussion, or the coach to block user
+  async presentActionSheetGlobal(){
+    let as = await this.actionSheetController.create({
+      'header': 'Action',
+      'buttons': [
+        {
+          text: 'Supprimer la discussion',
+          role: 'destructive', // e.g.
+          data: {
+            action: 'delete',
+          },
+        },
+        {
+          text: "Bloquer l'accès à la messagerie",
+          data: {
+            action: 'block',
+          },
+        },
+        {
+          text: "Annuler",
+          role: 'cancel',
+          data: {
+            action: 'cancel',
+          },
+        }
+      ]})
+    await as.present();
+    const { data } = await as.onDidDismiss();
+    if(data.action == 'delete'){
+      this.contentService.delete('/messages/of-user', this.correspondentId)
+        .subscribe((data)=>{
+          this.feedbackService.registerNow("Discussion supprimée", 'success')
+          //this.router.navigate(['/chat'])
+        })
+    }else if(data.action == 'block'){
+      // TODO
+    }else if(data.action == 'cancel'){
+      // Nothing to do
+    }
+  }
+    
+
 }
