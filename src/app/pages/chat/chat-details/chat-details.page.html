@@ -35,6 +35,12 @@
             [class.received]="entity.recipient_id === recipient_id" 
             [class.sent]="entity.recipient_id !== recipient_id"
             >
+            <div *ngIf="entity.content !== '[deleted]' && entity.file"><!-- TODO For later, merge the two following div in the same s-->
+              <ion-badge color="medium" class="file-badge" (click)="downloadFileById(entity.file.id)">
+                <ion-icon name="attach-outline"></ion-icon>
+                {{entity.file.name}}
+              </ion-badge>
+            </div>
             <div *ngIf="entity.content !== '[deleted]'">
               <ion-avatar slot="start" *ngIf="entity.recipient_id === recipient_id">
                 <img src="{{avatar_url??'../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
@@ -66,12 +72,22 @@
             placeholder="Tapez votre message"
             formControlName="content"
           ></ion-input>
-          <ion-button
-            slot="end"
-            type="submit"
-          >
-            <ion-icon name="send-outline"></ion-icon>
-          </ion-button>
+          <div slot="end">
+
+            <ion-button
+              (click)="selectFile()"
+            >
+              <span *ngIf="file">{{ file.name }}</span>
+              <ion-icon name="attach-outline" *ngIf="!file"></ion-icon>
+            </ion-button>
+            <input type="file" #fileInput style="display: none" (change)="handleFileInput($event)">
+
+            <ion-button
+              type="submit"
+            >
+              <ion-icon name="send-outline"></ion-icon>
+            </ion-button>
+          </div>
         </ion-item>
       </form>
     </div>

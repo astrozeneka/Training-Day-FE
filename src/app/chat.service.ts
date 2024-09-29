@@ -28,7 +28,7 @@ export class ChatService {
     // Data cache code will be added here below
     let cache_slug = `messages.${user_id}.${correspondent_id}.${offset}`
     let cached_data = await this.cs.storage.get(cache_slug)
-    if (cached_data && cached_data.expires_at > Date.now() && true) { // Disable cache temporarily
+    if (cached_data && cached_data.expires_at > Date.now() && false) { // Disable cache temporarily
       this.cs.storage.set(cache_slug, {
         data: cached_data.data,
         expires_at: Date.now() + 1000 * 60 * 5 // 5 minutes

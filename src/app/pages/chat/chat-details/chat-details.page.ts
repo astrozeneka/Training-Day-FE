@@ -11,6 +11,7 @@ import { Badge } from '@capawesome/capacitor-badge';
 import {environment} from "../../../../environments/environment";
 import {BroadcastingService} from "../../../broadcasting.service";
 import { ChatService } from 'src/app/chat.service';
+import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-chat-details',
@@ -139,6 +140,9 @@ export class ChatDetailsPage implements OnInit {
     let obj:any = this.form.value;
     obj.recipient_id = this.correspondentId;
     obj.sender_id = (await this.contentService.storage.get('user')).id // Can be replaced by this.user.id (but need test first)
+    if (this.file) {
+      obj.file = this.file
+    }
     this.contentService.post('/messages', obj)
       .subscribe(async(res)=>{ // Should handle error here
         console.log("Message sent")
@@ -260,6 +264,46 @@ export class ChatDetailsPage implements OnInit {
       // Nothing to do
     }
   }
+
+  // the #fileInput element
+  @ViewChild('fileInput') fileInput:any = undefined
+  file = undefined
+  selectFile(){
+    // Click the file input
+    this.fileInput.nativeElement.click()
+  }
+  handleFileInput(event: any){
+    let file = event.target.files[0]
+    if(file){
+      let reader = new FileReader()
+      reader.onload = (e)=>{
+        let base64 = reader.result as string
+        // The file name
+        this.file = {
+          name: file.name,
+          type: file.type,
+          base64: base64
+        }
+      }
+      reader.readAsDataURL(file)
+    }
+  }
     
+  downloadFileById(id){
+    this.contentService.getOne(`/files/details/`+id, {})
+      .subscribe((data:any)=>{
+        const byteString = atob(data.base64.split(',')[1]); // Decode base64
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        
+        for (let i = 0; i < byteString.length; i++) {
+          uint8Array[i] = byteString.charCodeAt(i);
+        }
+
+        const blob = new Blob([uint8Array], { type: data.type });
+        const url = window.URL.createObjectURL(blob);
+        Browser.open({ url: url });
+      })
+  }
 
 }
