@@ -204,6 +204,8 @@ export class ChatDetailsPage implements OnInit {
   async presentActionSheetGlobal(){
     // Check if the correspondent have already disabled messages
     let messagesDisabled = (this.correspondent?.user_settings?.disable_messages == 'true') ?? false
+    let coachMessagesDisabled = (this.correspondent?.user_settings?.disable_coach_messages == 'true') ?? false
+    let nutritionistMessagesDisabled = (this.correspondent?.user_settings?.disable_nutritionist_messages == 'true') ?? false
     let as = await this.actionSheetController.create({
       'header': 'Action',
       'buttons': [
@@ -214,21 +216,34 @@ export class ChatDetailsPage implements OnInit {
             action: 'delete',
           },
         },
-        ... (messagesDisabled?[{
-          text: 'Débloquer l\'utilisateur',
+        ... (coachMessagesDisabled?[{
+          text: 'Débloquer la messagerie du coach',
           role: 'destructive',
           data: {
-            action: 'unblock',
+            action: 'set disable_coach_messages false',
           },
         }]:[{
-          text: 'Bloquer l\'utilisateur',
+          text: 'Bloquer la messagerie du coach',
           role: 'destructive',
           data: {
-            action: 'block',
+            action: 'set disable_coach_messages true',
+          },
+        }]),
+        ... (nutritionistMessagesDisabled?[{
+          text: 'Débloquer la messagerie du nutritionniste',
+          role: 'destructive',
+          data: {
+            action: 'set disable_nutritionist_messages false',
+          },
+        }]:[{
+          text: 'Bloquer la messagerie du nutritionniste',
+          role: 'destructive',
+          data: {
+            action: 'set disable_nutritionist_messages true',
           },
         }]),
         {
-          text: "Annuler",
+          text: 'Annuler',
           role: 'cancel',
           data: {
             action: 'cancel',
@@ -242,7 +257,18 @@ export class ChatDetailsPage implements OnInit {
         .subscribe((data)=>{
           this.feedbackService.registerNow("Discussion supprimée", 'success')
         })
-    }else if(data.action == 'block'){
+    }else if (data.action.includes("set ")){
+      let [_, key, value] = data.action.split(' ')
+      this.contentService.post('/users/disable-messages', {
+        user_id: this.correspondentId,
+        key: key,
+        disabled: value == 'true'
+      }).subscribe((data)=>{
+        let message = "Messagerie du " + (key.includes('coach')?'coach':'nutritionniste') + " " + (value == 'true'?'bloquée':'débloquée');
+        this.feedbackService.registerNow(message, 'success')
+        this.loadCorrespondent()
+      })
+    }else if(data.action == 'block'){ // NOT USED ANYMORE, should be deleted
       this.contentService.post('/users/disable-messages', {
         user_id: this.correspondentId, 
         disabled: true
@@ -251,7 +277,7 @@ export class ChatDetailsPage implements OnInit {
         this.feedbackService.registerNow("Discussion bloquée", 'success')
         this.loadCorrespondent()
       })
-    }else if(data.action == 'unblock'){
+    }else if(data.action == 'unblock'){ // NOT USED ANYMORE, should be deleted
       this.contentService.post('/users/disable-messages', {
         user_id: this.correspondentId, 
         disabled: false

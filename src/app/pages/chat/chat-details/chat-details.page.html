@@ -7,7 +7,9 @@
       <span>
         {{ correspondent?.firstname }} {{ correspondent?.lastname === '_' ? '' : correspondent?.lastname }}
       </span>
-      <ion-badge *ngIf="correspondent?.user_settings?.disable_messages == 'true'" color="medium">Message désactivés</ion-badge>
+      <!--<ion-badge *ngIf="correspondent?.user_settings?.disable_messages == 'true'" color="medium">Message désactivés</ion-badge>-->
+      <ion-badge *ngIf="correspondent?.user_settings?.disable_coach_messages == 'true'" color="medium">M. coach désactivés</ion-badge>
+      <ion-badge *ngIf="correspondent?.user_settings?.disable_nutritionist_messages == 'true'" color="medium">M. nutritionniste désactivés</ion-badge>
     </ion-title>
     <ion-buttons slot="end" *ngIf="user?.function == 'coach' || user?.function == 'nutritionist'">
       <ion-button (click)="presentActionSheetReport()">
