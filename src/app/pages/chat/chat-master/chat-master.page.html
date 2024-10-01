@@ -132,6 +132,11 @@
                     <div class="helper">Votre accès à la messagerie est désactivé.</div>
                 </div>
             </div>
+            <div *ngIf="!coachList || coachList.length == 0">
+                <p class="ion-text-center">
+                    <ion-spinner></ion-spinner>
+                </p>
+            </div>
         </div>
 
         <br/><br/>
@@ -146,7 +151,7 @@
             <p class="helper ion-padding-horizontal" *ngIf="user?.renewable_id == 'alonzo'">
                 Vous pouvez discuter avec votre nutrionniste à tout moment. Il vous répondra dans les plus brefs délais.
             </p>
-            <div *ngIf="nutritionistList" class="discussion-list">
+            <div *ngIf="nutritionistList && !(user?.renewable_id == null)" class="discussion-list">
                 <ion-item
                         *ngFor="let entity of nutritionistList"
                         (click)="navigateTo('/chat/details/' + entity.id)"
@@ -164,6 +169,11 @@
                 <div class="placeholder" *ngIf="user?.user_settings?.disable_nutritionist_messages == 'true'">
                     <div class="helper">Votre accès à la messagerie est désactivé.</div>
                 </div>
+            </div>
+            <div *ngIf="(!nutritionistList || nutritionistList.length == 0) && !(user?.renewable_id == null)">
+                <p class="ion-text-center">
+                    <ion-spinner></ion-spinner>
+                </p>
             </div>
         </div>
         <!-- The variable has been changed from subscription.slug to just renewable_id -->
