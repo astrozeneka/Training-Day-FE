@@ -10,7 +10,11 @@
 
 <ion-content id="app-weight-tracking">
 
-  <div class="faded-cover" *ngIf="!user"></div>
+  <div class="faded-cover" *ngIf="!user || user?.renewable_id == null">
+    <p class="helper" *ngIf="user?.renewable_id == null">
+      L'application de suivi de poids n'est pas disponible pour votre compte. Veuillez souscrire à un pack <b>Hoylt</b> ou supérieur pour en bénéficier.
+    </p>
+  </div>
   <ion-card class="ion-padding cta" *ngIf="!user">
     <ion-card-content>
       <h1 class="display-1">Créer un compte gratuitement pour continuer</h1>

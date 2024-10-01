@@ -178,5 +178,12 @@
       </ion-button>
     </div>
     -->
+
+
+    <div class="placeholder" *ngIf="user?.renewable_id == null">
+      <p class="helper">
+        Le calculateur de calories n'est pas disponible pour votre compte. Veuillez souscrire à un pack <b>Hoylt</b> ou supérieur pour en bénéficier.
+      </p>
+    </div>
   </div>
 </ion-content>

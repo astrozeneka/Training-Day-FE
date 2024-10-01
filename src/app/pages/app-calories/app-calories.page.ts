@@ -41,7 +41,11 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
     private platform: Platform
   ) {
     super()
+    // The code below is the old way to load user data
+    // Actually the code inside ngOnInit function is used
+      /*
     router.events.subscribe(async(event: any)=>{
+      
       if (event instanceof NavigationEnd && event.url == '/app-calories'){
         this.user = await this.contentService.storage.get('user')
         if(this.user){
@@ -65,6 +69,7 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
         this.calory_needed = undefined
       }
     })
+      */
   }
 
   loadData(){
@@ -80,6 +85,11 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
   }
 
   ngOnInit() {
+    this.contentService.userStorageObservable.getStorageObservable().subscribe((u)=>{
+      this.user = u
+      this.form.reset()
+      this.form.patchValue(u)
+    })
   }
 
   validatePhysical(){
