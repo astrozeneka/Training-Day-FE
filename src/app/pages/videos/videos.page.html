@@ -17,7 +17,7 @@
             *ngIf="jwtToken || this.category"
         >
             <ng-template let-item>
-                <div class="video-card ion-padding">
+                <div class="video-card ion-padding" [ngClass]="{ 'locked': !item.available }">
                     <div class="left" (click)="goToVideo(item.id)">
                         <img src="/assets/logo-light-1024x1024-noalpha.jpg" alt="Vidéo thumbnail" class="card-image" *ngIf="!item.thumbnail"/>
                         <img [src]="getUrl(item.thumbnail.permalink)" alt="Vidéo thumbnail" class="card-image" *ngIf="item.thumbnail"/>
@@ -30,7 +30,7 @@
                         <p>
                             <ion-badge color="medium" *ngIf="item.hidden">Private</ion-badge>
                         </p>
-                        <div class="stars">
+                        <div class="stars" *ngIf="false"><!-- Hide it for now, maybe later -->
                             <ion-icon name="star-outline"></ion-icon>
                             <ion-icon name="star-outline"></ion-icon>
                             <ion-icon name="star-outline"></ion-icon>
@@ -38,6 +38,16 @@
                             <ion-icon name="star-outline"></ion-icon>
                         </div>
                         <p>{{ item['description'] }}</p>
+                        <p *ngIf="user?.function == 'admin' || user?.function == 'coach'">
+                            <b>Accessible par :</b>
+                            <span>
+                                {{ item.privilege | displayList }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="placeholder"></div>
+                    <div class="privilege-banner" *ngIf="!item.available">
+                        Cette vidéo est réservé aux membres <b>Hoylt</b> ou supérieur
                     </div>
                 </div>
             </ng-template>

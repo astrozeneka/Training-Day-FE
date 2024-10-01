@@ -55,6 +55,31 @@
   p, h3{
     margin: 0;
   }
+
+  &.locked{
+    position: relative;
+    & > *{
+      opacity: 0.5;
+    }
+
+    & .placeholder{
+      opacity: 1!important;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      background: rgba(var(--ion-color-light-rgb), 0.1); // Should be tested in dark mode
+      backdrop-filter: blur(5px);
+    }
+
+    & .privilege-banner{
+      // Center it
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+  }
 }
 
 .video-card:hover .left ion-icon{

@@ -22,13 +22,15 @@ export class VideoViewPage implements OnInit {
     'description': new FormControl('', [Validators.required]),
     'tags': new FormControl('', []),
     'category': new FormControl('undefined', []),
+    'privilege': new FormControl("['public', 'hoylt', 'moreno', 'alonzo']", []),
     'hidden': new FormControl(false, [])
   })
   displayedError = {
     'title': undefined,
     'description': undefined,
     'tags': undefined,
-    'category': undefined
+    'category': undefined,
+    'privilege': undefined,
     // 'hidden': undefined
   }
   formValid = false
@@ -58,11 +60,13 @@ export class VideoViewPage implements OnInit {
             this.video.tags = this.video.tags.split(',').filter((tag:any)=>tag != 'boxing').join(',')
           }
           // Patch the form values
+          console.log(this.video.privilege)
           this.form.patchValue({
             title: this.video.title,
             description: this.video.description,
             tags: this.video.tags,
             category: category,
+            privilege: this.video.privilege,
             hidden: this.video.hidden
           })
         })
@@ -90,7 +94,7 @@ export class VideoViewPage implements OnInit {
     }
     data.video_id = this.video.id
     this.contentService.put('/video', data)
-      .pipe(finalize(()=>this.isFormLoading = false))
+      .pipe(finalize(()=>this.isFormLoading = false)) // WARNING, no validation is present here
       .subscribe((response:any)=>{
         if(response.id){
           this.feedbackService.register('Le vidéo a été mis à jour avec succes', 'success')

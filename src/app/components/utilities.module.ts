@@ -28,6 +28,7 @@ import {InfiniteListComponent} from "../components-submodules/angular-infinite-l
 import {TrainerCardComponent} from "./trainer-card/trainer-card.component";
 import {SubscriptionCardComponent} from "./subscription-card/subscription-card.component";
 import {FeedbackModalComponent} from "./feedback-modal/feedback-modal.component";
+import { DisplayListPipe } from '../display-list.pipe';
 
 
 
@@ -61,7 +62,10 @@ import {FeedbackModalComponent} from "./feedback-modal/feedback-modal.component"
     TrainerCardComponent,
     SubscriptionCardComponent,
 
-    FeedbackModalComponent
+    FeedbackModalComponent,
+
+    // Pipes
+    DisplayListPipe
   ],
   imports: [
     CommonModule,
@@ -86,8 +90,8 @@ import {FeedbackModalComponent} from "./feedback-modal/feedback-modal.component"
     InfiniteListComponent,
     TrainerCardComponent,
     SubscriptionCardComponent,
-
-
+    
+    DisplayListPipe
   ]
 })
 export class UtilitiesModule { }

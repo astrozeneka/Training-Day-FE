@@ -19,6 +19,7 @@ export class VideoUploadPage extends FormComponent{
     'description': new FormControl('', [Validators.required]),
     'tags': new FormControl('', []),
     'category': new FormControl('', []),
+    'privilege': new FormControl("['public', 'hoylt', 'moreno', 'alonzo']", []),
     'file': this.fileControl
   });
   isFormLoading = false;
@@ -29,6 +30,7 @@ export class VideoUploadPage extends FormComponent{
     'description': undefined,
     'tags': undefined,
     'category': undefined,
+    'privilege': undefined,
   }
 
   constructor(
@@ -55,7 +57,7 @@ export class VideoUploadPage extends FormComponent{
     }
     data.file_id = data.file.id
     this.contentService.post('/video', data)
-      .pipe(finalize(()=>{
+      .pipe(finalize(()=>{ // WARNING, no validation is present here
         this.isFormLoading = false
       }))
       .subscribe((response:any)=>{

@@ -14,6 +14,7 @@ import { InAppPurchase2 } from "@ionic-native/in-app-purchase-2/ngx";
 import {environment} from "../environments/environment";
 import {DevComponentsModule} from "./dev-prod-components/dev-components.module";
 import {ProdComponentsModule} from "./dev-prod-components/prod-components.module";
+import { DisplayListPipe } from './display-list.pipe';
 
 @NgModule({
   declarations: [

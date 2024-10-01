@@ -9,7 +9,8 @@ import { first, last } from 'rxjs/operators';
   templateUrl: './videos.page.html',
   styleUrls: ['./videos.page.scss'],
 })
-export class VideosPage {
+export class VideosPage implements OnInit {
+  user = undefined
   title = '';
   category = ''
   videos:any = []
@@ -21,7 +22,7 @@ export class VideosPage {
     protected contentService: ContentService
   ) {
     console.log("Subscribe video loading")
-    let subscription = router.events.subscribe((event) => {
+    let subscription = router.events.subscribe((event) => { // Not optimized for performance
       if(event instanceof NavigationEnd && event.url.includes('/videos/training')){
         this.title = "Découvrez les vidéos sur les entrainements"
         this.category = 'training'
@@ -36,6 +37,12 @@ export class VideosPage {
         console.log("Unsubscribe video loading")
         subscription.unsubscribe()
       }
+    })
+  }
+
+  ngOnInit() {
+    this.contentService.userStorageObservable.getStorageObservable().subscribe((res)=>{
+      this.user = res
     })
   }
 
