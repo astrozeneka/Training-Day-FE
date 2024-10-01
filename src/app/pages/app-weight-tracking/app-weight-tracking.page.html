@@ -30,7 +30,7 @@
     </ion-card>
 
 
-<div class="ion-padding">
+<div class="ion-padding" *ngIf="user?.function == 'customer'">
   <h1 class="display-1">Suivez votre poids au quotidien</h1>
   <p class="helper">
     L'application vous permet de suivre votre poids au quotidien.
@@ -68,7 +68,37 @@
   </form>
 </div>
 
-<div class="ion-padding">
+<div *ngIf="user?.function == 'coach' && customer">
+  <h1 class="display-1 ion-padding">Courbe de poids</h1>
+
+  <h2 class="display-1 ion-padding">Information sur le client</h2>
+  <ion-item>
+    <ion-input 
+      label="Nom et prénom"
+      label-placement="floating"
+      [value]="customer?.lastname + ' ' + customer?.firstname"
+      readonly
+    ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input 
+      label="Email"
+      label-placement="floating"
+      [value]="customer?.email"
+      readonly
+    ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input 
+      label="Abonnement"
+      label-placement="floating"
+      [value]="customer?.renewable_id"
+      readonly
+    ></ion-input>
+  </ion-item>
+</div>
+
+<div class="ion-padding" *ngIf="user?.function == 'customer' || (user?.function == 'coach' && customer)">
   <h1 class="display-1">Ma courbe de poids</h1>
   <div class="ion-text-center" *ngIf="loading">
     <br/><br/>
@@ -86,7 +116,7 @@
   </div>
 </div>
 
-<div class="ion-padding">
+<div class="ion-padding" *ngIf="user?.function == 'customer' || (user?.function == 'coach' && customer)">
   <h1 class="display-1">Historique des poids</h1>
   <ion-list *ngIf="weightData.length > 0">
     <ion-item>
@@ -109,7 +139,7 @@
   </p>
 
   <br/>
-  <div class="ion-text-center">
+  <div class="ion-text-center" *ngIf="user?.function == 'customer'">
     <ion-button
             class="long-button"
             routerLink="/chat"

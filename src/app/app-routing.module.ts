@@ -180,6 +180,10 @@ const routes: Routes = [
     path: 'app-weight-tracking',
     loadChildren: () => import('./pages/app-weight-tracking/app-weight-tracking.module').then( m => m.AppWeightTrackingPageModule)
   },
+  {
+    path: 'app-weight-tracking/:id',
+    loadChildren: () => import('./pages/app-weight-tracking/app-weight-tracking.module').then( m => m.AppWeightTrackingPageModule)
+  }
 ];
 
 @NgModule({

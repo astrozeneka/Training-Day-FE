@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
 import { catchError, throwError } from 'rxjs';
 import { Chart } from 'chart.js';
@@ -17,6 +17,7 @@ import { FeedbackService } from 'src/app/feedback.service';
 })
 export class AppWeightTrackingPage extends FormComponent implements OnInit {
   user: any
+  customer: any  // In case the coach need to see the weight tracking of a customer
   weightData: Array<any> = []
   loading: boolean
 
@@ -25,7 +26,6 @@ export class AppWeightTrackingPage extends FormComponent implements OnInit {
     data: undefined,
     options: undefined
   }
-
   weightForm = new FormGroup({
     date: new FormControl('', [Validators.required]),
     weight: new FormControl('', [Validators.required]),
@@ -38,9 +38,19 @@ export class AppWeightTrackingPage extends FormComponent implements OnInit {
   constructor(
     private contentService: ContentService,
     private feedbackService: FeedbackService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { 
     super()
+    // get the id attribute from the url
+    this.route.paramMap.subscribe(params => {
+      let customerId = params.get('id')
+      this.contentService.getOne(`/users/${customerId}`, {})
+        .subscribe((response) => {
+          this.customer = response
+          this.loadData(this.customer)
+        })
+    })
   }
 
   ngOnInit() {
@@ -48,7 +58,7 @@ export class AppWeightTrackingPage extends FormComponent implements OnInit {
 
     this.contentService.userStorageObservable.getStorageObservable().subscribe((user) => {
       this.user = user
-      this.loadData()
+      this.loadData(this.user)
     })
 
     this.lineChart.data = {
@@ -97,8 +107,11 @@ export class AppWeightTrackingPage extends FormComponent implements OnInit {
     }
   }
 
-  loadData() {
-    this.contentService.getCollection('/weights').subscribe((response) => {
+  loadData(user) {
+    if (user.function == 'coach')
+      return // The coach is not suppossed to see his own weight tracking
+    
+    this.contentService.getCollection('/weights', 0, {user_id:user.id}).subscribe((response) => {
       this.loading = false
       this.weightData = response
       let data = response.map((item) => item.weight)
@@ -139,7 +152,7 @@ export class AppWeightTrackingPage extends FormComponent implements OnInit {
       console.log("Registered")
       this.feedbackService.registerNow("Le poids a été enregistré", 'success')
       this.weightForm.reset()
-      this.loadData() // Because angular doesn't allow page reloading like in web
+      this.loadData(this.user) // Because angular doesn't allow page reloading like in web
     })
     this.isFormLoading = false
   }
@@ -148,7 +161,7 @@ export class AppWeightTrackingPage extends FormComponent implements OnInit {
     this.contentService.delete(`/weights`, `${id}`)
     .subscribe((response) => {
       this.feedbackService.registerNow("L'historique a été mis à jour", 'success')
-      this.loadData()
+      this.loadData(this.user)
     })
   }
 }

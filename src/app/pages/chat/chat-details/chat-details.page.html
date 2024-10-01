@@ -9,8 +9,10 @@
       </span>
       <ion-badge *ngIf="correspondent?.user_settings?.disable_messages == 'true'" color="medium">Message désactivés</ion-badge>
     </ion-title>
-    <ion-buttons slot="end">
-      <!-- a vertical ellipse icon for a button -->
+    <ion-buttons slot="end" *ngIf="user?.function == 'coach' || user?.function == 'nutritionist'">
+      <ion-button (click)="presentActionSheetReport()">
+        <ion-icon name="analytics-outline"></ion-icon>
+      </ion-button>
       <ion-button (click)="presentActionSheetGlobal()"><!-- We are here -->
         <ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
       </ion-button>

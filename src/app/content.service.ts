@@ -34,6 +34,7 @@ export class ContentService {
   requestLogin(data:any) {
     let headers = this.bearerHeaders()
     let debugParams = this.isDebug?'?XDEBUG_SESSION_START=client':''
+    console.log("Here")
     return this.httpClient.post(`${this.apiEndpoint}/request-login${debugParams}`, data, {})
       .pipe(
         map(async (res:any)=>{

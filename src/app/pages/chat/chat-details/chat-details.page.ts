@@ -265,6 +265,31 @@ export class ChatDetailsPage implements OnInit {
     }
   }
 
+  async presentActionSheetReport(){
+    let as = await this.actionSheetController.create({
+      'header': 'Action',
+      'buttons': [
+        {
+          text: 'Suivi du poids',
+          data: {
+            action: 'weight',
+          },
+        },
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          data: {
+            action: 'cancel',
+          },
+        }
+      ]})
+    await as.present();
+    const { data } = await as.onDidDismiss();
+    if(data.action == 'weight'){
+      this.router.navigate(['/app-weight-tracking/'+this.correspondentId])
+    }
+  }
+
   // the #fileInput element
   @ViewChild('fileInput') fileInput:any = undefined
   file = undefined
