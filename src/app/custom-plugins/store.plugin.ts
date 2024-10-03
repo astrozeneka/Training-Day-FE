@@ -24,7 +24,9 @@ const mockStorePlugin: StorePlugin = {
         quantity: 1,
         transactionId: 1,
         signedDate: "2021-07-09T17:00:00Z",
-        inAppOwnershipType: "PURCHASED"
+        inAppOwnershipType: "PURCHASED",
+        id: undefined, // TransactionId: 2000000730775813
+        environment: undefined // Environment: "Sandbox" or "Xcode"
       }
     }
   },
@@ -52,7 +54,9 @@ const mockStorePlugin: StorePlugin = {
           "quantity":1,
           "transactionId":8,
           "deviceVerificationNonce":"327557D6-32F6-4813-BC43-984D071B9A30",
-          "deviceVerification":"YdmaWuQLg9b2vMlBmEPqJzZIa6lj5B5tyz0lLo1yMDuZ95RGOs8ZRHO1YKwFzJ9k"
+          "deviceVerification":"YdmaWuQLg9b2vMlBmEPqJzZIa6lj5B5tyz0lLo1yMDuZ95RGOs8ZRHO1YKwFzJ9k",
+          id: undefined,
+          environment: undefined
         }
       ],
       "subscriptions": []
@@ -100,6 +104,9 @@ export interface Transaction {
   signedDate: string;
   deviceVerification: string;
   inAppOwnershipType: string;
+
+  id: any | undefined; // This value is what we want to track
+  environment: any | undefined; // This value is what we want to track
 }
 export interface Product {
   displayPrice: string;

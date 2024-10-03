@@ -7,6 +7,7 @@ import { PushNotifications } from '@capacitor/push-notifications';
 import {HttpClient} from "@angular/common/http";
 import StorePlugin from "./custom-plugins/store.plugin";
 import {environment} from "../environments/environment";
+import { catchError, throwError } from 'rxjs';
 
 
 @Component({
@@ -51,7 +52,7 @@ export class AppComponent implements OnInit{
       this.initializePushNotifications()
 
     // Store
-    if(this.platform.is('ios') || (!environment.production)){
+    if(this.platform.is('ios')){
       // The auto-renewable subscriptions are manage by the entitlements from the device
       /*let data = (await StorePlugin.getNonRenewableEntitlements({}))
       let entitlements = data.entitlements
@@ -61,12 +62,21 @@ export class AppComponent implements OnInit{
 
       // Load the autoRenewableEntitlements
       if(this.platform.is('ios')) {
+        //this.feedbackService.registerNow("Syncing device entitlements")
         let renewableData = (await StorePlugin.getAutoRenewableEntitlements({}))
         let renewableEntitlements = renewableData.entitlements
         let renewableSubscriptions = renewableData.subscriptions
         console.log("appComponent: autorenewable Entitlements", renewableEntitlements)
         console.log("appComponent: autorenewable Subscriptions", renewableSubscriptions)
-        this.contentService.post('/users/sync-device-entitlements', {subscriptions: renewableSubscriptions}).subscribe((response: any) => {
+        this.contentService.post('/users/sync-device-entitlements', {subscriptions: renewableSubscriptions, entitlements: renewableEntitlements})
+          .pipe(catchError((error) => {
+            this.feedbackService.registerNow("Error while syncing device entitlements :" + 
+              JSON.stringify(error)
+              , "danger")
+            return throwError(error)
+          }))
+          .subscribe((response: any) => {
+            this.feedbackService.registerNow("Device entitlements verified from the server", "success")
           if (response.success) {
             console.info("Device entitlements verified from the server")
           } else {

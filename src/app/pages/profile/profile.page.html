@@ -134,6 +134,9 @@
                 <span>
                     Vous disposez d'un abonnement <b> {{ entity.renewable_id }}</b> pour ce compte utilisateur
                 </span>
+                <ion-button slot="end" (click)="presentManageModal()"><!-- experimental -->
+                    Gérer
+                </ion-button>
             </ion-item>
         </div>
 

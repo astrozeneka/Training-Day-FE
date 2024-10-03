@@ -56,10 +56,11 @@ ion-title{
   & ion-avatar{
     height: 40px;
     width: 40px;
+    flex-shrink: 0;
   }
   & .message-content{
     text-align: left;
-    margin-right: 20%;
+    margin-right: 15%;
     background: rgba(170, 170, 170, 0.16);
   }
 }
