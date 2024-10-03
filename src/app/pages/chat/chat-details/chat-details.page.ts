@@ -94,7 +94,21 @@ export class ChatDetailsPage implements OnInit {
       this.scrollTop()
     }
 
-    this.ionInfiniteEvent?.target.complete()
+    this.ionInfiniteEvent?.target?.complete()
+    if (this.ionInfiniteEvent?.artificial){
+      this.scrollTop()
+    }
+
+
+    // Experimental feature to fix the ion-ionic content that doesn't activate if the content height is lower than the container weight
+    // select by css_selector
+    let container = document.querySelector('.discussion-flow')
+    let content = document.querySelector('.discussion-flow>div')
+    // If content not overflow
+    if (content.clientHeight < container.clientHeight) {
+      this.onIonInfinite({artificial: true})
+    }
+    
   }
 
   async ngOnInit() {
@@ -370,6 +384,12 @@ export class ChatDetailsPage implements OnInit {
           },
         },
         {
+          text: 'Scroll top',
+          data: {
+            action: 'scroll-top'
+          }
+        },
+        {
           text: 'Annuler',
           role: 'cancel',
           data: {
@@ -382,6 +402,8 @@ export class ChatDetailsPage implements OnInit {
     if(data.action == 'clear-cache'){
       this.chatService.clearCache(this.correspondentId)
       this.feedbackService.registerNow("Cache cleared", 'success')
+    }else if(data.action == 'scroll-top'){
+      this.scrollTop()
     }
   }
 
