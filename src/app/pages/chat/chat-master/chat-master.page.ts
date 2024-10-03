@@ -21,6 +21,7 @@ export class ChatMasterPage implements OnInit {
   nutritionistList:Array<any> = null
   searchControl:FormControl = new FormControl("")
   user:any = null
+  grouped_perishables = {}
 
   // Experimental features for the optimized messageLoading
   discussionStorageObservable = new StorageObservable<any>('discussionData')
@@ -77,7 +78,11 @@ export class ChatMasterPage implements OnInit {
     await (()=>new Promise(_=>{
       this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
         this.user = user;
-
+        this.grouped_perishables = this.user.grouped_perishables.reduce((acc:any, item:any)=>{
+          acc[item.slug] = item
+          return acc
+        }, {})
+        
         this.discussionStorageObservable.updateStorage({data:[], metainfo:{}})
 
         if (user.function === "customer" || user.function === "nutritionist") {

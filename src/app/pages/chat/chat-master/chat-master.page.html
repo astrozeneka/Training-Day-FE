@@ -108,10 +108,10 @@
 
         <h2 class="display-1 ion-padding-horizontal">Discuter avec mon coach</h2>
         <div>
-            <p class="helper ion-padding-horizontal" *ngIf="user?.renewable_id == null || user?.renewable_id == 'hoylt'">
+            <p class="helper ion-padding-horizontal" *ngIf="(user?.renewable_id == null || user?.renewable_id == 'hoylt') && !grouped_perishables['sport-coach']">
                 Vous disposez d'un accès limité à cette fonctionnalité. Veuillez souscrire à un Pack Hoylt pour en bénéficier.
             </p>
-            <p class="helper ion-padding-horizontal" *ngIf="user?.renewable_id == 'moreno' || user?.renewable_id == 'alonzo'">
+            <p class="helper ion-padding-horizontal" *ngIf="user?.renewable_id == 'moreno' || user?.renewable_id == 'alonzo' || grouped_perishables['sport-coach']">
                 Vous pouvez discuter avec votre coach à tout moment. Il vous répondra dans les plus brefs délais.
             </p>
             <div *ngIf="coachList" class="discussion-list">
@@ -142,16 +142,16 @@
         <br/><br/>
         <h2 class="display-1 ion-padding-horizontal">Discuter avec mon nutrionniste</h2>
         <div>
-            <p class="helper ion-padding-horizontal" *ngIf="user?.renewable_id == null">
+            <p class="helper ion-padding-horizontal" *ngIf="(user?.renewable_id == null) && !grouped_perishables['food-coach']">
                 Vous n'avez pas accès à cette fonctionnalité. Veuillez souscrire à un Pack Alonzo pour en bénéficier.
             </p>
-            <p class="helper ion-padding-horizontal" *ngIf="user?.renewable_id == 'hoylt' || user?.renewable_id == 'moreno'">
+            <p class="helper ion-padding-horizontal" *ngIf="(user?.renewable_id == 'hoylt' || user?.renewable_id == 'moreno') && !grouped_perishables['food-coach']">
                 Vous disposez d'un accès limité à cette fonctionnalité. Veuillez souscrire à un Pack Alonzo pour en bénéficier.
             </p>
-            <p class="helper ion-padding-horizontal" *ngIf="user?.renewable_id == 'alonzo'">
+            <p class="helper ion-padding-horizontal" *ngIf="user?.renewable_id == 'alonzo' || grouped_perishables['food-coach']">
                 Vous pouvez discuter avec votre nutrionniste à tout moment. Il vous répondra dans les plus brefs délais.
             </p>
-            <div *ngIf="nutritionistList && !(user?.renewable_id == null)" class="discussion-list">
+            <div *ngIf="nutritionistList && !((user?.renewable_id == null) && !grouped_perishables['food-coach'])" class="discussion-list">
                 <ion-item
                         *ngFor="let entity of nutritionistList"
                         (click)="navigateTo('/chat/details/' + entity.id)"
