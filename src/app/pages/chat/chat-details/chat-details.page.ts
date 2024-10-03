@@ -357,4 +357,33 @@ export class ChatDetailsPage implements OnInit {
       })
   }
 
+
+  // Debug features
+  async presentDebugActionSheet(){
+    let as = await this.actionSheetController.create({
+      'header': 'Action',
+      'buttons': [
+        {
+          text: 'Clear Cache',
+          data: {
+            action: 'clear-cache',
+          },
+        },
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          data: {
+            action: 'cancel',
+          },
+        }
+      ]})
+    await as.present();
+    const { data } = await as.onDidDismiss();
+    if(data.action == 'clear-cache'){
+      this.chatService.clearCache(this.correspondentId)
+      this.feedbackService.registerNow("Cache cleared", 'success')
+    }
+  }
+
+
 }

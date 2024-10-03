@@ -128,4 +128,11 @@ export class ChatService {
     this.loadMessages(correspondent_id, 0, callback, coachAsNutritionist) // offset is 0
   }
 
+  async clearCache(correspondent_id){
+    let keys = (await this.cs.storage.keys()).filter((key)=>key.startsWith(`messages.${this.user.id}.${correspondent_id}.`))
+    for (const key of keys) {
+      await this.cs.storage.remove(key)
+    }
+  } 
+
 }

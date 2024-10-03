@@ -11,13 +11,20 @@
       <ion-badge *ngIf="correspondent?.user_settings?.disable_coach_messages == 'true'" color="medium">M. coach désactivés</ion-badge>
       <ion-badge *ngIf="correspondent?.user_settings?.disable_nutritionist_messages == 'true'" color="medium">M. nutritionniste désactivés</ion-badge>
     </ion-title>
-    <ion-buttons slot="end" *ngIf="user?.function == 'coach' || user?.function == 'nutritionist'">
-      <ion-button (click)="presentActionSheetReport()">
-        <ion-icon name="analytics-outline"></ion-icon>
-      </ion-button>
-      <ion-button (click)="presentActionSheetGlobal()"><!-- We are here -->
-        <ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
-      </ion-button>
+    <ion-buttons slot="end" *ngIf="user?.function == 'coach' || user?.function == 'nutritionist' || !environment.production">
+      <div *ngIf="user?.function == 'coach' || user?.function == 'nutritionist'">
+        <ion-button (click)="presentActionSheetReport()">
+          <ion-icon name="analytics-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="presentActionSheetGlobal()"><!-- We are here -->
+          <ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
+        </ion-button>
+      </div>
+      <div *ngIf="!environment.production">
+        <ion-button (click)="presentDebugActionSheet()">
+          <ion-icon name="bug-outline"></ion-icon>
+        </ion-button>
+      </div>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
