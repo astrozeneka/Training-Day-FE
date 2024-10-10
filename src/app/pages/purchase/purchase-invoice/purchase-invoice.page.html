@@ -72,8 +72,14 @@
             >
             Continuer
         </app-ux-button>
-        <p class="helper ion-text-center" *ngIf="isLoading" style="font-size:smaller">
-            Enregistrement de votre commande en cours
-        </p>
+        <div class="helper ion-text-center" *ngIf="isLoading" style="font-size:smaller">
+            Enregistrement de votre commande en cours <br/>
+            <div>
+                <span>
+                    {{ loadingStep }}
+                </span>
+                <ion-spinner name="dots"></ion-spinner>
+            </div>
+        </div>
     </div>
 </ion-content>

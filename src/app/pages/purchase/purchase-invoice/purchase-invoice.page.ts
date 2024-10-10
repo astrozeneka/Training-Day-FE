@@ -27,6 +27,7 @@ export class PurchaseInvoicePage implements OnInit {
   acceptConditions: FormControl = new FormControl(false);
 
   isLoading: boolean = false;
+  loadingStep: string = null;
 
   constructor(
     private contentService: ContentService,
@@ -75,16 +76,15 @@ export class PurchaseInvoicePage implements OnInit {
   }
 
   async continueToPayment(){
-    if(environment.paymentMethod == 'stripe') {
-      this.feedbackService.registerNow('Stripe payment method is not supported', 'error')
-      // this.router.navigate(['/purchase-payment'])
-    }else if(environment.paymentMethod == 'inAppPurchase'){
+    if(environment.paymentMethod == 'inAppPurchase'){
+      this.isLoading = true
+      this.loadingStep = "(1/2) Connexion à l'App Store"
       // Confirm purchase
       let res:any = (await StorePlugin.purchaseProductById({productId: this.productId!})) as any;
       res.transaction.currency = 'EUR' // TODO, update to local currency
       res.transaction.amount = this.productList[this.productId as string].price * 100
       res.transaction.product_id = this.productId
-      this.isLoading = true
+      this.loadingStep = "(2/2) Enregistrement de l'achat"
       this.contentService.post('/payments/registerIAPTransaction', res.transaction)
         .pipe(catchError(err => {
           // Print error code
@@ -134,6 +134,8 @@ export class PurchaseInvoicePage implements OnInit {
         })
       console.log("Purchase result:")
       console.log(res)
+    }else{
+      this.feedbackService.registerNow("The payment purchase is not availble", "danger")
     }
   }
 

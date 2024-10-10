@@ -183,6 +183,10 @@ const routes: Routes = [
   {
     path: 'app-weight-tracking/:id',
     loadChildren: () => import('./pages/app-weight-tracking/app-weight-tracking.module').then( m => m.AppWeightTrackingPageModule)
+  },
+  {
+    path: 'splash',
+    loadChildren: () => import('./splash/splash.module').then( m => m.SplashPageModule)
   }
 ];
 

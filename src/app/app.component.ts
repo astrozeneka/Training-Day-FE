@@ -100,6 +100,21 @@ export class AppComponent implements OnInit{
       })
        */
     }
+
+    // Check token if expired or not, otherwise disconnect the user
+    this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
+      this.contentService.getOne(`/users/${user.id}`, {})
+        .pipe(catchError((error) => {
+          if(error){
+            this.feedbackService.register("Votre session a expiré, veuillez vous reconnecter", "danger")
+            this.router.navigate(['/logout'])
+          }
+          return throwError(error)
+        }))
+        .subscribe((response)=>{
+          this.user = response
+        })
+    });
   }
 
   private async onRouteChange(){
