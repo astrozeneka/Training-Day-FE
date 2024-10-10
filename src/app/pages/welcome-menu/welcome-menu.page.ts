@@ -15,7 +15,7 @@ export class WelcomeMenuPage implements OnInit {
 
   constructor(
     private router:Router,
-    private contentService:ContentService,
+    public contentService:ContentService,
     private themeDetection: ThemeDetection,
     private feedbackService: FeedbackService
   ) {

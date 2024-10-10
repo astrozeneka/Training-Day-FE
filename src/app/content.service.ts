@@ -200,7 +200,8 @@ export class ContentService {
             if(error.status == 404){
               // Return null if the token is not usable anymore
               // TODO: this part should need thorough test (maybe after many hours or days)
-              this.router.navigate(['/logout'])
+              this.logout()
+              // this.router.navigate(['/logout'])
               return of(null)
             }
             return throwError(()=>error)
@@ -280,6 +281,13 @@ export class ContentService {
     }, {})
     user.grouped_perishables = grouped_perishables
     return user
+  }
+
+  async logout(){
+    this.userStorageObservable.updateStorage(null)
+    this.storage.remove('token')
+    this.storage.remove('user')
+    this.router.navigate(['/login'])
   }
   
 }

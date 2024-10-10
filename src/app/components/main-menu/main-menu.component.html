@@ -121,7 +121,7 @@
 
   <h4></h4>
     <div *ngIf="user">
-        <ion-button (click)="menuNavigate('/logout')" expand="full" fill="clear">Se déconnecter</ion-button>
+        <ion-button (click)="contentService.logout()" expand="full" fill="clear">Se déconnecter</ion-button>
     </div>
 
 </ion-list>

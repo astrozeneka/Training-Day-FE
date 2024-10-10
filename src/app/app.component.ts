@@ -107,7 +107,7 @@ export class AppComponent implements OnInit{
         .pipe(catchError((error) => {
           if(error){
             this.feedbackService.register("Votre session a expiré, veuillez vous reconnecter", "danger")
-            this.router.navigate(['/logout'])
+            this.contentService.logout()
           }
           return throwError(error)
         }))

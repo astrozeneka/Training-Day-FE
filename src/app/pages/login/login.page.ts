@@ -195,6 +195,7 @@ export class LoginPage extends FormComponent implements OnInit {
         this.formIsLoading = false;
       }))
       .subscribe(async (response: any) => {
+        this.form.reset()
         try{
           await this.reloadPushNotificationPermissions()
         }catch (e){

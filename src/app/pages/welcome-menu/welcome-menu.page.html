@@ -50,7 +50,7 @@
         <ion-button expand="full" type="submit" (click)="goTo('/subscriptions')" color="primary" shape="round" fill="outline">Boutique</ion-button>
         <!-- Se connecter -->
         <div *ngIf="user">
-            <ion-button expand="full" type="submit" (click)="goTo('/logout')" color="primary" shape="round" fill="outline">Se déconnecter</ion-button>
+            <ion-button expand="full" type="submit" (click)="contentService.logout()" color="primary" shape="round" fill="outline">Se déconnecter</ion-button>
         </div>
         <div *ngIf="!user">
             <ion-button expand="full" type="submit" (click)="goTo('/login')" color="primary" shape="round" fill="outline">Se connecter</ion-button>
