@@ -1,0 +1,71 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-back-button></app-back-button>
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Fixer un rendes-vous</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!--
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Fixer un rendez-vous</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  -->
+  <div class="ion-padding">
+    <h1 class="display-1">
+      Choisissez un créneau horaire pour une séance de coaching
+    </h1>
+    <p>
+      Le client recevra une notification du rendez-vous fixé.
+    </p>
+  </div>
+
+  <form [formGroup]="form" (submit)="submitForm()">
+    <ion-item>
+      <ion-input
+        label="Motif du rendez-vous"
+        label-placement="floating"
+        formControlName="reason"
+        [errorText]="displayedError.reason"
+        type="text"
+      ></ion-input>
+    </ion-item>
+    <h4 class="ion-padding">
+      Sélectionnez la date et l'heure du rendez-vous
+    </h4>
+    <ion-datetime
+      formControlName="datetime"
+      presentation="date-time"
+      style="margin: auto"
+      class="ion-margin-vertical"
+      [preferWheel]="false"
+      locale="fr-FR"
+      [min]="minDate"
+      [max]="maxDate"
+    ></ion-datetime>
+    <ion-text class="ion-padding-horizontal"
+      style="font-size: 0.8em;"
+      color="danger" *ngIf="displayedError.datetime && form.controls['datetime'].invalid">
+      {{ displayedError.datetime }}
+    </ion-text>
+  </form>
+  <div class="ion-padding">
+    <ion-button
+      expand="full"
+      type="submit"
+      (click)="submitForm()"
+      color="primary"
+      shape="round"
+    >
+      Fixer le rendez-vous
+    </ion-button>
+    <p class="ion-text-center helper">
+      L'utilisateur recevra une notification du rendez-vous fixé.
+    </p>
+  </div>
+</ion-content>

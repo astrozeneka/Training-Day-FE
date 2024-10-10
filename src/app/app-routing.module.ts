@@ -185,9 +185,13 @@ const routes: Routes = [
     loadChildren: () => import('./pages/app-weight-tracking/app-weight-tracking.module').then( m => m.AppWeightTrackingPageModule)
   },
   {
+    path: 'set-appointment/:id',
+    loadChildren: () => import('./pages/set-appointment/set-appointment.module').then( m => m.SetAppointmentPageModule)
+  },
+  {
     path: 'splash',
     loadChildren: () => import('./splash/splash.module').then( m => m.SplashPageModule)
-  }
+  },
 ];
 
 @NgModule({

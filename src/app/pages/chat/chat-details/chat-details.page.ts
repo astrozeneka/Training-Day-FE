@@ -316,6 +316,12 @@ export class ChatDetailsPage implements OnInit {
           },
         },
         {
+          text: 'Fixer un rendez-vous',
+          data: {
+            action: 'appointment',
+          }
+        },
+        {
           text: 'Annuler',
           role: 'cancel',
           data: {
@@ -327,6 +333,9 @@ export class ChatDetailsPage implements OnInit {
     const { data } = await as.onDidDismiss();
     if(data.action == 'weight'){
       this.router.navigate(['/app-weight-tracking/'+this.correspondentId])
+    }
+    if(data.action == 'appointment'){
+      this.router.navigate(['/set-appointment/'+this.correspondentId])
     }
   }
 
