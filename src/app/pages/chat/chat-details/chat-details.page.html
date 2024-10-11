@@ -75,6 +75,30 @@
           </div>
         </div>
     </div>
+    <div class="ion-padding appointment-alert" *ngIf="this.correspondent?.appointments.length > 0">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <div>
+        Rendez-vous planifié{{this.correspondent.appointments.length>1?'s':''}}<br/><br/>
+        <div *ngFor="let appointment of this.correspondent?.appointments" class="appointment-row">
+          <div>
+            <b>
+              {{ appointment.datetime | date:'dd MMMM yyyy' }}
+            </b> à 
+            <b>
+              {{ appointment.datetime | date:'HH:mm' }}
+            </b><br/>
+          </div>
+          <ion-button
+            fill="clear"
+            shape="round"
+            color="danger"
+            (click)="deleteAppointment(appointment.id)"
+          >
+            <ion-icon name="trash" slog="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
     <div class="controls" *ngIf="!coachAsNutritionist"><!-- The message input -->
       <form (submit)="$event.preventDefault(); sendMessage()" [formGroup]="form">
         <ion-item>

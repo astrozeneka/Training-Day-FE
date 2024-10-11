@@ -21,8 +21,9 @@
       <h2 class="ion-padding">Bienvenue sur Training Day</h2>
 
         <div>
-            <div *ngIf="user.appointments.length > 0">
-                <h1 class="display-1 ion-padding">Mes rendes-vous</h1>
+            
+            <div *ngIf="user?.appointments?.length > 0">
+                <h1 class="display-1 ion-padding">Mes rendez-vous</h1>
                 <ion-card
                     color="warning ion-padding"
                     class="appointment-card"
@@ -45,6 +46,7 @@
                     </div>
                 </ion-card>
             </div>
+            
 
             <h1 class="display-1 ion-padding">Mes Applications</h1>
             <div class="swiper-container">

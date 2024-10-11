@@ -2,7 +2,7 @@ import {Component, NgZone, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "./content.service";
 import {FeedbackService, INFO} from "./feedback.service";
-import {IonicSafeString, Platform, ToastController} from "@ionic/angular";
+import {AlertController, IonicSafeString, Platform, ToastController} from "@ionic/angular";
 import { PushNotifications } from '@capacitor/push-notifications';
 import {HttpClient} from "@angular/common/http";
 import StorePlugin from "./custom-plugins/store.plugin";
@@ -28,7 +28,7 @@ export class AppComponent implements OnInit{
     private toastController: ToastController,
     private httpClient: HttpClient,
     private platform: Platform,
-    private alertController: ToastController, // For later, it can be used inside a separate service
+    private alertController: AlertController, // For later, it can be used inside a separate service
     private sanitize: DomSanitizer
   ) {
 
@@ -106,17 +106,19 @@ export class AppComponent implements OnInit{
 
     // Check token if expired or not, otherwise disconnect the user
     this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
-      this.contentService.getOne(`/users/${user.id}`, {})
-        .pipe(catchError((error) => {
-          if(error){
-            this.feedbackService.register("Votre session a expiré, veuillez vous reconnecter", "danger")
-            this.contentService.logout()
-          }
-          return throwError(error)
-        }))
-        .subscribe((response)=>{
-          this.user = response
-        })
+      if(user){
+        this.contentService.getOne(`/users/${user.id}`, {})
+          .pipe(catchError((error) => {
+            if(error){
+              this.feedbackService.register("Votre session a expiré, veuillez vous reconnecter", "danger")
+              this.contentService.logout()
+            }
+            return throwError(error)
+          }))
+          .subscribe((response)=>{
+            this.user = response
+          })
+      }
     });
 
     // Check if the user have appointment, then show him an alert
@@ -129,7 +131,7 @@ export class AppComponent implements OnInit{
       }
 
       this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
-        if (user.appointments.length > 0){
+        if (user?.appointments.length > 0){
           let formatedDate = new Date(user.appointments[0].datetime).toLocaleDateString('fr-FR', {year: 'numeric', month: 'long', day: 'numeric'})
           let formatedTime = new Date(user.appointments[0].datetime).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})
           let html = new IonicSafeString(`Vous avez un rendez-vous à venir le <b>${formatedDate}</b> à <b>${formatedTime}</b>`)
@@ -154,8 +156,8 @@ export class AppComponent implements OnInit{
           let result = await alert.onDidDismiss()
           if(result.role == "never_again"){ // No more alert for 1 hour
             let expirationDate = new Date()
-            expirationDate.setHours(expirationDate.getHours() + 1)
-            //expirationDate.setDate(expirationDate.getDate() + 7)
+            // expirationDate.setHours(expirationDate.getHours() + 1)
+            expirationDate.setDate(expirationDate.getDate() + 7)
             this.contentService.storage.set('no_more_alert', expirationDate)
           }
           console.log(result)

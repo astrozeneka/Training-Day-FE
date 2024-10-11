@@ -416,5 +416,30 @@ export class ChatDetailsPage implements OnInit {
     }
   }
 
+  deleteAppointment(id){
+    // Show an alert to confirm the deletion
+    this.alertController.create({
+      header: 'Confirmation',
+      message: 'Voulez-vous vraiment supprimer ce rendez-vous ?',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+        },
+        {
+          text: 'Supprimer',
+          handler: ()=>{
+            this.contentService.delete('/appointments', id)
+              .subscribe((response)=>{
+                this.feedbackService.registerNow("Rendez-vous supprimé", 'success')
+                this.loadCorrespondent()
+              })
+          }
+        }
+      ]
+    }).then((alert)=>{
+      alert.present()
+    })
+  }
 
 }
