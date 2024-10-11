@@ -243,3 +243,16 @@ swiper-slide{
     }
   }
 }
+
+.appointment-card{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  & > ion-icon{
+    padding-right: 1em;
+    font-size: 1.5em;
+  }
+  & > div{
+    flex: 1;
+  }
+}

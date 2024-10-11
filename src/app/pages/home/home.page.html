@@ -21,6 +21,31 @@
       <h2 class="ion-padding">Bienvenue sur Training Day</h2>
 
         <div>
+            <div *ngIf="user.appointments.length > 0">
+                <h1 class="display-1 ion-padding">Mes rendes-vous</h1>
+                <ion-card
+                    color="warning ion-padding"
+                    class="appointment-card"
+                    *ngFor="let appointment of user.appointments"
+                >
+                    <ion-icon name="calendar"></ion-icon>
+                    <div>
+                        Vous avez un rendez-vous planifié le 
+                        <b>
+                            {{ appointment.datetime | date:'dd MMMM yyyy' }}
+                        </b>
+                        à
+                        <b>
+                            {{ appointment.datetime | date:'HH:mm' }}
+                        </b>
+                        
+                        <br/>
+                        <b>Motif :</b> {{ appointment.reason }}<br/>
+
+                    </div>
+                </ion-card>
+            </div>
+
             <h1 class="display-1 ion-padding">Mes Applications</h1>
             <div class="swiper-container">
                 <!-- Additional required wrapper -->

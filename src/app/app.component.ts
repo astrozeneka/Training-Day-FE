@@ -2,12 +2,13 @@ import {Component, NgZone, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "./content.service";
 import {FeedbackService, INFO} from "./feedback.service";
-import {Platform, ToastController} from "@ionic/angular";
+import {IonicSafeString, Platform, ToastController} from "@ionic/angular";
 import { PushNotifications } from '@capacitor/push-notifications';
 import {HttpClient} from "@angular/common/http";
 import StorePlugin from "./custom-plugins/store.plugin";
 import {environment} from "../environments/environment";
 import { catchError, throwError } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -26,7 +27,9 @@ export class AppComponent implements OnInit{
     private feedbackService: FeedbackService,
     private toastController: ToastController,
     private httpClient: HttpClient,
-    private platform: Platform
+    private platform: Platform,
+    private alertController: ToastController, // For later, it can be used inside a separate service
+    private sanitize: DomSanitizer
   ) {
 
     router.events.subscribe((event)=>{
@@ -115,6 +118,50 @@ export class AppComponent implements OnInit{
           this.user = response
         })
     });
+
+    // Check if the user have appointment, then show him an alert
+    this.contentService.storage.get('no_more_alert').then((expirationDate)=>{
+      if (expirationDate){
+        let now = new Date()
+        if(now < expirationDate){
+          return
+        }
+      }
+
+      this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
+        if (user.appointments.length > 0){
+          let formatedDate = new Date(user.appointments[0].datetime).toLocaleDateString('fr-FR', {year: 'numeric', month: 'long', day: 'numeric'})
+          let formatedTime = new Date(user.appointments[0].datetime).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})
+          let html = new IonicSafeString(`Vous avez un rendez-vous à venir le <b>${formatedDate}</b> à <b>${formatedTime}</b>`)
+          let alert = await this.alertController.create({
+            header: 'Rappel',
+            message: html,
+            buttons: [
+              {
+                text: "Ne plus m'avertir",
+                role: "never_again"
+              },
+              {
+                text: 'OK',
+                role: 'ok'
+              }
+            ],
+            cssClass: 'custom-alert'
+          })
+          console.log(html)
+          await alert.present()
+          // Manage the button clicked
+          let result = await alert.onDidDismiss()
+          if(result.role == "never_again"){ // No more alert for 1 hour
+            let expirationDate = new Date()
+            expirationDate.setHours(expirationDate.getHours() + 1)
+            //expirationDate.setDate(expirationDate.getDate() + 7)
+            this.contentService.storage.set('no_more_alert', expirationDate)
+          }
+          console.log(result)
+        }
+      })
+    })
   }
 
   private async onRouteChange(){

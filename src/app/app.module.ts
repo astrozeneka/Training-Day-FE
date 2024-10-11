@@ -22,7 +22,9 @@ import { DisplayListPipe } from './display-list.pipe';
   ],
     imports: [
         BrowserModule,
-        IonicModule.forRoot(),
+        IonicModule.forRoot({
+          innerHTMLTemplatesEnabled: true
+        }),
         AppRoutingModule,
         HttpClientModule,
         IonicStorageModule.forRoot(),

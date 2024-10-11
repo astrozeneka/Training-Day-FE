@@ -58,6 +58,7 @@ export class HomePage extends FormComponent implements OnInit {
     // The user data
     this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
       this.user = user
+      console.log(this.user)
     })
   }
 

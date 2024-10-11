@@ -195,7 +195,7 @@ export class ContentService {
       let token = await this.storage.get('token')
       let user = await this.storage.get('user')
       if(token && user){
-        this.getOne(`/users/${user.id}`, {})
+        this.getOne(`/users/${user.id}`, {}) // This is actually not a secured endpoint
           .pipe(catchError((error:any)=>{
             if(error.status == 404){
               // Return null if the token is not usable anymore
