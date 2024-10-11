@@ -4,12 +4,24 @@
       <ion-back-button defaultHref="/chat"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      <span>
-        {{ correspondent?.firstname }} {{ correspondent?.lastname === '_' ? '' : correspondent?.lastname }}
-      </span>
-      <!--<ion-badge *ngIf="correspondent?.user_settings?.disable_messages == 'true'" color="medium">Message désactivés</ion-badge>-->
-      <ion-badge *ngIf="correspondent?.user_settings?.disable_coach_messages == 'true'" color="medium">M. coach désactivés</ion-badge>
-      <ion-badge *ngIf="correspondent?.user_settings?.disable_nutritionist_messages == 'true'" color="medium">M. nutritionniste désactivés</ion-badge>
+      <div>
+        <span>
+          {{ correspondent?.firstname }} {{ correspondent?.lastname === '_' ? '' : correspondent?.lastname }}
+        </span>
+        <!--<ion-badge *ngIf="correspondent?.user_settings?.disable_messages == 'true'" color="medium">Message désactivés</ion-badge>-->
+        <ion-badge *ngIf="correspondent?.user_settings?.disable_coach_messages == 'true'" color="medium">M. coach désactivés</ion-badge>
+        <ion-badge *ngIf="correspondent?.user_settings?.disable_nutritionist_messages == 'true'" color="medium">M. nutritionniste désactivés</ion-badge>
+        <span *ngIf="user?.function == 'customer'">
+          <ion-badge color="success" *ngIf="
+            (correspondentIsOnline && !correspondent?.user_settings?.unavailable)
+            || (!correspondentIsOnline && correspondent?.user_settings?.available)
+          ">Disponible</ion-badge>
+          <ion-badge color="medium" *ngIf="
+            (correspondentIsOnline && correspondent?.user_settings?.unavailable)
+            || (!correspondentIsOnline && !correspondent?.user_settings?.available)
+          ">Non disponible</ion-badge>
+        </span>
+      </div>
     </ion-title>
     <ion-buttons slot="end" *ngIf="user?.function == 'coach' || user?.function == 'nutritionist' || !environment.production">
       <div *ngIf="user?.function == 'coach' || user?.function == 'nutritionist'">

@@ -24,6 +24,8 @@ export class ChatDetailsPage implements OnInit {
 
   correspondentId = null
   correspondent:any|null = null
+  correspondentIsOnline:boolean = undefined
+
   user:any|null = null;
   avatar_url:any = undefined
 
@@ -133,6 +135,29 @@ export class ChatDetailsPage implements OnInit {
         let url = data.thumbnail64 || data.profile_image?.permalink
         this.avatar_url = url ? this.contentService.addPrefix(url) : undefined
         this.correspondent = data
+
+        // Check whether the correspondent is connected or not
+        // Reusage can be done in that part, but not possible at this stage of the project
+        let userSettings = this.correspondent.user_settings || {}
+        if(userSettings.activeFrom && userSettings.activeTo && userSettings.pauseDays){
+          let activeFrom = userSettings.activeFrom // e.g. 08:00
+          let activeTo = userSettings.activeTo // e.g. 18:00
+          let pauseDays = userSettings.pauseDays // e.g. [0, 6] for Sunday and Saturday
+          let now = new Date()
+          
+          // Check if the user is activate
+          let isPauseDay = pauseDays.includes(now.getDay())
+          let [activeFromHour, activeFromMinute] = activeFrom.split(':').map(Number);
+          let [activeToHour, activeToMinute] = activeTo.split(':').map(Number);
+          let isInActiveTime = (now.getHours() > activeFromHour || (now.getHours() === activeFromHour && now.getMinutes() >= activeFromMinute)) &&
+                               (now.getHours() < activeToHour || (now.getHours() === activeToHour && now.getMinutes() < activeToMinute));
+          this.correspondentIsOnline = !isPauseDay && isInActiveTime
+          
+          // If the coach is not available, show a message
+          if((this.correspondentIsOnline && !this.correspondent?.user_settings?.unavailable)
+            || (!this.correspondentIsOnline && this.correspondent?.user_settings?.available)){
+            this.feedbackService.registerNow("Le coach n'est pas disponible pour le moment. N'hésitez pas à laisser un message, il vous répondra dès que possible.", 'light')}
+        }
       })
   }
 

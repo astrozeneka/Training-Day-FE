@@ -14,7 +14,6 @@
         <ion-item>
             <ion-label slot="start">
                 Statut
-                {{ user.user_settings.available | json }}
             </ion-label>
             <ion-badge slot="end" color="success" *ngIf="(isOnline && !user.user_settings.unavailable) || (!isOnline && user.user_settings.available)">Disponible</ion-badge>
             <ion-badge slot="end" color="medium" *ngIf="(isOnline && user.user_settings.unavailable) || (!isOnline && !user.user_settings.available)">Non disponible</ion-badge>
