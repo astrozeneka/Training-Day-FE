@@ -14,22 +14,23 @@
         <ion-item>
             <ion-label slot="start">
                 Statut
+                {{ user.user_settings.available | json }}
             </ion-label>
-            <ion-badge slot="end" color="success" *ngIf="isOnline">En ligne</ion-badge>
-            <ion-badge slot="end" color="medium" *ngIf="!isOnline">Hors ligne</ion-badge>
+            <ion-badge slot="end" color="success" *ngIf="(isOnline && !user.user_settings.unavailable) || (!isOnline && user.user_settings.available)">Disponible</ion-badge>
+            <ion-badge slot="end" color="medium" *ngIf="(isOnline && user.user_settings.unavailable) || (!isOnline && !user.user_settings.available)">Non disponible</ion-badge>
         </ion-item>
         <form [formGroup]="onlineToggleForm">
             <ion-item *ngIf="isOnline">
                 <ion-label>
                     Je ne suis pas disponible
                 </ion-label>
-                <ion-toggle slot="end" formControlName="available"></ion-toggle>
+                <ion-toggle slot="end" formControlName="unavailable"></ion-toggle>
             </ion-item>
             <ion-item *ngIf="!isOnline">
                 <ion-label>
                     Je suis disponible
                 </ion-label>
-                <ion-toggle slot="end" formControlName="unavailable"></ion-toggle>
+                <ion-toggle slot="end" formControlName="available"></ion-toggle>
             </ion-item>
         </form>
         <ion-searchbar [formControl]="searchControl"

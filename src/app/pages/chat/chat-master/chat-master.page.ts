@@ -158,7 +158,7 @@ export class ChatMasterPage implements OnInit {
     let subs = this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
       for(let key in user.user_settings){
         if(this.onlineToggleForm.get(key)){
-          this.onlineToggleForm.get(key).setValue(user.user_settings[key] == '1')
+          this.onlineToggleForm.get(key).setValue(user.user_settings[key])
         }
       }
     })
@@ -182,12 +182,12 @@ export class ChatMasterPage implements OnInit {
       merge(...observables)
         .subscribe(async()=>{
           console.log("Vos paramètres ont été mises à jour") // NO need to show feedback message
-          /*this.user.user_settings = {
+          this.user.user_settings = {
             ...this.user.user_settings, 
-            ...(data['available'] != null)?{available:data['available']?'1':'0'}:{},
-            ...(data['unavailable'] != null)?{unavailable:data['unavailable']?'1':'0'}:{},
-          }*/
-          //this.contentService.userStorageObservable.updateStorage(this.user)
+            ...(data['available'] != null)?{available:data['available']}:{},
+            ...(data['unavailable'] != null)?{unavailable:data['unavailable']}:{},
+          }
+          this.contentService.userStorageObservable.updateStorage(this.user)
         })
     })
   }
