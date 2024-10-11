@@ -5,6 +5,7 @@ import {catchError, forkJoin, from, map, mergeMap, Observable, of, throwError} f
 import {ActivatedRoute, Route, Router} from "@angular/router";
 import {environment} from "../environments/environment";
 import StorageObservable from "./utils/StorageObservable";
+import { MenuController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -54,7 +55,8 @@ export class ContentService {
     private httpClient: HttpClient,
     public storage: Storage,
     public route: ActivatedRoute,
-    public router: Router
+    public router: Router,
+    private menuController: MenuController,
   ) {
     this.storage.create()
     this.storage.get('token').then((e)=>{
@@ -287,6 +289,7 @@ export class ContentService {
     this.userStorageObservable.updateStorage(null)
     this.storage.remove('token')
     this.storage.remove('user')
+    this.menuController.close();
     this.router.navigate(['/login'])
   }
   

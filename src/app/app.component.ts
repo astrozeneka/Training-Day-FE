@@ -167,7 +167,7 @@ export class AppComponent implements OnInit{
   }
 
   private async onRouteChange(){
-    this.contentService.reloadUserData()
+    //this.contentService.reloadUserData()
 
     // Check if there is some message from the feedback service
     this.feedbackService.fetch().then((feedback)=>{

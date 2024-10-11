@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {ContentService} from "../../../content.service";
 import {AlertController, ModalController} from "@ionic/angular";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
 import { Badge } from '@capawesome/capacitor-badge';
 import {BroadcastingService} from "../../../broadcasting.service";
-import {debounceTime, distinctUntilChanged} from "rxjs";
+import {catchError, debounceTime, distinctUntilChanged, merge, throwError} from "rxjs";
 import StorageObservable from "../../../utils/StorageObservable";
 import { environment } from 'src/environments/environment';
+import { set } from 'date-fns';
 
 @Component({
   selector: 'app-chat-master',
@@ -31,14 +32,13 @@ export class ChatMasterPage implements OnInit {
     private modalController: ModalController,
     private route:ActivatedRoute,
     private alertController:AlertController,
-    private feeedbackService:FeedbackService,
+    private feedbackService:FeedbackService,
     private router:Router,
     private broadcastingService: BroadcastingService,
   ) {
   }
 
   prepareDiscussionData({data, metainfo}, searchTerm=""){ // Metainfo include a user_id key to unvalidate the data
-    console.log("Receive data to display, ", data, metainfo)
     if(typeof data == "object") // Here data is an object, but should be array (This is from the way localStorage stores items)
       data = Object.values(data)
     for(let i = 0; i < data.length; i++){
@@ -53,7 +53,6 @@ export class ChatMasterPage implements OnInit {
           item.email.toLowerCase().includes(searchTerm.toLowerCase())
       })
     }
-    console.log("Load entity list, ", this.entityList)
     this.coachList = this.entityList.filter((item:any)=>item.function == "coach")
     this.nutritionistList = this.entityList.filter((item:any)=>item.function == "nutritionist")
   }
@@ -139,6 +138,9 @@ export class ChatMasterPage implements OnInit {
       )
     })
 
+    // 5. Initialize the online status parameters
+    this.initializeOnlineStatusParameters()
+
   }
 
   navigateTo(url:string) {
@@ -147,12 +149,57 @@ export class ChatMasterPage implements OnInit {
 
   // 5. The activity status
   isOnline:boolean = undefined
+  onlineToggleForm = new FormGroup({
+    'available': new FormControl(undefined),
+    'unavailable': new FormControl(undefined)
+  }) // No validators
+  initializeOnlineStatusParameters(){
+    // Initialization values
+    let subs = this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
+      for(let key in user.user_settings){
+        if(this.onlineToggleForm.get(key)){
+          this.onlineToggleForm.get(key).setValue(user.user_settings[key] == '1')
+        }
+      }
+    })
+    // Event Listener
+    this.onlineToggleForm.valueChanges.subscribe((data)=>{
+      let observables = []
+      for (let key in data){
+        if (data[key] === undefined || data[key] === null)
+          continue
+        let obj = {
+          user_id: this.user.id,
+          key: key,
+          value: data[key]
+        }
+        observables.push(this.contentService.put('/user-settings', obj)
+          .pipe(catchError(error=>{
+            return throwError(error)
+          }))
+        )
+      }
+      merge(...observables)
+        .subscribe(async()=>{
+          console.log("Vos paramètres ont été mises à jour") // NO need to show feedback message
+          /*this.user.user_settings = {
+            ...this.user.user_settings, 
+            ...(data['available'] != null)?{available:data['available']?'1':'0'}:{},
+            ...(data['unavailable'] != null)?{unavailable:data['unavailable']?'1':'0'}:{},
+          }*/
+          //this.contentService.userStorageObservable.updateStorage(this.user)
+        })
+    })
+  }
 
   // 6. Showing messages for coach or for nutritionnist (only if the coach is connected)
   messageDetailsPrefix = '/chat/details/'
   displayMessageForForm = new FormControl(undefined)
+  displayMessageForFormSubscription = null
   displayMessageForFormInit(){
-    this.displayMessageForForm.valueChanges.subscribe((value)=>{
+    if (this.displayMessageForFormSubscription)
+      this.displayMessageForFormSubscription.unsubscribe()
+    this.displayMessageForFormSubscription = this.displayMessageForForm.valueChanges.subscribe((value)=>{
       let userIdToLoad
       if (value == "coach")
         userIdToLoad = this.user.id

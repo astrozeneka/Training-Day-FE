@@ -18,12 +18,20 @@
             <ion-badge slot="end" color="success" *ngIf="isOnline">En ligne</ion-badge>
             <ion-badge slot="end" color="medium" *ngIf="!isOnline">Hors ligne</ion-badge>
         </ion-item>
-        <ion-item>
-            <ion-label>
-                Je ne suis pas disponible
-            </ion-label>
-            <ion-toggle slot="end"></ion-toggle>
-        </ion-item>
+        <form [formGroup]="onlineToggleForm">
+            <ion-item *ngIf="isOnline">
+                <ion-label>
+                    Je ne suis pas disponible
+                </ion-label>
+                <ion-toggle slot="end" formControlName="available"></ion-toggle>
+            </ion-item>
+            <ion-item *ngIf="!isOnline">
+                <ion-label>
+                    Je suis disponible
+                </ion-label>
+                <ion-toggle slot="end" formControlName="unavailable"></ion-toggle>
+            </ion-item>
+        </form>
         <ion-searchbar [formControl]="searchControl"
                        animated="true"
                        placeholder="Rechercher"></ion-searchbar>
