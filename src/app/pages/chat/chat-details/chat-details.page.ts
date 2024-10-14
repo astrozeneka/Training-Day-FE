@@ -126,7 +126,13 @@ export class ChatDetailsPage implements OnInit {
 
     this.loadCorrespondent()
 
-    this.chatService.registerChatEvents(this.correspondentId,  (p)=>{this.prepareDiscussionDetailsData(p)}, this.coachAsNutritionist)
+    this.chatService.registerChatEvents(this.correspondentId,  (p)=>{this.prepareDiscussionDetailsData(p)}, this.coachAsNutritionist);
+  
+    // Automated testing unit
+    (window as any).typeMessage = (str)=>{
+      this.form.get('content').setValue(str)
+      this.form.get('content').markAsTouched()
+    }
   }
 
   loadCorrespondent(){
@@ -154,8 +160,8 @@ export class ChatDetailsPage implements OnInit {
           this.correspondentIsOnline = !isPauseDay && isInActiveTime
           
           // If the coach is not available, show a message
-          if((this.correspondentIsOnline && !this.correspondent?.user_settings?.unavailable)
-            || (!this.correspondentIsOnline && this.correspondent?.user_settings?.available)){
+          if((this.correspondentIsOnline && this.correspondent?.user_settings?.unavailable)
+            || (!this.correspondentIsOnline && !this.correspondent?.user_settings?.available)){
             this.feedbackService.registerNow("Le coach n'est pas disponible pour le moment. N'hésitez pas à laisser un message, il vous répondra dès que possible.", 'light')}
         }
       })

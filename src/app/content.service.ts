@@ -15,7 +15,7 @@ export class ContentService {
   rootEndpoint = environment.rootEndpoint
   isDebug = true
 
-  // Experimental feature, using storageObservable object to manage user data
+  // It is the standard way to manage user data within the app
   public userStorageObservable = new StorageObservable<any>('userData')
 
   private _token = null;

@@ -21,7 +21,7 @@ export default class StorageObservable<T> {
     if(JSON.stringify(oldValue) != JSON.stringify(newValue)) {
       localStorage.setItem(this.storageKey, JSON.stringify(newValue))
       this.storageSubject.next(newValue)
-      console.log("Fire " + this.storageKey + " update")
+      // console.log("Fire " + this.storageKey + " update")
     }else{
       //console.log("No need to update " + this.storageKey)
     }
