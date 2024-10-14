@@ -14,6 +14,10 @@ export default class StorageObservable<T> {
     return this.storageSubject.asObservable()
   }
 
+  public gso$(): Observable<T>{
+    return this.getStorageObservable()
+  }
+
   public updateStorage(newValue: T): void {
     // hash the old value and the new value, then compare
     // if they are the same, then do not update

@@ -22,7 +22,7 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
     contentService: ContentService
   ) {
     super(contentService);
-    this.router.events.subscribe(async(event:any)=>{
+    /*this.router.events.subscribe(async(event:any)=>{
       if (event instanceof NavigationEnd) {
         this.user = await this.contentService.storage.get('user')
         if(this.user) {
@@ -32,10 +32,20 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
             })
         }
       }
-    })
+    })*/
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.contentService.userStorageObservable.gso$().subscribe((user: any) => {
+      this.user = user;
+      if(this.user) {
+        this.contentService.getOne('/chat/unread', {})
+          .subscribe((data: any) => {
+            this.unreadMessages = data.unread
+          })
+      }
+    })
+  }
 
   menuNavigate(url:string){
     this.menuController.close();

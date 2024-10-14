@@ -3,37 +3,158 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Mes payments</ion-title>
+    <ion-title>Paiements</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-searchbar [formControl]="searchControl"
+<ion-content>
+  <div class="top-tab">
+    <div>
+      <ion-button
+        fill="clear"
+        color="dark"
+        expand="full"
+        id="filter-popover-button"
+      >
+        <ion-icon slot="icon-only" name="funnel-outline"></ion-icon>
+        Filtrer
+      </ion-button>
+      <ion-popover trigger="filter-popover-button">
+        <ng-template>
+          <ion-content>
+            <ion-list>
+              <ion-item [button]="true" (click)="filterBy(undefined)">Tous</ion-item>
+              <ion-item [button]="true" (click)="filterBy('subscription')">Abonnement</ion-item>
+              <ion-item [button]="true" (click)="filterBy('foodcoach')">Programme alimentaire</ion-item>
+              <ion-item [button]="true" (click)="filterBy('sportcoach')">Programme sportif</ion-item>
+              <ion-item [button]="true" (click)="filterBy('trainer')">Personal Trainer</ion-item>
+            </ion-list>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+    </div>
+    <div>
+      <ion-button
+        fill="clear"
+        color="dark"
+        expand="full"
+        id="date-popover-button"
+      >
+        <ion-icon slot="icon-only" name="calendar-outline"></ion-icon>
+        Date
+      </ion-button>
+      <ion-popover trigger="date-popover-button">
+        <ng-template>
+          <ion-content>
+            <ion-list>
+              <ion-item [button]="true" (click)="dateOf(undefined)">Tous</ion-item>
+              <ion-item [button]="true" *ngFor="let date of dates" (click)="dateOf(date[1])">{{ date[0] }}</ion-item>
+            </ion-list>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+    </div>
+  </div>
+  <!--<ion-searchbar [formControl]="searchControl"
                  animated="true"
                  placeholder="Rechercher"
-                 (keydown.enter)="loadData()"></ion-searchbar>
+                 (keydown.enter)="loadData()"></ion-searchbar>-->
+  <!-- Should use ion-infinite instead -->
+  <!--
   <app-pagination
     [pageSegments]="pageSegments"
     (onNavigate)="updatePage($event)"
   ></app-pagination>
+  -->
+  <div class="infinite-container">
+    <app-infinite-list
+      [httpHeaders]="{ 'Authorization': 'Bearer ' + jwtToken }"
+      [httpUrl]="contentService.apiEndpoint + '/payments'"
+      [filter$]="filter$"
+      *ngIf="jwtToken"
+      (afterLoad)="onAfterLoad($event)"
+    >
+      <ng-template let-entity>
+        <div class="ion-padding-horizontal">
+          <div class="card ion-padding">
+            <div class="header">
+              <div class="title">
+                <div class="date helper">{{ entity.datetime | date:'dd MMM. yyyy à HH:mm'}}</div>
+                <!-- Implement -->
+                <div class="product-name">
+                  {{ productName[entity.product_id] }}                  
+                </div>
+              </div>
+              <div class="price">{{ entity.amount / 100 }} €</div>
+            </div>
+            <div class="detail">
+              <div class="icon-text">
+                <ion-icon name="person-circle-outline"></ion-icon>
+                <span>
+                  {{ entity.user?.firstname }} {{ entity.user?.lastname }}
+                </span>
+              </div>
+              <div>
+                <b>Ref: </b>
+                <span>{{ entity.reference }} <!-- Should be updated later --></span>
+              </div>
+              <div>
+                <b>Environment: </b>
+                <span>{{ entity.environment }}</span>
+              </div>
+            </div>
+            <div class="helper">
+              {{ entity.description }}
+            </div>
+            <div class="ion-text-right ion-padding-top">
+              <ion-button fill="clear" color="danger" size="small" (click)="showDetailsModal(entity)">Détails</ion-button>
+              <ion-button fill="clear" color="danger" size="small" (click)="showDeleteModal(entity)">Suppimer</ion-button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </app-infinite-list>
+  </div>
+  <!--
+  <hr/>
   <div class="ion-text-center">
     <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
   </div>
-  <div *ngIf="entityList">
-    <ion-card *ngFor="let entity of entityList">
-      <ion-card-header>
-        <ion-card-title>{{ entity.amount }}</ion-card-title>
-        <ion-card-subtitle>
-          {{ entity.datetime }} {{ entity.payment }}
-        </ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
+  <div *ngIf="entityList" class="ion-padding">
+    <div class="card ion-padding" *ngFor="let entity of entityList">
+      <div class="header">
+        <div class="title">
+          <div class="date helper">{{ entity.datetime | date:'dd MMM. yyyy à HH:mm'}}</div>
+          <div>Abonnement Hoylt</div>
+        </div>
+        <div class="price">{{ entity.amount / 100 }} €</div>
+      </div>
+      <div class="detail">
+        <div class="icon-text">
+          <ion-icon name="person-circle-outline"></ion-icon>
+          <span>
+            {{ entity.user?.firstname }} {{ entity.user?.lastname }}
+            John Doe
+          </span>
+        </div>
+        <div>
+          <b>Ref: </b>
+          <span>{{ entity.reference }}</span>
+        </div>
+        <div>
+          <b>Environment: </b>
+          <span>{{ entity.environment }}</span>
+        </div>
+      </div>
+      <div class="helper">
         {{ entity.description }}
-      </ion-card-content>
-      <ion-button fill="clear" (click)="showDeleteModal(entity)">Suppimer</ion-button>
-      <ion-button fill="clear" (click)="showDetailsModal(entity)">Détails</ion-button>
-    </ion-card>
-  </div>
+      </div>
+      <div class="ion-text-right ion-padding-top">
+        <ion-button fill="clear" color="danger" size="small" (click)="showDetailsModal(entity)">Détails</ion-button>
+        <ion-button fill="clear" color="danger" size="small" (click)="showDeleteModal(entity)">Suppimer</ion-button>
+      </div>
+    </div>
+  </div>-->
 </ion-content>
 
 <ion-fab slot="fixed" vertical="bottom" horizontal="end">
