@@ -7,42 +7,100 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content>
+  <div class="top-tab">
+    <div>
+      <ion-button
+        fill="clear"
+        color="dark"
+        expand="full"
+        id="privilege-popover-button"
+      >
+        <ion-icon slot="icon-only" name="funnel-outline"></ion-icon>
+        Filtrer
+      </ion-button>
+      <ion-popover trigger="privilege-popover-button">
+        <ng-template>
+          <ion-content>
+            <ion-list>
+              <ion-item [button]="true" (click)="filterBy(undefined)">Tous</ion-item>
+              <ion-item [button]="true" (click)="filterBy('hoylt')">Pack Hoylt</ion-item>
+              <ion-item [button]="true" (click)="filterBy('moreno')">Pack Moreno</ion-item>
+              <ion-item [button]="true" (click)="filterBy('alonzo')">Pack Alonzo</ion-item>
+              <ion-item [button]="true" (click)="filterBy('food-coach')">Programme alimentaire</ion-item>
+              <ion-item [button]="true" (click)="filterBy('sport-coach')">Programme sportif</ion-item>
+              <ion-item [button]="true" (click)="filterBy('personal-trainer')">Personal Trainer</ion-item>
+            </ion-list>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+    </div>
+    <div>
+      <ion-button
+        fill="clear"
+        color="dark"
+        expand="full"
+        id="date-popover-button"
+      >
+      </ion-button>
+    </div>
+  </div>
   <ion-searchbar [formControl]="searchControl"
                   animated="true"
                   placeholder="Rechercher"
                   (keydown.enter)="loadData()"></ion-searchbar>
-  <app-pagination
-    [pageSegments]="pageSegments"
-    (onNavigate)="updatePage($event)"
-  ></app-pagination>
-  <div class="ion-text-center">
-    <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
-  </div>
-  <div *ngIf="entityList" class="entity-list">
-    <ion-card *ngFor="let entity of entityList">
-      <ion-avatar>
-        <img *ngIf="entity.profile_image?.base64" [src]="getSafeImageURL(entity.profile_image)" alt="Profile Picture"/>
-        <img *ngIf="!entity.profile_image" src="../../../assets/samples/profile-default-01.png" alt="Default Profile Picture"/>
-      </ion-avatar>
-      <div>
-        <ion-card-header>
-          <ion-card-title>{{ entity.firstname }} {{ entity.lastname }}
-            <ion-chip *ngIf="entity.role==='admin'" color="danger">Admin</ion-chip>
-            <ion-chip *ngIf="entity.role==='coach'" color="secondary">Coach</ion-chip>
-            <ion-chip *ngIf="entity.role==='customer'" color="medium">Client</ion-chip>
-          </ion-card-title>
-          <div>
-            <ion-button fill="clear" (click)="showDetailsModal(entity)">Détails</ion-button>
+  <div class="infinite-container">
+    <app-infinite-list
+      [httpHeaders]="{ 'Authorization': 'Bearer ' + jwtToken }"
+      [httpUrl]="contentService.apiEndpoint + '/users'"
+      [filter$]="filter$"
+      *ngIf="jwtToken"
+      (afterLoad)="onAfterLoad($event)"
+    >
+      <ng-template let-entity>
+        <div class="ion-padding-horizontal">
+          <div class="card ion-padding">
+            <div class="header">
+              <div class="avatar-container">
+                <!-- <img width="52px" *ngIf="entity.profile_image?.base64" [src]="getSafeImageURL(entity.profile_image)" alt="Profile Picture"/> -->
+                <img width="52px" *ngIf="entity.profile_image" [src]="getStaticUrl(entity.profile_image?.permalink)" alt="Profile Picture"/>
+                <img width="52px" *ngIf="!entity.profile_image" src="../../../assets/samples/profile-default-01.png" alt="Default Profile Picture"/>
+              </div>
+              <div class="name-email">
+                <div class="name">{{ entity.firstname }} {{ entity.lastname }}</div>
+                <div class="email">{{ entity.email }}</div>
+
+                <div class="detail">
+                  <div>
+                    <b class="badge-head">Privilège Actif: </b> 
+                    <ion-badge *ngFor="let privilege of entity.privileges">
+                      {{ privilege }}
+                    </ion-badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="controls ion-text-right">
+              <ion-button
+                fill="clear"
+                size="small"
+                (click)="showDetailsModal(entity)"
+              >
+                <ion-icon name="folder-open-outline"></ion-icon>
+                Détails
+              </ion-button>
+              <ion-button
+                fill="clear"
+                size="small"
+                (click)="openChat(entity)"
+              >
+                <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+                Contacter
+              </ion-button>
+            </div>
           </div>
-        </ion-card-header>
-      </div>
-    </ion-card>
+        </div>
+      </ng-template>
+    </app-infinite-list>
   </div>
 </ion-content>
-
-<ion-fab slot="fixed" vertical="bottom" horizontal="end">
-  <ion-fab-button (click)="showAddModal()">
-    <ion-icon name="add"></ion-icon>
-  </ion-fab-button>
-</ion-fab>

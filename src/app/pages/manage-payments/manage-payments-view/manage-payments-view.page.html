@@ -107,7 +107,7 @@
               {{ entity.description }}
             </div>
             <div class="ion-text-right ion-padding-top">
-              <ion-button fill="clear" color="danger" size="small" (click)="showDetailsModal(entity)">Détails</ion-button>
+              <ion-button fill="clear" size="small" (click)="showDetailsModal(entity)">Détails</ion-button>
               <ion-button fill="clear" color="danger" size="small" (click)="showDeleteModal(entity)">Suppimer</ion-button>
             </div>
           </div>
@@ -115,51 +115,5 @@
       </ng-template>
     </app-infinite-list>
   </div>
-  <!--
-  <hr/>
-  <div class="ion-text-center">
-    <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
-  </div>
-  <div *ngIf="entityList" class="ion-padding">
-    <div class="card ion-padding" *ngFor="let entity of entityList">
-      <div class="header">
-        <div class="title">
-          <div class="date helper">{{ entity.datetime | date:'dd MMM. yyyy à HH:mm'}}</div>
-          <div>Abonnement Hoylt</div>
-        </div>
-        <div class="price">{{ entity.amount / 100 }} €</div>
-      </div>
-      <div class="detail">
-        <div class="icon-text">
-          <ion-icon name="person-circle-outline"></ion-icon>
-          <span>
-            {{ entity.user?.firstname }} {{ entity.user?.lastname }}
-            John Doe
-          </span>
-        </div>
-        <div>
-          <b>Ref: </b>
-          <span>{{ entity.reference }}</span>
-        </div>
-        <div>
-          <b>Environment: </b>
-          <span>{{ entity.environment }}</span>
-        </div>
-      </div>
-      <div class="helper">
-        {{ entity.description }}
-      </div>
-      <div class="ion-text-right ion-padding-top">
-        <ion-button fill="clear" color="danger" size="small" (click)="showDetailsModal(entity)">Détails</ion-button>
-        <ion-button fill="clear" color="danger" size="small" (click)="showDeleteModal(entity)">Suppimer</ion-button>
-      </div>
-    </div>
-  </div>-->
 </ion-content>
-
-<ion-fab slot="fixed" vertical="bottom" horizontal="end">
-  <ion-fab-button (click)="showAddModal()">
-    <ion-icon name="add"></ion-icon>
-  </ion-fab-button>
-</ion-fab>
 

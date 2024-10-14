@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {ContentService} from "../../../content.service";
-import {AlertController, ModalController} from "@ionic/angular";
-import {ActivatedRoute} from "@angular/router";
+import {AlertController, ModalController, PopoverController} from "@ionic/angular";
+import {ActivatedRoute, Router} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
 import {UserViewComponent} from "../../../components/entity-views/user-view/user-view.component";
 import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+import { BehaviorSubject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-manage-users-view',
@@ -17,24 +18,49 @@ export class ManageUsersViewPage implements OnInit {
   pageCount:number = 0
   pageSegments:Array<any> = []
   pageOffset = 0;
+  jwtToken: string = undefined
+
+  // Using state management rx
+  filterSubject = new BehaviorSubject<any>({})
+  filter$ = this.filterSubject.asObservable();
+
+  // TODO, selected filter item
+  f_privilege = undefined
+  f_search = undefined
+
 
   searchControl:FormControl = new FormControl("")
 
   constructor(
-    private contentService:ContentService,
+    public contentService:ContentService,
     private modalController: ModalController,
     private route:ActivatedRoute,
     private alertController:AlertController,
     private feeedbackService:FeedbackService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private router: Router,
+    private popoverController: PopoverController
   ) {
     this.route.params.subscribe(()=>{
       this.loadData()
     })
   }
 
-  ngOnInit() {
-    this.loadData()
+  async ngOnInit() {
+    this.jwtToken = await this.contentService.storage.get('token')
+    // this.loadData()
+
+    // Manage search control (apply good practice)
+    this.searchControl.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe((value)=>{
+      this.f_search = value
+      this.filterSubject.next({
+        'f_search': this.f_search ?? '',
+        'f_privilege': this.f_privilege ?? ''
+      })
+    })
   }
 
   updatePage(page:number){
@@ -43,7 +69,7 @@ export class ManageUsersViewPage implements OnInit {
   }
 
   loadData() {
-    this.entityList = null
+    /*this.entityList = null
     this.contentService.get('/users', this.pageOffset, this.searchControl.value, "f_email")
       .subscribe(([data, metaInfo])=>{
         this.entityList = data as unknown as Array<any>
@@ -52,7 +78,7 @@ export class ManageUsersViewPage implements OnInit {
           label: (index+1).toString(),
           value: index
         }))
-      })
+      })*/
   }
 
   async showAddModal(){
@@ -113,5 +139,25 @@ export class ManageUsersViewPage implements OnInit {
     // Assuming your base64 data is prefixed with "data:image/png;base64,"
     const imageSource = `data:${image.type};base64,${image.base64}`;
     return this.sanitizer.bypassSecurityTrustUrl(imageSource);
+  }
+
+  onAfterLoad({data, metainfo}){
+    console.log("Load data", data, metainfo)
+  }
+
+  openChat(entity: any) {
+    this.router.navigate(['/chat/details', entity.id])
+  }
+
+  getStaticUrl(suffix: string) {
+    return this.contentService.rootEndpoint + '/' + suffix
+  }
+
+  filterBy(slug){
+    this.filterSubject.next({
+      'f_privilege': slug ?? ''
+    })
+    this.searchControl.setValue('')
+    this.popoverController.dismiss()
   }
 }
