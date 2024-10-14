@@ -13,6 +13,7 @@ import {catchError, throwError} from "rxjs";
 })
 export class UserViewComponent extends FormComponent implements OnInit {
   @Input() entity:null|any = null;
+  grouped_perishables = undefined
 
   override form: FormGroup = new FormGroup({
     'email': new FormControl('', [Validators.required, Validators.email]),
@@ -46,6 +47,11 @@ export class UserViewComponent extends FormComponent implements OnInit {
     this.form.patchValue(this.entity)
     this.loadData()
     // Additionnal patching value correction
+
+    this.grouped_perishables = this.entity.grouped_perishables.reduce((acc:any, item:any)=>{
+      acc[item.slug] = item
+      return acc
+    }, {})
   }
 
   loadData(){
@@ -108,5 +114,9 @@ export class UserViewComponent extends FormComponent implements OnInit {
           this.modalCtrl.dismiss(null, 'update-success')
         })
     }
+  }
+
+  getStaticUrl(suffix:string){
+    return this.contentService.rootEndpoint + '/' + suffix
   }
 }

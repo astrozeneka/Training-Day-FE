@@ -14,3 +14,36 @@
     width: 100%;
   }
 }
+
+.card{
+  border: 1px solid rgba(var(--ion-color-medium-rgb), 0.5);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  gap: 1.5em;
+  margin-top: 1em;
+
+  .left{
+    ion-icon{
+      font-size: 2em;
+    }
+  }
+
+  .right{
+    display: flex;
+    flex-direction: column;
+    
+    .head{
+      font-weight: 500;
+    }
+
+    .expires_at, .consumables{
+      font-size: .9em;
+    }
+  }
+}
+
+.capitalize{
+  text-transform: capitalize;
+}
