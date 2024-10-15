@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
-import {catchError, merge, of, throwError} from "rxjs";
+import {catchError, finalize, merge, of, throwError} from "rxjs";
 import {FeedbackService} from "../../feedback.service";
 import {FormComponent} from "../../components/form.component";
 import {ModalController, Platform} from "@ionic/angular";
@@ -12,6 +12,8 @@ import {
 import {navigate} from "ionicons/icons";
 import StorePlugin from "../../custom-plugins/store.plugin";
 import {EntitlementReady} from "../../abstract-components/EntitlementReady";
+import { FilePicker } from '@capawesome/capacitor-file-picker';
+
 
 @Component({
   selector: 'app-profile',
@@ -40,6 +42,7 @@ export class ProfilePage extends FormComponent implements OnInit {
     'phone': undefined,
     'address': undefined
   }
+  formIsLoading:boolean = false;
 
   user_id: any = null;
   entity: any = null;
@@ -103,11 +106,34 @@ export class ProfilePage extends FormComponent implements OnInit {
     }
   }
 
-  selectImage(){
-    this.fileInput.nativeElement.click()
+  async selectImage(){
+    if(this.platform.is('capacitor')){
+      let result;
+      try{
+        result = await FilePicker.pickImages({
+          limit: 1,
+          readData: true
+        })
+      }catch(e){
+        return;
+      }
+      if (result['files'].length > 0) { // == 1
+        let file = result["files"][0]
+        let data = result.files[0].data
+        data = "data:" + file.mimeType + ";base64," + data
+        this.profile_image = {
+          name: file.name,
+          type: file.mimeType,
+          base64: data 
+        }
+      }
+    }else{
+      this.fileInput.nativeElement.click()
+    }
   }
 
-  submit(){
+  submit(){ // Doesn't work in iOS anymore since update
+    this.formIsLoading = true
     let obj = this.form.value
     obj.id = this.user_id
     obj.profile_image = this.profile_image
@@ -121,6 +147,8 @@ export class ProfilePage extends FormComponent implements OnInit {
           this.manageValidationFeedback(error, 'phone')
         }
         return throwError(error)
+      }), finalize(()=>{
+        this.formIsLoading = false
       }))
       .subscribe(async(res)=>{
         this.feedbackService.register("Les informations ont été mises à jour", 'success')

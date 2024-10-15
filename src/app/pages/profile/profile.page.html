@@ -27,7 +27,7 @@
              #fileInput
              (change)="handleFileInput($event)"
              accept="image/*"
-      />
+      /><!-- This way of handling input doesn't work anymore in the new update of iOS -->
       <ion-button size="small" color="medium" (click)="selectImage()">
         Upload profile picture
         <ion-icon slot="end" name="cloud-upload-outline"></ion-icon>
@@ -98,7 +98,12 @@
       </form>
 
     <div class="ion-padding ion-text-center">
-      <ion-button (click)="submit()">Mettre à jour</ion-button>
+        <app-ux-button
+            (click)="submit()"
+            [loading]="formIsLoading"
+        >
+            Mettre à jour
+        </app-ux-button>
     </div>
   </form>
 

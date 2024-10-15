@@ -421,7 +421,7 @@ export class ChatDetailsPage implements OnInit {
   }
    
   
-  handleFileInput(event: any){
+  handleFileInput(event: any){ // Doesn't work in iOS anymore since update
     let file = event.target.files[0]
     if(file){
       try{
