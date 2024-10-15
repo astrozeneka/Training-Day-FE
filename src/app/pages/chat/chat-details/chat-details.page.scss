@@ -29,7 +29,9 @@ ion-title>div{
 }
 
 .controls{
-  height: 80px;
+  & form{
+    height: 80px;
+  }
 
   ion-item{
     background: var(--ion-color-base) !important;
@@ -187,5 +189,34 @@ ion-title>div{
     & ion-button{
       margin-left: 1em;
     }
+  }
+}
+
+.file-info{
+  background: rgba(var(--ion-color-medium-rgb), 0.2);
+  padding: .5em 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5em;
+
+  & .file-name{
+    // force to be in one line and hide the overflow
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+    font-size: 0.9;
+  }
+
+  & ion-button{
+    --padding-start: .1em;
+    --padding-end: .1em;
+    --padding-top: .1em;
+    --padding-bottom: .1em;
+    width: 36px!important;
+    height: 36px!important;
+    border-radius: 50%;
   }
 }

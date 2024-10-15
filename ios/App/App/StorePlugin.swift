@@ -59,25 +59,29 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         }
         Task <Void, Never> { // Type of expression is ambiguous without a type annotation
             do { // Sometimes throw, the compiler is unable to type-check the expression ina reasonable amount of time
-                let handledTransaction = try await self.store?.purchase(product)
+              if let handledTransaction = try await self.store?.purchase(product){
+                let transactionDetails: [String: Any] = [
+                  "bundleId": handledTransaction.appBundleID,
+                  "deviceVerification": handledTransaction.deviceVerification.base64EncodedString(),
+                  "deviceVerificationNonce": handledTransaction.deviceVerificationNonce.uuidString,
+                  // "environment": handledTransaction?.environment,
+                  "inAppOwnershipType": handledTransaction.ownershipType.rawValue,
+                  //"originalPurchaseDate": handledTransaction?.originalPurchaseDate.formatted() ?? "", // Still have errors
+                  //"originalTransactionId": handledTransaction?.originalID ?? 0,
+                  //"productId": handledTransaction?.productID ?? "",
+                  //"purchaseDate": handledTransaction?.purchaseDate.formatted() ?? "", // Still have errors
+                  "quantity": handledTransaction.purchasedQuantity,
+                  "signedDate": handledTransaction.signedDate,
+                  "transactionId": handledTransaction.id,
+                  //"currency": handledTransaction?.currency ?? ""
+                  "id": handledTransaction.id, // This is what we want to experiment
+                  "environment": handledTransaction.environment.rawValue
+                ]
                 call.resolve([
-                    "success": true,
-                    "transaction": [
-                        "bundleId": handledTransaction?.appBundleID ?? "",
-                        "deviceVerification": handledTransaction?.deviceVerification.base64EncodedString() ?? "",
-                        "deviceVerificationNonce": handledTransaction?.deviceVerificationNonce.uuidString ?? "",
-                        // "environment": handledTransaction?.environment,
-                        "inAppOwnershipType": handledTransaction?.ownershipType.rawValue ?? "",
-                        //"originalPurchaseDate": handledTransaction?.originalPurchaseDate.formatted() ?? "", // Still have errors
-                        //"originalTransactionId": handledTransaction?.originalID ?? 0,
-                        //"productId": handledTransaction?.productID ?? "",
-                        //"purchaseDate": handledTransaction?.purchaseDate.formatted() ?? "", // Still have errors
-                        "quantity": handledTransaction?.purchasedQuantity ?? 0,
-                        "signedDate": handledTransaction?.signedDate ?? "",
-                        "transactionId": handledTransaction?.id ?? "",
-                        //"currency": handledTransaction?.currency ?? ""
-                    ]
+                  "success": true,
+                  "transaction": transactionDetails
                 ])
+              }
             } catch {
                 call.reject(error.localizedDescription)
             }

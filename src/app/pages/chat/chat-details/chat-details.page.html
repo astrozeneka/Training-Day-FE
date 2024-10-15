@@ -112,6 +112,18 @@
       </div>
     </div>
     <div class="controls" *ngIf="!coachAsNutritionist"><!-- The message input -->
+      <div class="file-info" *ngIf="file">
+        <div class="file-name">{{ file.name }}</div>
+        <div class="btn-container">
+          <ion-button 
+            fill="clear" 
+            shape="round"
+            (click)="clearFile()"
+          >
+            <ion-icon name="close-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
       <form (submit)="$event.preventDefault(); sendMessage()" [formGroup]="form">
         <ion-item>
           <ion-input
@@ -123,14 +135,15 @@
 
             <ion-button
               (click)="selectFile()"
+              [disabled]="file"
             >
-              <span *ngIf="file">{{ file.name }}</span>
-              <ion-icon name="attach-outline" *ngIf="!file"></ion-icon>
+              <ion-icon name="attach-outline"></ion-icon>
             </ion-button>
             <input type="file" #fileInput style="display: none" (change)="handleFileInput($event)">
 
             <ion-button
               type="submit"
+              [disabled]="!this.form.valid && !this.file"
             >
               <ion-icon name="send-outline"></ion-icon>
             </ion-button>

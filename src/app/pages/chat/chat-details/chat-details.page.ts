@@ -1,7 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {ContentService} from "../../../content.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {ActionSheetController, AlertController, ModalController} from "@ionic/angular";
+import {ActionSheetController, AlertController, ModalController, Platform} from "@ionic/angular";
 import {FeedbackService} from "../../../feedback.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {send} from "ionicons/icons";
@@ -12,6 +12,9 @@ import {environment} from "../../../../environments/environment";
 import {BroadcastingService} from "../../../broadcasting.service";
 import { ChatService } from 'src/app/chat.service';
 import { Browser } from '@capacitor/browser';
+import { FilePicker } from '@capawesome/capacitor-file-picker';
+import { Buffer } from "buffer";
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-chat-details',
@@ -49,7 +52,9 @@ export class ChatDetailsPage implements OnInit {
     private broadcastingService: BroadcastingService,
     private actionSheetController: ActionSheetController,
 
-    private chatService: ChatService
+    private chatService: ChatService,
+    private platform: Platform,
+    private cdr: ChangeDetectorRef
   ) {
     this.route.params.subscribe(async params=>{
       // check if params['id'] begins with n_
@@ -179,7 +184,7 @@ export class ChatDetailsPage implements OnInit {
       For the app performance, this code shoudl update both the local cache
       And the server database when sending message
     */
-    if (!this.form.valid)
+    if (!this.form.valid && !this.file)
       return
 
     let obj:any = this.form.value;
@@ -189,8 +194,10 @@ export class ChatDetailsPage implements OnInit {
       obj.file = this.file
     }
     this.contentService.post('/messages', obj)
+      .pipe(finalize(()=>{
+        this.clearFile()
+      }))
       .subscribe(async(res)=>{ // Should handle error here
-        console.log("Message sent")
       })
 
     obj.undelivered = true
@@ -373,31 +380,80 @@ export class ChatDetailsPage implements OnInit {
   // the #fileInput element
   @ViewChild('fileInput') fileInput:any = undefined
   file = undefined
-  selectFile(){
+  async selectFile(){
     // Click the file input
-    this.fileInput.nativeElement.click()
+    // this.fileInput.nativeElement.click() // Old code for picking files
+    // Check permissions
+    /*const result = await FilePicker.checkPermissions(); // Doesn't work
+    console.log("Permission Checking")
+    console.log(result)*/
+
+    // Launch the file picker
+    if (this.platform.is('capacitor')) {
+      let result;
+      try{
+        result = await FilePicker.pickFiles({
+          limit: 1,
+          readData: true
+        })
+      }catch(e){
+        console.log(e)
+        return;
+      }
+      if (result['files'].length > 0) { // == 1
+        console.log("One file selected")
+        let file = result["files"][0]
+        let data = result.files[0].data
+        data = "data:" + file.mimeType + ";base64," + data
+        this.file = {
+          name: file.name,
+          type: file.mimeType,
+          base64: data
+        }
+      }
+      
+      /*
+      "files":[
+        {"path":"file:///var/mobile/Containers/Data/Application/8F9722BE-45ED-4BC4-95DA-8541AA4CF844/Library/Caches/2378F1B0-2A19-47C3-86E6-B7DB622D898F/barcodes_100001_100010.pdf","mimeType":"application/pdf","name":"barcodes_100001_100010.pdf","modifiedAt":1724604832959,"size":41311}]}
+        , ...]
+      */
+    }else{ // On the web
+      this.fileInput.nativeElement.click()
+    }
   }
+   
+  
   handleFileInput(event: any){
     let file = event.target.files[0]
     if(file){
-      let reader = new FileReader()
-      reader.onload = (e)=>{
-        let base64 = reader.result as string
-        // The file name
-        this.file = {
-          name: file.name,
-          type: file.type,
-          base64: base64
+      try{
+        let reader = new FileReader()
+        reader.onload = (e)=>{
+          let base64 = reader.result as string
+          // The file name
+          this.file = {
+            name: file.name,
+            type: file.type,
+            base64: base64
+          }
         }
+        reader.readAsDataURL(file)
+      }catch(e){
+        return;
       }
-      reader.readAsDataURL(file)
+    }else{
+      // this.feedbackService.registerNow("No file selected", 'danger')
     }
   }
     
   downloadFileById(id){
     this.contentService.getOne(`/files/details/`+id, {})
       .subscribe((data:any)=>{
-        const byteString = atob(data.base64.split(',')[1]); // Decode base64
+        console.log(data);
+        let url = environment.rootEndpoint + '/' + data.permalink
+        Browser.open({ url: url });
+        // The code below is the old code (will be deleted later)
+        /*const byteString = atob(data.base64.split(',')[1]); // Decode base64
         const arrayBuffer = new ArrayBuffer(byteString.length);
         const uint8Array = new Uint8Array(arrayBuffer);
         
@@ -407,7 +463,7 @@ export class ChatDetailsPage implements OnInit {
 
         const blob = new Blob([uint8Array], { type: data.type });
         const url = window.URL.createObjectURL(blob);
-        Browser.open({ url: url });
+        Browser.open({ url: url });*/
       })
   }
 
@@ -471,6 +527,11 @@ export class ChatDetailsPage implements OnInit {
     }).then((alert)=>{
       alert.present()
     })
+  }
+
+  clearFile(){
+    this.file = undefined
+    this.cdr.detectChanges() // important
   }
 
 }
