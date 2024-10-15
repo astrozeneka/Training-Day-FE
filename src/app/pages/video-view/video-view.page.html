@@ -4,13 +4,12 @@
             <app-back-button></app-back-button>
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Visionner une vidéo</ion-title>
+        <ion-title>{{ video?.title }}</ion-title>
     </ion-toolbar>
 </ion-header>
 
 
 <ion-content>
-    <h1 class="display-1 ion-padding">{{ video?.title }}</h1>
     <!-- Video reader -->
     <div *ngIf="video">
         <div>
@@ -20,7 +19,7 @@
                 Your browser does not support the video tag.
             </video>
         </div>
-        <div *ngIf="!user || user?.function !== 'admin'">
+        <div *ngIf="!user || (user?.function !== 'admin' && user?.function !== 'coach')">
             <p class="ion-padding helper">
                 <b>Tags: </b> {{ video?.tags }}
             </p>
@@ -30,7 +29,7 @@
         </div>
 
         <!-- If the user is an admin, he can edit the video -->
-        <div *ngIf="user?.function === 'admin'">
+        <div *ngIf="user?.function === 'admin' || user?.function === 'coach'">
             <form [formGroup]="form" (submit)="submit($event)">
                 <ion-item>
                     <ion-input

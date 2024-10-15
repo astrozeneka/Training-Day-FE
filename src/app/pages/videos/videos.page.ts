@@ -3,6 +3,7 @@ import {NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
 import {environment} from "../../../environments/environment";
 import { first, last } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-videos',
@@ -17,11 +18,15 @@ export class VideosPage implements OnInit {
   videoLoading = false
   jwtToken = undefined
 
+  filterSubject = new BehaviorSubject<any>({})
+  filter$ = this.filterSubject.asObservable();
+
   constructor(
     private router: Router,
     protected contentService: ContentService
   ) {
-    console.log("Subscribe video loading")
+    // OLD cde, delete later
+    /*console.log("Subscribe video loading")
     let subscription = router.events.subscribe((event) => { // Not optimized for performance
       if(event instanceof NavigationEnd && event.url.includes('/videos/training')){
         this.title = "Découvrez les vidéos sur les entrainements"
@@ -37,10 +42,23 @@ export class VideosPage implements OnInit {
         console.log("Unsubscribe video loading")
         subscription.unsubscribe()
       }
-    })
+    })*/
   }
 
   ngOnInit() {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd){
+        if (event.url.includes('/videos/training')){
+          this.title = "Découvrez les vidéos sur les entrainements"
+          this.category = 'training'
+        } else if(event.url.includes('/videos/boxing')){
+          this.title = "Découvrez les vidéos sur les boxes"
+          this.category = 'boxing'
+        }
+        this.filterSubject.next({'f_category': this.category})
+      }
+    })
+
     this.contentService.userStorageObservable.getStorageObservable().subscribe((res)=>{
       this.user = res
     })

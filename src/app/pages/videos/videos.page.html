@@ -10,14 +10,17 @@
 <ion-content>
     <h1 class="display-1 ion-padding">{{ title }}</h1>
     <div class="list-container">
+        <!-- 
+            [filter]="{ 'f_category': this.category }" 
+        -->
         <app-infinite-list
             [httpHeaders]="{ 'Authorization': 'Bearer ' + jwtToken }"
             [httpUrl]="contentService.apiEndpoint + '/videos'"
-            [filter]="{ 'f_category': this.category }"
+            [filter$]="filter$"
             *ngIf="jwtToken || this.category"
         >
             <ng-template let-item>
-                <div class="video-card ion-padding" [ngClass]="{ 'locked': !item.available }">
+                <div class="video-card ion-padding" [ngClass]="{ 'locked': user?.function == 'customer' && !item.available }">
                     <div class="left" (click)="goToVideo(item.id)">
                         <img src="/assets/logo-light-1024x1024-noalpha.jpg" alt="Vidéo thumbnail" class="card-image" *ngIf="!item.thumbnail"/>
                         <img [src]="getUrl(item.thumbnail.permalink)" alt="Vidéo thumbnail" class="card-image" *ngIf="item.thumbnail"/>
@@ -46,7 +49,7 @@
                         </p>
                     </div>
                     <div class="placeholder"></div>
-                    <div class="privilege-banner" *ngIf="!item.available">
+                    <div class="privilege-banner" *ngIf="user?.function == 'customer' && !item.available">
                         Cette vidéo est réservé aux membres <b>Hoylt</b> ou supérieur
                     </div>
                 </div>

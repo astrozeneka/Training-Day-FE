@@ -100,6 +100,7 @@ export class VideoViewPage implements OnInit {
           this.feedbackService.register('Le vidéo a été mis à jour avec succes', 'success')
           // Go back if possible
           window.history.back()
+          
 
           // this.router.navigate(['/home'])
         }else{
