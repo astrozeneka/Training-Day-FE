@@ -118,14 +118,25 @@ export class PurchaseInvoicePage implements OnInit {
               }
             )
           }else{ // Non-renewables
+            console.log(this.productId)
+            let content;
+            if(this.productId.includes('foodcoach')){
+              content = 'Votre nutritionniste prendra contact avec vous dans les prochaines 24h afin de programmer et ' +
+                'de planifier votre programme nutritionnel en fonction de vos attentes'
+            }else if(this.productId.includes('sportcoach')){
+              content = 'Votre coach prendra contact avec vous dans les prochaines 24h afin de programmer et ' +
+                'de planifier votre programme sportif en fonction de vos attentes'
+            }else if(this.productId.includes('trainer')){
+              content = 'Votre coach prendra contact avec vous dans les prochaines 24h afin de programmer et ' +
+                'de planifier vos attentes en fonction de vos attentes'
+            }
             this.feedbackService.register(
               null,
               'success',
               {
                 type: 'modal',
                 modalTitle: 'Votre achat a été effectué',
-                modalContent: 'Votre coach prendra rendez-vous avec vous dans les prochaines 24h afin de programmer et ' +
-                  'planifier vos attentes en fonction de vos attentes.',
+                modalContent: content,
                 ...feedbackOpts
               }
             )
