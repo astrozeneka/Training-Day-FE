@@ -90,15 +90,16 @@
                         <ion-select-option value='["alonzo"]'>Alonzo</ion-select-option>
                     </ion-select>
                 </ion-item>
-
-                <app-ux-button
-                    expand="block"
-                    [disabled]="!formValid"
-                    shape="round"
-                    [loading]="isFormLoading"
-                >
-                    Mettre à jour
-                </app-ux-button>
+                <div class="ion-padding">
+                    <app-ux-button
+                        expand="block"
+                        [disabled]="!formValid"
+                        shape="round"
+                        [loading]="isFormLoading"
+                    >
+                        Mettre à jour
+                    </app-ux-button>
+                </div>
                 <!--
                 <ion-button expand="block" (click)="submit()" [disabled]="!formValid" shape="round">Mettre à jour</ion-button>
                 -->
@@ -108,7 +109,12 @@
             <div class="ion-padding">
                 <h3 class="display-1">Supprimer la vidéo</h3>
                 <div class="ion-text-center">
-                    <ion-button (click)="deleteVideo()" shape="round" color="danger">Supprimer la vidéo</ion-button>
+                    <ion-button 
+                        (click)="deleteVideo()" 
+                        shape="round" 
+                        color="danger"
+                        expand="full"
+                    >Supprimer la vidéo</ion-button>
                 </div>
             </div>
         </div>

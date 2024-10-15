@@ -5,6 +5,7 @@ import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {finalize} from "rxjs";
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-video-view',
@@ -40,7 +41,8 @@ export class VideoViewPage implements OnInit {
     public router: Router,
     public contentService: ContentService,
     public feedbackService: FeedbackService,
-    public route: ActivatedRoute
+    public route: ActivatedRoute,
+    private alertController: AlertController
   ) {
     this.videoId = this.route.snapshot.paramMap.get('id')
     this.router.events.subscribe(async (event)=>{
@@ -109,16 +111,34 @@ export class VideoViewPage implements OnInit {
       })
   }
 
-  deleteVideo(){
-    this.contentService.delete(`/video`, `${this.videoId}`)
-      .subscribe((response:any)=>{
-        if(response.message){
-          this.feedbackService.register('Le vidéo a été supprimé avec succes', 'success')
-          this.router.navigate(['/home'])
-        }else{
-          this.feedbackService.registerNow('Erreur lors de la suppression de la vidéo', 'danger')
+ async deleteVideo(){
+    let alert = await this.alertController.create({
+      header: "Supprimer la vidéo",
+      message: "Veuillez confirmer la suppression",
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: 'Supprimer',
+          cssClass: 'ion-color-danger',
+          handler: ()=>{
+            this.contentService.delete(`/video`, `${this.videoId}`)
+            .subscribe((response:any)=>{
+              if(response.message){
+                this.feedbackService.register('Le vidéo a été supprimé avec succes', 'success')
+                window.history.back()
+              }else{
+                this.feedbackService.registerNow('Erreur lors de la suppression de la vidéo', 'danger')
+              }
+            })
+          }
         }
-      })
+      ]
+    })
+    await alert.present();
   }
 
 }
