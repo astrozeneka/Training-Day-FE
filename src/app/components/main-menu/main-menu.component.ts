@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {MenuController} from "@ionic/angular";
 import {Storage} from "@ionic/storage-angular";
 import {ContentService} from "../../content.service";
 import {AbstractComponent} from "../abstract-component";
 import { ThemeDetection, ThemeDetectionResponse } from "@ionic-native/theme-detection/ngx";
+import { ChatService } from 'src/app/chat.service';
 
 
 @Component({
@@ -19,7 +20,9 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
   constructor(
     private router: Router,
     private menuController: MenuController,
-    contentService: ContentService
+    contentService: ContentService,
+    public chatService: ChatService,
+    private cdr: ChangeDetectorRef
   ) {
     super(contentService);
     /*this.router.events.subscribe(async(event:any)=>{
@@ -35,13 +38,19 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
     })*/
   }
 
-  ngOnInit() {
-    this.contentService.userStorageObservable.gso$().subscribe((user: any) => {
+  async ngOnInit() {
+    this.chatService.unreadMessages$.subscribe((unreadMessages) => {
+      this.unreadMessages = unreadMessages
+      this.cdr.detectChanges()
+    })
+    this.contentService.userStorageObservable.gso$().subscribe(async (user: any) => {
       this.user = user;
       if(this.user) {
+        await new Promise((resolve) => setTimeout(resolve, 100)) // Unoptimized way for waiting the token to be loaded
         this.contentService.getOne('/chat/unread', {})
           .subscribe((data: any) => {
-            this.unreadMessages = data.unread
+            // this.unreadMessages = data.unread // old code
+            this.chatService.unreadMessagesSubject.next(data.unread)
           })
       }
     })

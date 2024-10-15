@@ -10,6 +10,7 @@ import {catchError, debounceTime, distinctUntilChanged, merge, throwError} from 
 import StorageObservable from "../../../utils/StorageObservable";
 import { environment } from 'src/environments/environment';
 import { set } from 'date-fns';
+import { ChatService } from 'src/app/chat.service';
 
 @Component({
   selector: 'app-chat-master',
@@ -27,6 +28,9 @@ export class ChatMasterPage implements OnInit {
   // Experimental features for the optimized messageLoading
   discussionStorageObservable = new StorageObservable<any>('discussionData')
 
+  // Unread messages
+  totalUnreadMessages = undefined
+
   constructor(
     private contentService:ContentService,
     private modalController: ModalController,
@@ -35,6 +39,7 @@ export class ChatMasterPage implements OnInit {
     private feedbackService:FeedbackService,
     private router:Router,
     private broadcastingService: BroadcastingService,
+    private chatService: ChatService
   ) {
   }
 
@@ -141,6 +146,10 @@ export class ChatMasterPage implements OnInit {
     // 5. Initialize the online status parameters
     this.initializeOnlineStatusParameters()
 
+    // 6. The total unread message
+    this.chatService.unreadMessages$.subscribe((unreadMessages) => {
+      this.totalUnreadMessages = unreadMessages
+    })
   }
 
   navigateTo(url:string) {
@@ -226,5 +235,13 @@ export class ChatMasterPage implements OnInit {
   navigateToChatDetails(user_id){
     let pref = this.displayMessageForForm.value!='nutritionnist'?'/chat/details/':'/chat/details/n_'
     this.navigateTo(pref+user_id)
+  }
+  navigateToDetails(entity){
+    let unread = entity.unread
+    if (unread > 0){
+      this.chatService.unreadMessagesSubject.next(this.totalUnreadMessages - unread)
+    }
+    entity.unread = 0
+    this.navigateTo('/chat/details/' + entity.id)
   }
 }

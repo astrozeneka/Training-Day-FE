@@ -125,7 +125,7 @@
             <div *ngIf="coachList" class="discussion-list">
                 <ion-item
                         *ngFor="let entity of coachList"
-                        (click)="navigateTo('/chat/details/' + entity.id)"
+                        (click)="navigateToDetails(entity)"
                         style="cursor:pointer"
                 >
                     <ion-avatar slot="start">

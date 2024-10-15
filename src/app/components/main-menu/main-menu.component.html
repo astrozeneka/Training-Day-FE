@@ -57,7 +57,7 @@
         <ion-button (click)="menuNavigate('/profile')" expand="full" fill="clear">Mon profil</ion-button>
         <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
             {{user.function==='customer'?'Mon coach':'Messagerie'}}
-            <ion-chip *ngIf="unreadMessages" color="danger">{{ unreadMessages }}</ion-chip>
+            <ion-chip *ngIf="unreadMessages > 0" color="danger">{{ unreadMessages }}</ion-chip>
         </ion-button>
 
         <h4>Administration</h4>
@@ -84,7 +84,7 @@
         <ion-button (click)="menuNavigate('/profile')" expand="full" fill="clear">Mon profil</ion-button>
         <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
             Messagerie
-            <ion-chip *ngIf="unreadMessages" color="danger">{{ unreadMessages }}</ion-chip>
+            <ion-chip *ngIf="unreadMessages" color="danger">{{ chatService.unreadMessages$ | async }}</ion-chip>
         </ion-button>
         <ion-button (click)="menuNavigate('/video-upload')" expand="full" fill="clear">
             Uploader une vidéo

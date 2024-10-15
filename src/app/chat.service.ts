@@ -3,12 +3,17 @@ import { ContentService } from './content.service';
 import { BroadcastingService } from './broadcasting.service';
 import { da } from 'date-fns/locale';
 import { environment } from 'src/environments/environment';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
   user = undefined
+
+  // The unread messages number
+  unreadMessagesSubject = new Subject<number>()
+  unreadMessages$ = this.unreadMessagesSubject.asObservable()
 
   constructor(
     private cs: ContentService,
