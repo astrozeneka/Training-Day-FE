@@ -53,15 +53,21 @@
                 label="Privilège requis"
                 label-placement="floating"
             >
-                <ion-select-option value="['public', 'hoylt', 'moreno', 'alonzo']">Tout le monde</ion-select-option>
-                <ion-select-option value="['hoylt', 'moreno', 'alonzo']">Hoylt ou supérieur</ion-select-option>
-                <ion-select-option value="['moreno', 'alonzo']">Moreno ou supérieur</ion-select-option>
-                <ion-select-option value="['alonzo']">Alonzo</ion-select-option>
+                <ion-select-option value='["public", "hoylt", "moreno", "alonzo"]'>Tout le monde</ion-select-option>
+                <ion-select-option value='["hoylt", "moreno", "alonzo"]'>Hoylt ou supérieur</ion-select-option>
+                <ion-select-option value='["moreno", "alonzo"]'>Moreno ou supérieur</ion-select-option>
+                <ion-select-option value='["alonzo"]'>Alonzo</ion-select-option>
             </ion-select>
         </ion-item>
         <br/>
         <app-upload-video [formControl]="fileControl"></app-upload-video>
         <br/>
-        <app-ux-button expand="block" [disabled]="!valid" shape="round" [loading]="isFormLoading">Envoyer</app-ux-button>
+        <app-ux-button 
+            expand="block" 
+            [disabled]="!valid" 
+            shape="round" 
+            [loading]="isFormLoading"
+            type="submit"
+        >Envoyer</app-ux-button>
     </form>
 </ion-content>

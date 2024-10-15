@@ -56,6 +56,7 @@ export class VideoUploadPage extends FormComponent{
       data.tags = 'boxing,' + data.tags
     }
     data.file_id = data.file.id
+    console.log(data)
     this.contentService.post('/video', data)
       .pipe(finalize(()=>{ // WARNING, no validation is present here
         this.isFormLoading = false
