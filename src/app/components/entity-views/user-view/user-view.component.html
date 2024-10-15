@@ -19,7 +19,8 @@
     <div class="profile-image-container">
       <ion-avatar>
         <img width="52px" *ngIf="entity.profile_image" [src]="getStaticUrl(entity.profile_image?.permalink)" alt="Profile Picture"/>
-        <img width="52px" *ngIf="!entity.profile_image" src="../../../assets/samples/profile-default-01.png" alt="Default Profile Picture"/>      </ion-avatar>
+        <img width="52px" *ngIf="!entity.profile_image" src="../../../assets/samples/profile-default-01.png" alt="Default Profile Picture"/>
+      </ion-avatar>
       <ion-item>
         <ion-input
           label="Profile picture"
@@ -37,7 +38,7 @@
         [errorText]="displayedError.email"
       ></ion-input>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="false">
       <ion-select
         label="Rôle"
         label-placement="floating"
@@ -48,7 +49,7 @@
         <ion-select-option value="coach">Coach</ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="false">
       <ion-input
         type="password"
         label="Mot de passe"
@@ -57,7 +58,7 @@
         [errorText]="displayedError.password"
       ></ion-input>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="false">
       <ion-input
         type="password"
         label="Confirmez le mot de passe"
@@ -99,35 +100,37 @@
       ></ion-input>
     </ion-item>
   </form>
-  <h1 class="ion-padding">Privileges</h1>
-  <div class="ion-padding-horizontal">
-    <div class="card ion-padding" *ngIf="
-      entity.privileges.includes('hoylt') ||
-      entity.privileges.includes('moreno') ||
-      entity.privileges.includes('alonzo')
-    ">
-      <div class="left">
-        <ion-icon name="person-circle-outline"></ion-icon>
-      </div>
-      <div class="right">
-        <div class="head">Pack <span class="capitalize"></span>{{ entity.privileges[0] }}</div>
-        <div class="expires_at">Expire le <b>{{ entity.expires_at | date: 'dd MMM. yyyy' }}</b></div>
-      </div>
-    </div>
-
-    <div class="card ion-padding" *ngFor="let perishable of entity.grouped_perishables">
-      <div class="left">
-        <ion-icon name="person-circle-outline"></ion-icon>
-      </div>
-      <div class="right">
-        <div class="head">{{ perishable.label }}</div>
-        <div class="expires_at" *ngIf="perishable.slug == 'food-coach' || perishable.slug == 'sport-coach'">
-          Expire le <b>
-            {{ perishable.expires_at | date: 'dd MMM. yyyy' }}
-          </b>
+  <div *ngIf="entity.function === 'customer'">
+    <h1 class="ion-padding">Privileges</h1>
+    <div class="ion-padding-horizontal">
+      <div class="card ion-padding" *ngIf="
+        entity.privileges.includes('hoylt') ||
+        entity.privileges.includes('moreno') ||
+        entity.privileges.includes('alonzo')
+      ">
+        <div class="left">
+          <ion-icon name="person-circle-outline"></ion-icon>
         </div>
-        <div class="consumables" *ngIf="perishable.slug == 'personal-trainer'">
-          Séance{{ perishable.consumables>1?'s':'' }} restante{{ perishable.consumables>1?'s':'' }}: <b>{{ perishable.consumables }}</b>
+        <div class="right">
+          <div class="head">Pack <span class="capitalize"></span>{{ entity.privileges[0] }}</div>
+          <div class="expires_at">Expire le <b>{{ entity.expires_at | date: 'dd MMM. yyyy' }}</b></div>
+        </div>
+      </div>
+
+      <div class="card ion-padding" *ngFor="let perishable of entity.grouped_perishables">
+        <div class="left">
+          <ion-icon name="person-circle-outline"></ion-icon>
+        </div>
+        <div class="right">
+          <div class="head">{{ perishable.label }}</div>
+          <div class="expires_at" *ngIf="perishable.slug == 'food-coach' || perishable.slug == 'sport-coach'">
+            Expire le <b>
+              {{ perishable.expires_at | date: 'dd MMM. yyyy' }}
+            </b>
+          </div>
+          <div class="consumables" *ngIf="perishable.slug == 'personal-trainer'">
+            Séance{{ perishable.consumables>1?'s':'' }} restante{{ perishable.consumables>1?'s':'' }}: <b>{{ perishable.consumables }}</b>
+          </div>
         </div>
       </div>
     </div>

@@ -397,11 +397,9 @@ export class ChatDetailsPage implements OnInit {
           readData: true
         })
       }catch(e){
-        console.log(e)
         return;
       }
       if (result['files'].length > 0) { // == 1
-        console.log("One file selected")
         let file = result["files"][0]
         let data = result.files[0].data
         data = "data:" + file.mimeType + ";base64," + data
@@ -449,7 +447,6 @@ export class ChatDetailsPage implements OnInit {
   downloadFileById(id){
     this.contentService.getOne(`/files/details/`+id, {})
       .subscribe((data:any)=>{
-        console.log(data);
         let url = environment.rootEndpoint + '/' + data.permalink
         Browser.open({ url: url });
         // The code below is the old code (will be deleted later)

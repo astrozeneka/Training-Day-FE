@@ -67,12 +67,16 @@
                 <img width="52px" *ngIf="!entity.profile_image" src="../../../assets/samples/profile-default-01.png" alt="Default Profile Picture"/>
               </div>
               <div class="name-email">
-                <div class="name">{{ entity.firstname }} {{ entity.lastname }}</div>
+                <div class="name">{{ entity.firstname }} {{ entity.lastname }} 
+                  <span *ngIf="entity.function == 'admin'" style="font-weight:400">(admin)</span>
+                  <span *ngIf="entity.function == 'coach'" style="font-weight:400">(Coach)</span>
+                  <span *ngIf="entity.function == 'nutritionist'" style="font-weight:400">(Nutritionniste)</span>
+                </div>
                 <div class="email">{{ entity.email }}</div>
 
-                <div class="detail">
+                <div class="detail" *ngIf="entity.function === 'customer'">
                   <div>
-                    <b class="badge-head">Privilège Actif: </b> 
+                    <b class="badge-head">Privilège Actif: </b>
                     <ion-badge *ngFor="let privilege of entity.privileges">
                       {{ privilege }}
                     </ion-badge>
@@ -93,6 +97,7 @@
                 fill="clear"
                 size="small"
                 (click)="openChat(entity)"
+                *ngIf="entity.function === 'customer'"
               >
                 <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
                 Contacter
