@@ -60,19 +60,20 @@
             <ion-chip *ngIf="unreadMessages > 0" color="danger">{{ unreadMessages }}</ion-chip>
         </ion-button>
 
-        <h4>Administration</h4>
-        <ion-button (click)="menuNavigate('/manage/files/view')" expand="full" fill="clear">
-          Fichiers
-        </ion-button>
-        <ion-button (click)="menuNavigate('/manage/users/view')" expand="full" fill="clear">
-          Utilisateurs
-        </ion-button>
-        <ion-button (click)="menuNavigate('/manage/payments/view')" expand="full" fill="clear">
-          Paiements
-        </ion-button>
     </div>
     <!-- Espace coaching -->
     <div *ngIf="user?.function === 'coach'">
+
+      <h4>Administration</h4>
+      <ion-button (click)="menuNavigate('/manage/files/view')" expand="full" fill="clear">
+        Fichiers
+      </ion-button>
+      <ion-button (click)="menuNavigate('/manage/users/view')" expand="full" fill="clear">
+        Utilisateurs
+      </ion-button>
+      <ion-button (click)="menuNavigate('/manage/payments/view')" expand="full" fill="clear">
+        Paiements
+      </ion-button>
         <ion-button (click)="menuNavigate('/manage-personal-trainer')" expand="full" fill="clear">Enregistrer une séance</ion-button>
         <ion-button (click)="menuNavigate('/video-upload')" expand="full" fill="clear">
           Uploader une vidéo

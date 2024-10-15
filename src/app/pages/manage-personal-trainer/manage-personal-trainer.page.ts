@@ -30,12 +30,11 @@ export class ManagePersonalTrainerPage extends FormComponent implements OnInit {
   }
 
   searchUser(event:any){
+    console.log(this.searchUserControl.value)
     this.contentService.getCollection('/users', 0, {
-      f_email: this.searchUserControl.value,
-      f_firstname: this.searchUserControl.value,
-      f_lastname: this.searchUserControl.value
-    }).subscribe((userList)=>{
-      this.searchUserResult = userList
+      f_search: this.searchUserControl.value
+    }).subscribe(({data, metainfo})=>{
+      this.searchUserResult = data
     })
     event.preventDefault()
   }
