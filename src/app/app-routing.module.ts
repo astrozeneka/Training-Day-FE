@@ -200,6 +200,10 @@ const routes: Routes = [
     path: 'splash',
     loadChildren: () => import('./splash/splash.module').then( m => m.SplashPageModule)
   },
+  {
+    path: 'verify-mail',
+    loadChildren: () => import('./pages/verify-mail/verify-mail.module').then( m => m.VerifyMailPageModule)
+  },
 ];
 
 @NgModule({

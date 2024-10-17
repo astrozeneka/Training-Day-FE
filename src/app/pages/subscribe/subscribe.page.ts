@@ -108,7 +108,7 @@ export class SubscribePage extends FormComponent implements OnInit {
       }))
       .subscribe(async(res)=>{
         await this.feedbackService.registerNow("Inscription effectuée, vous pouvez désormais vous connecter")
-        this.router.navigate(['/login'])
+        this.router.navigate(['/verify-mail'])
       })
   }
 
