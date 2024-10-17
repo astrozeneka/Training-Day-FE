@@ -137,7 +137,10 @@
                 </ion-item>
                 <!-- The disabled message should be reviewed in the settings -->
                 <div class="placeholder" *ngIf="user?.user_settings?.disable_coach_messages == 'true'">
-                    <div class="helper">Votre accès à la messagerie est désactivé.</div>
+                    <div class="helper">
+                        Votre accès à la messagerie est désactivé.
+                        Vous devez avoir un abonnement Moreno ou Alonzo pour continuer à échanger avec votre coach.
+                    </div>
                 </div>
             </div>
             <div *ngIf="!coachList || coachList.length == 0">
@@ -175,7 +178,10 @@
                 <!-- TODO -->
                 <!-- The disabled message should be reviewed in the settings -->
                 <div class="placeholder" *ngIf="user?.user_settings?.disable_nutritionist_messages == 'true'">
-                    <div class="helper">Votre accès à la messagerie est désactivé.</div>
+                    <div class="helper">
+                        Votre accès à la messagerie est désactivé.
+                        Vous devez avoir un abonnement Alonzo pour continuer à échanger avec votre nutritionniste.
+                    </div>
                 </div>
             </div>
             <div *ngIf="(!nutritionistList || nutritionistList.length == 0) && !(user?.renewable_id == null)">
