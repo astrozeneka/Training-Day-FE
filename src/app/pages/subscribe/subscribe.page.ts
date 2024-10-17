@@ -5,6 +5,7 @@ import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
 import {catchError, finalize, throwError} from "rxjs";
 import {NavigationEnd, Router} from "@angular/router";
+import PasswordToggle from 'src/app/utils/PasswordToggle';
 
 @Component({
   selector: 'app-subscribe',
@@ -15,6 +16,10 @@ export class SubscribePage extends FormComponent implements OnInit {
   headerHeadline: string = "Créez un compte gratuitement"
   headerHelper: string = ""
   passwordlessLogin: boolean = false // default is false
+
+  // tooglable object for password display
+  passwordToggle = undefined
+  passwordConfirmToggle = undefined
 
   override form: FormGroup = new FormGroup({
     'email': new FormControl('', this.passwordlessLogin?[]:[Validators.required, Validators.email]),
@@ -56,7 +61,7 @@ export class SubscribePage extends FormComponent implements OnInit {
     // ไม่ต้องทำ patchValue
     // check if tmp-user-info is available
     let tmpUserDataBndl = await this.contentService.storage.get('tmp-user-info');
-    if (tmpUserDataBndl['next-step'] == 'prompt-user-info'){
+    if (tmpUserDataBndl && tmpUserDataBndl['next-step'] == 'prompt-user-info'){
       let tmpUser = tmpUserDataBndl['user']
       if (['github', 'google', 'facebook'].includes(tmpUser['provider'])) {
         this.passwordlessLogin = true
@@ -66,6 +71,10 @@ export class SubscribePage extends FormComponent implements OnInit {
         })
       }
     }
+
+    // The password toggles
+    this.passwordToggle = new PasswordToggle()
+    this.passwordConfirmToggle = new PasswordToggle()
   }
 
   // ไม่ต้องโหลดข้อมูล

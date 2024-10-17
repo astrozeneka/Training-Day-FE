@@ -54,21 +54,45 @@
         </ion-item>
         <ion-item>
           <ion-input
-            type="password"
+            [type]="passwordToggle.value ? 'text' : 'password'"
             label="Mot de passe"
             label-placement="floating"
             formControlName="password"
             [errorText]="displayedError.password"
           ></ion-input>
+          <ion-button
+            color="medium"
+            fill="clear"
+            class="password-toggle"
+            shape="round"
+            (touchstart)="passwordToggle.toggle($event, true)"
+            (touchend)="passwordToggle.toggle($event, false)"
+          >
+            <div>
+              <ion-icon slot="end" name="eye"></ion-icon>
+            </div>
+          </ion-button>
         </ion-item>
         <ion-item>
           <ion-input
-            type="password"
+            [type]="passwordConfirmToggle.value ? 'text' : 'password'"
             label="Confirmez le mot de passe"
             label-placement="floating"
             formControlName="password_confirm"
             [errorText]="displayedError.password_confirm"
           ></ion-input>
+          <ion-button
+            color="medium"
+            fill="clear"
+            class="password-toggle"
+            shape="round"
+            (touchstart)="passwordConfirmToggle.toggle($event, true)"
+            (touchend)="passwordConfirmToggle.toggle($event, false)"
+          >
+            <div>
+              <ion-icon slot="end" name="eye"></ion-icon>
+            </div>
+          </ion-button>
         </ion-item>
       </div>
     <ion-item>
