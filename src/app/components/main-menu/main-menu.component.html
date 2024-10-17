@@ -24,7 +24,7 @@
     </ion-toolbar>
 </ion-header>
 <!-- the below message doesn't work on web -->
-{{ (themeService.isDarkModeEnabled)?'dark':'light' }}
+<!-- {{ (themeService.isDarkModeEnabled)?'dark':'light' }} -->
 <ion-list lines="none" [class]="(themeService.isDarkModeEnabled)?'dark':'light'">
     <ion-button (click)="menuNavigate('/welcome-menu')" expand="full" fill="clear">Menu</ion-button>
     <ion-button (click)="menuNavigate('/home')" expand="full" fill="clear">Astuces et conseils</ion-button>

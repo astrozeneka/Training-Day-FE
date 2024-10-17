@@ -33,7 +33,13 @@ export class UploadVideoComponent  implements ControlValueAccessor, OnInit {
     private platform: Platform
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.formControl.valueChanges.subscribe((value: any) => {
+      if (!value){
+        this.progress = 0
+      }
+    })
+  }
 
   async clickButton(event: any){
     if (this.platform.is('capacitor')) {
@@ -127,7 +133,8 @@ export class UploadVideoComponent  implements ControlValueAccessor, OnInit {
     this.fileInput.nativeElement.value = null;
   }
 
-  onChange: any = () => {};
+  onChange: any = (val) => {
+  };
 
   onTouch: any = () => {};
 

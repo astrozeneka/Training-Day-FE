@@ -23,7 +23,7 @@ export class VideoViewPage implements OnInit {
     'description': new FormControl('', [Validators.required]),
     'tags': new FormControl('', []),
     'category': new FormControl('undefined', []),
-    'privilege': new FormControl("['public', 'hoylt', 'moreno', 'alonzo']", []),
+    'privilege': new FormControl(['public', 'hoylt', 'moreno', 'alonzo'], []),
     'hidden': new FormControl(false, [])
   })
   displayedError = {
@@ -53,22 +53,18 @@ export class VideoViewPage implements OnInit {
           this.video = res
           this.videoUrl = environment.rootEndpoint + '/' + this.video.file.permalink
           // Manage the tags by removing the category (training or boxing) from the tags
-          let category = ''
-          if (this.video.tags.includes('training')){
-            category = 'training'
-            this.video.tags = this.video.tags.split(',').filter((tag:any)=>tag != 'training').join(',')
-          }else if(this.video.tags.includes('boxing')){
-            category = 'boxing'
-            this.video.tags = this.video.tags.split(',').filter((tag:any)=>tag != 'boxing').join(',')
-          }
-          // Patch the form values
-          console.log(this.video.privilege)
+
+          let tags = this.video.tags.split(',')
+          let category = tags.filter((tag:any)=>tag.includes('training') || tag.includes('boxing'))
+          tags = tags.filter((tag:any)=>!tag.includes('training') && !tag.includes('boxing'))
+          this.video.tags = tags.join(', ')
+          this.video.category = category.pop() // Always the last item of the pile, because the first item is the mother category
           this.form.patchValue({
             title: this.video.title,
             description: this.video.description,
             tags: this.video.tags,
-            category: category,
-            privilege: this.video.privilege,
+            category: this.video.category,
+            privilege: this.video.privilege.join(','),
             hidden: this.video.hidden
           })
         })
@@ -87,13 +83,12 @@ export class VideoViewPage implements OnInit {
     this.isFormLoading = true
     let data:any = this.form.value
     data.id = this.videoId
-    if (this.form.value.category == 'training'){
-      data.tags = 'training,' + data.tags
-    }else if (this.form.value.category == 'boxing'){
-      data.tags = 'boxing,' + data.tags
-    }else{
-      data.tags = data.tags
-    }
+    data.privilege = data.privilege.split(',')
+    
+    data.tags = [this.form.value.category, ...data.tags.split(',')]
+      .filter(a=>a.trim() !== '')
+      .join(',')
+
     data.video_id = this.video.id
     this.contentService.put('/video', data)
       .pipe(finalize(()=>this.isFormLoading = false)) // WARNING, no validation is present here

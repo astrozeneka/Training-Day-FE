@@ -14,14 +14,15 @@
             [filter]="{ 'f_category': this.category }" 
         -->
         <app-infinite-list
-            [httpHeaders]="{ 'Authorization': 'Bearer ' + jwtToken }"
+            [httpHeaders]="jwtToken ? { 'Authorization': 'Bearer ' + jwtToken } : {}"
             [httpUrl]="contentService.apiEndpoint + '/videos'"
             [filter$]="filter$"
             [restrictFilter]="true"
-            *ngIf="jwtToken"
+            *ngIf="true"
         >
             <ng-template let-item>
-                <div class="video-card ion-padding" [ngClass]="{ 'locked': user?.function == 'customer' && !item.available }">
+                <!-- WARNING, the video availability should be computed from the backend model -->
+                <div class="video-card ion-padding" [ngClass]="{ 'locked': (user?.function == 'customer' || !user) && !item.available }">
                     <div class="left" (click)="goToVideo(item.id)">
                         <img src="/assets/logo-light-1024x1024-noalpha.jpg" alt="Vidéo thumbnail" class="card-image" *ngIf="!item.thumbnail"/>
                         <img [src]="getUrl(item.thumbnail.permalink)" alt="Vidéo thumbnail" class="card-image" *ngIf="item.thumbnail"/>
@@ -45,13 +46,18 @@
                         <p *ngIf="user?.function == 'admin' || user?.function == 'coach'">
                             <b>Accessible par :</b>
                             <span>
-                                {{ item.privilege | displayList }}
+                                <span class="capitalize" *ngFor="let privilege of item.privilege; let i = index"><span *ngIf="i > 0">,</span>
+                                     {{ privilege }}
+                                </span>
                             </span>
                         </p>
                     </div>
                     <div class="placeholder"></div>
-                    <div class="privilege-banner" *ngIf="user?.function == 'customer' && !item.available">
-                        Cette vidéo est réservé aux membres <b>Hoylt</b> ou supérieur
+                    <!-- WARNING, the video availability should be computed from the backend model -->
+                    <div class="privilege-banner" *ngIf="(user?.function == 'customer' || !user) && !item.available">
+                        Cette vidéo est réservé aux membres 
+                            <span *ngIf="item.privilege[0] != 'alonzo'"><b>{{ item.privilege[0] }}</b> ou supérieur</span>
+                            <span *ngIf="item.privilege[0]"><b>{{ item.privilege | displayList:0 }}</b></span>
                     </div>
                 </div>
             </ng-template>

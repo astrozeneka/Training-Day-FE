@@ -77,6 +77,9 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      & b{
+        text-transform: capitalize;
+      }
     }
 
   }
@@ -84,4 +87,8 @@
 
 .video-card:hover .left ion-icon{
   color: var(--ion-color-secondary);
+}
+
+.capitalize{
+  text-transform: capitalize;
 }
