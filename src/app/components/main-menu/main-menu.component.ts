@@ -22,7 +22,8 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
     private menuController: MenuController,
     contentService: ContentService,
     public chatService: ChatService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public themeService: ThemeDetection
   ) {
     super(contentService);
     /*this.router.events.subscribe(async(event:any)=>{

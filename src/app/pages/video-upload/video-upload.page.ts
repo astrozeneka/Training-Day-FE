@@ -50,10 +50,14 @@ export class VideoUploadPage extends FormComponent{
   submit(){
     this.isFormLoading = true
     let data:any = this.form.value
-    if (data.category == 'training'){
+    /*if (data.category == 'training'){
       data.tags = 'training,' + data.tags
     }else if(data.category == 'boxing'){
       data.tags = 'boxing,' + data.tags
+    }*/
+    // Append the category to the tag
+    if (data.category){
+      data.tags = data.category + ',' + data.tags
     }
     data.file_id = data.file.id
     console.log(data)

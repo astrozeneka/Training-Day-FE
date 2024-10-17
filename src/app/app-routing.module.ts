@@ -169,7 +169,15 @@ const routes: Routes = [
     loadChildren: () => import('./pages/subscriptions-payment/subscriptions-payment.module').then(m => m.SubscriptionsPaymentPageModule)
   },
   {
+    path: 'videos',
+    loadChildren: () => import('./pages/videos/videos.module').then(m => m.VideosPageModule)
+  },
+  {
     path: 'videos/:category',
+    loadChildren: () => import('./pages/videos/videos.module').then(m => m.VideosPageModule)
+  },
+  {
+    path: 'videos/:category/:subcategory',
     loadChildren: () => import('./pages/videos/videos.module').then(m => m.VideosPageModule)
   },
   {

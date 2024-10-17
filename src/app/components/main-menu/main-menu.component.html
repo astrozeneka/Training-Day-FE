@@ -23,8 +23,9 @@
         <ion-title>Training-day</ion-title>
     </ion-toolbar>
 </ion-header>
-
-<ion-list lines="none">
+<!-- the below message doesn't work on web -->
+{{ (themeService.isDarkModeEnabled)?'dark':'light' }}
+<ion-list lines="none" [class]="(themeService.isDarkModeEnabled)?'dark':'light'">
     <ion-button (click)="menuNavigate('/welcome-menu')" expand="full" fill="clear">Menu</ion-button>
     <ion-button (click)="menuNavigate('/home')" expand="full" fill="clear">Astuces et conseils</ion-button>
     <ion-button (click)="menuNavigate('/app-timer')" expand="full" fill="clear">Timer</ion-button>
@@ -40,10 +41,99 @@
     <!-- ion-accordeon -->
     <ion-accordion-group>
         <ion-accordion value="first">
-            <ion-button expand="full" fill="clear" slot="header">Vidéos</ion-button>
+            <ion-button expand="full" fill="clear" slot="header">Vidéos <ion-icon slot="end" name="chevron-forward-outline"/></ion-button>
             <div class="ion-padding" slot="content">
-                <ion-button expand="full" fill="clear" slot="header" (click)="menuNavigate('/videos/training')">Training of the day</ion-button>
-                <ion-button expand="full" fill="clear" slot="header" (click)="menuNavigate('/videos/boxing')">Boxing every day</ion-button>
+              <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/')">
+                Toutes les vidéos
+              </ion-button>
+                <ion-accordion-group>
+                  <ion-accordion value="folder-training">
+                    <ion-button expand="full" fill="clear" slot="header">Training of the day<ion-icon slot="end" name="chevron-forward-outline"/></ion-button>
+                    <div slot="content">
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/training')">
+                        Toutes les vidéos
+                      </ion-button>
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/training/corps-entier')">
+                        <div class="img-container" slot="start">
+                          <img src="../../../assets/icon/training-corps-entier-transparent.png" alt="Corps entier">
+                        </div>
+                        Le corps entier
+                      </ion-button>
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/training/bras')">
+                        <div class="img-container" slot="start">
+                          <img src="../../../assets/icon/training-bras-epaules-transparent.png" alt="Bras et épaules">
+                        </div>
+                        Bras et épaules
+                      </ion-button>
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/training/abdos')">
+                        <div class="img-container" slot="start">
+                          <img src="../../../assets/icon/training-abdos-transparent.png" alt="Abdos">
+                        </div>
+                        Abdos
+                      </ion-button>
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/training/jambes')">
+                        <div class="img-container" slot="start">
+                          <img src="../../../assets/icon/training-jambes-transparent.png" alt="Jambes">
+                        </div>
+                        Jambes
+                      </ion-button>
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/training/fessiers')">
+                        <div class="img-container" slot="start">
+                          <img src="../../../assets/icon/training-fessiers-transparent.png" alt="Fessiers">
+                        </div>
+                        Fessiers
+                      </ion-button>
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/training/pectoraux')">
+                        <div class="img-container" slot="start">
+                          <img src="../../../assets/icon/training-pectoraux-transparent.png" alt="Pectoraux">
+                        </div>
+                        Pectoraux
+                      </ion-button>
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/training/dos')">
+                        <div class="img-container" slot="start">
+                          <img src="../../../assets/icon/training-dos-transparent.png" alt="Dos">
+                        </div>
+                        Dos
+                      </ion-button>
+                      <!--  (click)="menuNavigate('/videos/training')" -->
+                    </div>
+                  </ion-accordion>
+                </ion-accordion-group>
+                
+                <ion-accordion-group>
+                  <ion-accordion value="folder-boxing">
+                    <ion-button expand="full" fill="clear" slot="header">Boxing every day<ion-icon slot="end" name="chevron-forward-outline"/></ion-button>
+                    <div slot="content">
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/boxing')">
+                        Toutes les vidéos
+                      </ion-button>
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/boxing/base')">
+                        <div class="img-container" slot="start">
+                          <img src="../../../assets/icon/boxing-base-orange.png" alt="Base">
+                        </div>
+                        Base
+                      </ion-button>
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/boxing/poings')">
+                        <div class="img-container" slot="start">
+                          <img src="../../../assets/icon/boxing-poings-orange.png" alt="Poings">
+                        </div>
+                        Poings
+                      </ion-button>
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/boxing/pieds-genoux')">
+                        <div class="img-container" slot="start">
+                          <img src="../../../assets/icon/boxing-pieds-genoux-orange.png" alt="Pieds et genoux">
+                        </div>
+                        Pieds et genoux
+                      </ion-button>
+                      <ion-button expand="full" fill="clear" (click)="menuNavigate('/videos/boxing/pieds-poings-genoux')" >
+                        <div class="img-container" slot="start">
+                          <img src="../../../assets/icon/boxing-pieds-poings-genoux-orange.png" alt="Pieds, poings et genoux">
+                        </div>
+                        Pieds, poings et genoux
+                      </ion-button>
+                    </div>
+                  </ion-accordion>
+                </ion-accordion-group>
             </div>
         </ion-accordion>
     </ion-accordion-group>

@@ -128,7 +128,7 @@ export class PurchaseInvoicePage implements OnInit {
                 'de planifier votre programme sportif en fonction de vos attentes'
             }else if(this.productId.includes('trainer')){
               content = 'Votre coach prendra contact avec vous dans les prochaines 24h afin de programmer et ' +
-                'de planifier vos attentes en fonction de vos attentes'
+                'de planifier votre entraînement en fonction de vos attentes'
             }
             this.feedbackService.register(
               null,

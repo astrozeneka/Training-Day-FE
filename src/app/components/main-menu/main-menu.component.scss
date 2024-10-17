@@ -79,3 +79,36 @@ ion-list h4{
 ion-accordion{
   background: transparent;
 }
+
+ion-button{ // Warning, reused component
+  .img-container{
+    height: 2em;
+    width: 2em;
+    margin-top: -0.5em;
+    margin-bottom: -0.5em;
+    padding-right: 1em;
+    position: relative;
+    margin-right: 0.6em;
+    background: var(--ion-color-light);
+    & img{
+      max-height: 100%;
+      max-width: 100%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      // Put the white background as transparent
+      //mix-blend-mode: multiply!important;
+
+    }
+  }
+}
+
+ion-accordion [value=folder-boxing]{
+  & .img-container{
+    // background: var(--ion-color-primary);
+    &>img{
+    //  display: none;
+    }
+  }  
+}

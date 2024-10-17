@@ -17,7 +17,8 @@
             [httpHeaders]="{ 'Authorization': 'Bearer ' + jwtToken }"
             [httpUrl]="contentService.apiEndpoint + '/videos'"
             [filter$]="filter$"
-            *ngIf="jwtToken || this.category"
+            [restrictFilter]="true"
+            *ngIf="jwtToken"
         >
             <ng-template let-item>
                 <div class="video-card ion-padding" [ngClass]="{ 'locked': user?.function == 'customer' && !item.available }">

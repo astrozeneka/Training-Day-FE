@@ -15,6 +15,7 @@ import {environment} from "../environments/environment";
 import {DevComponentsModule} from "./dev-prod-components/dev-components.module";
 import {ProdComponentsModule} from "./dev-prod-components/prod-components.module";
 import { DisplayListPipe } from './display-list.pipe';
+import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { DisplayListPipe } from './display-list.pipe';
     ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    InAppPurchase2
+    InAppPurchase2,
+    ThemeDetection
   ],
   bootstrap: [AppComponent],
 })
