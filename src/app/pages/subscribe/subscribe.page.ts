@@ -43,6 +43,7 @@ export class SubscribePage extends FormComponent implements OnInit {
     'phone': undefined,
     'address': undefined
   }
+  formIsLoading:boolean = false
 
   constructor(
     private contentService: ContentService,
@@ -84,6 +85,7 @@ export class SubscribePage extends FormComponent implements OnInit {
   }
 
   async submitForm() {
+    this.formIsLoading = true
     let obj = this.form.value
     obj['phone'] = obj['phone_prefix'] + obj['phone']
     if(this.passwordlessLogin){
@@ -104,6 +106,7 @@ export class SubscribePage extends FormComponent implements OnInit {
         }
         return throwError(error)
       }), finalize(async ()=>{
+        this.formIsLoading = false;
         await this.contentService.storage.remove('tmp-user-info')
       }))
       .subscribe(async(res)=>{

@@ -29,6 +29,7 @@ import {TrainerCardComponent} from "./trainer-card/trainer-card.component";
 import {SubscriptionCardComponent} from "./subscription-card/subscription-card.component";
 import {FeedbackModalComponent} from "./feedback-modal/feedback-modal.component";
 import { DisplayListPipe } from '../display-list.pipe';
+import { PhonePrefixSelectComponent } from '../components-submodules/phone-prefix-select/phone-prefix-select.component';
 
 
 
@@ -57,15 +58,18 @@ import { DisplayListPipe } from '../display-list.pipe';
     BackButtonComponent,
 
     UnavailableComponent,
-    UxButtonComponent,
-    InfiniteListComponent,
     TrainerCardComponent,
     SubscriptionCardComponent,
 
     FeedbackModalComponent,
 
     // Pipes
-    DisplayListPipe
+    DisplayListPipe,
+
+    // External projects
+    UxButtonComponent,
+    InfiniteListComponent,
+    PhonePrefixSelectComponent
   ],
   imports: [
     CommonModule,
@@ -86,12 +90,14 @@ import { DisplayListPipe } from '../display-list.pipe';
     UnavailableComponent,
     UploadVideoComponent,
     ShopTabsComponent,
-    UxButtonComponent,
-    InfiniteListComponent,
     TrainerCardComponent,
     SubscriptionCardComponent,
     
-    DisplayListPipe
+    DisplayListPipe,
+
+    UxButtonComponent,
+    InfiniteListComponent,
+    PhonePrefixSelectComponent
   ]
 })
 export class UtilitiesModule { }

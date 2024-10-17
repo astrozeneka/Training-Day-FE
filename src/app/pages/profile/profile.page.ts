@@ -13,6 +13,7 @@ import {navigate} from "ionicons/icons";
 import StorePlugin from "../../custom-plugins/store.plugin";
 import {EntitlementReady} from "../../abstract-components/EntitlementReady";
 import { FilePicker } from '@capawesome/capacitor-file-picker';
+import { PhonePrefixSelectComponent } from 'src/app/components-submodules/phone-prefix-select/phone-prefix-select.component';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class ProfilePage extends FormComponent implements OnInit {
     'password_confirm': new FormControl(''),
     'firstname': new FormControl('', [Validators.required]),
     'lastname': new FormControl('', [Validators.required]),
+    'phone_prefix': new FormControl('+33', [Validators.required]),// I don't know the default value doen't work
     'phone': new FormControl(''),
     'address': new FormControl('')
   });
@@ -67,7 +69,12 @@ export class ProfilePage extends FormComponent implements OnInit {
           return acc
         }, {})
         this.user_id = this.entity?.id
-        this.form.patchValue(this.entity)
+        let {prefix, number} = PhonePrefixSelectComponent.preparePhoneNumber(this.entity.phone)
+        this.form.patchValue({
+          ...this.entity,
+          phone_prefix: prefix,
+          phone: number
+        })
       }
     });
 
@@ -137,6 +144,7 @@ export class ProfilePage extends FormComponent implements OnInit {
     let obj = this.form.value
     obj.id = this.user_id
     obj.profile_image = this.profile_image
+    obj.phone = obj.phone_prefix + obj.phone
     this.contentService.put('/users', obj)
       .pipe(catchError(error=>{
         if(error.status == 422){

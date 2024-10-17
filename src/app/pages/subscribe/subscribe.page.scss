@@ -22,13 +22,13 @@
     }
 }
 
-// The phone input
+// WARNING, THE CODE BELOW IS REUSED
 .phone-input-wrapper{
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 1em;
-    & ion-select{
-        min-width: 100px;
+    & app-phone-prefix-select{
+        min-width: 200px;
     }
 }

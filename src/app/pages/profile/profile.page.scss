@@ -23,3 +23,15 @@
 ion-item b{
   padding-left: .2em;
 }
+
+
+// WARNING, THE CODE BELOW IS REUSED
+.phone-input-wrapper{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1em;
+  & app-phone-prefix-select{
+      min-width: 200px;
+  }
+}

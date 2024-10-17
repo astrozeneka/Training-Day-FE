@@ -80,12 +80,20 @@
               ></ion-input>
           </ion-item>
           <ion-item>
-              <ion-input
-                      label="Téléphone"
-                      label-placement="floating"
-                      formControlName="phone"
-                      [errorText]="displayedError.phone"
-              ></ion-input>
+            <div class="phone-input-wrapper">
+                <app-phone-prefix-select
+                    justify="end"
+                    label="Indicatif"
+                    labelPlacement="stacked"
+                    formControlName="phone_prefix"
+                ></app-phone-prefix-select>
+                <ion-input
+                        label="Téléphone"
+                        label-placement="floating"
+                        formControlName="phone"
+                        [errorText]="displayedError.phone"
+                ></ion-input>
+            </div>
           </ion-item>
           <ion-item>
               <ion-input
