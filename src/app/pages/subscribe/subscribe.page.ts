@@ -14,12 +14,12 @@ import PasswordToggle from 'src/app/utils/PasswordToggle';
 })
 export class SubscribePage extends FormComponent implements OnInit {
   headerHeadline: string = "Créez un compte gratuitement"
-  headerHelper: string = ""
+  headerHelper: string = "Remplissez les champs ci-dessous pour créer un compte"
   passwordlessLogin: boolean = false // default is false
 
   // tooglable object for password display
-  passwordToggle = undefined
-  passwordConfirmToggle = undefined
+  passwordToggle = new PasswordToggle()
+  passwordConfirmToggle = new PasswordToggle()
 
   override form: FormGroup = new FormGroup({
     'email': new FormControl('', this.passwordlessLogin?[]:[Validators.required, Validators.email]),
@@ -27,6 +27,7 @@ export class SubscribePage extends FormComponent implements OnInit {
     'password_confirm': new FormControl('', this.passwordlessLogin?[]:[Validators.required]),
     'firstname': new FormControl('', [Validators.required]),
     'lastname': new FormControl('', [Validators.required]),
+    'phone_prefix': new FormControl('+33', [Validators.required]), // I don't know the default value doen't work
     'phone': new FormControl(''),
     'address': new FormControl(''),
 
@@ -71,10 +72,8 @@ export class SubscribePage extends FormComponent implements OnInit {
         })
       }
     }
-
-    // The password toggles
-    this.passwordToggle = new PasswordToggle()
-    this.passwordConfirmToggle = new PasswordToggle()
+    // Default value
+    this.form.get('phone_prefix').patchValue('+33')
   }
 
   // ไม่ต้องโหลดข้อมูล
@@ -86,11 +85,12 @@ export class SubscribePage extends FormComponent implements OnInit {
 
   async submitForm() {
     let obj = this.form.value
+    obj['phone'] = obj['phone_prefix'] + obj['phone']
     if(this.passwordlessLogin){
       let tmpUser = (await this.contentService.storage.get('tmp-user-info'))['user']
       obj['email_verification_token'] = tmpUser['email_verification_token']
     }
-    // ต้องใส่โคตเพิ่มสำหรับรูปโปรไฟล์ฯลฯ
+    // ต้องใส่โค้ตเพิ่มสำหรับรูปโปรไฟล์ฯลฯ
     this.contentService.post('/users', obj)
       .pipe(catchError((error)=>{
         if(error.status == 422){

@@ -21,3 +21,14 @@
         font-size: 18px;
     }
 }
+
+// The phone input
+.phone-input-wrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1em;
+    & ion-select{
+        min-width: 100px;
+    }
+}
