@@ -255,6 +255,7 @@ export class ChatDetailsPage implements OnInit {
   // 8. Another action sheet allowing to delete the whole discussion, or the coach to block user
   async presentActionSheetGlobal(){
     // Check if the correspondent have already disabled messages
+    let userLocked = (this.correspondent?.user_settings?.locked == 'true') ?? false
     let messagesDisabled = (this.correspondent?.user_settings?.disable_messages == 'true') ?? false
     let coachMessagesDisabled = (this.correspondent?.user_settings?.disable_coach_messages == 'true') ?? false
     let nutritionistMessagesDisabled = (this.correspondent?.user_settings?.disable_nutritionist_messages == 'true') ?? false
@@ -268,6 +269,19 @@ export class ChatDetailsPage implements OnInit {
             action: 'delete',
           },
         },
+        ... (userLocked?[{
+          text: "Débloquer l'utilisateur",
+          role: 'destructive',
+          data: {
+            action: 'set locked false',
+          },
+        }]:[{
+          text: "Bloquer l'utilisateur pour non respect des règlements",
+          role: 'destructive',
+          data: {
+            action: 'set locked true',
+          },
+        }]),
         ... (coachMessagesDisabled?[{
           text: 'Débloquer la messagerie du coach',
           role: 'destructive',
@@ -316,8 +330,13 @@ export class ChatDetailsPage implements OnInit {
         key: key,
         disabled: value == 'true'
       }).subscribe((data)=>{
-        let message = "Messagerie du " + (key.includes('coach')?'coach':'nutritionniste') + " " + (value == 'true'?'bloquée':'débloquée');
-        this.feedbackService.registerNow(message, 'success')
+        if (key == 'locked') {
+          let message = "Utilisateur " + (value == 'true'?'bloqué':'débloqué');
+          this.feedbackService.registerNow(message, 'success')
+        }else{
+          let message = "Messagerie du " + (key.includes('coach')?'coach':'nutritionniste') + " " + (value == 'true'?'bloquée':'débloquée');
+          this.feedbackService.registerNow(message, 'success')
+        }
         this.loadCorrespondent()
       })
     }else if(data.action == 'block'){ // NOT USED ANYMORE, should be deleted
