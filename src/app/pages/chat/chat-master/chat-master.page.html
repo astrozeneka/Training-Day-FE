@@ -61,6 +61,7 @@
                     *ngFor="let entity of entityList"
                     (click)="navigateToChatDetails(entity.id)"
                     style="cursor:pointer"
+                    [ngClass]="{'unread': entity.unread}"
             >
                 <ion-avatar slot="start">
                     <img src="{{entity.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
@@ -155,7 +156,9 @@
                         </div>
                     </div>
                     <div class="message-info">
-                        <div class="date">12 oct. 2024</div>
+                        <div class="date">
+                            {{ entity.messages[0]?.created_at | date: 'dd MMM yyyy HH:mm' }}
+                        </div>
                         <div class="chip" *ngIf="entity.unread">{{ entity.unread }}</div>
                         <!--
                             <ion-chip *ngIf="entity.unread" color="danger">{{ entity.unread }}</ion-chip>
@@ -194,6 +197,7 @@
                         *ngFor="let entity of nutritionistList"
                         (click)="navigateTo('/chat/details/' + entity.id)"
                         style="cursor:pointer"
+                        [ngClass]="{'unread': entity.unread}"
                 >
                     <ion-avatar slot="start">
                         <img src="{{entity.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
@@ -207,7 +211,9 @@
                         </div>
                     </div>
                     <div class="message-info">
-                        <div class="date">12 oct. 2024</div>
+                        <div class="date">
+                            {{ entity.messages[0]?.created_at | date: 'dd MMM yyyy HH:mm' }}
+                        </div>
                         <div class="chip" *ngIf="entity.unread">{{ entity.unread }}</div>
                     </div>
                 </ion-item>

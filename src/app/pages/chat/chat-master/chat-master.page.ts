@@ -75,8 +75,10 @@ export class ChatMasterPage implements OnInit {
     }
 
     // Reorder the messages by the last message (using id ???)
+    this.totalUnreadMessages = 0
     for(let i = 0; i < this.entityList.length; i++){
       this.entityList[i].messages = this.entityList[i].messages.sort((a, b)=>a.id - b.id) // For later, this can be replaced by the timestamp/date
+      this.totalUnreadMessages += this.entityList[i].unread
     }
 
     this.coachList = this.entityList.filter((item:any)=>item.function == "coach")
@@ -113,10 +115,15 @@ export class ChatMasterPage implements OnInit {
 
               // Update the unread messages
 
-              if (message.sender && message.sender.id != this.user.id)
+              if (message.sender && message.sender.id != this.user.id){
                 entity.unread = message.sender.unread || 0
+                this.totalUnreadMessages += 1
+                console.log("totalUnreadMessages: ", this.totalUnreadMessages)
+                this.chatService.unreadMessagesSubject.next(this.totalUnreadMessages)
+              }
               if (message.sender_id == this.user.id)
                 entity.unread = 0
+
             })
             // Resort the entityList
             this.entityList = this.entityList.sort((a, b)=>{ // TODO, avoid reusage

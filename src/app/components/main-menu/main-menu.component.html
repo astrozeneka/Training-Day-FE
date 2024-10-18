@@ -147,7 +147,9 @@
         <ion-button (click)="menuNavigate('/profile')" expand="full" fill="clear">Mon profil</ion-button>
         <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear">
             {{user.function==='customer'?'Mon coach':'Messagerie'}}
-            <ion-chip *ngIf="unreadMessages > 0" color="danger">{{ unreadMessages }}</ion-chip>
+            <ion-chip *ngIf="unreadMessages > 0" color="danger">
+              {{ unreadMessages }}
+            </ion-chip>
         </ion-button>
 
     </div>
