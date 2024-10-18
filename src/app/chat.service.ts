@@ -71,7 +71,7 @@ export class ChatService {
     all_messages = all_messages.filter((row)=>row)
     // Sort by 'created at'
     all_messages = all_messages.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    console.log(`All messages (${all_messages.length})`, all_messages)
+    //console.log(`All messages (${all_messages.length})`, all_messages)
     // Filter by unique id
     let unique = {}
     all_messages = all_messages.filter((row)=>{
@@ -87,10 +87,10 @@ export class ChatService {
       let offset = parseInt(key.split('.').pop())
       let _newData = all_messages.slice(offset, offset + 10)
       if (_newData.length == 0) continue
-      console.log(`Update cache (${key}) with new data: `, {
+      /*console.log(`Update cache (${key}) with new data: `, {
         data: _newData,
         expires_at: Date.now() + 1000 * 60 * 5 // 5 minutes
-      })
+      })*/
       await this.cs.storage.set(key, {
         data: {
           data: _newData,

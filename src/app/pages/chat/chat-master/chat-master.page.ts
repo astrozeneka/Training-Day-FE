@@ -40,6 +40,9 @@ export class ChatMasterPage implements OnInit {
   // The audio notification
   audio_incoming: any = undefined
 
+  // Hearbeat interval
+  heartbeat_interval = undefined
+
   constructor(
     private contentService:ContentService,
     private modalController: ModalController,
@@ -119,9 +122,7 @@ export class ChatMasterPage implements OnInit {
               entity.messages.push(message)
               entity.messages = entity.messages.sort((a, b)=>b.id - a.id)
 
-              // Update the unread messages
-
-              if (message.sender && message.sender.id != this.user.id){
+              if (message.sender && message.sender_id != this.user.id){
                 entity.unread = message.sender.unread || 0
                 this.totalUnreadMessages += 1
                 this.chatService.unreadMessagesSubject.next(this.totalUnreadMessages)
@@ -255,6 +256,14 @@ export class ChatMasterPage implements OnInit {
       this.audio_incoming = new Audio()
       this.audio_incoming.src = "../../assets/audio/incoming-message.mp3"
     }
+
+    // 8. The hearbeat to notify the server that the user is online
+    if (this.heartbeat_interval)
+      clearInterval(this.heartbeat_interval)
+    this.heartbeat_interval = setInterval(()=>{
+      console.log("Here")
+      this.contentService.post('/users-heartbeats', {}).subscribe(()=>null)
+    }, 5000)
   }
 
   navigateTo(url:string) {
