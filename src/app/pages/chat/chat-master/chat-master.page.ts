@@ -31,6 +31,10 @@ export class ChatMasterPage implements OnInit {
   // Unread messages
   totalUnreadMessages = undefined
 
+  // Variables for the pusher notification system
+  registeredPusherCorrespondentIds = []
+  instantMessagingInitialized = false
+
   constructor(
     private contentService:ContentService,
     private modalController: ModalController,
@@ -39,11 +43,13 @@ export class ChatMasterPage implements OnInit {
     private feedbackService:FeedbackService,
     private router:Router,
     private broadcastingService: BroadcastingService,
-    private chatService: ChatService
+    private chatService: ChatService,
   ) {
   }
 
   prepareDiscussionData({data, metainfo}, searchTerm=""){ // Metainfo include a user_id key to unvalidate the data
+    console.log("======= PREPARE DISCUSSION DATA =======") // DOESN'T PASS HERE
+    // To optimized this code should include a debounce time
     if(typeof data == "object") // Here data is an object, but should be array (This is from the way localStorage stores items)
       data = Object.values(data)
     for(let i = 0; i < data.length; i++){
@@ -51,6 +57,15 @@ export class ChatMasterPage implements OnInit {
       data[i].avatar_url = url ? this.contentService.addPrefix(url) : undefined
     }
     this.entityList = data as unknown as Array<any>
+    this.entityList = this.entityList.filter((item:any)=>item.id != this.user.id) // cannot chat to himself
+    
+    // Sort entityList by entity.messages[0].created_at
+    this.entityList = this.entityList.sort((a, b)=>{ // TODO, avoid reusage
+      let dateA = a.messages.length > 0 ? Date.parse(a.messages[0].created_at) : 0
+      let dateB = b.messages.length > 0 ? Date.parse(b.messages[0].created_at) : 0
+      return dateB - dateA
+    })
+
     if(searchTerm != ""){
       this.entityList = this.entityList.filter((item:any)=>{
         return item.firstname.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -58,22 +73,82 @@ export class ChatMasterPage implements OnInit {
           item.email.toLowerCase().includes(searchTerm.toLowerCase())
       })
     }
+
+    // Reorder the messages by the last message (using id ???)
+    for(let i = 0; i < this.entityList.length; i++){
+      this.entityList[i].messages = this.entityList[i].messages.sort((a, b)=>a.id - b.id) // For later, this can be replaced by the timestamp/date
+    }
+
     this.coachList = this.entityList.filter((item:any)=>item.function == "coach")
     this.nutritionistList = this.entityList.filter((item:any)=>item.function == "nutritionist")
+
+    // Register pusher notification to allow instant UI update
+    /*this.entityList.forEach(entity=>{
+      console.log(entity.id)
+      if(this.registeredPusherCorrespondentIds.includes(entity.id))
+        return
+      /*this.chatService.registerChatEvents(entity.id, (p)=>{
+        console.log("Notification from pusher", p)
+      })*
+
+    })*/
+
+    if (!this.instantMessagingInitialized){
+      this.instantMessagingInitialized = true
+      console.log("Initializing pusher : messages."+this.user.id)
+      this.broadcastingService.pusher.subscribe(`messages.${this.user.id}`)
+        .bind_global((event, {data, metainfo})=>{
+          // Data is the message data from the backend
+          if(data instanceof Array){ // Sometimes, there is a bug here
+            data.forEach(message=>{
+              // Add the message to be displayed on the item
+              let entity = this.entityList.find(entity=>entity.id == message.sender_id || entity.id == message.recipient_id)
+              if (!entity)
+                return
+              console.log("Notification from pusher (evt: "+event+")")
+              console.log("Entity: ", entity)
+              entity.messages = entity.messages.filter(m=>m.id != message.id)
+              entity.messages.push(message)
+              entity.messages = entity.messages.sort((a, b)=>b.id - a.id)
+
+              // Update the unread messages
+
+              if (message.sender && message.sender.id != this.user.id)
+                entity.unread = message.sender.unread || 0
+              if (message.sender_id == this.user.id)
+                entity.unread = 0
+            })
+            // Resort the entityList
+            this.entityList = this.entityList.sort((a, b)=>{ // TODO, avoid reusage
+              let dateA = a.messages.length > 0 ? Date.parse(a.messages[0].created_at) : 0
+              let dateB = b.messages.length > 0 ? Date.parse(b.messages[0].created_at) : 0
+              return dateB - dateA
+            })
+            //console.log("Data: ", data)
+            //console.log("Notification received from pusher_global", event, data)
+          }
+        })
+    }
+
   }
 
+  pusherListenerInitialized = false
   async initPusherListener(){
-    this.broadcastingService.pusher.unsubscribe(`messages.${this.user.id}`)
-    this.broadcastingService.pusher.subscribe(`messages.${this.user.id}`)
+    if (this.pusherListenerInitialized)
+      return
+    this.pusherListenerInitialized = true
+    // TODO later, with an optimized way
+    //this.broadcastingService.pusher.unsubscribe(`messages.${this.user.id}`) // Not optimized
+    this.broadcastingService.pusher.subscribe(`messages.${this.user.id}`)   // Not optimized
       .bind('master-updated',
         ({data, metainfo}) => {
           this.discussionStorageObservable.updateStorage({data, metainfo})
         }
       )
 
-    await new Promise((resolve)=>setTimeout(resolve, 500))
+    await new Promise((resolve)=>setTimeout(resolve, 500)) // Not optimized
     
-    // The old way to load the data
+    // The old way to load the data (Generaly, this throw 429 too many requests error)
     this.contentService.post('/chat/request-update/'+this.user.id, {})
       .subscribe(data => null)
   }

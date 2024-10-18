@@ -76,6 +76,9 @@ export class ChatDetailsPage implements OnInit {
   }
 
   prepareDiscussionDetailsData({data, metadata}){
+    if (data.length == 0) // This prevent from infinite loop
+      return
+    console.log("**** prepare discussion details data")
     let newMessageAdded = false
     const maxId = Math.max(...this.entityList.map((item:any)=>item.id)) // Not accurate, should use date instead (anyway, this function will be moved in another angular service)
     const shouldScrollTop = this.entityList.length == 0
@@ -111,6 +114,7 @@ export class ChatDetailsPage implements OnInit {
     // select by css_selector
     let container = document.querySelector('.discussion-flow')
     let content = document.querySelector('.discussion-flow>div')
+
     // If content not overflow
     if (content.clientHeight < container.clientHeight) {
       this.onIonInfinite({artificial: true})

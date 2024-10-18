@@ -24,4 +24,61 @@ ion-badge{
       transform: translate(-50%, -50%);
     }
   }
+
+  & .item-inner{
+    flex: 1;
+
+    & .item-header{
+      height: 1em;
+      overflow-y: visible;
+      display: flex;
+      align-items: center;
+      font-size: .9em;
+      padding-bottom: .5em;
+    }
+
+    & .item-body{
+      color: var(--ion-color-medium);
+      font-size: .8em;
+      // Trim to one line and add ellipsis
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  & ion-item.unread .item-body{
+
+    color: var(--ion-color-dark);
+  }
+
+  & .message-info{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .5em;
+
+    & .date{
+      font-size: .7em;
+      color: var(--ion-color-medium);
+    }
+
+    & ion-chip{
+      width: 1em;
+      height: 1em;
+    }
+
+    & .chip{
+      background: var(--ion-color-primary);
+      color: white;
+      width: 1.3em;
+      height: 1.3em;
+      line-height: 1.2em;
+      text-align: center;
+      border-radius: 50%;
+      font-size: .8em;
+    }
+  }
 }

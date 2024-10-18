@@ -56,7 +56,7 @@
         <div class="ion-text-center">
             <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
         </div>
-        <div *ngIf="entityList">
+        <div *ngIf="entityList" class="discussion-list">
             <ion-item
                     *ngFor="let entity of entityList"
                     (click)="navigateToChatDetails(entity.id)"
@@ -65,11 +65,24 @@
                 <ion-avatar slot="start">
                     <img src="{{entity.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
                 </ion-avatar>
-                {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
-                <ion-badge *ngIf="entity.renewable_id" color="warning">
-                    {{ entity.renewable_id }}
-                </ion-badge>
-                <ion-chip *ngIf="entity.unread" color="danger" slot="end">{{ entity.unread }}</ion-chip>
+                <div class="item-inner">
+                    <div class="item-header">
+                        {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
+                        <ion-badge *ngIf="entity.isActive" color="success">En ligne</ion-badge>
+                    </div>
+                    <div class="item-body">
+                        {{ entity.messages[0]?.content }}
+                    </div>
+                </div>
+                <div class="message-info">
+                    <div class="date">
+                        {{ entity.messages[0]?.created_at | date: 'dd MMM yyyy HH:mm' }}
+                    </div>
+                    <div class="chip" *ngIf="entity.unread">{{ entity.unread }}</div>
+                    <!--
+                        <ion-chip *ngIf="entity.unread" color="danger">{{ entity.unread }}</ion-chip>
+                    -->
+                </div>
             </ion-item>
         </div>
     </div>
@@ -127,13 +140,27 @@
                         *ngFor="let entity of coachList"
                         (click)="navigateToDetails(entity)"
                         style="cursor:pointer"
+                        [ngClass]="{'unread': entity.unread}"
                 >
                     <ion-avatar slot="start">
                         <img src="{{entity.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
                     </ion-avatar>
-                    {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
-                    <ion-badge *ngIf="entity.isActive" color="success">En ligne</ion-badge>
-                    <ion-chip *ngIf="entity.unread" color="danger" slot="end">{{ entity.unread }}</ion-chip>
+                    <div class="item-inner">
+                        <div class="item-header">
+                            {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
+                            <ion-badge *ngIf="entity.isActive" color="success">En ligne</ion-badge>
+                        </div>
+                        <div class="item-body">
+                            {{ entity.messages[0]?.content }}
+                        </div>
+                    </div>
+                    <div class="message-info">
+                        <div class="date">12 oct. 2024</div>
+                        <div class="chip" *ngIf="entity.unread">{{ entity.unread }}</div>
+                        <!--
+                            <ion-chip *ngIf="entity.unread" color="danger">{{ entity.unread }}</ion-chip>
+                        -->
+                    </div>
                 </ion-item>
                 <!-- The disabled message should be reviewed in the settings -->
                 <div class="placeholder" *ngIf="user?.user_settings?.disable_coach_messages == 'true'">
@@ -170,10 +197,19 @@
                 >
                     <ion-avatar slot="start">
                         <img src="{{entity.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
-                    </ion-avatar>
-                    {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
-                    <ion-badge *ngIf="entity.isActive" color="success">En ligne</ion-badge>
-                    <ion-chip *ngIf="entity.unread" color="danger" slot="end">{{ entity.unread }}</ion-chip>
+                    </ion-avatar><div class="item-inner">
+                        <div class="item-header">
+                            {{ entity.firstname }} {{ entity.lastname === '_' ? '': entity.lastname }}
+                            <ion-badge *ngIf="entity.isActive" color="success">En ligne</ion-badge>
+                        </div>
+                        <div class="item-body">
+                            {{ entity.messages[0]?.content }}
+                        </div>
+                    </div>
+                    <div class="message-info">
+                        <div class="date">12 oct. 2024</div>
+                        <div class="chip" *ngIf="entity.unread">{{ entity.unread }}</div>
+                    </div>
                 </ion-item>
                 <!-- TODO -->
                 <!-- The disabled message should be reviewed in the settings -->
