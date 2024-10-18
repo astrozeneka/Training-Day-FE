@@ -48,6 +48,9 @@ public class StorePlugin extends Plugin {
             loadProductList(call);
           } else {
             System.out.println("StorePlugin: Error code: " + billingResult.getResponseCode());
+            // Error 3:
+            // The Billing API version is not supported for the type requested”
+            // The next step will be to downgrade 4.0 or 5.0
           }
         }
 

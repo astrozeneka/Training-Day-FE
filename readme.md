@@ -17,3 +17,23 @@ RewriteRule ^(.*) /index.html [NC,L]
 EOF
 
 ```
+
+
+## Pending Test
+
+3. Test 2. After the user buy ’Subscription’, does it activate immediately (		)
+
+## Known bugs
+
+1. The soketi services doesn't start on startup ( Solved )
+
+
+# Icon attributions
+<a href="https://www.flaticon.com/free-stickers/punching-bag" title="punching bag stickers">Punching bag stickers created by vectorsmarket15 - Flaticon</a>
+
+
+<!-- Kick (not used) -->
+<a href="https://www.flaticon.com/free-icons/muay-thai" title="muay thai icons">Muay thai icons created by cube29 - Flaticon</a>
+
+<!-- Icons used -->
+<a href="https://www.flaticon.com/free-icons/fight" title="fight icons">Fight icons created by Leremy - Flaticon</a>
