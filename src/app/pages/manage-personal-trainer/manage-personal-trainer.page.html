@@ -31,8 +31,14 @@
                         [columns]="false"
                 ></app-trainer-card>
                 <!-- Information sur l'abonnement/consomables -->
-
-                <app-ux-button expand="block" shape="round" type="submit" [loading]="isFormLoading">Enregistrer</app-ux-button>
+                <app-ux-button 
+                    expand="block" 
+                    shape="round" 
+                    type="submit"
+                    [disabled]=" selectedUser.personalTrainer.consumables <= 0"
+                    [loading]="isFormLoading">
+                    Enregistrer
+                </app-ux-button>
             </div>
 
         </form>

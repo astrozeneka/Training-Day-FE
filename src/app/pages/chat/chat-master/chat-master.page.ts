@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {ContentService} from "../../../content.service";
-import {AlertController, ModalController} from "@ionic/angular";
+import {AlertController, ModalController, Platform} from "@ionic/angular";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
 import { Badge } from '@capawesome/capacitor-badge';
@@ -11,6 +11,8 @@ import StorageObservable from "../../../utils/StorageObservable";
 import { environment } from 'src/environments/environment';
 import { set } from 'date-fns';
 import { ChatService } from 'src/app/chat.service';
+import { NativeAudio } from '@capgo/native-audio';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 @Component({
   selector: 'app-chat-master',
@@ -35,6 +37,9 @@ export class ChatMasterPage implements OnInit {
   registeredPusherCorrespondentIds = []
   instantMessagingInitialized = false
 
+  // The audio notification
+  audio_incoming: any = undefined
+
   constructor(
     private contentService:ContentService,
     private modalController: ModalController,
@@ -44,6 +49,7 @@ export class ChatMasterPage implements OnInit {
     private router:Router,
     private broadcastingService: BroadcastingService,
     private chatService: ChatService,
+    private platform: Platform
   ) {
   }
 
@@ -118,8 +124,8 @@ export class ChatMasterPage implements OnInit {
               if (message.sender && message.sender.id != this.user.id){
                 entity.unread = message.sender.unread || 0
                 this.totalUnreadMessages += 1
-                console.log("totalUnreadMessages: ", this.totalUnreadMessages)
                 this.chatService.unreadMessagesSubject.next(this.totalUnreadMessages)
+                this.playIncomingMessageAudio()
               }
               if (message.sender_id == this.user.id)
                 entity.unread = 0
@@ -232,6 +238,23 @@ export class ChatMasterPage implements OnInit {
     this.chatService.unreadMessages$.subscribe((unreadMessages) => {
       this.totalUnreadMessages = unreadMessages
     })
+
+    // 7. The audios
+    if (this.platform.is('capacitor')){ // mobile
+      try{
+        NativeAudio.preload({
+          assetId: 'incoming-message.mp3',
+          assetPath: 'public/assets/audio/incoming-message.mp3',
+          audioChannelNum: 2,
+          isUrl: false
+        })
+      }catch(e){
+        throwError(e)
+      }
+    } else { // web for testing
+      this.audio_incoming = new Audio()
+      this.audio_incoming.src = "../../assets/audio/incoming-message.mp3"
+    }
   }
 
   navigateTo(url:string) {
@@ -325,5 +348,13 @@ export class ChatMasterPage implements OnInit {
     }
     entity.unread = 0
     this.navigateTo('/chat/details/' + entity.id)
+  }
+  playIncomingMessageAudio(){
+    if (this.platform.is('capacitor')){
+      NativeAudio.play({assetId: 'incoming-message.mp3'})
+      Haptics.vibrate()
+    } else {
+      this.audio_incoming.play()
+    }
   }
 }
