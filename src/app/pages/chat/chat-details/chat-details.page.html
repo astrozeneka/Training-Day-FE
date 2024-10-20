@@ -1,7 +1,10 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/chat"></ion-back-button>
+      <!--<ion-back-button defaultHref="/chat"></ion-back-button>-->
+      <ion-button (click)="router.navigate(['/chat'])">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>
       <div>
@@ -45,15 +48,10 @@
 <ion-content scroll-y="false">
   <div class="messaging">
     <div class="discussion-flow ion-content-scroll-host" #discussionFlow><!-- The discussion flow -->
-        <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)" position="top">
-            <div class="ion-text-center ion-padding helper">
-                ....
-            </div>
-        </ion-infinite-scroll>
         <div *ngIf="!entityList">
             <ion-spinner class="ion-padding" style="padding-top: 20vh"></ion-spinner>
         </div>
-        <div *ngIf="entityList">
+        <div *ngIf="entityList" class="flow">
           <div *ngFor="let entity of entityList" 
             class="message" 
             [class.received]="entity.recipient_id === recipient_id" 
@@ -87,6 +85,14 @@
             </div>
           </div>
         </div>
+        <ion-infinite-scroll position="top">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+          <!--
+          <div class="ion-text-center ion-padding helper">
+              ....
+          </div>
+          -->
+        </ion-infinite-scroll>
     </div>
     <div class="ion-padding appointment-alert" *ngIf="this.correspondent?.appointments.length > 0">
       <ion-icon name="calendar-outline"></ion-icon>

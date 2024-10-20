@@ -22,10 +22,18 @@ ion-title>div{
   flex-direction: column;
 }
 
-.discussion-flow{
+.discussion-flow{ // Parent scrollable target
   flex-grow: 1;
-  overflow-y: auto;
-  flex-direction: column;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column-reverse;
+  border: 3px solid green;
+
+  &>*{
+    border: 1px solid blue;
+  }
+  & .flow{
+  }
 }
 
 .controls{

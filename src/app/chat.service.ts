@@ -101,23 +101,23 @@ export class ChatService {
     }
   }
 
-  async registerChatEvents(correspondent_id, callback, coachAsNutritionist=false) {
+  registerChatEvents(correspondent_id, callback, coachAsNutritionist=false) {
     let pusher_id = `messages.${this.user.id}`
     if(coachAsNutritionist)
       pusher_id = `messages.${environment.nutritionistId}` 
     console.log("Pusher id: ", pusher_id)
     console.log("Subscribe to: ", `message-details-updated-${correspondent_id}`)
-    this.bs.pusher.subscribe(pusher_id)
+    let subscription = this.bs.pusher.subscribe(pusher_id)
       .bind(`message-details-updated-${correspondent_id}`, async ({data, metainfo}) => {
-        console.log("Load data from broadcasting: ", {data, metainfo})
+        console.log("Load data from broadcasting: "/*, {data, metainfo}*/)
         // Store into cache
         let recipientId = coachAsNutritionist ? environment.nutritionistId : this.user.id
         let cache_slug = `messages.${recipientId}.${correspondent_id}.${metainfo.offset}`
         if (!metainfo.alter_cache){
-          console.log("Store cached data ("+cache_slug+"): ", {
+          console.log("Store cached data ("+cache_slug+"): "/*, {
             data: {data, metainfo},
             expires_at: Date.now() + 1000 * 60 * 5 // 5 minutes
-          })
+          }*/)
           await this.cs.storage.set(cache_slug, {
             data: {data, metainfo},
             expires_at: Date.now() + 1000 * 60 * 5 // 5 minutes
@@ -128,9 +128,9 @@ export class ChatService {
         }
         callback({data, metainfo})
       })
-    
     //await new Promise((resolve)=>setTimeout(resolve, 1000))
     this.loadMessages(correspondent_id, 0, callback, coachAsNutritionist) // offset is 0
+    return subscription
   }
 
   async clearCache(correspondent_id){

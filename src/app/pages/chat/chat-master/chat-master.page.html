@@ -59,7 +59,7 @@
         <div *ngIf="entityList" class="discussion-list">
             <ion-item
                     *ngFor="let entity of entityList"
-                    (click)="navigateToChatDetails(entity.id)"
+                    [routerLink]="['/chat/details', entity.id]"
                     style="cursor:pointer"
                     [ngClass]="{'unread': entity.unread}"
             >
@@ -178,6 +178,7 @@
                     <ion-spinner></ion-spinner>
                 </p>
             </div>
+            <ion-button *ngIf="!environment.production && false" (click)="simulateResume()">Simulate onresume</ion-button>
         </div>
 
         <br/><br/>

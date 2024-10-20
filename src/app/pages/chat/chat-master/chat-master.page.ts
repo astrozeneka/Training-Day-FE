@@ -6,7 +6,7 @@ import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
 import { Badge } from '@capawesome/capacitor-badge';
 import {BroadcastingService} from "../../../broadcasting.service";
-import {catchError, debounceTime, distinctUntilChanged, merge, throwError} from "rxjs";
+import {catchError, debounce, debounceTime, distinctUntilChanged, filter, merge, throwError} from "rxjs";
 import StorageObservable from "../../../utils/StorageObservable";
 import { environment } from 'src/environments/environment';
 import { set } from 'date-fns';
@@ -43,6 +43,10 @@ export class ChatMasterPage implements OnInit {
   // Hearbeat interval
   heartbeat_interval = undefined
 
+  // Window focus registration
+  environment = environment
+  windowFocusRegistered = false
+
   constructor(
     private contentService:ContentService,
     private modalController: ModalController,
@@ -57,7 +61,9 @@ export class ChatMasterPage implements OnInit {
   }
 
   prepareDiscussionData({data, metainfo}, searchTerm=""){ // Metainfo include a user_id key to unvalidate the data
-    console.log("======= PREPARE DISCUSSION DATA =======") // DOESN'T PASS HERE
+    console.log("======= PREPARE DISCUSSION DATA =======")
+    if (data.length == 0) // Sometimes, it is fired without data, it is a bug
+      return
     // To optimized this code should include a debounce time
     if(typeof data == "object") // Here data is an object, but should be array (This is from the way localStorage stores items)
       data = Object.values(data)
@@ -261,9 +267,33 @@ export class ChatMasterPage implements OnInit {
     if (this.heartbeat_interval)
       clearInterval(this.heartbeat_interval)
     this.heartbeat_interval = setInterval(()=>{
-      console.log("Here")
       this.contentService.post('/users-heartbeats', {}).subscribe(()=>null)
     }, 5000)
+
+    // 9. When the user is back in the app, refresh the information
+    if (!this.windowFocusRegistered){
+      this.windowFocusRegistered = true
+      console.log("register platform on resume")
+      this.platform.resume.subscribe(async()=>{
+        await (()=>new Promise(_=>setTimeout(_, 1500)))() // When the message master info doesn't update, try to increase the delay
+        this.contentService.post('/chat/request-update/'+this.user.id, {})
+        .subscribe(data => null)
+      })
+      /*window.addEventListener('focus', ()=>{
+        this.feedbackService.register("User is back", "success")
+        this.contentService.post('/chat/request-update/'+this.user.id, {})
+        .subscribe(data => null)
+      })*/
+    }
+
+    // 10. After navigation event, it should refresh the data
+    /*this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd)
+      )
+      .subscribe((event:NavigationEnd) => {
+        this.platform.resume.next()
+      })*/
   }
 
   navigateTo(url:string) {
@@ -303,6 +333,7 @@ export class ChatMasterPage implements OnInit {
         )
       }
       merge(...observables)
+        .pipe(debounceTime(1000))
         .subscribe(async()=>{
           console.log("Vos paramètres ont été mises à jour") // NO need to show feedback message
           this.user.user_settings = {
@@ -365,5 +396,9 @@ export class ChatMasterPage implements OnInit {
     } else {
       this.audio_incoming.play()
     }
+  }
+
+  simulateResume(){
+    this.platform.resume.next()
   }
 }

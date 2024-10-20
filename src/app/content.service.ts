@@ -72,7 +72,6 @@ export class ContentService {
   post(suffix:string, data:any){
     // TODO: should have the bearer
     let headers = this.bearerHeaders()
-    console.log(this._token)
     return this.httpClient.post(`${this.apiEndpoint}${suffix}?${this.isDebug?'XDEBUG_SESSION_START=client':''}`, data, {headers})
   }
 

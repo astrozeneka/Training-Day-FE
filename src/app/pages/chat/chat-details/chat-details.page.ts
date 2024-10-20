@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {ContentService} from "../../../content.service";
-import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {ActionSheetController, AlertController, ModalController, Platform} from "@ionic/angular";
 import {FeedbackService} from "../../../feedback.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
@@ -14,16 +14,22 @@ import { ChatService } from 'src/app/chat.service';
 import { Browser } from '@capacitor/browser';
 import { FilePicker } from '@capawesome/capacitor-file-picker';
 import { Buffer } from "buffer";
-import { finalize } from 'rxjs';
+import { debounceTime, filter, finalize } from 'rxjs';
+import { ChatV3Service } from 'src/app/chat-v3.service';
+import { ViewWillEnter, ViewWillLeave } from '@ionic/angular';
+import IMessage from 'src/app/models/IMessages';
+import MessageSubject from 'src/app/utils/MessageSubject';
 
 @Component({
   selector: 'app-chat-details',
   templateUrl: './chat-details.page.html',
   styleUrls: ['./chat-details.page.scss'],
 })
-export class ChatDetailsPage implements OnInit {
+export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
   entityList:Array<any> = []
+  entityIdList:Array<number> = []
   entityOffset:any = 0
+  entityDateOffset:Date = new Date()
 
   correspondentId = null
   correspondent:any|null = null
@@ -42,19 +48,36 @@ export class ChatDetailsPage implements OnInit {
   environment: any;
   recipient_id: any;
 
+  // The chat event subscription
+  chatEventSubscription = undefined
+  navigationStartSubscription = undefined
+
+  // Check whether the component is displayed or not
+  componentIsActive = true
+
+  // The new system of the chating v3
+  messageSubject:MessageSubject = undefined
+  // entityDict = {} (unused)
+
+  // Custom scroll loading event
+  scrollIsLoading = false
+  scrollY = -0
+
   constructor(
     private contentService:ContentService, // As it is a universally used service, the name should be shortened
     private modalController: ModalController,
     private route:ActivatedRoute,
     private alertController:AlertController,
     private feedbackService:FeedbackService, // Same for here
-    private router:Router,
+    public router:Router,
     private broadcastingService: BroadcastingService,
     private actionSheetController: ActionSheetController,
 
-    private chatService: ChatService,
+    private chatService: ChatService, // Should not be used anymore, replaced by chatV3Service
     private platform: Platform,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+
+    private chatV3Service: ChatV3Service,
   ) {
     this.route.params.subscribe(async params=>{
       // check if params['id'] begins with n_
@@ -66,11 +89,27 @@ export class ChatDetailsPage implements OnInit {
         this.correspondentId = params['id']
       }
     })
-    this.router.events.subscribe(async event=>{
-      if(event instanceof NavigationEnd && this.router.url.includes('chat/details')) {
-        Badge.clear();
-      }
+
+    // Handle the badge deletion
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd && this.router.url.includes('chat/details')),
+      filter(event => this.componentIsActive) // Experimental
+    ).subscribe(async () => {
+      Badge.clear();
+    });
+
+    // The below code is not optimized
+    /*this.navigationStartSubscription = this.router.events.pipe(
+      filter((event) => event instanceof NavigationStart),
+    ).subscribe((event: NavigationStart) => {
+      console.log("Navigation start")
+      this.navigationStartSubscription.unsubscribe()
+      this.chatEventSubscription?.unsubscribe();
     })
+
+
+    this.environment = environment
+    console.log("Creating ChatDetailsPage")*/
 
     this.environment = environment
   }
@@ -78,6 +117,7 @@ export class ChatDetailsPage implements OnInit {
   prepareDiscussionDetailsData({data, metadata}){
     if (data.length == 0) // This prevent from infinite loop
       return
+    // Bug, this code is executed many many times causing a 429 error (only on mobile, not on web)
     console.log("**** prepare discussion details data")
     let newMessageAdded = false
     const maxId = Math.max(...this.entityList.map((item:any)=>item.id)) // Not accurate, should use date instead (anyway, this function will be moved in another angular service)
@@ -124,24 +164,76 @@ export class ChatDetailsPage implements OnInit {
 
   async ngOnInit() {
 
-    this.entityList = []
+    this.entityList = [];
+    this.contentService.userStorageObservable.getStorageObservable()
+      .pipe(filter((event)=>this.componentIsActive))
+      .subscribe(async (user)=>{
+        this.user = user
+        if (!this.coachAsNutritionist) {
+          this.recipient_id = this.user.id
+        }
 
-    this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
-      this.user = user
-      if (!this.coachAsNutritionist) {
-        this.recipient_id = this.user.id
-      }
-    })
+        this.messageSubject = await this.chatV3Service.loadMessages(this.user.id, this.correspondentId) // Initial load
+        this.messageSubject.asObservable()
+          .subscribe((messages:IMessage[]) => {
+            // remove undelivered
+            this.entityList = this.entityList.filter((item:any)=>!item.undelivered)
+            // For each data
+            messages.forEach(message=>{
+              if (this.entityIdList.includes(message.id)) {
+                // Update existing
+                let entity = this.entityList.find((item:any)=>item.id == message.id)
+                entity.content = message.content
+              }else{
+                // Check if the message is an older one or a newer one
+                // For later, use created_at instead of id
+                if (this.entityList.length == 0 || this.entityList[0].created_at < message.created_at){
+                  // Append new
+                  this.entityList.push(message)
+                  this.entityIdList.push(message.id)
+                }else{
+                  // Append old
+                  this.entityList.unshift(message)
+                  this.entityIdList.unshift(message.id)
+                  this.entityDateOffset = message.created_at as Date
+                }
+              }
+            })          
+        })
+
+      });
+
+      this.loadCorrespondent();
+    /*
 
     this.loadCorrespondent()
 
-    this.chatService.registerChatEvents(this.correspondentId,  (p)=>{this.prepareDiscussionDetailsData(p)}, this.coachAsNutritionist);
-  
+    this.chatEventSubscription = this.chatService.registerChatEvents(this.correspondentId,  (p)=>{this.prepareDiscussionDetailsData(p)}, this.coachAsNutritionist);
+    */
+   
+
     // Automated testing unit
     (window as any).typeMessage = (str)=>{
       this.form.get('content').setValue(str)
       this.form.get('content').markAsTouched()
     }
+
+    // Manage the infinite scroll event manually
+    this.discussionFlow = document.querySelector('.discussion-flow')
+    this.discussionFlow.addEventListener('scroll', (event)=>{
+      if (this.scrollIsLoading)
+        return
+      let y = event.target.scrollTop // here y < 0
+      let height = event.target.scrollHeight
+      let clientHeight = event.target.clientHeight
+      this.scrollY = y
+      if (-y + 500 > height - clientHeight){
+        this.scrollIsLoading = true
+        // Custom event
+        this.ionInfiniteEvent = {target: {complete: ()=>{this.scrollIsLoading = false}}}
+        this.onIonInfinite(this.ionInfiniteEvent)
+      }
+    })
   }
 
   loadCorrespondent(){
@@ -151,28 +243,8 @@ export class ChatDetailsPage implements OnInit {
         this.avatar_url = url ? this.contentService.addPrefix(url) : undefined
         this.correspondent = data
 
-        // Check whether the correspondent is connected or not
-        // Reusage can be done in that part, but not possible at this stage of the project
-        let userSettings = this.correspondent.user_settings || {}
-        if(userSettings.activeFrom && userSettings.activeTo && userSettings.pauseDays){
-          let activeFrom = userSettings.activeFrom // e.g. 08:00
-          let activeTo = userSettings.activeTo // e.g. 18:00
-          let pauseDays = userSettings.pauseDays // e.g. [0, 6] for Sunday and Saturday
-          let now = new Date()
-          
-          // Check if the user is activate
-          let isPauseDay = pauseDays.includes(now.getDay())
-          let [activeFromHour, activeFromMinute] = activeFrom.split(':').map(Number);
-          let [activeToHour, activeToMinute] = activeTo.split(':').map(Number);
-          let isInActiveTime = (now.getHours() > activeFromHour || (now.getHours() === activeFromHour && now.getMinutes() >= activeFromMinute)) &&
-                               (now.getHours() < activeToHour || (now.getHours() === activeToHour && now.getMinutes() < activeToMinute));
-          this.correspondentIsOnline = !isPauseDay && isInActiveTime
-          
-          // If the coach is not available, show a message
-          if((this.correspondentIsOnline && this.correspondent?.user_settings?.unavailable)
-            || (!this.correspondentIsOnline && !this.correspondent?.user_settings?.available)){
-            this.feedbackService.registerNow("Le coach n'est pas disponible pour le moment. N'hésitez pas à laisser un message, il vous répondra dès que possible.", 'light')}
-        }
+        // Availability of the coach
+        this.correspondentIsOnline = this.correspondent.isAvailable
       })
   }
 
@@ -211,13 +283,99 @@ export class ChatDetailsPage implements OnInit {
   }
 
   ionInfiniteEvent = null
-  onIonInfinite(event:any){
-    this.ionInfiniteEvent = event
+  onIonInfinite(event:any){ // It doesn't work
+    this.chatV3Service.loadMoreMessages(this.user.id, this.correspondentId, this.entityDateOffset,
+      async ()=>{
+        event.target.complete()
+      }
+    )
+
+    /*
+    this.chatV3Service.loadMoreMessages(this.user.id, this.correspondentId, this.entityDateOffset,
+      async ()=>{
+        // Try to simulate fake content to the observable
+
+        await (new Promise(resolve => setTimeout(resolve, 3000)))
+        console.log('finished')
+        event.target.complete()
+        this.messageSubject.next([
+          {
+            id: 1,
+            created_at: new Date('2024-01-01T00:00:00Z'),
+            updated_at: new Date('2024-01-01T00:00:00Z'),
+            sender_id: 1,
+            recipient_id: 2,
+            file_id: null,
+            content: 'This is a fake message',
+            is_read: 0,
+            file: null
+          },
+          {
+            id: 2,
+            created_at: new Date('2024-01-01T00:00:00Z'),
+            updated_at: new Date('2024-01-01T00:00:00Z'),
+            sender_id: 1,
+            recipient_id: 2,
+            file_id: null,
+            content: 'This is another fake message',
+            is_read: 0,
+            file: null
+          },
+          {
+            id: 3,
+            created_at: new Date('2024-01-01T00:00:00Z'),
+            updated_at: new Date('2024-01-01T00:00:00Z'),
+            sender_id: 1,
+            recipient_id: 2,
+            file_id: null,
+            content: 'This is another fake message',
+            is_read: 0,
+            file: null
+          },
+          {
+            id: 4,
+            created_at: new Date('2024-01-01T00:00:00Z'),
+            updated_at: new Date('2024-01-01T00:00:00Z'),
+            sender_id: 1,
+            recipient_id: 2,
+            file_id: null,
+            content: 'This is another fake message',
+            is_read: 0,
+            file: null
+          },
+          {
+            id: 5,
+            created_at: new Date('2024-01-01T00:00:00Z'),
+            updated_at: new Date('2024-01-01T00:00:00Z'),
+            sender_id: 1,
+            recipient_id: 2,
+            file_id: null,
+            content: 'This is another fake message',
+            is_read: 0,
+            file: null
+          },
+          {
+            id: 6,
+            created_at: new Date('2024-01-01T00:00:00Z'),
+            updated_at: new Date('2024-01-01T00:00:00Z'),
+            sender_id: 1,
+            recipient_id: 2,
+            file_id: null,
+            content: 'This is another fake message',
+            is_read: 0,
+            file: null
+          }
+        ])
+
+      }
+    )
+    */
+    //this.messageSubject.loadMore()
     /*this.contentService.post(`/messages/request-update/${this.correspondentId}`, {correspondent_id: this.correspondentId, offset: this.entityOffset})
       .subscribe((data)=>{
         console.log('Request message update (onIonInfinite): ', data)
       })*/
-    this.chatService.loadMessages(this.correspondentId, this.entityOffset, (p)=>{this.prepareDiscussionDetailsData(p)})
+    //this.chatService.loadMessages(this.correspondentId, this.entityOffset, (p)=>{this.prepareDiscussionDetailsData(p)})
   }
 
   // 3. Managing the action sheets for seleting message
@@ -517,6 +675,7 @@ export class ChatDetailsPage implements OnInit {
     const { data } = await as.onDidDismiss();
     if(data.action == 'clear-cache'){
       this.chatService.clearCache(this.correspondentId)
+      this.chatV3Service.clearCache(this.user.id, this.correspondentId)
       this.feedbackService.registerNow("Cache cleared", 'success')
     }else if(data.action == 'scroll-top'){
       this.scrollTop()
@@ -554,4 +713,14 @@ export class ChatDetailsPage implements OnInit {
     this.cdr.detectChanges() // important
   }
 
+  // Managing router state
+  ionViewWillLeave(): void {
+    this.componentIsActive = false
+  }
+  ionViewWillEnter(): void {
+    this.componentIsActive = true
+    // Scroll to the last scrollY position
+    this.discussionFlow = document.querySelector('.discussion-flow')
+    this.discussionFlow.scrollTop = this.scrollY
+  }
 }
