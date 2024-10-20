@@ -57,6 +57,7 @@ export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
 
   // The new system of the chating v3
   messageSubject:MessageSubject = undefined
+  allMessagesLoaded = false;
   // entityDict = {} (unused)
 
   // Custom scroll loading event
@@ -177,6 +178,10 @@ export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
         this.messageSubject.asObservable()
           .subscribe((messages:IMessage[]) => {
             // remove undelivered
+            if (messages.length == 0)
+              this.allMessagesLoaded = true
+            else
+              this.allMessagesLoaded = false
             this.entityList = this.entityList.filter((item:any)=>!item.undelivered)
             // For each data
             messages.forEach(message=>{

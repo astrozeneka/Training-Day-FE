@@ -122,8 +122,6 @@ export class ChatMasterPage implements OnInit {
               let entity = this.entityList.find(entity=>entity.id == message.sender_id || entity.id == message.recipient_id)
               if (!entity)
                 return
-              console.log("Notification from pusher (evt: "+event+")")
-              console.log("Entity: ", entity)
               entity.messages = entity.messages.filter(m=>m.id != message.id)
               entity.messages.push(message)
               entity.messages = entity.messages.sort((a, b)=>b.id - a.id)
@@ -268,7 +266,7 @@ export class ChatMasterPage implements OnInit {
       clearInterval(this.heartbeat_interval)
     this.heartbeat_interval = setInterval(()=>{
       this.contentService.post('/users-heartbeats', {}).subscribe(()=>null)
-    }, 5000)
+    }, 10000)
 
     // 9. When the user is back in the app, refresh the information
     if (!this.windowFocusRegistered){

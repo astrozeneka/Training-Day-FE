@@ -27,10 +27,8 @@ ion-title>div{
   overflow-y: scroll;
   display: flex;
   flex-direction: column-reverse;
-  border: 3px solid green;
 
   &>*{
-    border: 1px solid blue;
   }
   & .flow{
   }

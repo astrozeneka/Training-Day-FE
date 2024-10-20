@@ -86,7 +86,13 @@
           </div>
         </div>
         <ion-infinite-scroll position="top">
-          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+          <div class="helper ion-text-center ion-padding" *ngIf="!allMessagesLoaded">
+            <a (click)="onIonInfinite(ionInfiniteEvent)">
+              Charger plus de messages
+            </a>
+          </div>
+          <ion-infinite-scroll-content *ngIf="!allMessagesLoaded"></ion-infinite-scroll-content>
+
           <!--
           <div class="ion-text-center ion-padding helper">
               ....
