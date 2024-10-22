@@ -32,7 +32,11 @@ export class SubscribePage extends FormComponent implements OnInit {
     'address': new FormControl(''),
 
     // Special form (used by passwordless login)
-    'username': new FormControl('', [])
+    'username': new FormControl('', []),
+
+    // city and postal code
+    'city': new FormControl('', [Validators.required]),
+    'postal_code': new FormControl('', [Validators.required])
   })
   override displayedError = {
     'email': undefined, // ไม่ต้องใส่ Role
@@ -41,7 +45,10 @@ export class SubscribePage extends FormComponent implements OnInit {
     'firstname': undefined,
     'lastname': undefined,
     'phone': undefined,
-    'address': undefined
+    'address': undefined,
+    //
+    'city': undefined,
+    'postal_code': undefined
   }
   formIsLoading:boolean = false
 
@@ -96,6 +103,7 @@ export class SubscribePage extends FormComponent implements OnInit {
     this.contentService.post('/users', obj)
       .pipe(catchError((error)=>{
         if(error.status == 422){
+          console.log(error.error)
           this.manageValidationFeedback(error, 'email')
           this.manageValidationFeedback(error, 'password')
           this.manageValidationFeedback(error, 'password_confirm')
@@ -103,6 +111,8 @@ export class SubscribePage extends FormComponent implements OnInit {
           this.manageValidationFeedback(error, 'lastname')
           this.manageValidationFeedback(error, 'phone')
           this.manageValidationFeedback(error, 'address')
+          this.manageValidationFeedback(error, 'city')
+          this.manageValidationFeedback(error, 'postal_code')
         }
         return throwError(error)
       }), finalize(async ()=>{

@@ -125,6 +125,24 @@
         [errorText]="displayedError.address"
       ></ion-input>
     </ion-item>
+    <div class="city-postal-code">
+      <ion-item>
+        <ion-input
+          label="Ville"
+          label-placement="floating"
+          formControlName="city"
+          [errorText]="displayedError.city"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          label="Code postal"
+          label-placement="floating"
+          formControlName="postal_code"
+          [errorText]="displayedError.postal_code"
+        ></ion-input>
+      </ion-item>
+    </div>
 
     <div class="ion-text-center ion-padding">
       <ion-button (click)="resetForm()" color="medium" *ngIf="!passwordlessLogin">Réinitialiser</ion-button>

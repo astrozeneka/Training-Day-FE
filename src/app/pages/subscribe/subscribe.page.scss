@@ -32,3 +32,14 @@
         min-width: 200px;
     }
 }
+
+// City and postal code
+.city-postal-code{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .8em;
+    & ion-item{
+        flex-grow: 1;
+    }
+}
