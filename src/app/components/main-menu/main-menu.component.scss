@@ -89,7 +89,7 @@ ion-button{ // Warning, reused component
     padding-right: 1em;
     position: relative;
     margin-right: 0.6em;
-    background: var(--ion-color-light);
+    //background: var(--ion-color-light);
     & img{
       max-height: 100%;
       max-width: 100%;
@@ -111,4 +111,12 @@ ion-accordion [value=folder-boxing]{
     //  display: none;
     }
   }  
+}
+
+// Code patch to align the video menu to be left
+ion-accordion-group ion-button > div.inner{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
 }

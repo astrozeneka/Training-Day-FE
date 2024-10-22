@@ -68,4 +68,32 @@ ion-accordion ion-button[slot=header]{
 ion-accordion{
   margin-top: 1em;
   margin-bottom: 1em;
+  align-items: stretch;
+}
+
+// Code patch to align the video sub-menus
+div[slot=content]{
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  gap: 21ox;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+ion-accordion-group ion-button {
+  --padding-top: 0px;
+  --padding-bottom: 0px;
+  height: 36px!important;
+  --margin-bottom: 0px;
+  margin-bottom: 0px;
+
+  & > div.inner{
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%
+    //min-width: 300px;
+  }
 }
