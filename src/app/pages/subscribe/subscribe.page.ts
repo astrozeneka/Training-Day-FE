@@ -36,7 +36,7 @@ export class SubscribePage extends FormComponent implements OnInit {
 
     // city and postal code
     'city': new FormControl('', [Validators.required]),
-    'postal_code': new FormControl('', [Validators.required])
+    'postal_code': new FormControl('', [Validators.required, Validators.pattern(/^\d{5}$/)])
   })
   override displayedError = {
     'email': undefined, // ไม่ต้องใส่ Role

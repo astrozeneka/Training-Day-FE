@@ -18,6 +18,7 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {BroadcastingService} from "../../broadcasting.service";
 import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
+import PasswordToggle from 'src/app/utils/PasswordToggle';
 
 @Component({
   selector: 'app-login',
@@ -38,6 +39,9 @@ export class LoginPage extends FormComponent implements OnInit {
   }
 
   device_token = {}
+
+  // tooglable object for password display
+  passwordToggle = new PasswordToggle()
 
   constructor(
     private contentService: ContentService,

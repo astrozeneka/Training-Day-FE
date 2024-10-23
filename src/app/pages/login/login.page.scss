@@ -1,4 +1,5 @@
 @import '../../../mixins';
+@import 'src/theme/mixins.scss';
 
 .login-header{
   padding-bottom: 2em;
@@ -32,4 +33,10 @@ ion-content{
   &>div{
     width: 100%;
   }
+}
+
+
+// Password toggle
+.password-toggle{
+  @include password-toggle;
 }

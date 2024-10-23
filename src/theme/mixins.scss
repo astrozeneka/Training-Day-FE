@@ -1,0 +1,23 @@
+
+@mixin password-toggle{
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    border-radius: 50%!important;
+
+    // To be tested
+    -webkit-touch-callout: none; /* Disable long touch context menu */
+
+    &>div{
+        height: 34px;
+        width: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    & ion-icon{
+        font-size: 18px;
+    }
+}
