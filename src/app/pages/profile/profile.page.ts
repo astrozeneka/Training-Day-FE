@@ -33,7 +33,9 @@ export class ProfilePage extends FormComponent implements OnInit {
     'lastname': new FormControl('', [Validators.required]),
     'phone_prefix': new FormControl('+33', [Validators.required]),// I don't know the default value doen't work
     'phone': new FormControl(''),
-    'address': new FormControl('')
+    'address': new FormControl(''),
+    'city': new FormControl('', [Validators.required]),
+    'postal_code': new FormControl('', [Validators.required, Validators.pattern(/^\d{5}$/)])
   });
   override displayedError = {
     'email': undefined, // read only
@@ -42,7 +44,9 @@ export class ProfilePage extends FormComponent implements OnInit {
     'firstname': undefined,
     'lastname': undefined,
     'phone': undefined,
-    'address': undefined
+    'address': undefined,
+    'city': undefined,
+    'postal_code': undefined
   }
   formIsLoading:boolean = false;
 
@@ -153,6 +157,8 @@ export class ProfilePage extends FormComponent implements OnInit {
           this.manageValidationFeedback(error, 'firstname')
           this.manageValidationFeedback(error, 'lastname')
           this.manageValidationFeedback(error, 'phone')
+          this.manageValidationFeedback(error, 'city')
+          this.manageValidationFeedback(error, 'postal_code')
         }
         return throwError(error)
       }), finalize(()=>{
