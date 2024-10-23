@@ -23,7 +23,9 @@ export class UserViewComponent extends FormComponent implements OnInit {
     'firstname': new FormControl('', [Validators.required]),
     'lastname': new FormControl('', [Validators.required]),
     'phone': new FormControl(''),
-    'address': new FormControl('')
+    'address': new FormControl(''),
+    'city': new FormControl('', [Validators.required]),
+    'postal_code': new FormControl('', [Validators.required, Validators.pattern(/^\d{5}$/)])
   })
   override displayedError = {
     'email': undefined,
@@ -33,7 +35,10 @@ export class UserViewComponent extends FormComponent implements OnInit {
     'firstname': undefined,
     'lastname': undefined,
     'phone': undefined,
-    'address': undefined
+    'address': undefined,
+
+    'city': undefined,
+    'postal_code': undefined
   }
   constructor(
     private modalCtrl: ModalController,
@@ -78,7 +83,7 @@ export class UserViewComponent extends FormComponent implements OnInit {
     if(this.entity == null){
       this.contentService.post('/users', obj)
         .pipe(catchError((error)=>{
-          if(error.status == 402) {
+          if(error.status == 422) { // Redundant code
             this.manageValidationFeedback(error, 'email')
             this.manageValidationFeedback(error, 'role')
             this.manageValidationFeedback(error, 'password')
@@ -87,6 +92,8 @@ export class UserViewComponent extends FormComponent implements OnInit {
             this.manageValidationFeedback(error, 'lastname')
             this.manageValidationFeedback(error, 'phone')
             this.manageValidationFeedback(error, 'address')
+            this.manageValidationFeedback(error, 'city')
+            this.manageValidationFeedback(error, 'postal_code')
           }
           return throwError(error)
         }))
@@ -97,7 +104,8 @@ export class UserViewComponent extends FormComponent implements OnInit {
     }else if(this.entity != null){ // อั้ปเดต entity
       this.contentService.put('/users', obj)
         .pipe(catchError((error)=>{
-          if(error.status == 402) {
+          console.log(error)
+          if(error.status == 422) { // Redundant code
             this.manageValidationFeedback(error, 'email')
             this.manageValidationFeedback(error, 'role')
             this.manageValidationFeedback(error, 'password')
@@ -106,6 +114,8 @@ export class UserViewComponent extends FormComponent implements OnInit {
             this.manageValidationFeedback(error, 'lastname')
             this.manageValidationFeedback(error, 'phone')
             this.manageValidationFeedback(error, 'addresse')
+            this.manageValidationFeedback(error, 'city')
+            this.manageValidationFeedback(error, 'postal_code')
           }
           return throwError(error)
         }))

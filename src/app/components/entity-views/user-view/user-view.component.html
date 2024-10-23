@@ -99,6 +99,25 @@
         [errorText]="displayedError.address"
       ></ion-input>
     </ion-item>
+
+    <div class="city-postal-code">
+      <ion-item>
+        <ion-input
+          label="Ville"
+          label-placement="floating"
+          formControlName="city"
+          [errorText]="displayedError.city"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          label="Code postal"
+          label-placement="floating"
+          formControlName="postal_code"
+          [errorText]="displayedError.postal_code"
+        ></ion-input>
+      </ion-item>
+    </div>
   </form>
   <div *ngIf="entity.function === 'customer'">
     <h1 class="ion-padding">Privileges</h1>
