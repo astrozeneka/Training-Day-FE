@@ -566,7 +566,7 @@ export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
   // the #fileInput element
   @ViewChild('fileInput') fileInput:any = undefined
   file = undefined
-  async selectFile(){
+  async selectFile(type: 'file'|'image'|'media'|'video'){
     // Click the file input
     // this.fileInput.nativeElement.click() // Old code for picking files
     // Check permissions
@@ -578,10 +578,28 @@ export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
     if (this.platform.is('capacitor')) {
       let result;
       try{
-        result = await FilePicker.pickFiles({
-          limit: 1,
-          readData: true
-        })
+        console.log("Type: "+type)
+        if (type == 'image'){
+          result = await FilePicker.pickImages({
+            limit: 1,
+            readData: true
+          })
+        } else if (type == 'video'){
+          result = await FilePicker.pickVideos({
+            limit: 1,
+            readData: true
+          })
+        } else if (type == 'media'){
+          result = await FilePicker.pickMedia({
+            limit: 1,
+            readData: true
+          })
+        } else if (type == 'file'){
+          result = await FilePicker.pickFiles({
+            limit: 1,
+            readData: true
+          })
+        }
       }catch(e){
         return;
       }
@@ -727,5 +745,54 @@ export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
     // Scroll to the last scrollY position
     this.discussionFlow = document.querySelector('.discussion-flow')
     this.discussionFlow.scrollTop = this.scrollY
+  }
+
+  // 11. The bottom menu allowing to specify we want to send "File" or Image
+  async presentActionSheetFile(){
+    if (this.platform.is('capacitor')){
+      let as = await this.actionSheetController.create({
+        'header': 'Action',
+        'buttons': [
+          {
+            text: 'Envoyer un fichier',
+            data: {
+              action: 'file',
+            },
+          },
+          {
+            text: 'Envoyer une image',
+            data: {
+              action: 'image',
+            },
+          },
+          {
+            text: 'Envoyer une vidéo',
+            data: {
+              action: 'video',
+            },
+          },
+          {
+            text: 'Envoyer un média',
+            data: {
+              action: 'media',
+            },
+          },
+          {
+            text: 'Annuler',
+            role: 'cancel',
+            data: {
+              action: 'cancel',
+            },
+          }
+        ]})
+      await as.present();
+      // Role
+      const { data } = await as.onDidDismiss();
+      if(['file', 'image', 'media', 'video'].includes(data.action)){
+        this.selectFile(data.action)
+      }
+    }else{
+      this.fileInput.nativeElement.click()
+    }
   }
 }
