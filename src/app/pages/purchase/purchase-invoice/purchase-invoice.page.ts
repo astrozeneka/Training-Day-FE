@@ -97,10 +97,9 @@ export class PurchaseInvoicePage implements OnInit {
         .subscribe((response:any)=> {
           console.log("Retrieve response after purchase")
           //this.feedbackService.register('Votre achat a été enregistré. Vous pouvez maintenant profiter de votre achat.')
-          
           let feedbackOpts = {
             buttonText: null,
-            primaryButtonText: 'Prendre contact avec mon coach',
+            primaryButtonText: this.productId.includes('foodcoach') ? 'Prendre contact avec mon nutritionniste' : 'Prendre contact avec mon coach',
             secondaryButtonText: 'Retour à l\'accueil',
             primaryButtonAction: '/chat',
             secondaryButtonAction: '/home',

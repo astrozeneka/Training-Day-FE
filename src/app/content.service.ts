@@ -69,10 +69,14 @@ export class ContentService {
     })
   }
 
-  post(suffix:string, data:any){
+  post(suffix:string, data:any, extraOptions:any={}){
     // TODO: should have the bearer
     let headers = this.bearerHeaders()
-    return this.httpClient.post(`${this.apiEndpoint}${suffix}?${this.isDebug?'XDEBUG_SESSION_START=client':''}`, data, {headers})
+    return this.httpClient.post(
+      `${this.apiEndpoint}${suffix}?${this.isDebug?'XDEBUG_SESSION_START=client':''}`,
+      data, 
+      {headers, ...extraOptions}
+    )
   }
 
   get(suffix:string, offset=0, searchValue="", searchFilter="", limit=10, criterias:any={}){

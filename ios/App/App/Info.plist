@@ -69,5 +69,16 @@
 	<true/>
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0.0</string>
+	<key>NSPrivacyAccessedAPITypes</key>
+    <array>
+      <dict>
+        <key>NSPrivacyAccessedAPIType</key>
+        <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+        <key>NSPrivacyAccessedAPITypeReasons</key>
+        <array>
+          <string>CA92.1</string>
+        </array>
+      </dict>
+    </array>
 </dict>
 </plist>

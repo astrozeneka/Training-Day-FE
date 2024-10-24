@@ -20,6 +20,7 @@ import { ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 import IMessage from 'src/app/models/IMessages';
 import MessageSubject from 'src/app/utils/MessageSubject';
 import { FormComponent } from 'src/app/components/form.component';
+import { HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-chat-details',
@@ -276,10 +277,15 @@ export class ChatDetailsPage extends FormComponent implements OnInit, ViewWillEn
     let obj:any = this.form.value;
     obj.recipient_id = this.correspondentId;
     obj.sender_id = (await this.contentService.storage.get('user')).id // Can be replaced by this.user.id (but need test first)
+    let postExtraOptions = {}
     if (this.file) {
       obj.file = this.file
+      postExtraOptions = {
+        observe: 'events',
+        reportProgress: true
+      }
     }
-    this.contentService.post('/messages', obj)
+    this.contentService.post('/messages', obj, postExtraOptions)
       .pipe(
         catchError((error)=>{
           if (error.status == 422) {
@@ -291,7 +297,14 @@ export class ChatDetailsPage extends FormComponent implements OnInit, ViewWillEn
         })
         ,finalize(()=>{
       }))
-      .subscribe(async(res)=>{ // Should handle error here
+      .subscribe(async(event:any)=>{ // Should handle error here
+        console.log(event.type)
+        if (event.type === HttpEventType.UploadProgress) {
+          const progress = event.loaded / event.total;
+          obj.progress = progress
+          console.log(obj.progress)
+          this.cdr.detectChanges()
+        }
       })
 
     obj.undelivered = true
@@ -665,8 +678,22 @@ export class ChatDetailsPage extends FormComponent implements OnInit, ViewWillEn
       // this.feedbackService.registerNow("No file selected", 'danger')
     }
   }
+
+  downloadMessageFile(message){
+    if (message.undelivered || message.fileIsLoading) {
+      return
+    } else {
+      message.fileIsLoading = true;
+      this.contentService.getOne(`/files/details/`+message.file.id,{})
+        .subscribe((data: any) => {
+          let url = environment.rootEndpoint + '/' + data.permalink
+          Browser.open({ url: url });
+          message.fileIsLoading = false;
+        })
+    }
+  }
     
-  downloadFileById(id){
+  private _downloadFileById(id){ // Deprecated, not used anymore
     this.contentService.getOne(`/files/details/`+id, {})
       .subscribe((data:any)=>{
         let url = environment.rootEndpoint + '/' + data.permalink

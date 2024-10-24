@@ -36,13 +36,15 @@ ion-title>div{
 
 .controls{
   & form{
-    height: 80px;
+    height: fit-content;
     position: relative;
+    margin-bottom: env(safe-area-inset-bottom);
   }
 
   ion-item{
     background: var(--ion-color-base) !important;
-    padding-bottom: 30px!important;
+    // padding-bottom: 30px!important;
+    background: cyan!important;
   }
 
   ion-input{
@@ -67,7 +69,7 @@ ion-title>div{
     height: fit-content;
 
     &.undelivered{ // unused
-      opacity: 0.9;
+      opacity: 0.6;
     }
   }
 }
@@ -151,10 +153,55 @@ ion-title>div{
 }
 */
 
+.badge-wrapper{
+  padding-top: 1em;
+  margin-bottom: -1em!important;
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 5px;
+  //justify-content: center;
+  gap: .2em;
+  & ion-spinner{
+    height: 1.2em;
+  }
+}
+// Side specific styles
+.message.received .badge-wrapper{
+  flex-direction: row-reverse!important; // Overwrite
+  padding-bottom: 1em!important; // Overwrite
+}
 .file-badge{
-  margin-top: 1em;
-  & >*{
-    vertical-align: middle;
+  position: relative;
+  & > div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  padding: .8em;
+
+  & ion-icon{
+    font-size: 1.2em;
+  }
+
+  & ion-spinner{
+    background: cyan;
+    height: 1.2em;
+  }
+
+  & .progress-bar{
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    & .bar{
+      height: 4px;
+      background: var(--ion-color-primary);
+      width: 0px;
+      // Animate the width
+      transition: width 0.3s;
+    }
   }
 }
 

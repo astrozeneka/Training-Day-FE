@@ -57,10 +57,17 @@
             [class.received]="entity.recipient_id === recipient_id" 
             [class.sent]="entity.recipient_id !== recipient_id"
             >
-            <div *ngIf="entity.content !== '[deleted]' && entity.file"><!-- TODO For later, merge the two following div in the same s-->
-              <ion-badge color="medium" class="file-badge" (click)="downloadFileById(entity.file.id)">
-                <ion-icon name="attach-outline"></ion-icon>
-                {{entity.file.name}}
+            <div *ngIf="entity.content !== '[deleted]' && entity.file" class="badge-wrapper"><!-- TODO For later, merge the two following div in the same s-->
+              <ion-spinner *ngIf="entity.undelivered || entity.fileIsLoading"></ion-spinner>
+              <ion-badge color="medium" class="file-badge" (click)="downloadMessageFile(entity)">
+                <div class="inner">
+                  <ion-icon name="attach-outline"></ion-icon>
+                  <span>{{entity.file.name}}</span>
+                </div>
+                <div class="progress-bar" *ngIf="entity.undelivered">
+                  <div class="bar" [style]="'width: ' + (entity.progress * 100) + '%'"></div>
+                  <span style="opacity: 0; position: absolute">{{ entity.progress }}</span>
+                </div>
               </ion-badge>
             </div>
             <div *ngIf="entity.content !== '[deleted]'">
