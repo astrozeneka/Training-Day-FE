@@ -14,18 +14,19 @@ import { ChatService } from 'src/app/chat.service';
 import { Browser } from '@capacitor/browser';
 import { FilePicker } from '@capawesome/capacitor-file-picker';
 import { Buffer } from "buffer";
-import { debounceTime, filter, finalize } from 'rxjs';
+import { catchError, debounceTime, filter, finalize, throwError } from 'rxjs';
 import { ChatV3Service } from 'src/app/chat-v3.service';
 import { ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 import IMessage from 'src/app/models/IMessages';
 import MessageSubject from 'src/app/utils/MessageSubject';
+import { FormComponent } from 'src/app/components/form.component';
 
 @Component({
   selector: 'app-chat-details',
   templateUrl: './chat-details.page.html',
   styleUrls: ['./chat-details.page.scss'],
 })
-export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
+export class ChatDetailsPage extends FormComponent implements OnInit, ViewWillEnter, ViewWillLeave {
   entityList:Array<any> = []
   entityIdList:Array<number> = []
   entityOffset:any = 0
@@ -40,9 +41,12 @@ export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
 
   @ViewChild('discussionFlow') discussionFlow:any = undefined;
 
-  form = new FormGroup({
+  override form = new FormGroup({
     'content': new FormControl('', Validators.required)
   })
+  override displayedError = {
+    'content': undefined
+  }
 
   echo: Echo = undefined;
   environment: any;
@@ -80,6 +84,7 @@ export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
 
     private chatV3Service: ChatV3Service,
   ) {
+    super()
     this.route.params.subscribe(async params=>{
       // check if params['id'] begins with n_
       if(params['id'].startsWith('n_')){
@@ -275,8 +280,16 @@ export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
       obj.file = this.file
     }
     this.contentService.post('/messages', obj)
-      .pipe(finalize(()=>{
-        this.clearFile()
+      .pipe(
+        catchError((error)=>{
+          if (error.status == 422) {
+            this.manageValidationFeedback(error, 'content')
+          }
+          // Delete the undeliverable entity
+          this.entityList = this.entityList.filter((item:any)=>!item.undelivered)
+          return throwError(error)
+        })
+        ,finalize(()=>{
       }))
       .subscribe(async(res)=>{ // Should handle error here
       })
@@ -284,6 +297,9 @@ export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
     obj.undelivered = true
     this.entityList.push(obj) // Should use a function, not only push
     this.scrollTop() // Should be included in the above described function
+
+
+    this.clearFile()
     this.form.reset()
   }
 
@@ -607,6 +623,8 @@ export class ChatDetailsPage implements OnInit, ViewWillEnter, ViewWillLeave {
         let file = result["files"][0]
         let data = result.files[0].data
         data = "data:" + file.mimeType + ";base64," + data
+        // Sanitize file size here
+
         this.file = {
           name: file.name,
           type: file.mimeType,

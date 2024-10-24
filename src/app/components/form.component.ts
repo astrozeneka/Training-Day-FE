@@ -8,6 +8,7 @@ export class FormComponent {
     if (!form) {
       form = this.form
     }
+    console.log(error.error)
     if(error.error.errors[slug]){
       console.log(form)
       this.displayedError[slug] = error.error.errors[slug]
