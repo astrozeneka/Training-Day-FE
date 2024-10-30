@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
-import {PurchaseService} from "../../purchase.service";
+// import {PurchaseService} from "../../purchase.service";
 import {environment} from "../../../environments/environment";
-import StorePlugin from "../../custom-plugins/store.plugin";
+import StorePlugin, { Product } from "../../custom-plugins/store.plugin";
 import {Platform} from "@ionic/angular";
 import {EntitlementReady} from "../../abstract-components/EntitlementReady";
+import { PurchaseService } from 'src/app/purchase.service';
 
 @Component({
   selector: 'app-subscriptions',
@@ -29,20 +30,30 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
   }
 
   async ngOnInit() {
-    let productList
-    try {
-      productList = (await StorePlugin.getProducts({})).products
-      this.feedbackService.registerNow('loading products from native plugin ' + JSON.stringify(productList), 'success')
-    } catch (error) {
-      console.error('Error loading products:', error);
-      this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
+    // 1. Loading product list from the StorePlugin (deprecated, should use purchase service now)
+    if (this.platform.is('ios')) { // TODO later: unify
+      let productList
+      try {
+        productList = (await StorePlugin.getProducts({})).products
+        this.feedbackService.registerNow('loading products from native plugin ' + JSON.stringify(productList), 'success')
+      } catch (error) {
+        console.error('Error loading products:', error);
+        this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
+      }
+      this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
+      this.user = await this.contentService.getUserFromLocalStorage()
+      console.log("load products from store")
+      console.log(this.productList)
+      await this.loadEntitlements()
+    } else if (this.platform.is('android')) { // TODO later: unify
+      let productList: Product[];
+      try {
+        productList = (await this.purchaseService.getProducts()).products;
+      } catch (error) { // TODO later: unify
+        console.error('Error loading products:', error);
+        this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
+      }
     }
-    this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
-    this.user = await this.contentService.getUserFromLocalStorage()
-    console.log("load products from store")
-    console.log(this.productList)
-
-    await this.loadEntitlements()
   }
 
   async clickOption(option: string){
@@ -57,9 +68,8 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
 
   }
 
-  testPurchase(productId:string){
-    console.log("Click button")
-    this.purchaseService.purchase(productId)
+  testPurchase(productId:string){ // Unused, should be removed
+    // Todo: remove this function
   }
 
   async clickSubscriptionOption(productId: string){

@@ -62,6 +62,7 @@ export class ChatMasterPage implements OnInit {
 
   prepareDiscussionData({data, metainfo}, searchTerm=""){ // Metainfo include a user_id key to unvalidate the data
     console.log("======= PREPARE DISCUSSION DATA =======")
+    console.log(JSON.stringify(data)); // Delete later
     if (data.length == 0) // Sometimes, it is fired without data, it is a bug
       return
     // To optimized this code should include a debounce time
@@ -115,6 +116,7 @@ export class ChatMasterPage implements OnInit {
       console.log("Initializing pusher : messages."+this.user.id)
       this.broadcastingService.pusher.subscribe(`messages.${this.user.id}`)
         .bind_global((event, {data, metainfo})=>{
+          console.log("RECEIVE DATA FROM PUSHER")
           // Data is the message data from the backend
           if(data instanceof Array){ // Sometimes, there is a bug here
             data.forEach(message=>{
@@ -152,6 +154,7 @@ export class ChatMasterPage implements OnInit {
 
   pusherListenerInitialized = false
   async initPusherListener(){
+    console.log("Initialize pusher listener")
     if (this.pusherListenerInitialized)
       return
     this.pusherListenerInitialized = true
@@ -167,6 +170,7 @@ export class ChatMasterPage implements OnInit {
     await new Promise((resolve)=>setTimeout(resolve, 500)) // Not optimized
     
     // The old way to load the data (Generaly, this throw 429 too many requests error)
+    console.log("Requesting update")
     this.contentService.post('/chat/request-update/'+this.user.id, {})
       .subscribe(data => null)
   }
@@ -366,6 +370,7 @@ export class ChatMasterPage implements OnInit {
       this.broadcastingService.pusher.subscribe(`messages.${userIdToLoad}`)
         .bind('master-updated',
           ({data, metainfo}) => {
+            console.log("discussion data updated")
             this.discussionStorageObservable.updateStorage({data, metainfo})
           }
         )

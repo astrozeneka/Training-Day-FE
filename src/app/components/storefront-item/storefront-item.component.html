@@ -1,0 +1,26 @@
+<div class="storefront-item">
+  <h2 class="display-1">
+    <ng-content select="*[slot='title']"></ng-content>
+    <div *ngIf="!product" class="price">
+      -
+    </div>
+    <div *ngIf="product" class="price">
+      {{ product.displayPrice }}
+    </div>
+  </h2>
+  <p class="description">
+    <ng-content select="*[slot='description']"></ng-content>
+  </p>
+  <ion-button
+    [color]="color"
+    expand="block"
+    shape="round"
+    (click)="triggerAction()"
+    [disabled]="disabled || !product"
+  >
+    Choisir
+  </ion-button>
+  <p style="font-size: small" class="ion-text-center">
+    <ng-content select="*[slot='helper']"></ng-content>
+  </p>
+</div>

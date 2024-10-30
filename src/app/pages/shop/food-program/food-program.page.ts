@@ -3,8 +3,9 @@ import {Shop} from "../shop";
 import {ContentService} from "../../../content.service";
 import {Router} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
-import StorePlugin from "../../../custom-plugins/store.plugin";
+import StorePlugin, { Product } from "../../../custom-plugins/store.plugin";
 import {environment} from "../../../../environments/environment";
+import { PurchaseService } from 'src/app/purchase.service';
 
 @Component({
   selector: 'app-food-program',
@@ -20,15 +21,18 @@ export class FoodProgramPage implements OnInit{
   constructor(
     private contentService: ContentService,
     private router: Router,
-    private feedbackService: FeedbackService
+    private feedbackService: FeedbackService,
+    private purchaseService: PurchaseService
   ) {
   }
 
   async ngOnInit() {
     // Load the user data (to check if there is already active subscription)
-    let productList = (await StorePlugin.getProducts({})).products
+    console.log("Initialize food program")
+    let productList:Product[] = (await this.purchaseService.getProducts()).products
     this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
-
+    console.log("Load foodcoach products", this.productList)
+    console.log(this.productList)
     // Check if the user has already subscribed to the food program
     this.user = await this.contentService.getUserFromLocalStorage()
     console.log(this.user)

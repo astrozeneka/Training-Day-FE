@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Training-Day-FE</string>
-    <string name="title_activity_main">Training-Day-FE</string>
+    <string name="app_name">Training Day</string>
+    <string name="title_activity_main">Training Day</string>
     <string name="package_name">com.trainingday</string>
     <string name="custom_url_scheme">com.trainingday</string>
 </resources>

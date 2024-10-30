@@ -9,6 +9,10 @@ ion-content{
   overflow: visible;
 }
 
+ion-header{
+  border-right: 1px solid rgba(var(--ion-color-dark-rgb), 0.2);
+}
+
 // THe toolbar having the username and the call to action
 #menu-header{
   padding: .8em;
@@ -23,6 +27,7 @@ ion-content{
 
 ion-list{
   padding: 1em 0em;
+  border-right: 1px solid rgba(var(--ion-color-dark-rgb), 0.2);
 }
 
 ion-list ion-item ion-label{

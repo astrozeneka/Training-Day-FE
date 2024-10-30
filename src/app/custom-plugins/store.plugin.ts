@@ -10,7 +10,8 @@ const mockStorePlugin: StorePlugin = {
         {"description":"Personal Trainer (5 sessions)","displayPrice":"$249.99","id":"trainer5","price":249.99,"displayName":"Personal Trainer (5 sessions)"},
         {"price":12.99,"displayPrice":"$12.99","displayName":"Pack Hoylt","description":"Pack Hoylt","id":"hoylt"},
         {"displayName":"Personal Trainer (1 session)","description":"Personal Trainer (1 session)","displayPrice":"$49.99","price":49.99,"id":"trainer1"},
-        {"displayName":"Food Coaching (1 Month)","description":"Food Coaching (1 Month)","price":17.99,"displayPrice":"$17.99","id":"foodcoach_1w"}
+        
+        {"displayName":"Food Coaching (1 Month)","description":"Food Coaching (1 Month)","price":17.99,"displayPrice":"$17.99","id":"foodcoach_4w"}
       ]
     }
   },
@@ -115,6 +116,24 @@ export interface Product {
   id: string;
   price: number;
 }
+
+
+// The Android IAP product
+export interface AndroidProduct {
+  productId: string
+  type: string
+  title: string
+  name: string
+  description: string
+  oneTimePurchaseOfferDetails: AndroidOneTimePurchaseOfferDetails
+}
+
+export interface AndroidOneTimePurchaseOfferDetails {
+  priceAmountMicros: number
+  priceCurrencyCode: string
+  formattedPrice: string
+}
+
 
 let Store: StorePlugin;
 if (Capacitor.isNativePlatform()) {

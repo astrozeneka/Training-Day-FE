@@ -70,3 +70,11 @@
 /**
   1.0. Button Styles
  */
+
+/**
+  2.0. Header Styles
+*/
+ion-header{
+  box-shadow: none!important;
+  border-bottom: 1px solid rgba(var(--ion-color-dark-rgb), 0.2)!important;
+}

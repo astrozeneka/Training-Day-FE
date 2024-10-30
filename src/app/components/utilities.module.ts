@@ -30,6 +30,7 @@ import {SubscriptionCardComponent} from "./subscription-card/subscription-card.c
 import {FeedbackModalComponent} from "./feedback-modal/feedback-modal.component";
 import { DisplayListPipe } from '../display-list.pipe';
 import { PhonePrefixSelectComponent } from '../components-submodules/phone-prefix-select/phone-prefix-select.component';
+import { StorefrontItemComponent } from './storefront-item/storefront-item.component';
 
 
 
@@ -62,6 +63,7 @@ import { PhonePrefixSelectComponent } from '../components-submodules/phone-prefi
     SubscriptionCardComponent,
 
     FeedbackModalComponent,
+    StorefrontItemComponent,
 
     // Pipes
     DisplayListPipe,
@@ -92,6 +94,7 @@ import { PhonePrefixSelectComponent } from '../components-submodules/phone-prefi
     ShopTabsComponent,
     TrainerCardComponent,
     SubscriptionCardComponent,
+    StorefrontItemComponent,
     
     DisplayListPipe,
 

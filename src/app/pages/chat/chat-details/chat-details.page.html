@@ -151,19 +151,20 @@
           </div>
         </div>
         <ion-item
-          *ngIf="!(user.user_settings?.locked == 'true')"
         >
           <ion-input
             name="content"
             placeholder="Tapez votre message"
             formControlName="content"
             [errorText]="displayedError['content']"
+            *ngIf="user.user_settings?.locked != 'true'"
           ></ion-input>
           <div slot="end">
 
             <ion-button
               (click)="presentActionSheetFile()"
               [disabled]="file"
+              *ngIf="user.user_settings?.locked != 'true'"
             >
               <ion-icon name="attach-outline"></ion-icon>
             </ion-button>

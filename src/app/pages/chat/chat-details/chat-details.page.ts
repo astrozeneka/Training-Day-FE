@@ -816,12 +816,12 @@ export class ChatDetailsPage extends FormComponent implements OnInit, ViewWillEn
               action: 'video',
             },
           },
-          {
+          /*{
             text: 'Envoyer un média',
             data: {
               action: 'media',
             },
-          },
+          },*/
           {
             text: 'Annuler',
             role: 'cancel',

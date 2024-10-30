@@ -1,0 +1,24 @@
+
+
+.storefront-item{
+    margin-top: 46px;
+    margin-bottom: 46px;
+    & .display-1{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    & .price{
+        // Fit all text in one row
+        white-space: nowrap;
+        min-width: 60px;
+        text-align: center;
+    }
+
+    & .description{
+        font-size: .9em;
+        color: var(--ion-color-medium);
+    }
+}

@@ -18,7 +18,8 @@ export class BroadcastingService {
       wssPort: environment.pusher_port,
       forceTLS: false, // Hard coded
       disableStats: true, // hard coded
-      enabledTransports: ['ws', 'wss'], // Hard coded
+      // enabledTransports: ['ws', 'wss'], // Hard coded
+      enabledTransports: ['ws', 'wss']
     });
   }
 }

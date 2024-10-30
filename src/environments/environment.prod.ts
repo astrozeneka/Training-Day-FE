@@ -5,8 +5,8 @@ export const environment = {
 
   // Pusher configuration
   pusher_app_key: 'app-key',
-  pusher_host: 'codecrane.me',
-  pusher_port: 6001,
+  pusher_host: 'soketi.codecrane.me',
+  pusher_port: 443,
   pusher_cluster: 'eu',
 
   // CREDENTIALS

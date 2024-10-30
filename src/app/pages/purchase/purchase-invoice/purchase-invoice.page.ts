@@ -81,6 +81,9 @@ export class PurchaseInvoicePage implements OnInit {
       this.loadingStep = "(1/2) Connexion à l'App Store"
       // Confirm purchase
       let res:any = (await StorePlugin.purchaseProductById({productId: this.productId!})) as any;
+      this.feedbackService.registerNow("Purchase result: " + JSON.stringify(res), "info")
+
+      return;
       res.transaction.currency = 'EUR' // TODO, update to local currency
       res.transaction.amount = this.productList[this.productId as string].price * 100
       res.transaction.product_id = this.productId

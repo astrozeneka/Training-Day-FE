@@ -5,6 +5,8 @@ import android.content.Context;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ProductDetails;
+import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.getcapacitor.JSArray;
@@ -15,7 +17,6 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,27 +70,43 @@ public class StorePlugin extends Plugin {
     System.out.println("StorePlugin: Loading product list"); // Ok, here is fine
     List<String> skuList = new ArrayList<>();
     skuList.add("foodcoach__7d");
-    SkuDetailsParams params = SkuDetailsParams.newBuilder()
-      .setSkusList(skuList)
-      .setType(BillingClient.SkuType.INAPP)
+    List<QueryProductDetailsParams.Product> productList = new ArrayList<>();
+    productList.add(QueryProductDetailsParams.Product.newBuilder()
+      .setProductId("foodcoach__7d")
+      .setProductType(BillingClient.ProductType.INAPP)
+      .build()
+    );
+    QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
+      .setProductList(productList)
       .build();
-    billingClient.querySkuDetailsAsync(params, (billingResult, skuDetailsList) -> {
+    billingClient.queryProductDetailsAsync(params, (billingResult, productDetailsList) -> {
       if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
         System.out.println("StorePlugin: Query successful");
-        // Return a sample success message
-        JSArray products = new JSArray();
-        for (SkuDetails skuDetails : skuDetailsList) {
-          try {
-            products.put(new JSObject(skuDetails.toString()));
-          } catch (JSONException e) {
-            throw new RuntimeException(e);
-          }
+        JSArray productsJson = new JSArray();
+        for (ProductDetails details : productDetailsList) {
+          JSObject productJson = new JSObject();
+          productJson.put("productId", details.getProductId());
+          productJson.put("type", details.getProductType());
+          productJson.put("title", details.getTitle());
+          productJson.put("name", details.getName());
+          productJson.put("description", details.getDescription());
+
+          JSObject oneTimePurchaseOfferDetails = new JSObject();
+          oneTimePurchaseOfferDetails.put("priceAmountMicros", details.getOneTimePurchaseOfferDetails().getPriceAmountMicros());
+          oneTimePurchaseOfferDetails.put("priceCurrencyCode", details.getOneTimePurchaseOfferDetails().getPriceCurrencyCode());
+          oneTimePurchaseOfferDetails.put("formattedPrice", details.getOneTimePurchaseOfferDetails().getFormattedPrice());
+          productJson.put("oneTimePurchaseOfferDetails", oneTimePurchaseOfferDetails);
+
+          productsJson.put(productJson);
         }
-        call.resolve(new JSObject().put("products", products));
+
+        JSObject result = new JSObject();
+        result.put("products", productsJson);
+        call.resolve(result);
+
       } else {
         System.out.println("StorePlugin: Error code: " + billingResult.getResponseCode());
-        // Return the error using the plugin call
-        call.reject("Error code: " + billingResult.getResponseCode());
+        call.reject("Unable to query product details. Error code: " + billingResult.getResponseCode());
       }
     });
   }
