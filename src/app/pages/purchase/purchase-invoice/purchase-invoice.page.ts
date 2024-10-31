@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import {ContentService} from "../../../content.service";
 import {FormControl} from "@angular/forms";
 import {Router} from "@angular/router";
-import StorePlugin from "../../../custom-plugins/store.plugin";
+import StorePlugin, { Product } from "../../../custom-plugins/store.plugin";
 import {environment} from "../../../../environments/environment";
 import {FeedbackService} from "../../../feedback.service";
 import {catchError, finalize} from "rxjs";
 import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
+import { PurchaseService } from 'src/app/purchase.service';
 
 @Component({
   selector: 'app-purchase-invoice',
@@ -33,7 +34,8 @@ export class PurchaseInvoicePage implements OnInit {
     private contentService: ContentService,
     private feedbackService: FeedbackService,
     private router: Router,
-    private themeDetection: ThemeDetection
+    private themeDetection: ThemeDetection,
+    private purchaseService: PurchaseService
   ) {
     this.contentService.storage.get('subscription_slug').then((value) => {
       this.subscriptionSlug = value;
@@ -62,10 +64,16 @@ export class PurchaseInvoicePage implements OnInit {
   }
 
   async ngOnInit() {
-    let productList = (await StorePlugin.getProducts({})).products
+
+    // 1. Load product for mthe store
+    let productList:Product[] = (await this.purchaseService.getProducts()).products
+    this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
+
+    // The old way of retrieving the products
+    /*let productList = (await StorePlugin.getProducts({})).products
     for(let product of productList){
       this.productList[product.id] = product
-    }
+    }*/
 
     // The dark mode (the code below is reused, should be refactored)
     try {
@@ -80,8 +88,14 @@ export class PurchaseInvoicePage implements OnInit {
       this.isLoading = true
       this.loadingStep = "(1/2) Connexion à l'App Store"
       // Confirm purchase
-      let res:any = (await StorePlugin.purchaseProductById({productId: this.productId!})) as any;
+      //let res:any = (await StorePlugin.purchaseProductById({productId: this.productId!})) as any;
+      let res:any = (await this.purchaseService.purchaseProductById(this.productId!)) as any;
       this.feedbackService.registerNow("Purchase result: " + JSON.stringify(res), "info")
+      console.log("Fetching purchases results, loading entitlements");
+      await (new Promise((resolve) => setTimeout(resolve, 2000))) // To be deleted later
+      let entitlements = (await this.purchaseService.getAndroidEntitlements())
+      console.log("Load entitlements from Google " + JSON.stringify(entitlements)) // He doesn't load
+      
 
       return;
       res.transaction.currency = 'EUR' // TODO, update to local currency

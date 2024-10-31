@@ -77,6 +77,12 @@ const mockStorePlugin: StorePlugin = {
   present: async(options: {message: String }) => {
     return {success: true}
 
+  },
+  // Experimental feature for Android
+  getAndroidEntitlements: async() => {
+    return {
+      "entitlements": []
+    }
   }
 }
 export interface StorePlugin {
@@ -96,6 +102,7 @@ export interface StorePlugin {
 
   // Experimental features
   present(options: {message: String }): Promise<{ success: boolean }>
+  getAndroidEntitlements(): Promise<{ entitlements: Transaction[] }>
 }
 export interface Transaction {
   bundleId: string;
@@ -127,12 +134,22 @@ export interface AndroidProduct {
   description: string
   oneTimePurchaseOfferDetails: AndroidOneTimePurchaseOfferDetails
 }
-
 export interface AndroidOneTimePurchaseOfferDetails {
   priceAmountMicros: number
   priceCurrencyCode: string
   formattedPrice: string
 }
+export interface AndroidEntitlements {
+  orderId: string
+  packageName: string
+  productId: string
+  purchaseTime: number
+  purchaseState: number
+  purchaseToken: string
+  quantity: number
+  acknowledged: boolean
+}
+
 
 
 let Store: StorePlugin;

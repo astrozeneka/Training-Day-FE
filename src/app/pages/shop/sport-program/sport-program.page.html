@@ -32,6 +32,57 @@
             </p>
         </div>
         <div class="option-list">
+            <div class="ion-padding-horizontal">
+                <app-storefront-item
+                    color="dark"
+                    [product]="productList['sportcoach_1w']"
+                    [disabled]="user && user.grouped_perishables && user.grouped_perishables['sport-coach']"
+                    (action)="clickSportCoachOption('sportcoach_1w')"
+                >
+                    <div slot="title">
+                        Programme sportif 1 semaine
+                    </div>
+                    <div slot="description">
+                        Profitez d’un programme sportif adapté à vos besoins pour une semaine
+                    </div>
+                    <div slot="helper" *ngIf="user && user.grouped_perishables && user.grouped_perishables['sport-coach']">
+                        Vous avez déjà un programme sportif en cours. Vous ne pouvez pas souscrire à un autre programme sportif.
+                    </div>
+                </app-storefront-item>
+                <app-storefront-item
+                    color="warning"
+                    [product]="productList['sportcoach_4w']"
+                    [disabled]="user && user.grouped_perishables && user.grouped_perishables['sport-coach']"
+                    (action)="clickSportCoachOption('sportcoach_4w')"
+                >
+                    <div slot="title">
+                        Programme sportif 1 mois
+                    </div>
+                    <div slot="description">
+                        Organisons ensemble vos semaine et profitez d’un programme sportif adapté à vos besoins pour un mois
+                    </div>
+                    <div slot="helper" *ngIf="user && user.grouped_perishables && user.grouped_perishables['sport-coach']">
+                        Vous avez déjà un programme sportif en cours. Vous ne pouvez pas souscrire à un autre programme sportif.
+                    </div>
+                </app-storefront-item>
+                <app-storefront-item
+                    color="primary"
+                    [product]="productList['sportcoach_6w']"
+                    [disabled]="user && user.grouped_perishables && user.grouped_perishables['sport-coach']"
+                    (action)="clickSportCoachOption('sportcoach_6w')"
+                >
+                    <div slot="title">
+                        Programme sportif 6 semaines
+                    </div>
+                    <div slot="description">
+                        Planifions ensemble votre cycle d’entrainement et profitez d’un programme sportif adapté à vos besoins pour six semaines
+                    </div>
+                    <div slot="helper" *ngIf="user && user.grouped_perishables && user.grouped_perishables['sport-coach']">
+                        Vous avez déjà un programme sportif en cours. Vous ne pouvez pas souscrire à un autre programme sportif.
+                    </div>
+                </app-storefront-item>
+            </div>
+            <!--
             <div class="card ion-padding">
                 <h2 class="display-1">Programme sportif 1 semaine (
                     {{ productList.hasOwnProperty('sportcoach_1w') ? productList['sportcoach_1w'].displayPrice : 'Temporairement indisponible' }}
@@ -96,6 +147,7 @@
                     Vous avez déjà un programme sportif en cours. Vous ne pouvez pas souscrire à un autre programme sportif.
                 </p>
             </div>
+            -->
         </div>
     </div>
 </ion-content>

@@ -11,7 +11,20 @@ export class PurchaseService { // This class cannot be used anymore due to andro
   private androidIosProductNameMap: { [key: string]: string } = {
     'foodcoach__7d': 'foodcoach_1w',
     'foodcoach__30d': 'foodcoach_4w',
-    'foodcoach__45d': 'foodcoach_6w' 
+    'foodcoach__45d': 'foodcoach_6w',
+
+    'sportcoach__7d': 'sportcoach_1w',
+    'sportcoach__30d': 'sportcoach_4w',
+    'sportcoach__45d': 'sportcoach_6w'
+  }
+  private iosAndroidProductNameMap: { [key: string]: string } = {
+    'foodcoach_1w': 'foodcoach__7d',
+    'foodcoach_4w': 'foodcoach__30d',
+    'foodcoach_6w': 'foodcoach__45d',
+
+    'sportcoach_1w': 'sportcoach__7d',
+    'sportcoach_4w': 'sportcoach__30d',
+    'sportcoach_6w': 'sportcoach__45d'
   }
 
   constructor(
@@ -21,6 +34,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
     
   }
 
+  // Method 1: Get the list of products
   async getProducts(): Promise<{ products: Product[]}> {
     // Fetch the list of products from the store
     // Check if on web
@@ -53,5 +67,22 @@ export class PurchaseService { // This class cannot be used anymore due to andro
     } else {
       return (await StorePlugin.getProducts({})); // The debug data is returned
     }
+  }
+
+  // Method 2: Purchase a product by its ID
+  async purchaseProductById(productId:string) {
+    if (this.platform.is('capacitor') && this.platform.is('android')){
+      // Reverse mapping
+      productId = this.iosAndroidProductNameMap[productId]
+    }
+    return await StorePlugin.purchaseProductById({productId: productId})
+  }
+
+  // Method 3(experimental features): Load entitlements from Android
+  async getAndroidEntitlements() {
+    if (this.platform.is('capacitor') && this.platform.is('android')){
+      return await StorePlugin.getAndroidEntitlements();
+    }
+    return null;
   }
 }

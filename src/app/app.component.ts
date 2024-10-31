@@ -9,6 +9,7 @@ import StorePlugin from "./custom-plugins/store.plugin";
 import {environment} from "../environments/environment";
 import { catchError, throwError } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
+import { PurchaseService } from './purchase.service';
 
 
 @Component({
@@ -29,7 +30,8 @@ export class AppComponent implements OnInit{
     private httpClient: HttpClient,
     private platform: Platform,
     private alertController: AlertController, // For later, it can be used inside a separate service
-    private sanitize: DomSanitizer
+    private sanitize: DomSanitizer,
+    public purchaseService: PurchaseService
   ) {
 
     router.events.subscribe((event)=>{
@@ -102,6 +104,13 @@ export class AppComponent implements OnInit{
         }
       })
        */
+    } else if(this.platform.is('cordova') && this.platform.is('android')){
+      // TODO, the platform management shouldn't be here
+      console.log("Loading entitlements from the server")
+      let res = (await this.purchaseService.getAndroidEntitlements())
+      console.log("Load entitlements from Google " + JSON.stringify(res))
+      console.log(res)
+      this.contentService.post('/users/sync-android-entitlements', {entitlements: res.entitlements})
     }
 
     // Check token if expired or not, otherwise disconnect the user

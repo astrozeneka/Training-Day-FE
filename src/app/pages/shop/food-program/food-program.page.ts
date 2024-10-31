@@ -27,12 +27,9 @@ export class FoodProgramPage implements OnInit{
   }
 
   async ngOnInit() {
-    // Load the user data (to check if there is already active subscription)
-    console.log("Initialize food program")
     let productList:Product[] = (await this.purchaseService.getProducts()).products
     this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
-    console.log("Load foodcoach products", this.productList)
-    console.log(this.productList)
+    
     // Check if the user has already subscribed to the food program
     this.user = await this.contentService.getUserFromLocalStorage()
     console.log(this.user)

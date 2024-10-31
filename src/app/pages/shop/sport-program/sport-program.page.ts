@@ -3,8 +3,9 @@ import {Shop} from "../shop";
 import {ContentService} from "../../../content.service";
 import {Router} from "@angular/router";
 import {FeedbackService} from "../../../feedback.service";
-import StorePlugin from "../../../custom-plugins/store.plugin";
+import StorePlugin, { Product } from "../../../custom-plugins/store.plugin";
 import {environment} from "../../../../environments/environment";
+import { PurchaseService } from 'src/app/purchase.service';
 
 @Component({
   selector: 'app-sport-program',
@@ -20,14 +21,15 @@ export class SportProgramPage implements OnInit {
   constructor(
     private contentService: ContentService,
     private router: Router,
-    private feedbackService: FeedbackService
+    private feedbackService: FeedbackService,
+    private purchaseService: PurchaseService
   ) {
   }
 
   async ngOnInit() {
-    let productList = (await StorePlugin.getProducts({})).products
+    let productList:Product[] = (await this.purchaseService.getProducts()).products
     this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
-
+    console.log("Loading products", JSON.stringify(this.productList))
     this.user = await this.contentService.getUserFromLocalStorage()
   }
 
