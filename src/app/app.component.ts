@@ -31,7 +31,7 @@ export class AppComponent implements OnInit{
     private platform: Platform,
     private alertController: AlertController, // For later, it can be used inside a separate service
     private sanitize: DomSanitizer,
-    public purchaseService: PurchaseService
+    public purchaseService: PurchaseService,
   ) {
 
     router.events.subscribe((event)=>{
@@ -203,7 +203,8 @@ export class AppComponent implements OnInit{
       await PushNotifications.addListener('registration', token => {
         console.info('Registration token: ', token.value);
         this.device_token = {
-          'ios_token': token.value
+          ... (this.platform.is('ios') ? {'ios_token': token.value} : {}),
+          ... (this.platform.is('android') ? {'android_token': token.value} : {})
         }
         this.contentService.storage.set('device_token', this.device_token)
         // The code below is unused anymore because the device-token is registered to the server at login time

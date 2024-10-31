@@ -92,3 +92,16 @@
 .capitalize{
   text-transform: capitalize;
 }
+
+// The video loader
+.spinner-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  transition: height 0.2s;
+  overflow: hidden;
+  &.hidden{
+    height: 0px;
+  }
+}

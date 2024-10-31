@@ -13,11 +13,15 @@
         <!-- 
             [filter]="{ 'f_category': this.category }" 
         -->
+        <div class="spinner-container" [class]="(isLoading?'':'hidden')">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
         <app-infinite-list
             [httpHeaders]="jwtToken ? { 'Authorization': 'Bearer ' + jwtToken } : {}"
             [httpUrl]="contentService.apiEndpoint + '/videos'"
             [filter$]="filter$"
             [restrictFilter]="true"
+            (afterLoad)="onAfterLoad($event)"
             *ngIf="true"
         >
             <ng-template let-item>

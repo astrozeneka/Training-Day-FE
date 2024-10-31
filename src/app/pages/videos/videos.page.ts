@@ -24,6 +24,7 @@ export class VideosPage implements OnInit {
 
   // The slug fetched from the url
   slug:string = undefined // unused
+
   // The below code should be put in a separate folder, not here
   slugDescriptions = {
     'training': 'Découvrez les vidéos sur les entrainements',
@@ -41,6 +42,9 @@ export class VideosPage implements OnInit {
     'boxing/pieds-genoux': 'Découvrez les vidéos sur les pieds et les genoux',
     'boxing/pieds-poings-genoux': 'Découvrez les vidéos sur les pieds, les poings et les genoux',
   }
+
+  // Improve UX by adding a video spinner while loading the video
+  isLoading = true
 
   constructor(
     private router: Router,
@@ -124,5 +128,8 @@ export class VideosPage implements OnInit {
     return environment.rootEndpoint + '/' + suffix
   }
 
+  onAfterLoad($event){
+    this.isLoading = false
+  }
 
 }
