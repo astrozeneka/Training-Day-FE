@@ -20,6 +20,7 @@ export class VideoUploadPage extends FormComponent{
     'tags': new FormControl('', []),
     'category': new FormControl('', []),
     'privilege': new FormControl('public,hoylt,moreno,alonzo', []),
+    'sort_field': new FormControl('', []),
     'file': this.fileControl
   });
   isFormLoading = false;
@@ -31,6 +32,7 @@ export class VideoUploadPage extends FormComponent{
     'tags': undefined,
     'category': undefined,
     'privilege': undefined,
+    'sort_field': undefined
   }
 
   constructor(
@@ -50,12 +52,6 @@ export class VideoUploadPage extends FormComponent{
   submit(){
     this.isFormLoading = true
     let data:any = this.form.value
-    /*if (data.category == 'training'){
-      data.tags = 'training,' + data.tags
-    }else if(data.category == 'boxing'){
-      data.tags = 'boxing,' + data.tags
-    }*/
-    // Append the category to the tag
     if (data.category){
       data.tags = data.category + ',' + data.tags
     }

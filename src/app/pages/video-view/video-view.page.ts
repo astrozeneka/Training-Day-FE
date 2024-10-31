@@ -24,7 +24,8 @@ export class VideoViewPage implements OnInit {
     'tags': new FormControl('', []),
     'category': new FormControl('undefined', []),
     'privilege': new FormControl(['public', 'hoylt', 'moreno', 'alonzo'], []),
-    'hidden': new FormControl(false, [])
+    'hidden': new FormControl(false, []),
+    'sort_field': new FormControl('', [])
   })
   displayedError = {
     'title': undefined,
@@ -32,6 +33,7 @@ export class VideoViewPage implements OnInit {
     'tags': undefined,
     'category': undefined,
     'privilege': undefined,
+    'sort_field': undefined,
     // 'hidden': undefined
   }
   formValid = false
@@ -51,6 +53,7 @@ export class VideoViewPage implements OnInit {
         await this.contentService.storage.get('token')
         this.contentService.getOne(`/video-details/${this.videoId}`, {}).subscribe((res:any)=>{
           this.video = res
+          console.log(this.video)
           this.videoUrl = environment.rootEndpoint + '/' + this.video.file.permalink
           // Manage the tags by removing the category (training or boxing) from the tags
 
@@ -59,6 +62,13 @@ export class VideoViewPage implements OnInit {
           tags = tags.filter((tag:any)=>!tag.includes('training') && !tag.includes('boxing'))
           this.video.tags = tags.join(', ')
           this.video.category = category.pop() // Always the last item of the pile, because the first item is the mother category
+
+          // Patch the value (In next steps, fully typed expression should be used)
+          this.video.privilege = this.video.privilege.join(',')
+          this.form.patchValue(this.video)
+
+          // THe older way to patch value (should be removed later)
+          /*
           this.form.patchValue({
             title: this.video.title,
             description: this.video.description,
@@ -66,7 +76,7 @@ export class VideoViewPage implements OnInit {
             category: this.video.category,
             privilege: this.video.privilege.join(','),
             hidden: this.video.hidden
-          })
+          })*/
         })
       }
     })
