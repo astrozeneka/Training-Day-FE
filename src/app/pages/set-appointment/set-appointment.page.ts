@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { catchError, finalize, throwError } from 'rxjs';
+import { FormComponent } from 'src/app/components/form.component';
 import { ContentService } from 'src/app/content.service';
 import { FeedbackService } from 'src/app/feedback.service';
 
@@ -11,14 +12,14 @@ import { FeedbackService } from 'src/app/feedback.service';
   templateUrl: './set-appointment.page.html',
   styleUrls: ['./set-appointment.page.scss'],
 })
-export class SetAppointmentPage implements OnInit {
-  form = new FormGroup({
+export class SetAppointmentPage extends FormComponent implements OnInit {
+  override form = new FormGroup({
     'reason': new FormControl('', [Validators.required]),
     'datetime': new FormControl('', [Validators.required]),
     'user_id': new FormControl(''),
   })
   formIsLoading = false;
-  displayedError = {
+  override displayedError = {
     'reason': undefined,
     'datetime': undefined
   }
@@ -30,7 +31,9 @@ export class SetAppointmentPage implements OnInit {
     private cs: ContentService,
     private fs: FeedbackService,
     private router: Router
-  ) { }
+  ) {
+    super()
+  }
 
   ngOnInit() {
     //this.minDate = new Date().toISOString()
@@ -50,11 +53,14 @@ export class SetAppointmentPage implements OnInit {
   async submitForm(){
     // Mark form as touch in order to show the errors
     this.form.markAllAsTouched()
-    if (!this.form.valid)
-      return
     this.formIsLoading = true;
     this.cs.post('/appointments', this.form.value)
     .pipe(catchError((error)=>{
+      if (error.status == 422){
+        console.log(error)
+        this.manageValidationFeedback(error, 'reason')
+        this.manageValidationFeedback(error, 'datetime')
+      }
       return throwError(error)
     }), finalize(()=>{
       this.formIsLoading = false;

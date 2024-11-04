@@ -27,7 +27,7 @@ export class FoodProgramPage implements OnInit{
   }
 
   async ngOnInit() {
-    let productList:Product[] = (await this.purchaseService.getProducts()).products
+    let productList:Product[] = (await this.purchaseService.getProducts('inapp')).products
     this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
     
     // Check if the user has already subscribed to the food program

@@ -15,7 +15,7 @@ const mockStorePlugin: StorePlugin = {
       ]
     }
   },
-  purchaseProductById: async(options: { productId: string }) => {
+  purchaseProductById: async(options: { productId: string, type: string|undefined }) => {
     return {
       success: true,
       transaction: {
@@ -87,7 +87,7 @@ const mockStorePlugin: StorePlugin = {
 }
 export interface StorePlugin {
   getProducts(options: { }): Promise<{ products: any[]}>
-  purchaseProductById(options: { productId: string }): Promise<{ success: boolean, transaction: Transaction }>
+  purchaseProductById(options: { productId: string, type: string|undefined, offerToken?: string|undefined}): Promise<{ success: boolean, transaction: Transaction }>
   addListener(eventName: string, listenerFunc: Function): void; // @deprecated
   getPurchasedNonRenewable(options: { }): Promise<{ products: any[] }>, // @deprecated
 
@@ -122,6 +122,7 @@ export interface Product {
   displayName: string;
   id: string;
   price: number;
+  androidOfferToken?: string | undefined; // Only for Android
 }
 
 
@@ -150,6 +151,29 @@ export interface AndroidEntitlements {
   acknowledged: boolean
 }
 
+// The Android IAP product
+export interface AndroidSubscription {
+  productId: string
+  type: string
+  title: string
+  name: string
+  localizedIn: string[]
+  skuDetailsToken: string
+  subscriptionOfferDetails: SubscriptionOfferDetail[]
+}
+export interface SubscriptionOfferDetail {
+  offerIdToken: string
+  basePlanId: string
+  pricingPhases: PricingPhase[]
+  offerTags: any[]
+}
+export interface PricingPhase {
+  priceAmountMicros: number
+  priceCurrencyCode: string
+  formattedPrice: string
+  billingPeriod: string
+  recurrenceMode: number
+}
 
 
 let Store: StorePlugin;

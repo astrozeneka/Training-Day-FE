@@ -4,7 +4,7 @@ import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
 // import {PurchaseService} from "../../purchase.service";
 import {environment} from "../../../environments/environment";
-import StorePlugin, { Product } from "../../custom-plugins/store.plugin";
+import StorePlugin, { AndroidSubscription, Product } from "../../custom-plugins/store.plugin";
 import {Platform} from "@ionic/angular";
 import {EntitlementReady} from "../../abstract-components/EntitlementReady";
 import { PurchaseService } from 'src/app/purchase.service';
@@ -30,30 +30,31 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
   }
 
   async ngOnInit() {
+    let productList: Product[] = []
     // 1. Loading product list from the StorePlugin (deprecated, should use purchase service now)
     if (this.platform.is('ios')) { // TODO later: unify
-      let productList
       try {
         productList = (await StorePlugin.getProducts({})).products
         this.feedbackService.registerNow('loading products from native plugin ' + JSON.stringify(productList), 'success')
       } catch (error) {
-        console.error('Error loading products:', error);
+        // console.error('Error loading products:', error);
         this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
       }
-      this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
-      this.user = await this.contentService.getUserFromLocalStorage()
-      console.log("load products from store")
-      console.log(this.productList)
+      // console.log("load products from store")
+      // console.log(this.productList)
       await this.loadEntitlements()
-    } else if (this.platform.is('android')) { // TODO later: unify
-      let productList: Product[];
+    } else if (this.platform.is('android') && this.platform.is('capacitor')) { // TODO later: unify
       try {
-        productList = (await this.purchaseService.getProducts()).products;
+        productList = (await this.purchaseService.getProducts('subs')).products;
+        console.log("load products from purchase service") // Delete later
+        console.log(JSON.stringify(productList)) // Delete later
       } catch (error) { // TODO later: unify
-        console.error('Error loading products:', error);
+        // console.error('Error loading products:', error);
         this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
       }
     }
+    this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
+    this.user = await this.contentService.getUserFromLocalStorage()
   }
 
   async clickOption(option: string){
@@ -82,6 +83,11 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
         this.feedbackService.registerNow('Stripe payment method is not supported', 'method')
       }else if(environment.paymentMethod === 'inAppPurchase'){
         await this.contentService.storage.set('productId', productId)
+        if(this.platform.is('android')){ // Android subscription need to pass the offerToken
+          let offerToken = this.productList[productId].androidOfferToken
+          console.log("Offer token is : " + offerToken)
+          await this.contentService.storage.set('offerToken', offerToken)
+        }
         this.router.navigate(['/purchase-invoice'])
       }
     }

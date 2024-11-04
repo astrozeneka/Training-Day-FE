@@ -11,3 +11,11 @@ img{
 
   margin-bottom: 3em;
 }
+
+ion-button{
+  // Allow it to wrap
+  white-space: normal;
+  & .inner{
+    line-height: 1.3em;
+  }
+}

@@ -143,34 +143,34 @@
             </p>
         </div>
         <div *ngIf="entity?.renewable_id && active_entitled_subscription">
-            <ion-item>
+            <div class="span-button">
                 <span>
                     Vous disposez d'un abonnement <b> {{ entity.renewable_id }}</b>
                 </span>
-                <ion-button slot="end" (click)="presentManageModal()">
+                <ion-button size="small" (click)="presentManageModal()">
                     Gérer
                 </ion-button>
-            </ion-item>
+            </div>
         </div>
         <div *ngIf="!entity.renewable_id && active_entitled_subscription">
-            <ion-item>
+            <div class="span-button">
                 <span>
                     Vous disposez actuellement d'un <b>{{ active_entitled_subscription.displayName }}</b> pour cet appareil iOS
                 </span>
-                <ion-button slot="end" (click)="presentManageModal()">
+                <ion-button size="small" (click)="presentManageModal()">
                     Gérer
                 </ion-button>
-            </ion-item>
+            </div>
         </div>
         <div *ngIf="entity.renewable_id && !active_entitled_subscription">
-            <ion-item>
+            <div class="span-button">
                 <span>
                     Vous disposez d'un abonnement <b> {{ entity.renewable_id }}</b> pour ce compte utilisateur
                 </span>
-                <ion-button slot="end" (click)="presentManageModal()"><!-- experimental -->
+                <ion-button size="small" (click)="presentManageModal()"><!-- experimental -->
                     Gérer
                 </ion-button>
-            </ion-item>
+            </div>
         </div>
 
         <div *ngIf="entity.subscription">

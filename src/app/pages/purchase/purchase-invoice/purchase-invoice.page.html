@@ -33,9 +33,9 @@
             <tr *ngIf="environment.paymentMethod === 'inAppPurchase' && productList && productId">
                 <td>1</td>
                 <td>
-                    {{ productList[productId].displayName }}
+                    {{ productList[productId]?.displayName }}
                 </td>
-                <td>{{ productList[productId].displayPrice }}
+                <td>{{ productList[productId]?.displayPrice }}
                     <span *ngIf="['hoylt', 'alonzo', 'moreno'].includes(productId)">/ mois</span>
                 </td>
             </tr>

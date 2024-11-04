@@ -55,15 +55,16 @@
     </ion-text>
   </form>
   <div class="ion-padding">
-    <ion-button
+    <app-ux-button
       expand="full"
       type="submit"
       (click)="submitForm()"
       color="primary"
       shape="round"
+      [loading]="formIsLoading"
     >
       Fixer le rendez-vous
-    </ion-button>
+    </app-ux-button>
     <p class="ion-text-center helper">
       L'utilisateur recevra une notification du rendez-vous fixé.
     </p>

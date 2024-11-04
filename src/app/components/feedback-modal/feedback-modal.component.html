@@ -12,15 +12,21 @@
     </p>
     <div class="ion-padding-vertical text-center" *ngIf="options.buttonText">
         <ion-button (click)="dismiss()">
-            {{ options.buttonText }}
+            <div class="inner">
+                {{ options.buttonText }}
+            </div>
         </ion-button>
     </div>
     <div class="ion-padding-vertical text-center" *ngIf="options.primaryButtonText">
         <ion-button (click)="dismiss(options.primaryButtonAction);" expand="full" shape="round">
-            {{ options.primaryButtonText }}
+            <div class="inner">
+                {{ options.primaryButtonText }}
+            </div>
         </ion-button>
         <ion-button (click)="dismiss(options.secondaryButtonAction);" *ngIf="options.secondaryButtonText" expand="full" fill="clear">
-            {{ options.secondaryButtonText }}
+            <div class="inner">
+                {{ options.secondaryButtonText }}
+            </div>
         </ion-button>
     </div>
 </div>

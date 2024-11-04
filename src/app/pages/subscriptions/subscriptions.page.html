@@ -42,6 +42,64 @@
             <!--<div class="option-list" *ngIf="!user || (user && !user?.renewable_id && !active_entitled_subscription )">-->
             <div class="option-list"><!-- to always display whether the user have subscription or not -->
                 <h1 class="display-1 ion-padding" *ngIf="!user || (user && !user?.renewable_id && !active_entitled_subscription )">Maîtrisez votre budget et choisissez l’offre d’abonnement qui vous convient<br/></h1>
+                
+                <div class="ion-padding-horizontal">
+                    <app-storefront-item
+                        color="dark"
+                        [product]="productList['hoylt']"
+                        [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
+                        (action)="clickSubscriptionOption('hoylt')"
+                    >
+                        <div slot="title">
+                            Pack Hoylt
+                        </div>
+                        <div slot="description">
+                            Découvrez notre offre de base incluant un accès aux trainings sur la plateforme et aux outils de suivi.
+                            L'offre inclut aussi un bilan mensuel avec votre coach.
+                        </div>
+                        <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
+                            <!-- !active_entitled_subscription ???? -->
+                            Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
+                        </div>
+                    </app-storefront-item>
+                    <app-storefront-item
+                        color="warning"
+                        [product]="productList['moreno']"
+                        [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
+                        (action)="clickSubscriptionOption('moreno')"
+                    >
+                        <div slot="title">
+                            Pack Moreno
+                        </div>
+                        <div slot="description">
+                            Découvrez notre offre de base incluant un accès aux trainings sur la plateforme et aux outils de suivi, un bilan mensuel et
+                            un suivi et accompagnement par votre coach.
+                        </div>
+                        <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
+                            Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
+                        </div>
+                    </app-storefront-item>
+                    <app-storefront-item
+                        color="primary"
+                        [product]="productList['alonzo']"
+                        [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
+                        (action)="clickSubscriptionOption('alonzo')"
+                    >
+                        <div slot="title">
+                            Pack alonzo
+                        </div>
+                        <div slot="description">
+                            Découvrez notre offre de base incluant un accès aux trainings sur la plateforme et aux outils de suivi, un bilan mensuel,
+                            un suvi et accompagnement avec votre coach.
+                            Cette offre inclut aussi un bilan et suivi diététique avec un nutritionniste.
+                        </div>
+                        <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
+                            Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
+                        </div>
+                    </app-storefront-item>
+                </div>
+
+                <!--
                 <div class="card ion-padding">
                     <h2 class="display-1">Pack Hoylt (
                         {{ productList.hasOwnProperty('hoylt') ? productList['hoylt'].displayPrice + '/mois' : 'Temporairement indisponible' }}
@@ -57,7 +115,7 @@
                             shape="round"
                             (click)="clickSubscriptionOption('hoylt')"
                             [disabled]="!productList.hasOwnProperty('hoylt') || (user && (user.renewable_id && !active_entitled_subscription))"
-                    ><!-- the button code is not yet tested -->
+                    >
                         Choisir
                     </ion-button>
                     <p class="ion-text-center" style="font-size: small" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
@@ -79,7 +137,7 @@
                             shape="round"
                             (click)="clickSubscriptionOption('moreno')"
                             [disabled]="!productList.hasOwnProperty('moreno') || (user && (user.renewable_id && !active_entitled_subscription))"
-                    ><!-- the button code is not yet tested -->
+                    >
                         Choisir
                     </ion-button>
                     <p class="ion-text-center" style="font-size: small" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
@@ -103,13 +161,13 @@
                             (click)="clickSubscriptionOption('alonzo')"
                             [disabled]="!productList.hasOwnProperty('alonzo') || (user && (user.renewable_id && !active_entitled_subscription))"
                     >
-                        <!-- the button code is not yet tested -->
                         Choisir
                     </ion-button>
                     <p class="ion-text-center" style="font-size: small" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
                         Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
                     </p>
                 </div>
+                -->
             </div>
         </div>
     </div>

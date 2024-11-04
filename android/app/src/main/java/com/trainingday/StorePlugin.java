@@ -38,6 +38,23 @@ public class StorePlugin extends Plugin {
     billingClient = BillingClient.newBuilder(context)
       .setListener((billingResult, purchases) -> {
         // Handle purchase here
+        System.out.println("StorePlugin: Purchase listener");
+        System.out.println("StorePlugin: Purchase listener: " + purchases);
+        JSObject output = new JSObject();
+        JSArray jsPuchases = new JSArray();
+        for (Purchase purchase : purchases) {
+          JSObject jsPurchase = new JSObject();
+          jsPurchase.put("orderId", purchase.getOrderId());
+          jsPurchase.put("packageName", purchase.getPackageName());
+          jsPurchase.put("purchaseTime", purchase.getPurchaseTime());
+          jsPurchase.put("purchaseState", purchase.getPurchaseState());
+          jsPurchase.put("purchaseToken", purchase.getPurchaseToken());
+          jsPurchase.put("quantity", purchase.getQuantity());
+          jsPurchase.put("acknowledged", purchase.isAcknowledged());
+          jsPuchases.put(jsPurchase);
+        }
+        output.put("purchases", jsPuchases);
+        notifyListeners("onPurchase", output);
       })
       .enablePendingPurchases()
       .build();
@@ -67,25 +84,42 @@ public class StorePlugin extends Plugin {
     }
   }
 
-  private CompletableFuture<List<ProductDetails>> _getProductDetails(){
-    List<String> skuList = new ArrayList<>();
-    skuList.add("foodcoach__7d");
-    skuList.add("foodcoach__30d");
-    skuList.add("foodcoach__45d");
-    skuList.add("sportcoach__7d");
-    skuList.add("sportcoach__30d");
-    skuList.add("sportcoach__45d");
+  private CompletableFuture<List<ProductDetails>> _getProductDetails(PluginCall call){
     List<QueryProductDetailsParams.Product> productList = new ArrayList<>();
-    for (String sku : skuList) {
-      productList.add(QueryProductDetailsParams.Product.newBuilder()
-        .setProductId(sku)
-        .setProductType(BillingClient.ProductType.INAPP)
-        .build()
-      );
+    String productType = call.getString("type");
+    if (productType.equals("inapp")) {
+      List<String> inappList = new ArrayList<>();
+      inappList.add("foodcoach__7d");
+      inappList.add("foodcoach__30d");
+      inappList.add("foodcoach__45d");
+      inappList.add("sportcoach__7d");
+      inappList.add("sportcoach__30d");
+      inappList.add("sportcoach__45d");
+      for (String sku : inappList) {
+        productList.add(QueryProductDetailsParams.Product.newBuilder()
+          .setProductId(sku)
+          .setProductType(BillingClient.ProductType.INAPP)
+          .build()
+        );
+      }
+    } else if (productType.equals("subs")) {
+      List<String> subsList = new ArrayList<>();
+      // subsList.add("hoylt"); // Old naming (should be removed)
+      // subsList.add("moreno"); // Old naming (should be removed)
+      // subsList.add("alonzo"); // Old naming (should be removed)
+      subsList.add("training_day");
+      for (String sku : subsList) {
+        productList.add(QueryProductDetailsParams.Product.newBuilder()
+          .setProductId(sku)
+          .setProductType(BillingClient.ProductType.SUBS)
+          .build()
+        );
+      }
+    } else {
+      // Error 5: It generally show if the product type is not recognized
+      call.reject("Product type must be either 'inapp' or 'subs', '" + productType + "' given");
     }
-    System.out.println("Product list:");
-    System.out.println(productList);
-    // TODO, the hoylt, moreno and alonzo subscription
+
 
     // ===============================================
     QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
@@ -104,7 +138,7 @@ public class StorePlugin extends Plugin {
 
   public void loadProductList(PluginCall call) {
     try {
-      List<ProductDetails> productDetailsList = _getProductDetails().get();
+      List<ProductDetails> productDetailsList = _getProductDetails(call).get();
       System.out.println("StorePlugin: Query successful");
       // Print products as json
       System.out.println("StorePlugin: Products: " + productDetailsList.size() + " items");
@@ -118,13 +152,44 @@ public class StorePlugin extends Plugin {
         productJson.put("name", details.getName());
         productJson.put("description", details.getDescription());
 
-        JSObject oneTimePurchaseOfferDetails = new JSObject();
-        oneTimePurchaseOfferDetails.put("priceAmountMicros", details.getOneTimePurchaseOfferDetails().getPriceAmountMicros());
-        oneTimePurchaseOfferDetails.put("priceCurrencyCode", details.getOneTimePurchaseOfferDetails().getPriceCurrencyCode());
-        oneTimePurchaseOfferDetails.put("formattedPrice", details.getOneTimePurchaseOfferDetails().getFormattedPrice());
-        productJson.put("oneTimePurchaseOfferDetails", oneTimePurchaseOfferDetails);
+        if (call.getString("type").equals("inapp")) {
+          JSObject oneTimePurchaseOfferDetails = new JSObject();
+          oneTimePurchaseOfferDetails.put("priceAmountMicros", details.getOneTimePurchaseOfferDetails().getPriceAmountMicros());
+          oneTimePurchaseOfferDetails.put("priceCurrencyCode", details.getOneTimePurchaseOfferDetails().getPriceCurrencyCode());
+          oneTimePurchaseOfferDetails.put("formattedPrice", details.getOneTimePurchaseOfferDetails().getFormattedPrice());
+          productJson.put("oneTimePurchaseOfferDetails", oneTimePurchaseOfferDetails);
+          productsJson.put(productJson);
+        } else if (call.getString("type").equals("subs")) {
+          JSArray subscriptionListJson = new JSArray();
+          for (ProductDetails.SubscriptionOfferDetails subscription: details.getSubscriptionOfferDetails()){
+            JSObject subscriptionJson = new JSObject();
+            subscriptionJson.put("offerId", subscription.getOfferId());
+            subscriptionJson.put("basePlanId", subscription.getBasePlanId());
+            subscriptionJson.put("offerIdToken", subscription.getOfferToken());
 
-        productsJson.put(productJson);
+
+            JSArray offerTags = new JSArray();
+            for (String tag: subscription.getOfferTags()){
+              offerTags.put(tag);
+            }
+            subscriptionJson.put("offerTags", offerTags);
+            JSArray pricePhasingListJson = new JSArray();
+            for (ProductDetails.PricingPhase pricePhase: subscription.getPricingPhases().getPricingPhaseList()){
+              JSObject pricePhasingJson = new JSObject();
+              pricePhasingJson.put("priceAmountMicros", pricePhase.getPriceAmountMicros());
+              pricePhasingJson.put("priceCurrencyCode", pricePhase.getPriceCurrencyCode());
+              pricePhasingJson.put("formattedPrice", pricePhase.getFormattedPrice());
+              pricePhasingJson.put("billingPeriod", pricePhase.getBillingPeriod());
+              pricePhasingJson.put("recurrenceMode", pricePhase.getRecurrenceMode());
+              pricePhasingJson.put("billingCycleCount", pricePhase.getBillingCycleCount());
+              pricePhasingListJson.put(pricePhasingJson);
+            }
+            subscriptionJson.put("pricingPhases", pricePhasingListJson);
+            subscriptionListJson.put(subscriptionJson);
+          }
+          productJson.put("subscriptionOfferDetails", subscriptionListJson);
+          productsJson.put(productJson);
+        }
       }
       JSObject result = new JSObject();
       result.put("products", productsJson);
@@ -192,7 +257,7 @@ public class StorePlugin extends Plugin {
         public void onBillingSetupFinished(BillingResult billingResult) {
           if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
             System.out.println("StorePlugin: Billing client is ready");
-            processPurchase(productId); // Very carefull of the redundant code
+            processPurchase(productId, call); // Very carefull of the redundant code
             call.resolve(); // TODO, should be refactored if possible
           } else {
             System.out.println("StorePlugin: Error code: " + billingResult.getResponseCode());
@@ -208,17 +273,17 @@ public class StorePlugin extends Plugin {
         }
       });
     } else {
-      processPurchase(productId); // Very carefull of the redundant code
+      processPurchase(productId, call); // Very carefull of the redundant code
       call.resolve(); // TODO, should be refactored if possible
     }
   }
 
-  public void processPurchase(String productId){
-    System.out.println("StorePlugin: Processing purchase for product: " + productId);
-
+  public void processPurchase(String productId, PluginCall call){
+    System.out.println("StorePlugin: Processing purchase for product: " + productId + ", type is " + call.getString("type"));
+    String productType = call.getString("type");
     try {
       // Step 1. fetch the product details
-      List<ProductDetails> productDetailsList = _getProductDetails().get();
+      List<ProductDetails> productDetailsList = _getProductDetails(call).get();
       ProductDetails productDetails = productDetailsList.stream()
         .filter(details -> details.getProductId().equals(productId))
         .findFirst()
@@ -226,11 +291,24 @@ public class StorePlugin extends Plugin {
 
       // Step 2. Set product details params list
       List<BillingFlowParams.ProductDetailsParams> productDetailsParamsList = new ArrayList<>();
-      productDetailsParamsList.add(
-        BillingFlowParams.ProductDetailsParams.newBuilder()
-          .setProductDetails(productDetails)
-          .build()
-      );
+      if (productType.equals("inapp")) {
+        productDetailsParamsList.add(
+          BillingFlowParams.ProductDetailsParams.newBuilder()
+            .setProductDetails(productDetails)
+            .build()
+        );
+      } else if (productType.equals("subs")) {
+        String offerToken = call.getString("offerToken");
+        productDetailsParamsList.add(
+          BillingFlowParams.ProductDetailsParams.newBuilder()
+            .setProductDetails(productDetails)
+            .setOfferToken(offerToken)
+            .build()
+        );
+      } else {
+        // Error 5: It generally show if the product type is not recognized
+        call.reject("Product type must be either 'inapp' or 'subs', '" + productType + "' given");
+      }
 
       // Step 3. Set the flow params
       BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()

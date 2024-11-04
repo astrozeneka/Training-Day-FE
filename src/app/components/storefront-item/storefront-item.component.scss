@@ -21,4 +21,9 @@
         font-size: .9em;
         color: var(--ion-color-medium);
     }
+
+    & .helper{
+        font-size: small;
+        color: var(--ion-color-medium)!important;
+    }
 }

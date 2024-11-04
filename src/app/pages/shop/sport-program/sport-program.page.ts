@@ -27,7 +27,7 @@ export class SportProgramPage implements OnInit {
   }
 
   async ngOnInit() {
-    let productList:Product[] = (await this.purchaseService.getProducts()).products
+    let productList:Product[] = (await this.purchaseService.getProducts('inapp')).products
     this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
     console.log("Loading products", JSON.stringify(this.productList))
     this.user = await this.contentService.getUserFromLocalStorage()

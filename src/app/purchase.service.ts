@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Platform} from "@ionic/angular";
-import StorePlugin, { AndroidProduct, Product } from './custom-plugins/store.plugin';
+import StorePlugin, { AndroidProduct, AndroidSubscription, Product } from './custom-plugins/store.plugin';
 import { FeedbackService } from './feedback.service';
 
 @Injectable({
@@ -35,26 +35,60 @@ export class PurchaseService { // This class cannot be used anymore due to andro
   }
 
   // Method 1: Get the list of products
-  async getProducts(): Promise<{ products: Product[]}> {
+  // Type is only required for android
+  async getProducts(type=null): Promise<{ products: Product[]}> {
     // Fetch the list of products from the store
     // Check if on web
-    if (this.platform.is('cordova')){
+    if (this.platform.is('capacitor')){ // cordova ??? maybe capacitor
+      let products:Product[] = [];
       if (this.platform.is('ios')) {
-        let products:Product[] = (await StorePlugin.getProducts({})).products
+        products = (await StorePlugin.getProducts({})).products
         return {
           products: products
         }
       } else if (this.platform.is('android')) {
-        let AndroidProductList:AndroidProduct[] = (await StorePlugin.getProducts({})).products
-        let products:Product[] = AndroidProductList.map((product:AndroidProduct) => {
-          return {
-            displayPrice: product.oneTimePurchaseOfferDetails.formattedPrice,
-            description: product.description,
-            displayName: product.name,
-            id: this.androidIosProductNameMap[product.productId],
-            price: product.oneTimePurchaseOfferDetails.priceAmountMicros / 1000000
+        // The typo can lead to confusion
+        let androidProductList:AndroidProduct[]|AndroidSubscription[] = (await StorePlugin.getProducts({type: type})).products
+        // Standardize the output format to fit the existing front-end code
+        if (type == 'inapp' || type == null) { // In-app purchases (default)
+          products = (androidProductList as AndroidProduct[]).map((product:AndroidProduct) => {
+            return {
+              displayPrice: product.oneTimePurchaseOfferDetails.formattedPrice,
+              description: product.description,
+              displayName: product.name,
+              id: this.androidIosProductNameMap[product.productId],
+              price: product.oneTimePurchaseOfferDetails.priceAmountMicros / 1000000
+            }
+          })
+        } else if (type == 'subs') { // Subscriptions
+          // The code below is experimental, may be subjected to future changes
+          if (androidProductList.length == 0)
+            throw new Error('No products found')
+          else if (androidProductList.length > 1){
+            throw new Error(`Multiple products found from Android Subscription List (${androidProductList.map(a=>(a as AndroidSubscription).name).join(', ')}), except to only have one`)
           }
-        })
+          let androidProduct = (androidProductList as AndroidSubscription[])[0];
+          
+          androidProduct.subscriptionOfferDetails.forEach((offerDetail) => {
+            // For this feature, the price phasing is not yet supported
+            if (offerDetail.pricingPhases.length > 1)
+              throw new Error('Multiple pricing phases found, except to only have one')
+            if (offerDetail.pricingPhases.length == 0)
+              throw new Error('No pricing phases found')
+            let pricingPhase = offerDetail.pricingPhases[0]
+            let capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1)
+            console.log("AndroidOfferToken: ", offerDetail.offerIdToken)
+            console.log("OfferDetail: ", JSON.stringify(offerDetail))
+            products.push({
+              displayPrice: pricingPhase.formattedPrice,
+              description: "Abonnement " + capitalize(offerDetail.basePlanId),
+              displayName: capitalize(offerDetail.basePlanId),
+              id: offerDetail.basePlanId,
+              price: pricingPhase.priceAmountMicros / 100000,
+              androidOfferToken: offerDetail.offerIdToken
+            })
+          })
+        }
         return {
           products: products
         }
@@ -70,12 +104,20 @@ export class PurchaseService { // This class cannot be used anymore due to andro
   }
 
   // Method 2: Purchase a product by its ID
-  async purchaseProductById(productId:string) {
+  // Product type is only required for android
+  async purchaseProductById(productId:string, productType=null, offerToken=null) {
+    console.log("triggering purchase for", productId, ", type is ", productType)
+    let extraParams = {}
     if (this.platform.is('capacitor') && this.platform.is('android')){
       // Reverse mapping
-      productId = this.iosAndroidProductNameMap[productId]
+      productId = this.iosAndroidProductNameMap[productId] || productId // Map if exists, otherwise, use the original
+      if (productType == "subs"){
+        extraParams = {
+          offerToken: offerToken
+        }
+      }
     }
-    return await StorePlugin.purchaseProductById({productId: productId})
+    return await StorePlugin.purchaseProductById({productId: productId, type: productType, ...extraParams});
   }
 
   // Method 3(experimental features): Load entitlements from Android
