@@ -143,7 +143,7 @@
             </p>
         </div>
         <div *ngIf="entity?.renewable_id && active_entitled_subscription">
-            <div class="span-button">
+            <div class="span-button ion-padding-horizontal">
                 <span>
                     Vous disposez d'un abonnement <b> {{ entity.renewable_id }}</b>
                 </span>
@@ -152,8 +152,8 @@
                 </ion-button>
             </div>
         </div>
-        <div *ngIf="!entity.renewable_id && active_entitled_subscription">
-            <div class="span-button">
+        <div *ngIf="!entity.renewable_id && active_entitled_subscription && is_ios"><!-- Only in IOS -->
+            <div class="span-button ion-padding-horizontal">
                 <span>
                     Vous disposez actuellement d'un <b>{{ active_entitled_subscription.displayName }}</b> pour cet appareil iOS
                 </span>
@@ -162,8 +162,19 @@
                 </ion-button>
             </div>
         </div>
+        <!-- An Android equivalent of the code above should be here (not yet tested) -->
+        <div *ngIf="!entity.renewable_id && active_entitled_subscription && is_android">
+            <div class="span-button ion-padding-horizontal">
+                <span>
+                    Vous disposez actuellement d'un <b>{{ active_entitled_subscription.displayName }}</b> pour cet appareil Android
+                </span>
+                <ion-button size="small" (click)="presentManageModal()" *ngIf="false"><!-- Temporary false, will be upated later -->
+                    Gérer
+                </ion-button>
+            </div>
+        </div>
         <div *ngIf="entity.renewable_id && !active_entitled_subscription">
-            <div class="span-button">
+            <div class="span-button ion-padding-horizontal">
                 <span>
                     Vous disposez d'un abonnement <b> {{ entity.renewable_id }}</b> pour ce compte utilisateur
                 </span>
@@ -238,11 +249,14 @@
             ></app-subscription-card>
         </div>
 
+        <!-- Temporary unavailable-->
+        <!--
         <div *ngIf="grouped_perishables && grouped_perishables['personal-trainer']">
             <app-trainer-card
                     [entity]="grouped_perishables['personal-trainer']"
             ></app-trainer-card>
         </div>
+        -->
 
         <p class="helper ion-padding" *ngIf="Object.keys(grouped_perishables).length === 0">
             Vous pouvez accéder à la boutique via le menu pour souscrire à des abonnements.
@@ -251,13 +265,13 @@
 
     <div *ngIf="entity && entity.function === 'customer'">
         <h3 class="display-1 ion-padding">Vérification de l'addresse e-mail</h3>
-        <ion-item *ngIf="!entity.email_verified_at ">
-            Votre adresse e-mail n'est pas encore vérifié.
-            <ion-button slot="end" color="primary" (click)="sendVerificationEmail()">Vérifier</ion-button>
-        </ion-item>
-        <ion-item *ngIf="entity.email_verified_at">
-            Votre adresse e-mail a été vérifiée.
-        </ion-item>
+        <div class="span-button ion-padding-horizontal" *ngIf="!entity.email_verified_at ">
+            <span>Votre adresse e-mail n'est pas encore vérifié.</span>
+            <ion-button size="small" color="primary" (click)="sendVerificationEmail()">Vérifier</ion-button>
+        </div>
+        <div class="span-button ion-padding-horizontal" *ngIf="entity.email_verified_at">
+            <span>Votre adresse e-mail a été vérifiée.</span>
+        </div>
     </div>
 
     <!-- For the coach allowing him to set the "active" status -->

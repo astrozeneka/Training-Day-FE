@@ -19,5 +19,9 @@ export const environment = {
   personalTrainerAvailable: false,             // Whether or not the personal trainer tab is available from the shop page
 
   // SPECIAL VARIABLES
-  nutritionistId: 19
+  nutritionistId: 19,
+
+  // CGU
+  cgu_uri: '/docs/CGU-Training-Day.pdf',
+  cgv_uri: '/docs/CGV-Training-Day.pdf',
 };

@@ -18,6 +18,9 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
   productList: any = {}
   user:any = null
 
+  // 7. Platform variable
+  is_ios = false;
+  is_android = false;
 
   constructor(
     private contentService: ContentService,
@@ -27,6 +30,10 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
     private platform: Platform
   ) {
     super()
+
+    // 7. Platform variable
+    this.is_ios = this.platform.is('capacitor') && this.platform.is('ios');
+    this.is_android = this.platform.is('capacitor') && this.platform.is('android');
   }
 
   async ngOnInit() {
@@ -35,7 +42,8 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
     if (this.platform.is('ios')) { // TODO later: unify
       try {
         productList = (await StorePlugin.getProducts({})).products
-        this.feedbackService.registerNow('loading products from native plugin ' + JSON.stringify(productList), 'success')
+        if (!environment.production)
+          this.feedbackService.registerNow('loading products from native plugin ' + JSON.stringify(productList), 'success')
       } catch (error) {
         // console.error('Error loading products:', error);
         this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');

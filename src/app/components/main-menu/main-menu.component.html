@@ -153,7 +153,10 @@
 
 
     <div *ngIf="!user">
-        <ion-button (click)="menuNavigate('/login')" expand="full" fill="clear">Se connecter</ion-button>
+      <ion-button (click)="menuNavigate('/chat-master-placeholder')" expand="full" fill="clear">
+        Messagerie <!-- To be displayed even if the user is not connected yet -->
+      </ion-button>
+      <ion-button (click)="menuNavigate('/login')" expand="full" fill="clear">Se connecter</ion-button>
     </div>
     <div *ngIf="user?.function === 'customer' || user?.function === 'coach' || user?.function === 'nutritionist'">
         <h4>Espace personnel</h4>
@@ -164,7 +167,6 @@
               {{ unreadMessages }}
             </ion-chip>
         </ion-button>
-
     </div>
     <!-- Espace coaching -->
     <div *ngIf="user?.function === 'coach'">

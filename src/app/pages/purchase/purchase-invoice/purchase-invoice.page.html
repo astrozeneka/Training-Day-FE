@@ -56,7 +56,7 @@
     <br/>
     <form>
         <ion-item>
-            <ion-label>Accepter les conditions générales de vente</ion-label>
+            <ion-label>Accepter <a class="a" (click)="openCGV()">les conditions générales de vente</a></ion-label>
             <ion-checkbox [formControl]="acceptConditions" slot="end" color="primary"></ion-checkbox>
         </ion-item>
     </form>

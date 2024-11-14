@@ -56,6 +56,13 @@ export class ProfilePage extends FormComponent implements OnInit {
   grouped_perishables: { [key: string]: any; } = {
   };
 
+  // 7. Platform variable
+  is_ios = false;
+  is_android = false;
+
+  // 8. Sending verification Email
+  verificationEmailIsLoading: boolean = false;
+
   constructor(
     private router:Router,
     private contentService: ContentService,
@@ -88,6 +95,10 @@ export class ProfilePage extends FormComponent implements OnInit {
       await this.entitlementComponent.loadEntitlements()
       this.active_entitled_subscription = this.entitlementComponent.active_entitled_subscription
     })();
+
+    // 7. Platform variable
+    this.is_ios = this.platform.is('capacitor') && this.platform.is('ios');
+    this.is_android = this.platform.is('capacitor') && this.platform.is('android');
   }
 
   ngOnInit() {
@@ -239,8 +250,11 @@ export class ProfilePage extends FormComponent implements OnInit {
     this.router.navigate([url])
   }
 
+  // 8. Sending verification Email
   sendVerificationEmail(){
+    this.verificationEmailIsLoading = true
     this.contentService.getOne('/verifyEmail', {})
+      .pipe(finalize(()=>{this.verificationEmailIsLoading = false}))
       .subscribe((res)=>{
         if(res){
           this.feedbackService.registerNow("Un email de vérification a été envoyé", 'success')

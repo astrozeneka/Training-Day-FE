@@ -114,6 +114,7 @@
           [errorText]="displayedError.phone"
           slot="content"
           type="phone"
+          inputmode="tel"
         ></ion-input>
       </div>
     </ion-item>
@@ -142,6 +143,16 @@
           [errorText]="displayedError.postal_code"
         ></ion-input>
       </ion-item>
+    </div>
+
+    <div>
+      <ion-item>
+        <ion-label>Accepter <a class="a" (click)="openCGU()">les conditions générales d'utilisation</a></ion-label>
+        <ion-checkbox formControlName="acceptConditions" slot="end" color="primary"></ion-checkbox>
+      </ion-item>
+      <div class="input-error ion-padding-horizontal" *ngIf="form.get('acceptConditions').invalid && form.get('acceptConditions').touched">
+        Vous devez accepter les conditions générales d'utilisation
+      </div>
     </div>
 
     <div class="ion-text-center ion-padding">

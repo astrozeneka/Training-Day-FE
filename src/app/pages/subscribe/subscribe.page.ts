@@ -6,6 +6,9 @@ import {FeedbackService} from "../../feedback.service";
 import {catchError, finalize, throwError} from "rxjs";
 import {NavigationEnd, Router} from "@angular/router";
 import PasswordToggle from 'src/app/utils/PasswordToggle';
+import { environment } from 'src/environments/environment';
+import { Platform } from '@ionic/angular';
+import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-subscribe',
@@ -36,7 +39,9 @@ export class SubscribePage extends FormComponent implements OnInit {
 
     // city and postal code
     'city': new FormControl('', [Validators.required]),
-    'postal_code': new FormControl('', [Validators.required, Validators.pattern(/^\d{5}$/)])
+    'postal_code': new FormControl('', [Validators.required, Validators.pattern(/^\d{5}$/)]),
+    // Special fields
+    'acceptConditions': new FormControl(false, [Validators.requiredTrue])
   })
   override displayedError = {
     'email': undefined, // ไม่ต้องใส่ Role
@@ -48,14 +53,17 @@ export class SubscribePage extends FormComponent implements OnInit {
     'address': undefined,
     //
     'city': undefined,
-    'postal_code': undefined
+    'postal_code': undefined,
+    // Special fields
+    'acceptConditions': 'Vous devez accepter les conditions d\'utilisation' // UNused
   }
   formIsLoading:boolean = false
 
   constructor(
     private contentService: ContentService,
     private feedbackService: FeedbackService,
-    private router: Router
+    private router: Router,
+    private platform: Platform
   ) {
     super()
     router.events.subscribe(async(event: any)=>{
@@ -113,6 +121,7 @@ export class SubscribePage extends FormComponent implements OnInit {
           this.manageValidationFeedback(error, 'address')
           this.manageValidationFeedback(error, 'city')
           this.manageValidationFeedback(error, 'postal_code')
+          this.manageValidationFeedback(error, 'acceptConditions')
         }
         return throwError(error)
       }), finalize(async ()=>{
@@ -125,4 +134,13 @@ export class SubscribePage extends FormComponent implements OnInit {
       })
   }
 
+  // 3. Open the CGU page
+  openCGU(){
+    let url = environment.rootEndpoint + environment.cgu_uri
+    if (this.platform.is('capacitor')) {
+      Browser.open({url: url})
+    }else{
+      window.open(url, '_blank')
+    }
+  }
 }

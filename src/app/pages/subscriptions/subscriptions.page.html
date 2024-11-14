@@ -23,15 +23,21 @@
             <div class="option-list ion-padding" *ngIf="user && user?.renewable_id && active_entitled_subscription">
                 <h1 class="display-1 ion-text-center">Vous disposez actuellement d'un abonnement {{ user.renewable_id }}</h1>
 
+                <!--<p class="ion-text-center">
+                    <ion-button (click)="manageSubscription()">Gérer mes abonnements</ion-button>
+                </p>-->
+            </div>
+            <div class="option-list ion-padding" *ngIf="user && !user?.renewable_id && active_entitled_subscription && is_ios">
+                <h1 class="display-1 ion-text-center">Vous disposez actuellement d'un {{ active_entitled_subscription.display_name }} pour cet appareil iOS</h1>
                 <p class="ion-text-center">
                     <ion-button (click)="manageSubscription()">Gérer mes abonnements</ion-button>
                 </p>
             </div>
-            <div class="option-list ion-padding" *ngIf="user && !user?.renewable_id && active_entitled_subscription">
-                <h1 class="display-1 ion-text-center">Vous disposez actuellement d'un {{ active_entitled_subscription.display_name }} pour cet appareil iOS</h1>
-
+            <div class="option-list ion-padding" *ngIf="user && !user?.renewable_id && active_entitled_subscription && is_android">
+                <h1 class="display-1 ion-text-center">Vous disposez actuellement d'un {{ active_entitled_subscription.display_name }} pour cet appareil Android</h1>
                 <p class="ion-text-center">
-                    <ion-button (click)="manageSubscription()">Gérer mes abonnements</ion-button>
+                    <!-- TODO, will be updated later -->
+                    <!--<ion-button (click)="manageSubscription()">Gérer mes abonnements</ion-button>-->
                 </p>
             </div>
             <div class="option-list ion-padding" *ngIf="user && user?.renewable_id && !active_entitled_subscription">

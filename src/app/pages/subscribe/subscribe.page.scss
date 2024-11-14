@@ -25,3 +25,19 @@
         flex-grow: 1;
     }
 }
+
+// The link
+a, .a{
+    z-index: 99999;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--ion-color-primary);
+}
+
+
+// INput error
+.input-error{
+    margin-top: 5px;
+    color: var(--ion-color-danger);
+    font-size: 12px!important;
+}

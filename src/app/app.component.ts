@@ -77,8 +77,9 @@ export class AppComponent implements OnInit{
       platform: this.platform.is('ios') ? 'ios' : 'android'
     })
       .pipe(catchError((error) => {
-        console.log("Error while synching device entitlements", JSON.stringify(error))
-        this.feedbackService.registerNow("Error while syncing device entitlements :" + error, "danger")
+        //console.error("Error while synching device entitlements", JSON.stringify(error))
+        if (!environment.production)
+          this.feedbackService.registerNow("Error while syncing device entitlements :" + error, "danger")
         return throwError(error)
       }))
       .subscribe((response: any) => {
@@ -93,9 +94,6 @@ export class AppComponent implements OnInit{
       /*let data = (await StorePlugin.getNonRenewableEntitlements({}))
       let entitlements = data.entitlements
       let subscriptions = data.subscriptions */
-
-
-
       /*
       // Load the autoRenewableEntitlements
       if(this.platform.is('ios')) {

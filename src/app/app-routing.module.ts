@@ -204,6 +204,10 @@ const routes: Routes = [
     path: 'verify-mail',
     loadChildren: () => import('./pages/verify-mail/verify-mail.module').then( m => m.VerifyMailPageModule)
   },
+  {
+    path: 'chat-master-placeholder',
+    loadChildren: () => import('./pages/chat-master-placeholder/chat-master-placeholder.module').then( m => m.ChatMasterPlaceholderPageModule)
+  },
 ];
 
 @NgModule({

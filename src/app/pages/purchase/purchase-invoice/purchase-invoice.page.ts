@@ -9,6 +9,7 @@ import {BehaviorSubject, catchError, filter, finalize} from "rxjs";
 import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
 import { PurchaseService } from 'src/app/purchase.service';
 import { Platform } from '@ionic/angular';
+import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-purchase-invoice',
@@ -236,7 +237,8 @@ export class PurchaseInvoicePage implements OnInit {
       }), finalize(() => { this.isLoading = false }))
       .subscribe((response:any) => { // Typing should be
         console.log("Retrieve response after purchase")
-        this.feedbackService.registerNow("Success: " + JSON.stringify(response), "success")
+        // This is not the good practice when logging
+        // this.feedbackService.registerNow("Success: " + JSON.stringify(response), "success")
         this.redirectWithFeedback()
         // TODO continue
         return;
@@ -313,6 +315,16 @@ export class PurchaseInvoicePage implements OnInit {
     } catch (e) {
       console.log(e);
       throw e;
+    }
+  }
+
+  // 10. Open CGV
+  openCGV(){
+    let url = environment.rootEndpoint + environment.cgv_uri
+    if (this.platform.is('capacitor')) {
+      Browser.open({url: url})
+    }else{
+      window.open(url, '_blank')
     }
   }
 }

@@ -15,14 +15,14 @@ export const environment = {
   // rootEndpoint: 'http://192.168.1.187:8000',
   // apiEndpoint: 'http://192.168.88.188:8000/api',
   // rootEndpoint: 'http://192.168.88.188:8000',
-  apiEndpoint: 'http://192.168.1.232:8000/api',
-  rootEndpoint: 'http://192.168.1.232:8000',
+  apiEndpoint: 'http://192.168.1.231:8000/api',
+  rootEndpoint: 'http://192.168.1.231:8000',
 
   // Pusher configuration
   pusher_app_key: 'app-key',
   // pusher_host: '192.168.1.187',
   // pusher_host: '192.168.88.188',
-  pusher_host : '192.168.1.232',
+  pusher_host : '192.168.1.231',
   pusher_port: 6001,
   pusher_cluster: 'eu',
 
@@ -36,7 +36,11 @@ export const environment = {
   personalTrainerAvailable: false,            // Whether or not the personal trainer tab is available from the shop page
 
   // SPECIAL VARIABLES
-  nutritionistId: 15
+  nutritionistId: 15,
+
+  // CGU
+  cgu_uri: '/docs/CGU-Training-Day.pdf',
+  cgv_uri: '/docs/CGV-Training-Day.pdf',
 };
 
 /*
