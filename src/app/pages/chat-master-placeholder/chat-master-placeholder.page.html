@@ -1,13 +1,42 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>chat-master-placeholder</ion-title>
+    <ion-buttons slot="start">
+        <app-back-button></app-back-button>
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Messagerie</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">chat-master-placeholder</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content >
+  <div class="content-wrapper">
+    <h2 class="display-1 ion-padding-horizontal">Discuter avec mon coach</h2>
+    <div>
+
+      <p class="helper ion-padding-horizontal">
+        La messagerie de l'application mobile vous permet de communiquer avec votre coach. 
+        Connectez-vous ou inscrivez-vous gratuitement pour découvrir cette fonctionnalité.
+      </p>
+      <div class="bottom-controls">
+        <div class="inner">
+          <ion-button
+            fill="solid"
+            expand="block"
+            shape="round"
+            routerLink="/subscribe"
+          >
+            Créer un compte
+          </ion-button>
+          <ion-button
+            fill="clear"
+            expand="block"
+            routerLink="/login"
+          >
+            Se connecter
+          </ion-button>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </ion-content>

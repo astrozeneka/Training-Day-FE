@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { ChatMasterPlaceholderPageRoutingModule } from './chat-master-placeholder-routing.module';
 
 import { ChatMasterPlaceholderPage } from './chat-master-placeholder.page';
+import { UtilitiesModule } from 'src/app/components/utilities.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ChatMasterPlaceholderPageRoutingModule
+    ChatMasterPlaceholderPageRoutingModule,
+    UtilitiesModule
   ],
   declarations: [ChatMasterPlaceholderPage]
 })

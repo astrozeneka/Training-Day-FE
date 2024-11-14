@@ -1,0 +1,17 @@
+
+@import "../../../theme/mixins";
+
+
+h2{
+    margin-top: 0;
+    padding-top: 24px;
+}
+
+.content-wrapper{
+    @include bottom-control-wrapper(100px);
+    & .inner{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
