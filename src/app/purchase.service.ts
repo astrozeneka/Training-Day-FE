@@ -106,7 +106,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
   // Method 2: Purchase a product by its ID
   // Product type is only required for android
   async purchaseProductById(productId:string, productType=null, offerToken=null) {
-    console.log("triggering purchase for", productId, ", type is ", productType)
+    // console.log("triggering purchase for", productId, ", type is ", productType)
     let extraParams = {}
     if (this.platform.is('capacitor') && this.platform.is('android')){
       // Reverse mapping

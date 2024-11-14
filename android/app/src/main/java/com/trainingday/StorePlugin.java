@@ -36,25 +36,30 @@ public class StorePlugin extends Plugin {
     System.out.println("Hello world from android ==");
     Context context = getContext();
     billingClient = BillingClient.newBuilder(context)
-      .setListener((billingResult, purchases) -> {
-        // Handle purchase here
-        System.out.println("StorePlugin: Purchase listener");
-        System.out.println("StorePlugin: Purchase listener: " + purchases);
-        JSObject output = new JSObject();
-        JSArray jsPuchases = new JSArray();
-        for (Purchase purchase : purchases) {
-          JSObject jsPurchase = new JSObject();
-          jsPurchase.put("orderId", purchase.getOrderId());
-          jsPurchase.put("packageName", purchase.getPackageName());
-          jsPurchase.put("purchaseTime", purchase.getPurchaseTime());
-          jsPurchase.put("purchaseState", purchase.getPurchaseState());
-          jsPurchase.put("purchaseToken", purchase.getPurchaseToken());
-          jsPurchase.put("quantity", purchase.getQuantity());
-          jsPurchase.put("acknowledged", purchase.isAcknowledged());
-          jsPuchases.put(jsPurchase);
+      .setListener((billingResult, purchases) -> { // purchases is nullable
+        if (purchases != null) {
+          // Handle purchase here
+          System.out.println("StorePlugin: Purchase listener: " + purchases);
+          JSObject output = new JSObject();
+          JSArray jsPuchases = new JSArray();
+          for (Purchase purchase : purchases) {
+            JSObject jsPurchase = new JSObject();
+            jsPurchase.put("orderId", purchase.getOrderId());
+            jsPurchase.put("packageName", purchase.getPackageName());
+            jsPurchase.put("purchaseTime", purchase.getPurchaseTime());
+            jsPurchase.put("purchaseState", purchase.getPurchaseState());
+            jsPurchase.put("purchaseToken", purchase.getPurchaseToken());
+            jsPurchase.put("quantity", purchase.getQuantity());
+            jsPurchase.put("acknowledged", purchase.isAcknowledged());
+            jsPuchases.put(jsPurchase);
+          }
+          output.put("purchases", jsPuchases);
+          notifyListeners("onPurchase", output);
+        } else {
+          JSObject output = new JSObject();
+          output.put("message", "No purchases found"); // Can also mean that the purchase has been aborted by the user
+          notifyListeners("onPurchaseAborted", new JSObject());
         }
-        output.put("purchases", jsPuchases);
-        notifyListeners("onPurchase", output);
       })
       .enablePendingPurchases()
       .build();
@@ -248,6 +253,7 @@ public class StorePlugin extends Plugin {
 
   @PluginMethod()
   public void purchaseProductById(PluginCall call) {
+    System.out.println("StorePlugin: Purchasing product by ID"); // ok
     String productId = call.getString("productId");
     if (!billingClient.isReady()){
       // The code below is redundant
@@ -279,7 +285,7 @@ public class StorePlugin extends Plugin {
   }
 
   public void processPurchase(String productId, PluginCall call){
-    System.out.println("StorePlugin: Processing purchase for product: " + productId + ", type is " + call.getString("type"));
+    System.out.println("StorePlugin: Processing purchase for product: " + productId + ", type is " + call.getString("type")); // ok
     String productType = call.getString("type");
     try {
       // Step 1. fetch the product details

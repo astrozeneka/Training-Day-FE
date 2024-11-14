@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {ContentService} from "../../../content.service";
 import {FormControl} from "@angular/forms";
 import {Router} from "@angular/router";
-import StorePlugin, { AndroidProduct, Product } from "../../../custom-plugins/store.plugin";
+import StorePlugin, { AndroidProduct, Product, Transaction } from "../../../custom-plugins/store.plugin";
 import {environment} from "../../../../environments/environment";
 import {FeedbackService} from "../../../feedback.service";
 import {BehaviorSubject, catchError, filter, finalize} from "rxjs";
@@ -119,6 +119,15 @@ export class PurchaseInvoicePage implements OnInit {
           }
         }
       })
+      // On Purchase abortion
+      StorePlugin.addListener('onPurchaseAborted', (data)=>{
+        if (this.isLoading){
+          this.isLoading = false
+          this.loadingStep = null
+          this.cdr.detectChanges()
+          this.feedbackService.registerNow("Transaction annulée par l'utilisateur", "danger") // Not consistent with the IOS architecture
+        }
+      })
     }
   }
 
@@ -134,10 +143,18 @@ export class PurchaseInvoicePage implements OnInit {
       //let res:any = (await StorePlugin.purchaseProductById({productId: this.productId!})) as any;
       console.log("Calling purchaseProductById, productId: " + this.productId + ", productType: " + this.productType)
       let productId = this.productId;
-      if (this.productType == 'subs') productId = 'training_day'; // Applying patch
-      let res:any = (await this.purchaseService.purchaseProductById(productId!, this.productType!, this.offerToken)) as any;
-      console.log("Purchase result: " + JSON.stringify(res), "info")
+      if (this.productType == 'subs' && this.platform.is('android')) productId = 'training_day'; // Applying patch (only for android)
       
+      let res:{success:any, transaction:any}
+      try {
+        res = (await this.purchaseService.purchaseProductById(productId!, this.productType!, this.offerToken)) as any;
+        console.log("Purchase result: " + JSON.stringify(res), "info")
+      } catch (e) {
+        console.log("Error in purchaseProductById: " + JSON.stringify(e), "error")
+        this.feedbackService.registerNow(e.message, "danger")
+        this.isLoading = false
+        this.loadingStep = null
+      }
       // Android flow ends here
       if (this.platform.is('ios')){
         // IMPORTANT: In iOS, the following data should added to the transaction (this code part should normally managed by the native code)

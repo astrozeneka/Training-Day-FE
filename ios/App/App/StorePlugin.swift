@@ -53,6 +53,7 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
             call.reject("productId is required")
             return
         }
+        print("ProductId is \(productID)")
         guard let product = self.store?.products.first(where: {$0.id == productID}) else {
             call.reject("Product not found")
             return
@@ -81,6 +82,8 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
                   "success": true,
                   "transaction": transactionDetails
                 ])
+              } else {
+                call.reject("Transaction annulée par l'utiliateur")
               }
             } catch {
                 call.reject(error.localizedDescription)

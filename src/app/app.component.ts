@@ -84,7 +84,8 @@ export class AppComponent implements OnInit{
       }))
       .subscribe((response: any) => {
         this.feedbackService.registerNow("Device entitlements verified from the server", "success")
-        console.log("Device entitlements verified from the server : "+ JSON.stringify(response))
+        if (!environment.production)
+          console.log("Device entitlements verified from the server : "+ JSON.stringify(response))
       })
 
     /*

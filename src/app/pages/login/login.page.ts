@@ -192,6 +192,8 @@ export class LoginPage extends FormComponent implements OnInit {
           this.manageValidationFeedback(error, 'password');
         }else if(error.status == 401){ // 401 Unauthorized
           this.feedbackService.registerNow("Le nom d'utilisateur ou le mot de passe est incorrect", 'danger')
+        }else if(error.status == 0){
+          this.feedbackService.registerNow("Veuillez vérifier votre connexion internet", "danger")
         }else{
           this.feedbackService.registerNow("Erreur " + error.status, 'danger')
           console.log("Error: " + error.toString())
