@@ -127,4 +127,9 @@ export class PurchaseService { // This class cannot be used anymore due to andro
     }
     return null;
   }
+
+  // The redeem code
+  async presentRedeemCodeSheet() {
+    return StorePlugin.presentRedeemCodeSheet();
+  }
 }

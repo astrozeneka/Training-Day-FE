@@ -41,6 +41,9 @@ export const environment = {
   // CGU
   cgu_uri: '/docs/CGU-Training-Day.pdf',
   cgv_uri: '/docs/CGV-Training-Day.pdf',
+
+  // Redeem code
+  redeemCodeEnabled: true
 };
 
 /*

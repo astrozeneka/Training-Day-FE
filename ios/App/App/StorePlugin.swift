@@ -8,6 +8,7 @@
 import Foundation
 import Capacitor
 import SwiftUI
+import StoreKit
 
 @objc(StorePlugin)
 public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
@@ -22,7 +23,10 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "getAutoRenewableEntitlements", returnType: CAPPluginReturnPromise),
         
         // Experimental features
-        CAPPluginMethod(name: "present", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "present", returnType: CAPPluginReturnPromise),
+        
+        // The redeem code sheet
+        CAPPluginMethod(name: "presentRedeemCodeSheet", returnType: CAPPluginReturnPromise)
     ]
     
     private var store: Store?
@@ -193,4 +197,24 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
             self.bridge?.viewController?.present(hostingController, animated: true, completion: nil)
         }
     }
+  
+  @objc func presentRedeemCodeSheet(_ call: CAPPluginCall){
+    print("Presenting redeem code sheet")
+    guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+      call.reject("No active UIWindowScene found")
+      return
+    }
+    Task {
+      do {
+        try await AppStore.presentOfferCodeRedeemSheet(in: scene)
+        print("Redeem code sheet presented")
+        call.resolve()
+      } catch {
+        call.reject("Failed to present redeem code sheet")
+      }
+    }
+    
+    
+    call.resolve()
+  }
 }

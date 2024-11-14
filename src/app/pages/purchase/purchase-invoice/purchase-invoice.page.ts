@@ -38,6 +38,9 @@ export class PurchaseInvoicePage implements OnInit {
   productType: string = null; // (only required for Android)
   productDataBS: BehaviorSubject<{id: string, type: string}> = new BehaviorSubject(null)
 
+  // Redeem code
+  redeemCodeEnabled = environment.redeemCodeEnabled
+
   constructor(
     private contentService: ContentService,
     private feedbackService: FeedbackService,
@@ -343,5 +346,12 @@ export class PurchaseInvoicePage implements OnInit {
     }else{
       window.open(url, '_blank')
     }
+  }
+
+  // Redeem code sheet
+  presentRedeemSheet(){
+    this.purchaseService.presentRedeemCodeSheet().then((res)=>{
+      console.log(res)
+    })
   }
 }

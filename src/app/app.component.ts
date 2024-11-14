@@ -54,8 +54,11 @@ export class AppComponent implements OnInit{
     let token = await this.contentService.storage.get('token'); // Wait for the user to be loaded first
     (this.contentService as any)._token = token // By-passing the private variable
 
-    if(this.platform.is('ios') || this.platform.is('android'))
+    if(this.platform.is('capacitor')){
       this.initializePushNotifications()
+    } else{
+      console.warn("Push notification is not available")
+    }
 
     
 
@@ -63,10 +66,14 @@ export class AppComponent implements OnInit{
     // Loading and synchronizing entitlements
     await new Promise((resolve)=>setTimeout(resolve, 1000)) // Wait for the user to be loaded first
     let fromDeviceData:{entitlements: any, subscriptions?: any}
-    if (this.platform.is('ios'))
-      fromDeviceData = (await StorePlugin.getAutoRenewableEntitlements({}))
-    else if (this.platform.is('android'))
-      fromDeviceData = (await this.purchaseService.getAndroidEntitlements())
+    if (this.platform.is('capacitor')){
+      if (this.platform.is('ios'))
+        fromDeviceData = (await StorePlugin.getAutoRenewableEntitlements({}))
+      else if (this.platform.is('android'))
+        fromDeviceData = (await this.purchaseService.getAndroidEntitlements())
+    } else {
+      console.warn("IAP is not available in web platform")
+    }
     // Test
     console.log("inputData : " +JSON.stringify({
       ...fromDeviceData,
@@ -83,9 +90,9 @@ export class AppComponent implements OnInit{
         return throwError(error)
       }))
       .subscribe((response: any) => {
-        this.feedbackService.registerNow("Device entitlements verified from the server", "success")
+        console.log("Device entitlements verified from the server : "+ JSON.stringify(response))
         if (!environment.production)
-          console.log("Device entitlements verified from the server : "+ JSON.stringify(response))
+          this.feedbackService.registerNow("Device entitlements verified from the server", "success")
       })
 
     /*

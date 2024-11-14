@@ -83,6 +83,13 @@ const mockStorePlugin: StorePlugin = {
     return {
       "entitlements": []
     }
+  },
+
+  // Redeem code
+  presentRedeemCodeSheet(){
+    return new Promise((resolve, reject) => {
+      setTimeout(resolve, 1300);
+    })
   }
 }
 export interface StorePlugin {
@@ -103,6 +110,11 @@ export interface StorePlugin {
   // Experimental features
   present(options: {message: String }): Promise<{ success: boolean }>
   getAndroidEntitlements(): Promise<{ entitlements: Transaction[] }>
+
+  // The redeem code sheet (in iOS)
+  presentRedeemCodeSheet(): Promise<{ success: boolean }>; // Might be updated later
+
+  // The redeem code sheet (in Android) (merged with the above function)
 }
 export interface Transaction {
   bundleId: string;

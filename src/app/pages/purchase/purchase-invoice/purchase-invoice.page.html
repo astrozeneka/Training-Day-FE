@@ -72,6 +72,16 @@
             >
             Continuer
         </app-ux-button>
+        <app-ux-button
+            expand="block"
+            color="primary"
+            fill="clear"
+            shape="round"
+            (click)="presentRedeemSheet()"
+            *ngIf="!isLoading && redeemCodeEnabled"
+        >
+            Utiliser un code
+        </app-ux-button>
         <div class="helper ion-text-center" *ngIf="isLoading" style="font-size:smaller">
             Enregistrement de votre commande en cours <br/>
             <div>
