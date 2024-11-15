@@ -9,6 +9,7 @@ import {Router} from "@angular/router";
 })
 export class BackButtonComponent  implements OnInit {
   displayed = false;
+  @Input() customUrl: string = null
 
   constructor(
     private location: Location,
@@ -29,6 +30,9 @@ export class BackButtonComponent  implements OnInit {
   ngOnInit() {}
 
   navigateBack(){
-    this.location.back()
+    if(this.customUrl)
+      this.router.navigateByUrl(this.customUrl)
+    else
+      this.location.back()
   }
 }
