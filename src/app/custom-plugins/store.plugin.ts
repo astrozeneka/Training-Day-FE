@@ -3,16 +3,8 @@ const mockStorePlugin: StorePlugin = {
   getProducts: async() => {
     return {
       "products":[
-        /*{"displayPrice":"$249.99","description":"Personal Trainer (5 sessions)","displayName":"Personal Trainer (5 sessions)","id":"trainer5","price":249.99},
-        {"displayName":"Personal Trainer (1 session)","displayPrice":"$49.99","description":"Personal Trainer (1 session)","price":49.99,"id":"trainer1"},
-        {"displayPrice":"$17.99","description":"Food Coaching (1 Month)","id":"foodcoach_1w","displayName":"Food Coaching (1 Month)","price":17.99}*/
-        {"description":"Sport Coaching (1 Week)","id":"sportcoach_1w","price":24.99,"displayPrice":"$24.99","displayName":"Sport Coaching (1 Week)"},
-        {"description":"Personal Trainer (5 sessions)","displayPrice":"$249.99","id":"trainer5","price":249.99,"displayName":"Personal Trainer (5 sessions)"},
-        {"price":12.99,"displayPrice":"$12.99","displayName":"Pack Hoylt","description":"Pack Hoylt","id":"hoylt"},
-        {"displayName":"Personal Trainer (1 session)","description":"Personal Trainer (1 session)","displayPrice":"$49.99","price":49.99,"id":"trainer1"},
-        
-        {"displayName":"Food Coaching (1 Month)","description":"Food Coaching (1 Month)","price":17.99,"displayPrice":"$17.99","id":"foodcoach_4w"}
-      ]
+        {"price":12.99,"id":"foodcoach_1w","displayName":"Food Coaching (1 Month)","displayPrice":"$12.99","description":"Get 1 month of food coaching program"},{"id":"sportcoach_6w","displayPrice":"$49.99","price":49.99,"description":"Get 6 weeks of sport coaching program","displayName":"Sport Coaching (6 Weeks)"},{"description":"Get 1 week of sport coaching program","displayName":"Sport Coaching (1 Week)","price":12.99,"displayPrice":"$12.99","id":"sportcoach_1w"},{"displayName":"Food Coaching (1 Month)","price":44.99,"id":"foodcoach_4w","displayPrice":"$44.99","description":"Get 1 month of food coaching program"},{"description":"Get 5 training sessions.","id":"trainer5","displayName":"Personal Trainer (5 sessions)","displayPrice":"$249.00","price":249},{"id":"sportcoach_4w","description":"Get 1 month of sport coaching program","displayPrice":"$44.99","displayName":"Sport Coaching (1 Month)","price":44.99},{"displayName":"Pack Alonzo","description":"Get Alonzo subscription","id":"alonzo","price":44.99,"displayPrice":"$44.99"},{"displayPrice":"$449.00","description":"Get 10 training sessions.","price":449,"id":"trainermax","displayName":"Personal Trainer (10 sessions)"},{"description":"Get Hoylt subscription","price":6.99,"id":"hoylt","displayName":"Pack Hoylt","displayPrice":"$6.99"},{"price":24.99,"displayPrice":"$24.99","displayName":"Pack Gursky","description":"Get Gursky subscription","id":"gursky"},{"price":22.99,"displayName":"Pack Moreno","description":"Get Moreno subscription","displayPrice":"$22.99","id":"moreno"},{"id":"trainer1","displayName":"Personal Trainer (1 session)","description":"Get one training session.","displayPrice":"$49.99","price":49.99},{"id":"smiley","description":"Get Smiley subscription","price":24.99,"displayName":"Pack Smiley","displayPrice":"$24.99"},{"displayName":"Food Coaching (6 Weeks)","price":49.99,"id":"foodcoach_6w","description":"Get 6 weeks of food coaching program","displayPrice":"$49.99"}]
+      
     }
   },
   purchaseProductById: async(options: { productId: string, type: string|undefined }) => {

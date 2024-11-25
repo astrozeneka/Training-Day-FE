@@ -147,7 +147,8 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
     }
     
     @objc func getAutoRenewableEntitlements(_ call: CAPPluginCall) {
-        let autoRenewableEntitlements = self.store?.purchasedAutoRenewablesEntitlements.map { handledTransaction in
+      // Same code as in Store::listenForTransactions and more
+      let autoRenewableEntitlements = self.store?.purchasedAutoRenewablesEntitlements.map { handledTransaction in
             return [
                 "bundleId": handledTransaction.appBundleID,
                 "deviceVerification": handledTransaction.deviceVerification.base64EncodedString(),
@@ -199,6 +200,8 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
     }
   
   @objc func presentRedeemCodeSheet(_ call: CAPPluginCall){
+    
+    
     print("Presenting redeem code sheet")
     guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
       call.reject("No active UIWindowScene found")

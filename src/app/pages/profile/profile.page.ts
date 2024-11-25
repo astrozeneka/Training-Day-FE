@@ -12,7 +12,7 @@ import {
 import {navigate} from "ionicons/icons";
 import StorePlugin from "../../custom-plugins/store.plugin";
 import {EntitlementReady} from "../../abstract-components/EntitlementReady";
-import { FilePicker } from '@capawesome/capacitor-file-picker';
+import { ConvertHeicToJpegResult, FilePicker, PickImagesResult } from '@capawesome/capacitor-file-picker';
 import { PhonePrefixSelectComponent } from 'src/app/components-submodules/phone-prefix-select/phone-prefix-select.component';
 
 
@@ -132,11 +132,12 @@ export class ProfilePage extends FormComponent implements OnInit {
 
   async selectImage(){
     if(this.platform.is('capacitor')){
-      let result;
+      let result:PickImagesResult;
       try{
         result = await FilePicker.pickImages({
           limit: 1,
-          readData: true
+          readData: true,
+          skipTranscoding: false // This is to automatically convert HEIC to JPEG
         })
       }catch(e){
         return;

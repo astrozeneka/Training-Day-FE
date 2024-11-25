@@ -13,7 +13,7 @@ class Store:NSObject {
         "trainer1", "trainer5", "trainer10", "trainermax",
         "foodcoach_1w", "foodcoach_4w", "foodcoach_6w",
         "sportcoach_1w", "sportcoach_4w", "sportcoach_6w",
-        "hoylt", "moreno", "alonzo"
+        "hoylt", "gursky", "moreno", "smiley", "alonzo"
     ]
     @Published var products = [Product]()
     
@@ -48,7 +48,27 @@ class Store:NSObject {
                 // For now the program doesn't execute this portion of code
                 print("listenForTransactions: a transaction has been intercepted")
                 // Capacitor Event should be fired at this step
-                await self.handle(transactionVerification: result)
+                let handledTransaction = await self.handle(transactionVerification: result)
+                // Fire event to capacitor (same code as in StorePlugin::getAutoRenewableEntitlements and more)
+                let transaction = [
+                  "bundleId": handledTransaction?.appBundleID,
+                  "deviceVerification": handledTransaction?.deviceVerification.base64EncodedString(),
+                  "deviceVerificationNonce": handledTransaction?.deviceVerificationNonce.uuidString,
+                  // "environment": handledTransaction?.environment,
+                  "inAppOwnershipType": handledTransaction?.ownershipType.rawValue,
+                  //"originalPurchaseDate": handledTransaction?.originalPurchaseDate.formatted() ?? "", // Still have errors
+                  //"originalTransactionId": handledTransaction?.originalID ?? 0,
+                  //"productId": handledTransaction?.productID ?? "",
+                  //"purchaseDate": handledTransaction?.purchaseDate.formatted() ?? "", // Still have errors
+                  "quantity": handledTransaction?.purchasedQuantity,
+                  "signedDate": handledTransaction?.signedDate,
+                  "transactionId": handledTransaction?.id,
+                  //"currency": handledTransaction?.currency ?? ""
+                ]
+                // Same output format as for the android listener
+                self.plugin.notifyListeners("onIOSPurchase", data:[
+                    "purchases": [transaction]
+                  ])
             }
         }
     }

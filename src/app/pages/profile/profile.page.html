@@ -29,7 +29,7 @@
              accept="image/*"
       /><!-- This way of handling input doesn't work anymore in the new update of iOS -->
       <ion-button size="small" color="medium" (click)="selectImage()">
-        Upload profile picture
+        Sélectionner une image
         <ion-icon slot="end" name="cloud-upload-outline"></ion-icon>
       </ion-button>
     </div>
@@ -129,6 +129,7 @@
         <app-ux-button
             (click)="submit()"
             [loading]="formIsLoading"
+            [fixedWidth]="true"
         >
             Mettre à jour
         </app-ux-button>

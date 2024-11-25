@@ -132,6 +132,19 @@ export class PurchaseInvoicePage implements OnInit {
         }
       })
     }
+    if (this.platform.is('capacitor') && this.platform.is('ios')){
+      // Separated due to the experimental nature of the plugin
+      StorePlugin.addListener('onIOSPurchase', (purchases:{purchases:Transaction[]}) => {
+        console.log("onIOSPurchase fired " + JSON.stringify(purchases))
+        if (purchases.purchases.length > 0){
+          let transaction = purchases.purchases[0];
+          (transaction as any).currency = 'EUR'; // TODO, update to local currency (typing must be solved later)
+          (transaction as any).amount = this.productList[this.productId as string].price * 100; // No need to apply patch for iOS
+          (transaction as any).product_id = this.productId
+          this.purchaseCompleted(transaction)
+        }
+      })
+    }
   }
 
   async continueToPayment(){
@@ -168,76 +181,13 @@ export class PurchaseInvoicePage implements OnInit {
         this.purchaseCompleted(res.transaction)
       }
       // The android counterparts will use the plugin eveing listener
-      
-      
-      return;
-      this.contentService.post('/payments/registerIAPTransaction', res.transaction)
-        .pipe(catchError(err => {
-          // Print error code
-          console.error(err)
-          this.feedbackService.registerNow("Erreur: " + err.error.message, "error")
-          return err
-        }), finalize(() => {
-          this.isLoading = false
-        }))
-        .subscribe((response:any)=> {
-          console.log("Retrieve response after purchase")
-          //this.feedbackService.register('Votre achat a été enregistré. Vous pouvez maintenant profiter de votre achat.')
-          let feedbackOpts = {
-            buttonText: null,
-            primaryButtonText: this.productId.includes('foodcoach') ? 'Prendre contact avec mon nutritionniste' : 'Prendre contact avec mon coach',
-            secondaryButtonText: 'Retour à l\'accueil',
-            primaryButtonAction: '/chat',
-            secondaryButtonAction: '/home',
-            modalImage: this.useDarkMode ? 'assets/logo-dark-cropped.png' : 'assets/logo-light-cropped.png',
-          }
-          if(["hoylt", "moreno", "alonzo"].includes(this.productId)){ // Auto-renewables
-            this.feedbackService.register(
-              null,
-              'success',
-              {
-                type: 'modal',
-                modalTitle: "Votre achat d'abonnement a été effectué",
-                modalContent: 'Bienvenue chez Training Day vous pouvez dès à présent prendre rendez-vous avez votre coach',
-                ...feedbackOpts
-              }
-            )
-          }else{ // Non-renewables
-            console.log(this.productId)
-            let content;
-            if(this.productId.includes('foodcoach')){
-              content = 'Votre nutritionniste prendra contact avec vous dans les prochaines 24h afin de programmer et ' +
-                'de planifier votre programme nutritionnel en fonction de vos attentes'
-            }else if(this.productId.includes('sportcoach')){
-              content = 'Votre coach prendra contact avec vous dans les prochaines 24h afin de programmer et ' +
-                'de planifier votre programme sportif en fonction de vos attentes'
-            }else if(this.productId.includes('trainer')){
-              content = 'Votre coach prendra contact avec vous dans les prochaines 24h afin de programmer et ' +
-                'de planifier votre entraînement en fonction de vos attentes'
-            }
-            this.feedbackService.register(
-              null,
-              'success',
-              {
-                type: 'modal',
-                modalTitle: 'Votre achat a été effectué',
-                modalContent: content,
-                ...feedbackOpts
-              }
-            )
-          }
-          this.router.navigate(['/home'])
-        })
-      console.log("Purchase result:")
-      console.log(res)
-      
     }else{
       this.feedbackService.registerNow("The payment purchase is not availble", "danger")
     }
   }
 
   // A common platform to handle both iOS and Android purchases
-  private purchaseCompleted(product: Product|AndroidProduct){
+  private purchaseCompleted(product: Product|AndroidProduct|Transaction){
     this.loadingStep = "(2/2) Enregistrement de l'achat"
     this.cdr.detectChanges()
     console.log("Processing purchase completed"); // WE ARE HERE
@@ -256,37 +206,34 @@ export class PurchaseInvoicePage implements OnInit {
         return err
       }), finalize(() => { this.isLoading = false }))
       .subscribe((response:any) => { // Typing should be
+        console.log(response)
         console.log("Retrieve response after purchase")
-        // This is not the good practice when logging
-        // this.feedbackService.registerNow("Success: " + JSON.stringify(response), "success")
         this.redirectWithFeedback()
-        // TODO continue
-        return;
-
       })
   }
 
   private redirectWithFeedback(){
     let feedbackOpts = {
+      type: 'modal',
       buttonText: null,
-      primaryButtonText: this.productId.includes('foodcoach') ? 'Prendre contact avec mon nutritionniste' : 'Prendre contact avec mon coach',
+      primaryButtonText: (this.productId.includes('foodcoach') || this.productId.includes('smiley')) ? 'Prendre contact avec mon nutritionniste' : 'Prendre contact avec mon coach',
       secondaryButtonText: 'Retour à l\'accueil',
       primaryButtonAction: '/chat',
       secondaryButtonAction: '/home',
       modalImage: this.useDarkMode ? 'assets/logo-dark-cropped.png' : 'assets/logo-light-cropped.png',
     }
-    if(["hoylt", "moreno", "alonzo"].includes(this.productId)){ // Auto-renewables
+    if(["hoylt", "gursky", "moreno", "smiley", "alonzo"].includes(this.productId)){ // Auto-renewables
       this.feedbackService.register(
         null,
         'success',
         {
-          type: 'modal',
           modalTitle: "Votre achat d'abonnement a été effectué",
-          modalContent: 'Bienvenue chez Training Day vous pouvez dès à présent prendre rendez-vous avez votre coach',
+          modalContent: 'Bienvenue chez Training Day vous pouvez dès à présent prendre rendez-vous avez votre ' +
+            ["smiley"].includes(this.productId) ? "nutritionniste" : "coach",
           ...feedbackOpts
         }
       )
-    }else{ // Non-renewables
+    } else{ // Non-renewables
       let content;
       if(this.productId.includes('foodcoach')){
         content = 'Votre nutritionniste prendra contact avec vous dans les prochaines 24h afin de programmer et ' +
@@ -302,7 +249,6 @@ export class PurchaseInvoicePage implements OnInit {
         null,
         'success',
         {
-          type: 'modal',
           modalTitle: 'Votre achat a été effectué',
           modalContent: content,
           ...feedbackOpts
@@ -350,6 +296,8 @@ export class PurchaseInvoicePage implements OnInit {
 
   // Redeem code sheet
   presentRedeemSheet(){
+    this.isLoading = true
+    this.loadingStep = "(1/2) Connexion à l'App Store"
     this.purchaseService.presentRedeemCodeSheet().then((res)=>{
       console.log(res)
     })

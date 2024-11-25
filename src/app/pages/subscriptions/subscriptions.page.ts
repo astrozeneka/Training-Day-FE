@@ -42,8 +42,6 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
     if (this.platform.is('ios')) { // TODO later: unify
       try {
         productList = (await StorePlugin.getProducts({})).products
-        if (!environment.production)
-          this.feedbackService.registerNow('loading products from native plugin ' + JSON.stringify(productList), 'success')
       } catch (error) {
         // console.error('Error loading products:', error);
         this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
@@ -54,8 +52,6 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
     } else if (this.platform.is('android') && this.platform.is('capacitor')) { // TODO later: unify
       try {
         productList = (await this.purchaseService.getProducts('subs')).products;
-        console.log("load products from purchase service") // Delete later
-        console.log(JSON.stringify(productList)) // Delete later
       } catch (error) { // TODO later: unify
         // console.error('Error loading products:', error);
         this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
@@ -75,10 +71,6 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
       this.router.navigate(['/subscriptions-duration'])
     }
 
-  }
-
-  testPurchase(productId:string){ // Unused, should be removed
-    // Todo: remove this function
   }
 
   async clickSubscriptionOption(productId: string){

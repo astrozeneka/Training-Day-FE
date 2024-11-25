@@ -8,7 +8,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="">
+<ion-content>
   <!-- This section should be infinite scroll -->
     <div *ngIf="user?.function !== 'customer'">
         <ion-item>
@@ -72,7 +72,8 @@
                         <ion-badge *ngIf="entity.isActive" color="success">En ligne</ion-badge>
                     </div>
                     <div class="item-body">
-                        {{ entity.messages[0]?.content }}
+                        <span *ngIf="entity.messages[0]?.content?.includes('[deleted]')">[Message supprimé]</span>
+                        <span *ngIf="!entity.messages[0]?.content?.includes('[deleted]')">{{ entity.messages[0]?.content }}</span>
                     </div>
                 </div>
                 <div class="message-info">
@@ -130,8 +131,8 @@
 
         <h2 class="display-1 ion-padding-horizontal">Discuter avec mon coach</h2>
         <div>
-            <p class="helper ion-padding-horizontal" *ngIf="(user?.renewable_id == null || user?.renewable_id == 'hoylt') && !grouped_perishables['sport-coach']">
-                Vous disposez d'un accès limité à cette fonctionnalité. Veuillez souscrire à un Pack Hoylt pour en bénéficier.
+            <p class="helper ion-padding-horizontal" *ngIf="(user?.renewable_id == null || user?.renewable_id == 'hoylt' || user?.renewable_id == 'smiley' || user?.renewable_id == 'gursky') && !grouped_perishables['sport-coach']">
+                Vous disposez d'un accès limité à cette fonctionnalité. Veuillez souscrire à un Pack Gursky pour en bénéficier.
             </p>
             <p class="helper ion-padding-horizontal" *ngIf="user?.renewable_id == 'moreno' || user?.renewable_id == 'alonzo' || grouped_perishables['sport-coach']">
                 Vous pouvez discuter avec votre coach à tout moment. Il vous répondra dans les plus brefs délais.
@@ -152,7 +153,8 @@
                             <ion-badge *ngIf="entity.isActive" color="success">En ligne</ion-badge>
                         </div>
                         <div class="item-body">
-                            {{ entity.messages[0]?.content }}
+                            <span *ngIf="entity.messages[0]?.content?.includes('[deleted]')">[Message supprimé]</span>
+                            <span *ngIf="!entity.messages[0]?.content?.includes('[deleted]')">{{ entity.messages[0]?.content }}</span>
                         </div>
                     </div>
                     <div class="message-info">
@@ -167,7 +169,7 @@
                 </ion-item>
                 <!-- The disabled message should be reviewed in the settings -->
                 <div class="placeholder" *ngIf="user?.user_settings?.disable_coach_messages == 'true'">
-                    <div class="helper">
+                    <div class="helper" style="font-size: 0.9em;">
                         Votre accès à la messagerie est désactivé.
                         Vous devez avoir un abonnement Moreno ou Alonzo pour continuer à échanger avec votre coach.
                     </div>
@@ -187,10 +189,10 @@
             <p class="helper ion-padding-horizontal" *ngIf="(user?.renewable_id == null) && !grouped_perishables['food-coach']">
                 Vous n'avez pas accès à cette fonctionnalité. Veuillez souscrire à un Pack Alonzo pour en bénéficier.
             </p>
-            <p class="helper ion-padding-horizontal" *ngIf="(user?.renewable_id == 'hoylt' || user?.renewable_id == 'moreno') && !grouped_perishables['food-coach']">
+            <p class="helper ion-padding-horizontal" *ngIf="(user?.renewable_id == 'hoylt' || user?.renewable_id == 'gursky' || user?.renewable_id == 'moreno') && !grouped_perishables['food-coach']">
                 Vous disposez d'un accès limité à cette fonctionnalité. Veuillez souscrire à un Pack Alonzo pour en bénéficier.
             </p>
-            <p class="helper ion-padding-horizontal" *ngIf="user?.renewable_id == 'alonzo' || grouped_perishables['food-coach']">
+            <p class="helper ion-padding-horizontal" *ngIf="user?.renewable_id == 'smiley' || user?.renewable_id == 'alonzo' || grouped_perishables['food-coach']">
                 Vous pouvez discuter avec votre nutrionniste à tout moment. Il vous répondra dans les plus brefs délais.
             </p>
             <div *ngIf="nutritionistList && !((user?.renewable_id == null) && !grouped_perishables['food-coach'])" class="discussion-list">
@@ -208,7 +210,8 @@
                             <ion-badge *ngIf="entity.isActive" color="success">En ligne</ion-badge>
                         </div>
                         <div class="item-body">
-                            {{ entity.messages[0]?.content }}
+                            <span *ngIf="entity.messages[0]?.content?.includes('[deleted]')">[Message supprimé]</span>
+                            <span *ngIf="!entity.messages[0]?.content?.includes('[deleted]')">{{ entity.messages[0]?.content }}</span>
                         </div>
                     </div>
                     <div class="message-info">

@@ -611,7 +611,8 @@ export class ChatDetailsPage extends FormComponent implements OnInit, ViewWillEn
         if (type == 'image'){
           result = await FilePicker.pickImages({
             limit: 1,
-            readData: true
+            readData: true,
+            skipTranscoding: true
           })
         } else if (type == 'video'){
           result = await FilePicker.pickVideos({

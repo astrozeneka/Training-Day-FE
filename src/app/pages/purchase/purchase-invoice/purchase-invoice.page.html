@@ -79,6 +79,7 @@
             shape="round"
             (click)="presentRedeemSheet()"
             *ngIf="!isLoading && redeemCodeEnabled"
+            [disabled]="!acceptConditions.value"
         >
             Utiliser un code
         </app-ux-button>

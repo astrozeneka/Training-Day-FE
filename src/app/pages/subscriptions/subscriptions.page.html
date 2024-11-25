@@ -50,7 +50,7 @@
                 <h1 class="display-1 ion-padding" *ngIf="!user || (user && !user?.renewable_id && !active_entitled_subscription )">Maîtrisez votre budget et choisissez l’offre d’abonnement qui vous convient<br/></h1>
                 
                 <div class="ion-padding-horizontal">
-                    <app-storefront-item
+                    <!--<app-storefront-item
                         color="dark"
                         [product]="productList['hoylt']"
                         [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
@@ -64,7 +64,23 @@
                             L'offre inclut aussi un bilan mensuel avec votre coach.
                         </div>
                         <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
-                            <!-- !active_entitled_subscription ???? -->
+                            Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
+                        </div>
+                    </app-storefront-item>-->
+                    <app-storefront-item
+                        color="dark"
+                        [product]="productList['gursky']"
+                        [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
+                        (action)="clickSubscriptionOption('gursky')"
+                    >
+                        <div slot="title">
+                            Pack Gursky
+                        </div>
+                        <div slot="description">
+                            Découvrez notre offre de base incluant un accès aux trainings sur la plateforme et aux outils de suivi.
+                            L'offre inclut aussi un bilan mensuel avec votre coach.
+                        </div>
+                        <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
                             Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
                         </div>
                     </app-storefront-item>
@@ -80,6 +96,23 @@
                         <div slot="description">
                             Découvrez notre offre de base incluant un accès aux trainings sur la plateforme et aux outils de suivi, un bilan mensuel et
                             un suivi et accompagnement par votre coach.
+                        </div>
+                        <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
+                            Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
+                        </div>
+                    </app-storefront-item>
+                    <app-storefront-item
+                        color="danger"
+                        [product]="productList['smiley']"
+                        [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
+                        (action)="clickSubscriptionOption('smiley')"
+                    >
+                        <div slot="title">
+                            Pack Smiley
+                        </div>
+                        <div slot="description">
+                            Découvrez notre offre de base incluant un accès aux trainings sur la plateforme et aux outils de suivi, un bilan mensuel et
+                            un suivi et accompagnement par le nutritionnist.
                         </div>
                         <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
                             Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.

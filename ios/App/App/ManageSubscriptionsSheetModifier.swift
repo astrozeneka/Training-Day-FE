@@ -33,7 +33,7 @@ struct ManageSubscriptionsSheetModifier: View {
                 .font(.title)
                 .padding()
             // Add a subtitle
-            Text("Ici, vous pouvez gérer votre abonnement Training-Day")
+            Text("Ici, vous pouvez gérer votre abonnement Training Day")
                 .font(.subheadline)
                 .padding()
             
@@ -49,7 +49,7 @@ struct ManageSubscriptionsSheetModifier: View {
                             .frame(width: 50, height: 50)
                         // Text
                         VStack(alignment: .leading) {
-                            Text("Abonnement Training-Day")
+                            Text("Abonnement Training Day")
                                 .font(.headline)
                             Text("Abonnement à renouvellement automatique")
                                 .font(.subheadline)
