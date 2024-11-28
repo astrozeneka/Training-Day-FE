@@ -1,0 +1,15 @@
+
+
+.floating-bottom{
+    height: calc(110px + env(safe-area-inset-bottom));
+
+    &>*{
+        background: yellow;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        background: white;
+    }
+}

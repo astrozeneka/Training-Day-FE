@@ -213,6 +213,7 @@ export class PurchaseInvoicePage implements OnInit {
   }
 
   private redirectWithFeedback(){
+    // The code below is redundant, should be refactored
     let feedbackOpts = {
       type: 'modal',
       buttonText: null,
@@ -296,10 +297,16 @@ export class PurchaseInvoicePage implements OnInit {
 
   // Redeem code sheet
   presentRedeemSheet(){
-    this.isLoading = true
-    this.loadingStep = "(1/2) Connexion à l'App Store"
-    this.purchaseService.presentRedeemCodeSheet().then((res)=>{
-      console.log(res)
-    })
+    if (this.platform.is('capacitor') && this.platform.is('ios')) {
+      this.isLoading = true
+      this.loadingStep = "(1/2) Connexion à l'App Store"
+      this.purchaseService.presentRedeemCodeSheet().then((res)=>{
+        console.log(res)
+      })
+    } else if (this.platform.is('capacitor') && this.platform.is('android')){
+      this.router.navigate(['/promo-code-android'])
+    } else{
+      this.feedbackService.registerNow("La fonctionnalité n'est pas disponible sur cette plateforme", "danger")
+    }
   }
 }

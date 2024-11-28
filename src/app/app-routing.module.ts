@@ -216,6 +216,10 @@ const routes: Routes = [
     path: 'swipeable-store',
     loadChildren: () => import('./pages/swipeable-store/swipeable-store.module').then( m => m.StorePageModule)
   },
+  {
+    path: 'promo-code-android',
+    loadChildren: () => import('./pages/promo-code-android/promo-code-android.module').then( m => m.PromoCodeAndroidPageModule)
+  },
 ];
 
 @NgModule({

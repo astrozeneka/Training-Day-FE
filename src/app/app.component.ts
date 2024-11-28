@@ -5,7 +5,7 @@ import {FeedbackService, INFO} from "./feedback.service";
 import {AlertController, IonicSafeString, Platform, ToastController} from "@ionic/angular";
 import { PushNotifications } from '@capacitor/push-notifications';
 import {HttpClient} from "@angular/common/http";
-import StorePlugin from "./custom-plugins/store.plugin";
+import StorePlugin, { AndroidEntitlement } from "./custom-plugins/store.plugin";
 import {environment} from "../environments/environment";
 import { catchError, throwError } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -69,8 +69,13 @@ export class AppComponent implements OnInit{
     if (this.platform.is('capacitor')){
       if (this.platform.is('ios'))
         fromDeviceData = (await StorePlugin.getAutoRenewableEntitlements({}))
-      else if (this.platform.is('android'))
-        fromDeviceData = (await this.purchaseService.getAndroidEntitlements())
+      else if (this.platform.is('android')){
+        let androidData = (await this.purchaseService.getAndroidEntitlements()) as any as {entitlements: AndroidEntitlement[]}
+        let list = androidData.entitlements.map(e=>e.products.join('+')).join(", ")
+        fromDeviceData = {entitlements: androidData.entitlements}
+        // TO DELETE LATER
+        // this.feedbackService.registerNow("Android Entitlements[L] : " + list, "secondary")
+      }
     } else {
       console.warn("IAP is not available in web platform")
     }

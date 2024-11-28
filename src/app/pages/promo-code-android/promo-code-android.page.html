@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <app-back-button></app-back-button>
+          <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>
+          Code Promo
+      </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <h1 class="display-1 ion-padding">Promo code</h1>
+
+  <div class="ion-padding-horizontal">
+    <div>
+      <p class="helper">
+        Entrez un code promo pour bénéficier d'une réduction sur votre abonnement ou achats intégrés.
+      </p>
+    </div>
+    <form [formGroup]="form" (submit)="submit()">
+      <ion-input
+        type="text"
+        placeholder="Code promo"
+        formControlName="promoCode"
+        errorText="Code promo invalide"
+      ></ion-input>
+
+      <ion-list>
+        <ion-item *ngFor="let item of itemList">
+          {{ item.products.join('+') }}
+          <app-ux-button
+            slot="end"
+            (click)="consume(item)"
+            type="button"
+          >
+            <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+          </app-ux-button>
+        </ion-item>
+      </ion-list>
+
+      <div class="floating-bottom">
+        <div class="ion-padding-horizontal">
+          <app-ux-button
+            type="submit"
+            [loading]="formIsLoading"
+            shape="round"
+            expand="block"
+          >
+            Confirmer
+          </app-ux-button>
+          <!--<app-ux-button
+            type="button"
+            expand="block"
+            fill="clear"
+            shape="round"
+            (click)="verifyEntitlements($event)"
+          >
+            Verify Entitlements
+          </app-ux-button>-->
+        </div>
+      </div>
+    </form>
+  </div>
+</ion-content>

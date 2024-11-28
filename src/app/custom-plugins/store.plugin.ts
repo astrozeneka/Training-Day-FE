@@ -72,15 +72,29 @@ const mockStorePlugin: StorePlugin = {
   },
   // Experimental feature for Android
   getAndroidEntitlements: async() => {
-    return {
-      "entitlements": []
-    }
+    return {"entitlements":[{"packageName":"com.trainingday","purchaseTime":1732789251193,"purchaseState":1,"purchaseToken":"mlinpdiflmgpemccnllgbpkl.AO-J1OxoPCHef6-iN_UNBTYPvzAHMylBJlnyaMW40UgUeijrPv1DRGc-wxgwJakAFUCOPsgsT_W-QnaR7i4VIcV44VX9_mb-lQ","quantity":1,"acknowledged":true,"products":["foodcoach__30d"]},{"packageName":"com.trainingday","purchaseTime":1732787580811,"purchaseState":1,"purchaseToken":"bdobnfafbkkopgohhpjoflpk.AO-J1OyGu9SbTYmqBDacHAmPZIXvtcHHZtBEMZaCve9Nwpfn9HLfem9E4n4q-Nf814k6GQCWX5NWm4JMAlTYwneUK2JTol822Q","quantity":1,"acknowledged":true,"products":["foodcoach__7d"]},{"packageName":"com.trainingday","purchaseTime":1732788637537,"purchaseState":1,"purchaseToken":"jgbaniplfdffldemoeaphojd.AO-J1Oz8wpDkPmxx5xIVmQrwqTKhyxYsM2Mqa1EHhHxoPrXcA_msmjE32fKtv-cvYt5TnfD05_7YlHowVz8bJX2kF4B2Ngo8zw","quantity":1,"acknowledged":true,"products":["sportcoach__7d"]}]} as any
   },
 
-  // Redeem code
+  // Redeem code (for ios)
   presentRedeemCodeSheet(){
     return new Promise((resolve, reject) => {
       setTimeout(resolve, 1300);
+    })
+  },
+  // Redeem code (for android)
+  openAndroidPromoDeepLink: (options: {url: String}) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(()=>{
+        resolve({message: "Fakely presented"})
+      }, 1300);
+    })
+  },
+  // (Experimental) Consume product
+  forceAndroidConsumeProduct: (options: {purchaseToken: String}) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(()=>{
+        resolve({message: "Fakely consumed"})
+      }, 1300);
     })
   }
 }
@@ -106,7 +120,11 @@ export interface StorePlugin {
   // The redeem code sheet (in iOS)
   presentRedeemCodeSheet(): Promise<{ success: boolean }>; // Might be updated later
 
-  // The redeem code sheet (in Android) (merged with the above function)
+  // The redeem code sheet (in Android)
+  openAndroidPromoDeepLink(options: {url: String}): Promise<{ message: string }>; // Might be updated later
+
+  // (Experimental) Consume product
+  forceAndroidConsumeProduct(options: {purchaseToken: String}): Promise<{ message: string }>
 }
 export interface Transaction {
   bundleId: string;
@@ -144,6 +162,9 @@ export interface AndroidOneTimePurchaseOfferDetails {
   priceCurrencyCode: string
   formattedPrice: string
 }
+/**
+ * @deprecated use AndroidEntitlement instead
+ */
 export interface AndroidEntitlements {
   orderId: string
   packageName: string
@@ -153,6 +174,15 @@ export interface AndroidEntitlements {
   purchaseToken: string
   quantity: number
   acknowledged: boolean
+}
+export interface AndroidEntitlement {
+  packageName: string
+  purchaseTime: number
+  purchaseState: number
+  purchaseToken: string
+  quantity: number
+  acknowledged: boolean
+  products: string[]
 }
 
 // The Android IAP product

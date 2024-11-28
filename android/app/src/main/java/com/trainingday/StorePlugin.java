@@ -1,11 +1,16 @@
 package com.trainingday;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.QueryProductDetailsParams;
@@ -20,6 +25,7 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +50,15 @@ public class StorePlugin extends Plugin {
           JSArray jsPuchases = new JSArray();
           for (Purchase purchase : purchases) {
             JSObject jsPurchase = new JSObject();
-            jsPurchase.put("orderId", purchase.getOrderId());
+            // The code below is redundant
+            String orderId = purchase.getOrderId();
+            if (orderId == null || orderId.isEmpty()) {
+              String purchaseToken = purchase.getPurchaseToken();
+              orderId = "GENERATED_" + (purchaseToken != null && purchaseToken.length() >= 10
+                ? purchaseToken.substring(0, 10)
+                : "DEFAULT");
+            }
+            jsPurchase.put("orderId", orderId);
             jsPurchase.put("packageName", purchase.getPackageName());
             jsPurchase.put("purchaseTime", purchase.getPurchaseTime());
             jsPurchase.put("purchaseState", purchase.getPurchaseState());
@@ -63,7 +77,14 @@ public class StorePlugin extends Plugin {
       })
       .enablePendingPurchases()
       .build();
+
+    // Handle promo code sheet (Play Store) broadcast receiver
+    System.out.println("StorePlugin: Registering promo receiver");
+    IntentFilter filter = new IntentFilter(Intent.ACTION_VIEW);
+    getContext().registerReceiver(promoReceiver, filter);
+
   }
+
   @PluginMethod()
   public void getProducts(PluginCall call) {
     if (!billingClient.isReady()) {
@@ -374,7 +395,15 @@ public class StorePlugin extends Plugin {
         JSArray entitlementsJson = new JSArray();
         for (Purchase purchase : purchases) {
           JSObject entitlementJson = new JSObject();
-          entitlementJson.put("orderId", purchase.getOrderId());
+          String orderId = purchase.getOrderId();
+          if (orderId == null || orderId.isEmpty()) {
+            String purchaseToken = purchase.getPurchaseToken();
+            orderId = "GENERATED_" + (purchaseToken != null && purchaseToken.length() >= 10
+              ? purchaseToken.substring(0, 10)
+              : "DEFAULT");
+          }
+          System.out.print("Order Id is: " + orderId);
+          entitlementJson.put("orderId", orderId);
           entitlementJson.put("packageName", purchase.getPackageName());
           entitlementJson.put("purchaseTime", purchase.getPurchaseTime());
           entitlementJson.put("purchaseState", purchase.getPurchaseState());
@@ -397,6 +426,79 @@ public class StorePlugin extends Plugin {
       } else {
         System.out.println("StorePlugin: Error code: " + billingResult.getResponseCode());
         // Error 3: It generally show if the billing client is not available (due to geographical location or device restrictions)
+      }
+    });
+  }
+
+  private BroadcastReceiver promoReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_VIEW)){
+        System.out.println("StorePlugin: Promo deep link opened");
+      }
+    }
+  };
+
+  @PluginMethod()
+  public void openAndroidPromoDeepLink(PluginCall call){
+    System.out.println("StorePlugin: Opening promo deep link");
+    String promolink = call.getString("url");
+
+    // Creating intent
+    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(promolink));
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    getContext().startActivity(intent);
+
+    JSObject output = new JSObject();
+    output.put("message", "Promo deep link opened");
+    call.resolve(output);
+  }
+
+  @PluginMethod()
+  public void forceAndroidConsumeProduct(PluginCall call){
+    String purchaseToken = call.getString("purchaseToken");
+    System.out.println("StorePlugin: Consuming product with purchase token: " + purchaseToken);
+    if (!billingClient.isReady()){
+      billingClient.startConnection(new BillingClientStateListener() {
+        @Override
+        public void onBillingSetupFinished(BillingResult billingResult) {
+          if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+            System.out.println("StorePlugin: Billing client is ready");
+            _forceAndroidConsumeProduct(call);
+          } else {
+            System.out.println("StorePlugin: Error code: " + billingResult.getResponseCode());
+            // Error 3: It generally show if the billing client is not available (due to geographical location or device restrictions)
+          }
+        }
+        @Override
+        public void onBillingServiceDisconnected() {
+          // Try to restart the connection on the next request to
+          // Google Play by calling the startConnection() method.
+        }
+      });
+    } else {
+      _forceAndroidConsumeProduct(call);
+    }
+  }
+
+  private void _forceAndroidConsumeProduct(PluginCall call){
+    String purchaseToken = call.getString("purchaseToken");
+
+    if (purchaseToken == null || purchaseToken.isEmpty()) {
+      call.reject("Purchase token is required.");
+      return;
+    }
+
+    ConsumeParams consumeParams = ConsumeParams.newBuilder()
+      .setPurchaseToken(purchaseToken)
+      .build();
+    billingClient.consumeAsync(consumeParams, (result, outToken) -> {
+      if (result.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+        JSObject output = new JSObject();
+        output.put("message", "Product consumed");
+        call.resolve(output);
+      } else {
+        call.reject("Failed to consume product: " + result.getDebugMessage());
       }
     });
   }

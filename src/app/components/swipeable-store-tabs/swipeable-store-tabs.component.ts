@@ -14,8 +14,6 @@ export class SwipeableStoreTabsComponent  implements OnInit, OnChanges {
 
   ngOnInit() {}
 
-  ngOnChanges(){
-    console.log("onChanges from the tab" + this.selectedTab)
-  }
+  ngOnChanges(){}
 
 }

@@ -125,7 +125,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
     if (this.platform.is('capacitor') && this.platform.is('android')){
       return await StorePlugin.getAndroidEntitlements();
     }
-    return null;
+    return await StorePlugin.getAndroidEntitlements(); // Mocked data
   }
 
   // The redeem code
