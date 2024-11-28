@@ -208,6 +208,14 @@ const routes: Routes = [
     path: 'chat-master-placeholder',
     loadChildren: () => import('./pages/chat-master-placeholder/chat-master-placeholder.module').then( m => m.ChatMasterPlaceholderPageModule)
   },
+  {
+    path: 'shop',
+    loadChildren: () => import('./pages/shop/shop.module').then( m => m.ShopPageModule)
+  },
+  {
+    path: 'swipeable-store',
+    loadChildren: () => import('./pages/swipeable-store/swipeable-store.module').then( m => m.StorePageModule)
+  },
 ];
 
 @NgModule({

@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
-import { Navigation, Pagination } from 'swiper/modules';
-import { register } from 'swiper/element/bundle';
+/*import { Navigation, Pagination } from 'swiper/modules';
+import { register } from 'swiper/element/bundle';*/
 
 
 import { HomePageRoutingModule } from './home-routing.module';
@@ -32,6 +32,6 @@ registerLocaleData(localeFr);
 export class HomePageModule {
 
   constructor(){
-    register()
+    // register()
   }
 }

@@ -1,0 +1,80 @@
+<div class="store-food-coach">
+
+  <div *ngIf="user && user.grouped_perishables && user.grouped_perishables['food-coach']">
+    <p class="helper ion-padding">
+        Vous disposez déjà d'un programme alimentaire en cours.
+    </p>
+    <app-subscription-card
+        [entity]="user.grouped_perishables['food-coach']"
+        [title]="'Programme alimentaire'"
+        [description]="'Vous pouvez utiliser cette abonnement pour accéder à un programme alimentaire personnalisé de Training-Day.'"
+        [expiresAt]="user.grouped_perishables['food-coach']['expires_at']"
+        [columns]="true"
+    ></app-subscription-card>
+  </div>
+
+  <div><!-- always display whether or not the user have it already -->
+    <div class="ion-padding">
+        <h1 class="display-1">Choisissez un offre de programme alimentaire</h1>
+        <p class="helper">
+            Le rééquilibrage alimentaire est un processus qui permet de retrouver une alimentation saine et équilibrée. Grâce à quelques modifications des habitudes alimentaires, il permet d'apporter à l'organisme ce dont il a besoin.
+        </p>
+    </div>
+
+    <div class="option-list">
+      <div class="ion-padding-horizontal">
+        <app-storefront-item
+            color="dark"
+            [product]="productList['foodcoach_1w']"
+            [disabled]="user && user.grouped_perishables && user.grouped_perishables['food-coach']"
+            (action)="clickFoodCoachOption('foodcoach_1w')"
+        >
+            <div slot="title">
+                Programme alimentaire hebdomadaire
+            </div>
+            <div slot="description">
+                Profitez d’un programme alimentaire pour 1 semaine.
+            </div>
+            <div slot="helper" *ngIf="user && user.grouped_perishables && user.grouped_perishables['food-coach']">
+                Vous avez déjà un programme alimentaire en cours. Vous ne pouvez pas souscrire à un autre programme alimentaire.
+            </div>
+        </app-storefront-item>
+      </div>
+      <div class="ion-padding-horizontal">
+        <app-storefront-item
+          color="warning"
+          [product]="productList['foodcoach_4w']"
+          [disabled]="user && user.grouped_perishables && user.grouped_perishables['food-coach']"
+          (action)="clickFoodCoachOption('foodcoach_4w')"
+        >
+          <div slot="title">
+              Programme alimentaire mensuel
+          </div>
+          <div slot="description">
+              Profitez d’un programme alimentaire pour 1 mois
+          </div>
+          <div slot="helper" *ngIf="user && user.grouped_perishables && user.grouped_perishables['food-coach']">
+              Vous avez déjà un programme alimentaire en cours. Vous ne pouvez pas souscrire à un autre programme alimentaire.
+          </div>
+        </app-storefront-item>
+      </div>
+      <div class="ion-padding-horizontal">
+        <app-storefront-item
+          color="primary"
+          [product]="productList['foodcoach_6w']"
+          [disabled]="user && user.grouped_perishables && user.grouped_perishables['food-coach']"
+          (action)="clickFoodCoachOption('foodcoach_6w')"
+        >
+          <div slot="title">
+              Programme alimentaire 6 semaines
+          </div>
+          <div slot="description">
+              Profitez d’un programme alimentaire pour 6 semaines
+          </div>
+          <div slot="helper" *ngIf="user && user.grouped_perishables && user.grouped_perishables['food-coach']">
+              Vous avez déjà un programme alimentaire en cours. Vous ne pouvez pas souscrire à un autre programme alimentaire.
+          </div>
+        </app-storefront-item>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,79 @@
+<div class="store-sport-coach">
+  <div *ngIf="user && user.grouped_perishables && user.grouped_perishables['sport-coach']">
+    <p class="helper ion-padding">
+        Vous disposez déjà d'un programme sportif en cours.
+    </p>
+    <app-subscription-card
+        [entity]="user.grouped_perishables['sport-coach']"
+        [title]="'Programme sportif'"
+        [description]="'Vous pouvez utiliser cette abonnement pour accéder à un programme sportif personnalisé de Training-Day.'"
+        [expiresAt]="user.grouped_perishables['sport-coach']['expires_at']"
+        [columns]="true"
+    ></app-subscription-card>
+  </div>
+
+  <div>
+    <div class="ion-padding">
+      <h1 class="display-1">Choisissez un offre de programme sportif</h1>
+      <p class="helper">
+          Un programme sportif consiste en un entrainement de plus ou moins longue durée. Il se compose d'exercices physiques à réaliser chez soi ou en salle, à une fréquence et selon une intensité définie à l'avance. Un « bon » programme sportif comprend également des phases de repos et de récupération.
+      </p>
+    </div>
+    <div class="option-list">
+      <div class="ion-padding-horizontal">
+        <app-storefront-item
+            color="dark"
+            [product]="productList['sportcoach_1w']"
+            [disabled]="user && user.grouped_perishables && user.grouped_perishables['sport-coach']"
+            (action)="clickSportCoachOption('sportcoach_1w')"
+        >
+            <div slot="title">
+                Programme sportif 1 semaine
+            </div>
+            <div slot="description">
+                Profitez d’un programme sportif adapté à vos besoins pour une semaine
+            </div>
+            <div slot="helper" *ngIf="user && user.grouped_perishables && user.grouped_perishables['sport-coach']">
+                Vous avez déjà un programme sportif en cours. Vous ne pouvez pas souscrire à un autre programme sportif.
+            </div>
+        </app-storefront-item>
+      </div>
+      <div class="ion-padding-horizontal">
+        <app-storefront-item
+            color="warning"
+            [product]="productList['sportcoach_4w']"
+            [disabled]="user && user.grouped_perishables && user.grouped_perishables['sport-coach']"
+            (action)="clickSportCoachOption('sportcoach_4w')"
+        >
+            <div slot="title">
+                Programme sportif 1 mois
+            </div>
+            <div slot="description">
+                Organisons ensemble vos semaine et profitez d’un programme sportif adapté à vos besoins pour un mois
+            </div>
+            <div slot="helper" *ngIf="user && user.grouped_perishables && user.grouped_perishables['sport-coach']">
+                Vous avez déjà un programme sportif en cours. Vous ne pouvez pas souscrire à un autre programme sportif.
+            </div>
+        </app-storefront-item>
+      </div>
+      <div class="ion-padding-horizontal">
+        <app-storefront-item
+            color="primary"
+            [product]="productList['sportcoach_6w']"
+            [disabled]="user && user.grouped_perishables && user.grouped_perishables['sport-coach']"
+            (action)="clickSportCoachOption('sportcoach_6w')"
+        >
+            <div slot="title">
+                Programme sportif 6 semaines
+            </div>
+            <div slot="description">
+                Planifions ensemble votre cycle d’entrainement et profitez d’un programme sportif adapté à vos besoins pour six semaines
+            </div>
+            <div slot="helper" *ngIf="user && user.grouped_perishables && user.grouped_perishables['sport-coach']">
+                Vous avez déjà un programme sportif en cours. Vous ne pouvez pas souscrire à un autre programme sportif.
+            </div>
+        </app-storefront-item>
+      </div>
+    </div>
+  </div>
+</div>

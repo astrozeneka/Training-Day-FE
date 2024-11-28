@@ -164,6 +164,9 @@ export interface AndroidSubscription {
   localizedIn: string[]
   skuDetailsToken: string
   subscriptionOfferDetails: SubscriptionOfferDetail[]
+
+  // Experimental for the new subscription data structure
+  androidOfferToken?: string | undefined; // Only for Android
 }
 export interface SubscriptionOfferDetail {
   offerIdToken: string

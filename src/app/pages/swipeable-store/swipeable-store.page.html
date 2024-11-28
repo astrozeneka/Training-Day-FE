@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <app-back-button></app-back-button>
+          <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>S'abonner à nos services</ion-title>
+  </ion-toolbar>
+  <app-swipeable-store-tabs
+    [selectedTab]="selectedTab"
+    (swipeToIndex)="swipeToIndex($event)"
+  ></app-swipeable-store-tabs>
+</ion-header>
+
+<ion-content class="swipeable-store">
+  <swiper-container
+    navigation="false"
+    pagination="false"
+    (swiper)="onSwiper($event)"
+    (slideChange)="onSlideChange($event)"
+    (reachEnd)="onReachEnd($event)"
+    #swiperEl
+  >
+    <swiper-slide>
+      <app-store-auto-renewables></app-store-auto-renewables>
+    </swiper-slide>
+    <swiper-slide>
+      <app-store-food-coach></app-store-food-coach>
+    </swiper-slide>
+    <swiper-slide>
+      <app-store-sport-coach></app-store-sport-coach>
+    </swiper-slide>
+  </swiper-container>
+
+</ion-content>

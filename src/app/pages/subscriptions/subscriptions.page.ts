@@ -57,6 +57,7 @@ export class SubscriptionsPage extends EntitlementReady implements OnInit {
         this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
       }
     }
+    console.log(productList)
     this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
     this.user = await this.contentService.getUserFromLocalStorage()
   }

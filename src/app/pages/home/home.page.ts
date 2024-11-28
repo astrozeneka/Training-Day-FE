@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ContentService} from "../../content.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 
-import { register } from 'swiper/element/bundle';
+// import { register } from 'swiper/element/bundle';
 import {FormComponent} from "../../components/form.component";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FeedbackService} from "../../feedback.service";
@@ -43,7 +43,7 @@ export class HomePage extends FormComponent implements OnInit {
         })
       }
     })
-    register()
+    // register()
   }
 
   async ngOnInit() {

@@ -31,6 +31,10 @@ import {FeedbackModalComponent} from "./feedback-modal/feedback-modal.component"
 import { DisplayListPipe } from '../display-list.pipe';
 import { PhonePrefixSelectComponent } from '../components-submodules/phone-prefix-select/phone-prefix-select.component';
 import { StorefrontItemComponent } from './storefront-item/storefront-item.component';
+import { StoreAutoRenewablesComponent } from './store-auto-renewables/store-auto-renewables.component';
+import { StoreFoodCoachComponent } from './store-food-coach/store-food-coach.component';
+import { StoreSportCoachComponent } from './store-sport-coach/store-sport-coach.component';
+import { SwipeableStoreTabsComponent } from './swipeable-store-tabs/swipeable-store-tabs.component';
 
 
 
@@ -64,6 +68,10 @@ import { StorefrontItemComponent } from './storefront-item/storefront-item.compo
 
     FeedbackModalComponent,
     StorefrontItemComponent,
+    StoreAutoRenewablesComponent,
+    StoreFoodCoachComponent,
+    StoreSportCoachComponent,
+    SwipeableStoreTabsComponent,
 
     // Pipes
     DisplayListPipe,
@@ -95,6 +103,10 @@ import { StorefrontItemComponent } from './storefront-item/storefront-item.compo
     TrainerCardComponent,
     SubscriptionCardComponent,
     StorefrontItemComponent,
+    StoreAutoRenewablesComponent,
+    StoreFoodCoachComponent,
+    StoreSportCoachComponent,
+    SwipeableStoreTabsComponent,
     
     DisplayListPipe,
 
