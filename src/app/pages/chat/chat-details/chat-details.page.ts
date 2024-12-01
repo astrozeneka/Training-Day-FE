@@ -172,7 +172,7 @@ export class ChatDetailsPage extends FormComponent implements OnInit, ViewWillEn
   async ngOnInit() {
 
     this.entityList = [];
-    this.contentService.userStorageObservable.getStorageObservable()
+    this.contentService.userStorageObservable.gso$()
       .pipe(filter((event)=>this.componentIsActive))
       .subscribe(async (user)=>{
         this.user = user

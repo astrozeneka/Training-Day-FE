@@ -30,6 +30,6 @@ import { register } from 'swiper/element';
 })
 export class StorePageModule {
   constructor(){
-    register() // Might be unused
+    register()
   }
 }

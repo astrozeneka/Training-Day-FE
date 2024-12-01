@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ContentService} from "../../content.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 
@@ -7,6 +7,9 @@ import {FormComponent} from "../../components/form.component";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FeedbackService} from "../../feedback.service";
 import {environment} from "../../../environments/environment";
+import { Navigation, Pagination } from 'swiper/modules';
+import { register } from 'swiper/element/bundle';
+import { SwiperOptions } from 'swiper/types';
 
 
 
@@ -15,7 +18,7 @@ import {environment} from "../../../environments/environment";
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage extends FormComponent implements OnInit {
+export class HomePage extends FormComponent implements OnInit, AfterViewInit {
   user:any = null
   content:any = null
 
@@ -24,6 +27,9 @@ export class HomePage extends FormComponent implements OnInit {
   override form = new FormGroup({
     'email': new FormControl('', [Validators.required, Validators.email])
   })
+
+  // The swiper at the top of the page
+  @ViewChild('swiperEl') swiperEl: ElementRef|null = null as any
 
   constructor(
     private contentService: ContentService,
@@ -58,8 +64,21 @@ export class HomePage extends FormComponent implements OnInit {
     // The user data
     this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
       this.user = user
-      console.log(this.user)
     })
+  }
+
+  async ngAfterViewInit() {
+    register()
+    const swiperParams:SwiperOptions = {
+      modules: [Navigation, Pagination],
+      injectStylesUrls: [
+        './node_modules/swiper/modules/navigation-element.min.css',
+        './node_modules/swiper/modules/pagination-element.min.css'
+      ]
+    }
+    Object.assign(this.swiperEl?.nativeElement, swiperParams)
+    //this.swiperEl.nativeElement.initialize()
+    console.log(this.swiperEl.nativeElement)
   }
 
   onSwiper(event: any){
