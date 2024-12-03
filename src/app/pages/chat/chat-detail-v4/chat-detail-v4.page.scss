@@ -1,4 +1,11 @@
 
+// TODO, ion-title
+
+.messaging{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
 
 .message-container{
     display: flex;
@@ -7,3 +14,23 @@
         border: 1px solid blue;
     }
 }
+
+// Allowing a reverse scroll typical for chatting
+.discussion-flow{
+    flex-grow: 1;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column-reverse;
+    & .flow{
+        display: flex;
+        flex-direction: column-reverse;
+        & > * {
+            border: 1px solid red;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+    }
+}
+
+
+// Styling customizable
