@@ -1,0 +1,9 @@
+
+
+.message-container{
+    display: flex;
+    flex-direction: column-reverse;
+    & > * {
+        border: 1px solid blue;
+    }
+}

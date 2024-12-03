@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ContentService } from './content.service';
 import { User } from './models/Interfaces';
 import StoredData from './components-submodules/stored-data/StoredData';
-import { BehaviorSubject, catchError, filter, merge, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, filter, merge, Observable, Subject } from 'rxjs';
 import { BroadcastingService } from './broadcasting.service';
 import IMessage from './models/IMessages';
 import { Storage } from '@ionic/storage-angular';
@@ -18,6 +18,7 @@ export class StoredMessages extends StoredData<IMessage[]> {
       if (allData instanceof Array){
         //let toBeSet = [...allData, ...newValue]
         //console.log("ToBeSet", toBeSet)
+        console.log("Update cache with new value", newValue)
         let toBeSet = [...allData]
         for (let msg of newValue){
           // If included, then replace
@@ -26,9 +27,8 @@ export class StoredMessages extends StoredData<IMessage[]> {
               if (m.id == msg.id) return msg
               return m
             })
-          }
-          // If not included, then add
-          else{
+          }else{
+            // If not included, then add
             toBeSet.push(msg)
           }
         }
@@ -117,15 +117,20 @@ export class ChatV4Service {
   }
 
   onMessages(userId: number, correspondentId: number, offset: Date, fromCache: boolean, fromServer: boolean) {
-    let outputSubject:BehaviorSubject<IMessage[]> = new BehaviorSubject<IMessage[]>([]);
-    let output$:Observable<IMessage[]> = outputSubject.asObservable();
+    //let outputSubject:BehaviorSubject<IMessage[]> = new BehaviorSubject<IMessage[]>([]);
+    //let output$:Observable<IMessage[]> = outputSubject.asObservable();
 
     if (!this.messagesData[this.cacheSlug(userId, correspondentId)]) {
       // this.messagesData.set([userId, correspondentId], new StoredMessages(this.cacheSlug(userId, correspondentId), this.cs.storage));
       this.messagesData[this.cacheSlug(userId, correspondentId)] =
         new StoredMessages(this.cacheSlug(userId, correspondentId), this.cs.storage)
+      this.messagesSubject[this.cacheSlug(userId, correspondentId)] = new BehaviorSubject<IMessage[]>([]);
+      this.messages$[this.cacheSlug(userId, correspondentId)] = this.messagesSubject[this.cacheSlug(userId, correspondentId)].asObservable();
     }
+    let outputSubject = this.messagesSubject[this.cacheSlug(userId, correspondentId)]
+    let output$ = this.messages$[this.cacheSlug(userId, correspondentId)]
 
+    /* // THIS DOESN'T WORK BECAUSE both fromCache and fromServer needs to listen to pusher
     // Load data from cache
     if (fromCache) {
       this.messagesData[this.cacheSlug(userId, correspondentId)].getByOffset(offset)
@@ -150,9 +155,29 @@ export class ChatV4Service {
         this.messagesData[this.cacheSlug(userId, correspondentId)].set(data)
       });
     }
+    */
 
-    // Step 5. Fire initial value to the output
-    this.requestUpdate(userId, correspondentId, offset);
+    // New way to implement it
+    this.bs.pusher.subscribe(this.channelId(userId)).bind(this.eventId(correspondentId), async({data, metainfo})=>{
+      data = data.map((m:IMessage) => {return {
+        ...m,
+        created_at: new Date(m.created_at),
+        updated_at: new Date(m.updated_at)
+      }})
+      // Fire output
+      outputSubject.next(data);
+      // Update Cache
+      this.messagesData[this.cacheSlug(userId, correspondentId)].set(data)
+    });
+    
+    if (fromCache) {
+      this.requestCacheData(userId, correspondentId, offset, outputSubject)
+    }
+
+    if (fromServer) {
+      // Request updates from the server
+      this.requestUpdate(userId, correspondentId, offset);
+    }
 
     return output$
   }
@@ -169,8 +194,35 @@ export class ChatV4Service {
     })
   }
 
-  async triggerLoadMore(userId: number, correspondentId: number, offset:Date){
+  async requestCacheData(self_id, correspondent_id, date_offset:Date, subject:Subject<IMessage[]>, limit:number=10){
+    let cached_data = await this.messagesData[this.cacheSlug(self_id, correspondent_id)].get()
 
+    // No need to sort since sorting is managed by the `StoredMessages` class
+    let date_offset_index = -1
+    for(let i=0; i < cached_data.length; i++){
+      if(cached_data[i].created_at < date_offset){
+        date_offset_index = i
+        break
+      }
+    }
+    let cache_slice = []
+    if (date_offset_index + limit <= cached_data.length){
+      cache_slice = cached_data.slice(date_offset_index, date_offset_index + limit)
+    } else {
+      cache_slice = cached_data.slice(date_offset_index)
+    }
+  }
+
+  async triggerLoadMore(userId: number, correspondentId: number, date_offset:Date, fromCache: boolean, fromServer: boolean){
+    if (fromCache) {
+      // Trigger the Observer
+      let subject = this.messagesSubject[this.cacheSlug(userId, correspondentId)]
+      this.requestCacheData(userId, correspondentId, date_offset, subject)
+    }
+    if (fromServer) {
+      // Trigger pusher
+      await this.requestUpdate(userId, correspondentId, date_offset)
+    }
   }
 
   async clearCache(self_id, correspondent_id){

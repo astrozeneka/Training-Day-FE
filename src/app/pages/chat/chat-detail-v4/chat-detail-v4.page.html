@@ -13,12 +13,25 @@
   {{ user?.name }} <br/> {{ correspondent?.name}} <br/>
 
   <ion-button (click)="clearCache()">Clear cache</ion-button>
+  <ion-button (click)="__loadMore()">Load more</ion-button>
 
-  <div *ngFor="let message of messageList"
-    class="message"
-    [class.received]="message.recipient_id === user.id"
-    [class.sent]="message.recipient_id !== user.id"
-  >
-    <div></div>
+  <div class="message-container">
+    <div *ngFor="let message of messageList"
+      class="message"
+      [class.received]="message.recipient_id === user.id"
+      [class.sent]="message.recipient_id !== user.id"
+    >
+      <div>{{ message.content }}</div>
+    </div>
   </div>
+
+  <form (submit)="sendMessage()" [formGroup]="form">
+    <ion-input
+      name="content"
+      placeholder="Tapez votre message"
+      formControlName="content"
+      [errorText]="displayedError['content']"
+      *ngIf="user.user_settings?.locked != 'true'"
+    ></ion-input>
+  </form>
 </ion-content>
