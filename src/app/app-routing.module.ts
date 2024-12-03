@@ -220,6 +220,10 @@ const routes: Routes = [
     path: 'promo-code-android',
     loadChildren: () => import('./pages/promo-code-android/promo-code-android.module').then( m => m.PromoCodeAndroidPageModule)
   },
+  {
+    path: 'chat-detail-v4/:userId/:correspondentId',
+    loadChildren: () => import('./pages/chat/chat-detail-v4/chat-detail-v4.module').then( m => m.ChatDetailV4PageModule)
+  },
 ];
 
 @NgModule({

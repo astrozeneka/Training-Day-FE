@@ -26,5 +26,8 @@ export const environment = {
   cgv_uri: '/docs/CGV-Training-Day.pdf',
 
   // Redeem code
-  redeemCodeEnabled: true
+  redeemCodeEnabled: true,
+
+  // Cache prefix
+  cachePrefix: 'trainingday_',
 };
