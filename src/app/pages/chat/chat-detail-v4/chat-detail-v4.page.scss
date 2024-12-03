@@ -1,5 +1,11 @@
 
-// TODO, ion-title
+//
+ion-title>.inner{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3px;
+}
 
 .messaging{
     height: 100%;
@@ -177,6 +183,53 @@
           font-size: .8em;
           text-align: center;
         }
+    }
+}
+
+// Appointment alerts
+.appointment-alert{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    gap: 20px;
+  
+    & ion-icon{
+      padding-top: 2px;
+      padding-right: .3em;
+    }
+
+    & > div{
+        flex-grow: 1;
+    }
+  
+    & ion-button{
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      --padding-start: 0;
+      --padding-end: 0;
+      --padding-top: 0;
+      --padding-bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  
+      & ion-icon{
+        padding: 0;
+      }
+    }
+  
+    .appointment-row{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      height: 2em;
+  
+      & ion-button{
+        margin-left: 1em;
+      }
     }
 }
 

@@ -10,7 +10,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 
 import { FilePicker } from '@capawesome/capacitor-file-picker';
-import { Platform, ActionSheetController } from '@ionic/angular';
+import { Platform, ActionSheetController, AlertController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 import { FeedbackService } from 'src/app/feedback.service';
 import { HttpEventType } from '@angular/common/http';
@@ -74,6 +74,7 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
     private actionSheetController: ActionSheetController,
     private cdr: ChangeDetectorRef,
     private fs: FeedbackService,
+    private alertController:AlertController,
     public router: Router
   ) { }
 
@@ -85,9 +86,11 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
       // Load user and correspondnet data
       let user$ = this.cv4s.onUserByIdData(userId, true, true)
       let correspondent$ = this.cv4s.onUserByIdData(correspondentId, true, true)
+      
       combineLatest([user$, correspondent$])
         .pipe(distinctUntilChanged((a, b) => isEqual(a, b)))
         .subscribe(([user, correspondent])=>{
+          console.log("HHHH", correspondent.user_settings?.locked)
           this.user = user as User;
           this.correspondent = correspondent as UserWithAvatar;
           this._initializeMessages(); 
@@ -576,6 +579,33 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
   clearFile(){
     this.file = undefined
     this.cdr.detectChanges() // important
+  }
+
+  deleteAppointment(appointmentId:number){
+
+    // Show an alert to confirm the deletion
+    this.alertController.create({
+      header: 'Confirmation',
+      message: 'Voulez-vous vraiment supprimer ce rendez-vous ?',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+        },
+        {
+          text: 'Supprimer',
+          handler: ()=>{
+            this.cs.delete('/appointments', `${appointmentId}`)
+              .subscribe((response)=>{
+                this.fs.registerNow("Rendez-vous supprimé", 'success')
+                this.loadCorrespondent()
+              })
+          }
+        }
+      ]
+    }).then((alert)=>{
+      alert.present()
+    })
   }
 
   environment = environment
