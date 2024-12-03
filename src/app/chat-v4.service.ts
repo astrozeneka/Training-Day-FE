@@ -210,12 +210,14 @@ export class ChatV4Service {
     } else {
       cache_slice = cached_data.slice(date_offset_index)
     }
+    subject.next(cache_slice)
   }
 
   async triggerLoadMore(userId: number, correspondentId: number, date_offset:Date, fromCache: boolean, fromServer: boolean){
     if (fromCache) {
       // Trigger the Observer
       let subject = this.messagesSubject[this.cacheSlug(userId, correspondentId)]
+      console.log(subject)
       this.requestCacheData(userId, correspondentId, date_offset, subject)
     }
     if (fromServer) {

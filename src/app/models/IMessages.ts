@@ -11,5 +11,6 @@ export default interface IMessage {
     file: any|null,
 
     undelivered?: boolean,
-    fileIsLoading?: boolean
+    fileIsLoading?: boolean,
+    progress?: number, // For file upload
 }

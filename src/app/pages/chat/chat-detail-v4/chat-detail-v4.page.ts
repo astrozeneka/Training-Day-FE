@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, combineLatest, distinctUntilChanged, forkJoin, tap, throwError } from 'rxjs';
 import { ChatV4Service } from 'src/app/chat-v4.service';
 import { ContentService } from 'src/app/content.service';
@@ -13,6 +13,7 @@ import { FilePicker } from '@capawesome/capacitor-file-picker';
 import { Platform, ActionSheetController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 import { FeedbackService } from 'src/app/feedback.service';
+import { HttpEventType } from '@angular/common/http';
 const distinctUntilObjectChanged = distinctUntilChanged((a, b) => isEqual(a, b))
 
 interface IFile {
@@ -59,7 +60,7 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
   scrollY = -0
   infiniteEvent:{target:any}|null = null
   onInfinite(event:{target:any}){
-    this.cv4s.triggerLoadMore(this.user.id, this.correspondent.id, this.offset, true, true)
+    this.cv4s.triggerLoadMore(this.user.id, this.correspondent.id, this.offset, true, false)
       .then((_:void)=>{
         event?.target.complete()
       })
@@ -72,7 +73,8 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
     private platform: Platform,
     private actionSheetController: ActionSheetController,
     private cdr: ChangeDetectorRef,
-    private fs: FeedbackService
+    private fs: FeedbackService,
+    public router: Router
   ) { }
 
   async ngOnInit() {
@@ -174,7 +176,8 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
     let payload = {
       ...this.form.value,
       recipient_id: this.correspondent.id,
-      sender_id: this.user.id
+      sender_id: this.user.id,
+      progress: undefined
     }
     let postExtraOptions = {}
     if (this.file) {
@@ -190,13 +193,17 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
         console.log(error)
         return throwError(()=>error)
       }))
-      .subscribe((res)=>{
-        // TODO, upload progress
+      .subscribe(async(event:any)=>{
+        if (event.type == HttpEventType.UploadProgress) {
+          const progress = event.loaded / event.total;
+          payload.progress = progress
+          this.cdr.detectChanges
+        }
       });
     
     // Temporarily append the message to the list for better UX
     (payload as any).undelivered = true
-    this.messageList.unshift(payload as IMessage)
+    this.messageList.unshift(payload as any as IMessage)
 
     // Reset form
     this.clearFile()
@@ -375,8 +382,201 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
     }
   }
 
+  // Same as for the old version
+  async presentActionSheetReport(){
+    let as = await this.actionSheetController.create({
+      'header': 'Action',
+      'buttons': [
+        {
+          text: 'Suivi du poids',
+          data: {
+            action: 'weight',
+          },
+        },
+        {
+          text: 'Fixer un rendez-vous',
+          data: {
+            action: 'appointment',
+          }
+        },
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          data: {
+            action: 'cancel',
+          },
+        }
+      ]})
+    await as.present();
+    const { data } = await as.onDidDismiss();
+    if(data.action == 'weight'){
+      this.router.navigate(['/app-weight-tracking/'+this.correspondent.id])
+    }
+    if(data.action == 'appointment'){
+      this.router.navigate(['/set-appointment/'+this.correspondent.id])
+    }
+  }
+
+  async presentActionSheetGlobal(){
+    // Check if the correspondent have already disabled messages
+    /*
+    let userLocked = (this.correspondent?.user_settings?.locked == 'true') ?? false
+    let messagesDisabled = (this.correspondent?.user_settings?.disable_messages == 'true') ?? false
+    let coachMessagesDisabled = (this.correspondent?.user_settings?.disable_coach_messages == 'true') ?? false
+    let nutritionistMessagesDisabled = (this.correspondent?.user_settings?.disable_nutritionist_messages == 'true') ?? false
+    */
+    let userLocked = (this.correspondent?.user_settings?.locked == 'true')
+    let messagesDisabled = (this.correspondent?.user_settings?.disable_messages == 'true')
+    let coachMessagesDisabled = (this.correspondent?.user_settings?.disable_coach_messages == 'true')
+    let nutritionistMessagesDisabled = (this.correspondent?.user_settings?.disable_nutritionist_messages == 'true')
+    let as = await this.actionSheetController.create({
+      'header': 'Action',
+      'buttons': [
+        {
+          text: 'Supprimer la discussion',
+          role: 'destructive', // e.g.
+          data: {
+            action: 'delete',
+          },
+        },
+        ... (userLocked?[{
+          text: "Débloquer l'utilisateur",
+          role: 'destructive',
+          data: {
+            action: 'set locked false',
+          },
+        }]:[{
+          text: "Bloquer l'utilisateur pour non respect des règlements",
+          role: 'destructive',
+          data: {
+            action: 'set locked true',
+          },
+        }]),
+        ... (coachMessagesDisabled?[{
+          text: 'Débloquer la messagerie du coach',
+          role: 'destructive',
+          data: {
+            action: 'set disable_coach_messages false',
+          },
+        }]:[{
+          text: 'Bloquer la messagerie du coach',
+          role: 'destructive',
+          data: {
+            action: 'set disable_coach_messages true',
+          },
+        }]),
+        ... (nutritionistMessagesDisabled?[{
+          text: 'Débloquer la messagerie du nutritionniste',
+          role: 'destructive',
+          data: {
+            action: 'set disable_nutritionist_messages false',
+          },
+        }]:[{
+          text: 'Bloquer la messagerie du nutritionniste',
+          role: 'destructive',
+          data: {
+            action: 'set disable_nutritionist_messages true',
+          },
+        }]),
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          data: {
+            action: 'cancel',
+          },
+        }
+      ]})
+    await as.present();
+    const { data } = await as.onDidDismiss();
+    if(data.action == 'delete'){
+      this.cs.delete('/messages/of-user', `${this.correspondent?.id}`)
+        .subscribe((data)=>{
+          this.fs.registerNow("Discussion supprimée", 'success')
+        })
+    }else if (data.action.includes("set ")){
+      let [_, key, value] = data.action.split(' ')
+      this.cs.post('/users/disable-messages', {
+        user_id: this.correspondent.id,
+        key: key,
+        disabled: value == 'true'
+      }).subscribe((data)=>{
+        if (key == 'locked') {
+          let message = "Utilisateur " + (value == 'true'?'bloqué':'débloqué');
+          this.fs.registerNow(message, 'success')
+        }else{
+          let message = "Messagerie du " + (key.includes('coach')?'coach':'nutritionniste') + " " + (value == 'true'?'bloquée':'débloquée');
+          this.fs.registerNow(message, 'success')
+        }
+        this.loadCorrespondent()
+      })
+    }else if(data.action == 'block'){ // NOT USED ANYMORE, should be deleted
+      this.cs.post('/users/disable-messages', {
+        user_id: this.correspondent.id, 
+        disabled: true
+      })
+      .subscribe((data)=>{
+        this.fs.registerNow("Discussion bloquée", 'success')
+        this.loadCorrespondent()
+      })
+    }else if(data.action == 'unblock'){ // NOT USED ANYMORE, should be deleted
+      this.cs.post('/users/disable-messages', {
+        user_id: this.correspondent.id, 
+        disabled: false
+      })
+      .subscribe((data)=>{
+        this.fs.registerNow("Discussion débloquée", 'success')
+        this.loadCorrespondent()
+      }) 
+    }else if(data.action == 'cancel'){
+      // Nothing to do
+    }
+  }
+
+  public loadCorrespondent(){
+    this.cs.getOne(`/users/`+this.correspondent.id, {})
+      .subscribe((data:User)=>{
+        this.correspondent = {...this.correspondent, ...data}
+      })
+  }
+
+  public async presentDebugActionSheet(){
+    let as = await this.actionSheetController.create({
+      'header': 'Action',
+      'buttons': [
+        {
+          text: 'Clear Cache',
+          data: {
+            action: 'clear-cache',
+          },
+        },
+        /*{
+          text: 'Scroll top',
+          data: {
+            action: 'scroll-top'
+          }
+        },*/
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          data: {
+            action: 'cancel',
+          },
+        }
+      ]})
+    await as.present();
+    const { data } = await as.onDidDismiss();
+    if(data.action == 'clear-cache'){
+      this.cv4s.clearCache(this.user.id, this.correspondent.id)
+      this.fs.registerNow("Cache cleared", 'success')
+    }/*else if(data.action == 'scroll-top'){
+      this.scrollTop()
+    }*/
+  }
+
   clearFile(){
     this.file = undefined
     this.cdr.detectChanges() // important
   }
+
+  environment = environment
 }

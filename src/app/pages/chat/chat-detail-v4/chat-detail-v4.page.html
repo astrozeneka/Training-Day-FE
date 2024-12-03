@@ -1,8 +1,45 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>chat-detail-v4
-      {{ user?.name }} <br/> {{ correspondent?.name}} <br/>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/chat'])">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <div>
+        <span>
+          {{ correspondent?.firstname }} {{ correspondent?.lastname === '_' ? '' : correspondent?.lastname }}
+        </span>
+        <ion-badge *ngIf="correspondent?.user_settings?.disable_coach_messages == 'true'" color="medium">M. coach désactivés</ion-badge>
+        <ion-badge *ngIf="correspondent?.user_settings?.disable_nutritionist_messages == 'true'" color="medium">M. nutritionniste désactivés</ion-badge>
+        <ion-badge *ngIf="correspondent?.user_settings?.locked == 'true'" color="danger">Bloqué</ion-badge>
+        <span *ngIf="user?.function == 'customer'">
+          <ion-badge color="success" *ngIf="
+            (correspondent?.isAvailable && !correspondent?.user_settings?.unavailable)
+            || (!correspondent?.isAvailable && correspondent?.user_settings?.available)
+          ">Disponible</ion-badge>
+          <ion-badge color="medium" *ngIf="
+            (correspondent?.isAvailable && correspondent?.user_settings?.unavailable)
+            || (!correspondent?.isAvailable && !correspondent?.user_settings?.available)
+          ">Non disponible</ion-badge>
+        </span>
+      </div>
     </ion-title>
+    <ion-buttons slot="end" *ngIf="user?.function == 'coach' || user?.function == 'nutritionist' || !environment.production">
+      <div *ngIf="user?.function == 'coach' || user?.function == 'nutritionist'">
+        <ion-button (click)="presentActionSheetReport()">
+          <ion-icon name="analytics-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="presentActionSheetGlobal()"><!-- We are here -->
+          <ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
+        </ion-button>
+      </div>
+      <div *ngIf="!environment.production">
+        <ion-button (click)="presentDebugActionSheet()">
+          <ion-icon name="bug-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -18,15 +55,6 @@
           [class.received]="message.recipient_id === user.id"
           [class.sent]="message.recipient_id !== user.id"
         >
-          <!--<div *ngIf="message.content !== '[deleted]' && message.file" class="badge-wrapper">
-            <ion-spinner *ngIf="message.undelivered || message.fileIsLoading"></ion-spinner>
-            <div color="medium" class="file-badge" (click)="downloadMessageFile(message)">
-              <div class="inner">
-                <ion-icon name="attach-outline"></ion-icon>
-                <span>{{ message.file.name }}</span>
-              </div>
-            </div>
-          </div>-->
           <div *ngIf="message.content !== '[deleted]'">
             <ion-avatar slot="start" *ngIf="message.recipient_id === user.id">
               <img [src]="correspondent.avatar_url" alt="Profile Picture">
@@ -52,6 +80,10 @@
                   <div class="inner">
                     <ion-icon name="attach-outline"></ion-icon>
                     <span>{{ message.file.name }}</span>
+                  </div>
+                  <div class="progress-bar" *ngIf="message.undelivered">
+                    <div class="bar" [style]="'width: ' + (message.progress * 100) + '%'"></div>
+                    <span style="opacity: 0; position: absolute">{{ message.progress }}</span>
                   </div>
                 </ion-button>
               </div>

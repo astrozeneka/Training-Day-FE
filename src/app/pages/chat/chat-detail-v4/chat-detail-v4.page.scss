@@ -45,6 +45,16 @@
         flex-direction: column;
         max-width: 80%;
     }
+    & .message-file{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        & ion-spinner{
+            height: 21px;
+        }
+        & > * {
+        }
+    }
 
     /*
     & .message-file{
@@ -63,6 +73,7 @@
     & ion-button.file-badge{
         --padding-start: 10px;
         --padding-end: 10px;
+        position: relative;
         & .inner{
             text-transform: none;
             display: flex;
@@ -70,6 +81,22 @@
             gap: 4px;
             & ion-icon{
                 font-size: 1.1em;
+            }
+        }
+        // The progress-bar
+        & .progress-bar{
+            margin: -10px; // Cancel the ion-button padding
+            width: calc(100% + 20px); // Cancel the ion-button padding
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 4px;
+
+            & .bar{
+                width: 0px; // Initial width
+                height: 4px;
+                transition: width 0.3s;
+                background: var(--ion-color-primary);
             }
         }
     }

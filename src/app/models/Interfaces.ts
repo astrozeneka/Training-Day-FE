@@ -61,7 +61,12 @@ export interface User {
   }
   
   export interface UserSettings {
-    locked: string
+    locked: string, // "true" or "false"
+    disable_coach_messages: string // "true" or "false"
+    disable_nutritionist_messages: string // "true" or "false"
+    disable_messages: string
+    unavailable: any
+    available: any
   }
   
   export interface Perishable {
