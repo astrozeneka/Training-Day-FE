@@ -7,10 +7,14 @@ import { User } from 'src/app/models/Interfaces';
 import { isEqual } from 'lodash';
 import IMessage from 'src/app/models/IMessages';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 const distinctUntilObjectChanged = distinctUntilChanged((a, b) => isEqual(a, b))
 
 interface IFile {
+}
 
+interface UserWithAvatar extends User  {
+  avatar_url: string
 }
 
 @Component({
@@ -34,7 +38,7 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
 
   // The current user and correspondent user
   user: User|null = null;
-  correspondent: User|null = null;
+  correspondent: UserWithAvatar|null = null;
   // The message loading related data
   offset:Date = new Date()
   
@@ -48,7 +52,7 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
   onInfinite(event:{target:any}){
     this.cv4s.triggerLoadMore(this.user.id, this.correspondent.id, this.offset, true, true)
       .then((_:void)=>{
-        event.target.complete()
+        event?.target.complete()
       })
   }
 
@@ -70,8 +74,12 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
         .pipe(distinctUntilChanged((a, b) => isEqual(a, b)))
         .subscribe(([user, correspondent])=>{
           this.user = user as User;
-          this.correspondent = correspondent as User;
+          this.correspondent = correspondent as UserWithAvatar;
           this._initializeMessages(); 
+
+          // Prepare correspondent avatar (same as the old codebase)
+          let url = correspondent.thumbnail64 || correspondent.profile_image?.permalink
+          this.correspondent.avatar_url = url ? `${environment.rootEndpoint}/storage/${url}` : '/assets/samples/profile-sample-1.jpg'
         })
     });
   }
@@ -179,5 +187,9 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
     // Temporarily append the message to the list for better UX
     (payload as any).undelivered = true
     this.messageList.unshift(payload as IMessage)
+  }
+
+  public async presentMessageActionSheet(messageId: number) {
+    // Todo
   }
 }

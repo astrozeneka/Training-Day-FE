@@ -83,11 +83,10 @@
                 >
                 <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
               </ion-button>
-              <div class="message-content" *ngIf="!entity.undelivered">
-                  {{ entity.content }}
-              </div>
-              <div class="message-content undelivered" *ngIf="entity.undelivered">
-                  {{ entity.content }}
+              <div class="message-content"
+                [class.undelivered]="entity.undelivered"
+              >
+                {{ entity.content }}
               </div>
             </div>
           </div>

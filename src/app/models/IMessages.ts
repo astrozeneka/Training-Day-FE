@@ -8,5 +8,6 @@ export default interface IMessage {
     file_id: number|null,
     content: string,
     is_read: number,
-    file: any|null
+    file: any|null,
+    undelivered?: boolean
 }

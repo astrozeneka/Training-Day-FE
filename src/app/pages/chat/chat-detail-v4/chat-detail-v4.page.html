@@ -18,7 +18,33 @@
           [class.received]="message.recipient_id === user.id"
           [class.sent]="message.recipient_id !== user.id"
         >
-          <div>{{ message.content }}</div>
+          <div *ngIf="message.content !== '[deleted]'">
+            <ion-avatar slot="start" *ngIf="message.recipient_id === user.id">
+              <img [src]="correspondent.avatar_url" alt="Profile Picture">
+            </ion-avatar>
+            <ion-button
+              *ngIf="message.recipient_id !== user.id"
+              fill="clear"
+              shape="round"
+              class="more-button"
+              (click)="presentMessageActionSheet(message.id)"
+            >
+              <ion-icon name="ellipsis-horizontal"></ion-icon>
+            </ion-button>
+            <div class="message-content"
+              [class.undelivered]="message.undelivered"
+            >
+              {{ message.content }}
+            </div>
+          </div>
+        </div>
+        <div class="ion-text-center">
+          <ion-button
+            fill="clear"
+            (click)="onInfinite(infiniteEvent)"
+          >
+            Charger plus de message
+          </ion-button>
         </div>
       </div>
       <!-- ion-infinite seems not to work in our case-->
