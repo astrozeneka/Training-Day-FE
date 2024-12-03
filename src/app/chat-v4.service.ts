@@ -18,7 +18,6 @@ export class StoredMessages extends StoredData<IMessage[]> {
       if (allData instanceof Array){
         //let toBeSet = [...allData, ...newValue]
         //console.log("ToBeSet", toBeSet)
-        console.log("Update cache with new value", newValue)
         let toBeSet = [...allData]
         for (let msg of newValue){
           // If included, then replace

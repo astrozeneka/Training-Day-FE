@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { catchError, combineLatest, distinctUntilChanged, forkJoin, tap, throwError } from 'rxjs';
 import { ChatV4Service } from 'src/app/chat-v4.service';
@@ -8,9 +8,17 @@ import { isEqual } from 'lodash';
 import IMessage from 'src/app/models/IMessages';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
+
+import { FilePicker } from '@capawesome/capacitor-file-picker';
+import { Platform, ActionSheetController } from '@ionic/angular';
+import { Browser } from '@capacitor/browser';
+import { FeedbackService } from 'src/app/feedback.service';
 const distinctUntilObjectChanged = distinctUntilChanged((a, b) => isEqual(a, b))
 
 interface IFile {
+  name:string,
+  type: string,
+  base64: any
 }
 
 interface UserWithAvatar extends User  {
@@ -34,6 +42,7 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
   @ViewChild('discussionFlow') discussionFlow:ElementRef = undefined;
 
   // The file
+  @ViewChild('fileInput') fileInput:any = undefined
   file:IFile = null
 
   // The current user and correspondent user
@@ -60,6 +69,10 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
     private cs: ContentService,
     private cv4s: ChatV4Service,
     private route: ActivatedRoute,
+    private platform: Platform,
+    private actionSheetController: ActionSheetController,
+    private cdr: ChangeDetectorRef,
+    private fs: FeedbackService
   ) { }
 
   async ngOnInit() {
@@ -154,13 +167,10 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
   }
 
   public async sendMessage(){
-    // Todo, validation
-
+    if (!this.form.valid && !this.file)
+      return
 
     // The code below (except symbols) are the same as from old version
-    /*let obj:any = this.form.value;
-    obj.recipient_id = this.correspondent.id;
-    obj.sender_id = (await this.cs.storage.get('user')).id*/
     let payload = {
       ...this.form.value,
       recipient_id: this.correspondent.id,
@@ -187,9 +197,186 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
     // Temporarily append the message to the list for better UX
     (payload as any).undelivered = true
     this.messageList.unshift(payload as IMessage)
+
+    // Reset form
+    this.clearFile()
+    this.form.reset()
+  }
+
+  async selectFile(type: 'file'|'image'|'media'|'video'){
+    if (this.platform.is('capacitor')) {
+      let result;
+      try{
+        console.log("Type: "+type)
+        if (type == 'image'){
+          result = await FilePicker.pickImages({
+            limit: 1,
+            readData: true,
+            skipTranscoding: true
+          })
+        } else if (type == 'video'){
+          result = await FilePicker.pickVideos({
+            limit: 1,
+            readData: true
+          })
+        } else if (type == 'media'){
+          result = await FilePicker.pickMedia({
+            limit: 1,
+            readData: true
+          })
+        } else if (type == 'file'){
+          result = await FilePicker.pickFiles({
+            limit: 1,
+            readData: true
+          })
+        }
+      }catch(e){
+        return;
+      }
+      if (result['files'].length > 0) { // == 1
+        let file = result["files"][0]
+        let data = result.files[0].data
+        data = "data:" + file.mimeType + ";base64," + data
+        // Sanitize file size here
+
+        this.file = {
+          name: file.name,
+          type: file.mimeType,
+          base64: data
+        }
+      }
+      
+      /*
+      "files":[
+        {"path":"file:///var/mobile/Containers/Data/Application/8F9722BE-45ED-4BC4-95DA-8541AA4CF844/Library/Caches/2378F1B0-2A19-47C3-86E6-B7DB622D898F/barcodes_100001_100010.pdf","mimeType":"application/pdf","name":"barcodes_100001_100010.pdf","modifiedAt":1724604832959,"size":41311}]}
+        , ...]
+      */
+    }else{ // On the web
+      this.fileInput.nativeElement.click()
+    }
   }
 
   public async presentMessageActionSheet(messageId: number) {
-    // Todo
+    // Same code as in the old version
+    let as = await this.actionSheetController.create({
+      'header': 'Action',
+      'buttons': [
+        {
+          text: 'Supprimer le message',
+          role: 'destructive',
+          data: {
+            action: 'delete',
+          },
+        },
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          data: {
+            action: 'cancel',
+          },
+        },
+      ]
+    })
+    // present
+    await as.present();
+    const { data } = await as.onDidDismiss();
+    if(data.action == 'delete'){
+      this.cs.delete('/messages', messageId as any)
+      .subscribe((data)=>{
+        this.fs.registerNow("Message supprimé", 'success')
+      })
+    }
+  }
+
+  public async presentFileActionSheet() {
+    // Same code as in the old version
+
+    if (this.platform.is('capacitor')){
+      let as = await this.actionSheetController.create({
+        'header': 'Action',
+        'buttons': [
+          {
+            text: 'Envoyer un fichier',
+            data: {
+              action: 'file',
+            },
+          },
+          {
+            text: 'Envoyer une image',
+            data: {
+              action: 'image',
+            },
+          },
+          /*{
+            text: 'Envoyer une vidéo',
+            data: {
+              action: 'video',
+            },
+          },*/
+          /*{
+            text: 'Envoyer un média',
+            data: {
+              action: 'media',
+            },
+          },*/
+          {
+            text: 'Annuler',
+            role: 'cancel',
+            data: {
+              action: 'cancel',
+            },
+          }
+        ]})
+      await as.present();
+      // Role
+      const { data } = await as.onDidDismiss();
+      if(['file', 'image', 'media', 'video'].includes(data.action)){
+        this.selectFile(data.action)
+      }
+    }else{
+      this.fileInput.nativeElement.click()
+    }
+  }
+
+  handleFileInput(event: any){
+    let file = event.target.files[0]
+    if(file){
+      try{
+        let reader = new FileReader()
+        reader.onload = (e)=>{
+          let base64 = reader.result as string
+          // The file name
+          this.file = {
+            name: file.name,
+            type: file.type,
+            base64: base64
+          }
+        }
+        reader.readAsDataURL(file)
+      }catch(e){
+        return;
+      }
+    }else{
+      // this.feedbackService.registerNow("No file selected", 'danger')
+    }
+  }
+
+  downloadMessageFile(message){
+    if (message.undelivered || message.fileIsLoading){
+      return
+    } else {
+      message.fileIsLoading = true;
+      this.cs.getOne(`/files/details/`+message.file.id,{})
+        .subscribe((data: any) => {
+          let url = environment.rootEndpoint + '/' + data.permalink
+          Browser.open({ url: url });
+          message.fileIsLoading = false;
+        })
+    }
+  }
+
+  clearFile(){
+    this.file = undefined
+    this.cdr.detectChanges() // important
   }
 }

@@ -31,7 +31,7 @@
 }
 
 
-// Styling customizable
+// Styling customizable for message bubbles
 .message>div{
     padding-left: 16px;
     padding-right: 16px;
@@ -40,14 +40,49 @@
     align-items: top;
     margin-top: .4em;
     margin-bottom: .4em;
+    & .content-wrapper{
+        display: flex;
+        flex-direction: column;
+        max-width: 80%;
+    }
+
+    /*
+    & .message-file{
+        background: #aaaaaa2b;
+        line-height: 33px;
+        height: 33px;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-block;
+        padding: 0 10px;
+        border-radius: 17px;
+        display: flex;
+        align-items: center;
+    }
+        */
+    & ion-button.file-badge{
+        --padding-start: 10px;
+        --padding-end: 10px;
+        & .inner{
+            text-transform: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            & ion-icon{
+                font-size: 1.1em;
+            }
+        }
+    }
     & .message-content{
         padding: .8em;
         border-radius: 1em;
         margin-left: .2em;
         height: fit-content;
+        width: max-content;
+        max-width: 100%;
 
         &.undelivered{ // unused
-        opacity: 0.6;
+            opacity: 0.6;
         }
     }
 }
@@ -75,5 +110,75 @@
 
     & .more-button{
       color: rgba(44, 146, 210, 0.41);
+    }
+}
+
+// For the controls at the bottom
+.controls {
+    & form{
+      height: fit-content;
+      position: relative;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    & .input-group {
+        background: var(--ion-color-base) !important;
+        display: flex;
+        flex-direction: row;
+        padding-left: 24px;
+        padding-right: 24px;
+        & .button-group{
+            display: flex;
+            flex-direction: row;
+        }
+    }
+    & .placeholder{
+        background: rgba(var(--ion-color-light-rgb), 0.4);
+        // Blurr
+        backdrop-filter: blur(5px);
+        z-index: 999;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding-bottom: env(safe-area-inset-bottom);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        & .helper{
+          font-size: .8em;
+          text-align: center;
+        }
+    }
+}
+
+// The file detail view
+.file-info{
+    background: rgba(var(--ion-color-medium-rgb), 0.2);
+    padding: .5em 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5em;
+  
+    & .file-name{
+      // force to be in one line and hide the overflow
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 500;
+      font-size: 0.9;
+    }
+  
+    & ion-button{
+      --padding-start: .1em;
+      --padding-end: .1em;
+      --padding-top: .1em;
+      --padding-bottom: .1em;
+      width: 36px!important;
+      height: 36px!important;
+      border-radius: 50%;
     }
 }

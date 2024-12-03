@@ -9,5 +9,7 @@ export default interface IMessage {
     content: string,
     is_read: number,
     file: any|null,
-    undelivered?: boolean
+
+    undelivered?: boolean,
+    fileIsLoading?: boolean
 }

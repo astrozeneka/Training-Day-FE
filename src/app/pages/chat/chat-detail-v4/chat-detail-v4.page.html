@@ -18,6 +18,15 @@
           [class.received]="message.recipient_id === user.id"
           [class.sent]="message.recipient_id !== user.id"
         >
+          <!--<div *ngIf="message.content !== '[deleted]' && message.file" class="badge-wrapper">
+            <ion-spinner *ngIf="message.undelivered || message.fileIsLoading"></ion-spinner>
+            <div color="medium" class="file-badge" (click)="downloadMessageFile(message)">
+              <div class="inner">
+                <ion-icon name="attach-outline"></ion-icon>
+                <span>{{ message.file.name }}</span>
+              </div>
+            </div>
+          </div>-->
           <div *ngIf="message.content !== '[deleted]'">
             <ion-avatar slot="start" *ngIf="message.recipient_id === user.id">
               <img [src]="correspondent.avatar_url" alt="Profile Picture">
@@ -31,10 +40,27 @@
             >
               <ion-icon name="ellipsis-horizontal"></ion-icon>
             </ion-button>
-            <div class="message-content"
-              [class.undelivered]="message.undelivered"
-            >
-              {{ message.content }}
+            <div class="content-wrapper">
+              <div class="message-file" *ngIf="message.file">
+                <ion-spinner *ngIf="message.undelivered || message.fileIsLoading"></ion-spinner>
+                <ion-button
+                  *ngIf="message.file"
+                  color="light"
+                  shape="round"
+                  class="file-badge" (click)="downloadMessageFile(message)"
+                >
+                  <div class="inner">
+                    <ion-icon name="attach-outline"></ion-icon>
+                    <span>{{ message.file.name }}</span>
+                  </div>
+                </ion-button>
+              </div>
+              <div class="message-content"
+                [class.undelivered]="message.undelivered"
+                *ngIf="message.content"
+              >
+                {{ message.content }}
+              </div>
             </div>
           </div>
         </div>
@@ -50,14 +76,53 @@
       <!-- ion-infinite seems not to work in our case-->
     </div>
     <div class="controls">
+      <div class="file-info" *ngIf="file">
+        <div class="file-name">{{ file.name }}</div>
+        <div class="btn-container">
+          <ion-button 
+            fill="clear" 
+            shape="round"
+            (click)="clearFile()"
+          >
+            <ion-icon name="close-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
       <form (submit)="sendMessage()" [formGroup]="form" *ngIf="user">
-        <ion-input
-          name="content"
-          placeholder="Tapez votre message"
-          formControlName="content"
-          [errorText]="displayedError['content']"
-          *ngIf="user.user_settings?.locked != 'true'"
-        ></ion-input>
+        <div class="placeholder" *ngIf="user.user_settings?.locked == 'true'">
+          <div class="helper">
+            Votre accès aux messages est bloqué pour non respect des conditions d'utilisation.
+          </div>
+        </div>
+        <div class="input-group">
+          <ion-input
+            fill="clear"
+            name="content"
+            placeholder="Tapez votre message"
+            formControlName="content"
+            [errorText]="displayedError['content']"
+            *ngIf="user.user_settings?.locked != 'true'"
+          ></ion-input>
+          <div class="button-group">
+            <ion-button
+              fill="clear"
+              [disabled]="file"
+              *ngIf="user.user_settings?.locked != 'true'"
+              (click)="presentFileActionSheet()"
+            >
+              <ion-icon name="attach"></ion-icon>
+            </ion-button>
+            <input type="file" #fileInput style="display: none" (change)="handleFileInput($event)">
+
+            <ion-button
+              type="submit"
+              fill="clear"
+              [disabled]="!this.form.valid && !this.file"
+            >
+              <ion-icon name="send"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
       </form>
     </div>
   </div>
