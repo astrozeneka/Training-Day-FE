@@ -67,6 +67,11 @@ export interface User {
     disable_messages: string
     unavailable: any
     available: any
+
+
+    activeTo: any
+    activeFrom: any
+    pauseDays: any
   }
   
   export interface Perishable {

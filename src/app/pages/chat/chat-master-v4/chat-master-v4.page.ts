@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewCh
 import { Router } from '@angular/router';
 import { firstValueFrom, map, Observable, tap } from 'rxjs';
 import { CoachChatMasterService, coachTabOption } from 'src/app/coach-chat-master.service';
+import { User } from 'src/app/models/Interfaces';
 import Swiper from 'swiper';
 
 @Component({
@@ -10,10 +11,10 @@ import Swiper from 'swiper';
   styleUrls: ['./chat-master-v4.page.scss'],
 })
 export class ChatMasterV4Page implements OnInit, AfterViewInit {
+
+  // Tabs
   selectedTab: coachTabOption;
   @ViewChild('swiperEl') swiperEl: ElementRef|null = null as any
-
-  // Observables
   activeTab$:Observable<coachTabOption>|null
 
   constructor(

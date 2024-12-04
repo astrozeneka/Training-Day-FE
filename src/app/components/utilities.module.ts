@@ -36,6 +36,7 @@ import { StoreFoodCoachComponent } from './store-food-coach/store-food-coach.com
 import { StoreSportCoachComponent } from './store-sport-coach/store-sport-coach.component';
 import { SwipeableStoreTabsComponent } from './swipeable-store-tabs/swipeable-store-tabs.component';
 import { ChatMasterTabsComponent } from './chat-master-tabs/chat-master-tabs.component';
+import { ChatMasterDiscussionListComponent } from './chat-master-discussion-list/chat-master-discussion-list.component';
 
 
 
@@ -74,6 +75,7 @@ import { ChatMasterTabsComponent } from './chat-master-tabs/chat-master-tabs.com
     StoreSportCoachComponent,
     SwipeableStoreTabsComponent,
     ChatMasterTabsComponent,
+    ChatMasterDiscussionListComponent,
 
     // Pipes
     DisplayListPipe,
@@ -115,7 +117,8 @@ import { ChatMasterTabsComponent } from './chat-master-tabs/chat-master-tabs.com
     UxButtonComponent,
     InfiniteListComponent,
     PhonePrefixSelectComponent,
-    ChatMasterTabsComponent
+    ChatMasterTabsComponent,
+    ChatMasterDiscussionListComponent,
   ]
 })
 export class UtilitiesModule { }
