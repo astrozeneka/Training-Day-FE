@@ -224,6 +224,10 @@ const routes: Routes = [
     path: 'chat-detail-v4/:userId/:correspondentId',
     loadChildren: () => import('./pages/chat/chat-detail-v4/chat-detail-v4.module').then( m => m.ChatDetailV4PageModule)
   },
+  {
+    path: 'chat-master-v4',
+    loadChildren: () => import('./pages/chat/chat-master-v4/chat-master-v4.module').then( m => m.ChatMasterV4PageModule)
+  },
 ];
 
 @NgModule({

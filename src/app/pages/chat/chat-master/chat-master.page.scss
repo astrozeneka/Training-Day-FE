@@ -5,7 +5,6 @@ ion-badge{
 
 .discussion-list{
   position: relative;
-  background: red;
 
   & .placeholder{
     position: absolute;
@@ -81,4 +80,12 @@ ion-badge{
       font-size: .8em;
     }
   }
+}
+
+// The spinner (for enhancing UX)
+.spinner-container{
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

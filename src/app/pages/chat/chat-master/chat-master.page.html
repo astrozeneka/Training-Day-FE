@@ -57,9 +57,12 @@
             <ion-spinner *ngIf="!entityList" class="ion-padding" style="padding-top: 20vh"></ion-spinner>
         </div>
         <div *ngIf="entityList" class="discussion-list">
+            <div class="spinner-container" *ngIf="entityList.length == 0">
+                <ion-spinner></ion-spinner>
+            </div>
             <ion-item
                     *ngFor="let entity of entityList"
-                    [routerLink]="['/chat/details', entity.id]"
+                    [routerLink]="displayMessageForForm.value == 'coach' ? ['/chat-detail-v4', user.id, entity.id] : ['/chat-detail-v4', environment.nutritionistId, entity.id]"
                     style="cursor:pointer"
                     [ngClass]="{'unread': entity.unread}"
             >

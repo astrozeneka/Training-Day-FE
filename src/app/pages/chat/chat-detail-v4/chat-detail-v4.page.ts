@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, combineLatest, distinctUntilChanged, forkJoin, tap, throwError } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { catchError, combineLatest, distinctUntilChanged, filter, forkJoin, tap, throwError } from 'rxjs';
 import { ChatV4Service } from 'src/app/chat-v4.service';
 import { ContentService } from 'src/app/content.service';
 import { User } from 'src/app/models/Interfaces';
@@ -8,7 +8,7 @@ import { isEqual } from 'lodash';
 import IMessage from 'src/app/models/IMessages';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
-
+import { Badge } from '@capawesome/capacitor-badge';
 import { FilePicker } from '@capawesome/capacitor-file-picker';
 import { Platform, ActionSheetController, AlertController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
@@ -66,6 +66,9 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
       })
   }
 
+  // Check whether the component is displayed or not (same as in the old codebase)
+  componentIsActive = true
+
   constructor(
     private cs: ContentService,
     private cv4s: ChatV4Service,
@@ -99,6 +102,14 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
           let url = correspondent.thumbnail64 || correspondent.profile_image?.permalink
           this.correspondent.avatar_url = url ? `${environment.rootEndpoint}/storage/${url}` : '/assets/samples/profile-sample-1.jpg'
         })
+    });
+
+    // Handle badge (same as the old codebase)
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd && this.router.url.includes('chat/details')),
+      filter(event => this.componentIsActive) // Experimental
+    ).subscribe(async () => {
+      Badge.clear();
     });
   }
 
@@ -579,6 +590,15 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
   clearFile(){
     this.file = undefined
     this.cdr.detectChanges() // important
+  }
+
+  // Managing router state (same as in the old codebase)
+  ionViewWillLeave(): void {
+    this.componentIsActive = false
+  }
+  // Managing router state (same as in the old codebase)
+  ionViewWillEnter(): void {
+    this.componentIsActive = true
   }
 
   deleteAppointment(appointmentId:number){

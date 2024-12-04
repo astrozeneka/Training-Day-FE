@@ -356,6 +356,7 @@ export class ChatMasterPage implements OnInit {
         userIdToLoad = environment.nutritionistId // WARNING, it shouldn't be hardcoded like this
         this.messageDetailsPrefix = '/chat/details/n_'
       }
+      this.entityList = []
 
       // Reinitialize the pusher to allow loading
       // The code below is redundant, should refactorized
