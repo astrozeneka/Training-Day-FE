@@ -35,6 +35,7 @@ import { StoreAutoRenewablesComponent } from './store-auto-renewables/store-auto
 import { StoreFoodCoachComponent } from './store-food-coach/store-food-coach.component';
 import { StoreSportCoachComponent } from './store-sport-coach/store-sport-coach.component';
 import { SwipeableStoreTabsComponent } from './swipeable-store-tabs/swipeable-store-tabs.component';
+import { ChatMasterTabsComponent } from './chat-master-tabs/chat-master-tabs.component';
 
 
 
@@ -72,6 +73,7 @@ import { SwipeableStoreTabsComponent } from './swipeable-store-tabs/swipeable-st
     StoreFoodCoachComponent,
     StoreSportCoachComponent,
     SwipeableStoreTabsComponent,
+    ChatMasterTabsComponent,
 
     // Pipes
     DisplayListPipe,
@@ -112,7 +114,8 @@ import { SwipeableStoreTabsComponent } from './swipeable-store-tabs/swipeable-st
 
     UxButtonComponent,
     InfiniteListComponent,
-    PhonePrefixSelectComponent
+    PhonePrefixSelectComponent,
+    ChatMasterTabsComponent
   ]
 })
 export class UtilitiesModule { }

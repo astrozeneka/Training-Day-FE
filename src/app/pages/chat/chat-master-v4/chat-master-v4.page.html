@@ -10,4 +10,28 @@
       <ion-title size="large">chat-master-v4</ion-title>
     </ion-toolbar>
   </ion-header>
+
+
+  <!-- The tab -->
+  <div class="user-tab">
+    <app-chat-master-tabs 
+      [selectedTab]="selectedTab"
+      (swipeToTab)="tabChanged($event)"
+    ></app-chat-master-tabs>
+  </div>
+  <div class="swipeable-chat-master">
+    <swiper-container
+      pagination="false"
+      navigation="false"
+      init="false"
+      #swiperEl
+    >
+      <swiper-slide>
+        Coach chat
+      </swiper-slide>
+      <swiper-slide>
+        Nutritionist chat
+      </swiper-slide>
+    </swiper-container>
+  </div>
 </ion-content>

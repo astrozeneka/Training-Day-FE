@@ -1,0 +1,8 @@
+<ion-tab-bar>
+  <ion-tab-button tab="coach" [selected]="selectedTab === 'coach'" (click)="swipeToTab.emit('coach')">
+    <ion-label>Coach</ion-label>
+  </ion-tab-button>
+  <ion-tab-button tab="nutritionist" [selected]="selectedTab === 'nutritionist'" (click)="swipeToTab.emit('nutritionist')">
+    <ion-label>Nutritionist</ion-label>
+  </ion-tab-button>
+</ion-tab-bar>
