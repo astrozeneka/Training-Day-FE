@@ -1,0 +1,27 @@
+<div class="coach-chat-settings" *ngIf="user">
+  <div class="wrapper">
+    <ion-item>
+      <div class="online-status">
+        <div class="label">Statut</div>
+
+        <ion-badge slot="end" color="success" *ngIf="(isOnline && !user.user_settings.unavailable) || (!isOnline && user.user_settings.available)">Disponible</ion-badge>
+        <ion-badge slot="end" color="medium" *ngIf="(isOnline && user.user_settings.unavailable) || (!isOnline && !user.user_settings.available)">Non disponible</ion-badge>      </div>
+    </ion-item>
+  </div>
+  <div class="wrapper">
+    <form [formGroup]="onlineToggleForm">
+      <ion-item *ngIf="isOnline">
+          <ion-label>
+              Je ne suis pas disponible
+          </ion-label>
+          <ion-toggle slot="end" formControlName="unavailable"></ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="!isOnline">
+          <ion-label>
+              Je suis disponible
+          </ion-label>
+          <ion-toggle slot="end" formControlName="available"></ion-toggle>
+      </ion-item>
+  </form>
+  </div>
+</div>

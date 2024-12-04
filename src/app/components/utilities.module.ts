@@ -38,6 +38,7 @@ import { SwipeableStoreTabsComponent } from './swipeable-store-tabs/swipeable-st
 import { ChatMasterTabsComponent } from './chat-master-tabs/chat-master-tabs.component';
 import { ChatMasterDiscussionListComponent } from './chat-master-discussion-list/chat-master-discussion-list.component';
 import { RouterModule } from '@angular/router';
+import { CoachChatSettingsComponent } from './coach-chat-settings/coach-chat-settings.component';
 
 
 
@@ -77,6 +78,7 @@ import { RouterModule } from '@angular/router';
     SwipeableStoreTabsComponent,
     ChatMasterTabsComponent,
     ChatMasterDiscussionListComponent,
+    CoachChatSettingsComponent,
 
     // Pipes
     DisplayListPipe,
@@ -121,6 +123,7 @@ import { RouterModule } from '@angular/router';
     PhonePrefixSelectComponent,
     ChatMasterTabsComponent,
     ChatMasterDiscussionListComponent,
+    CoachChatSettingsComponent,
   ]
 })
 export class UtilitiesModule { }

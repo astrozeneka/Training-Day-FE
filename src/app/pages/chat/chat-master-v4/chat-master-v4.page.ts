@@ -43,6 +43,7 @@ export class ChatMasterV4Page implements OnInit, AfterViewInit {
     this.cs.userStorageObservable.gso$()
       .subscribe((user: User) => {
         this.user = user
+        this.cdr.detectChanges()
       })
   }
 
