@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { distinctUntilChanged, filter, tap } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { combineLatest, distinctUntilChanged, filter, from, merge, of, switchMap, tap } from 'rxjs';
 import { BroadcastingService } from 'src/app/broadcasting.service';
 import { ChatV4Service } from 'src/app/chat-v4.service';
 import { CoachChatMasterService } from 'src/app/coach-chat-master.service';
@@ -20,6 +21,10 @@ export class ChatMasterDiscussionListComponent  implements OnInit, OnChanges {
 
   // The discussion list to be displayed
   discussionList: Discussion[] = []
+  displayedDiscussionList: Discussion[] = []
+
+  // The search function
+  searchControl = new FormControl<string>('')
 
   constructor(
     private cv4s: ChatV4Service,
@@ -30,6 +35,7 @@ export class ChatMasterDiscussionListComponent  implements OnInit, OnChanges {
   ) { }
 
   ngOnInit() {
+    // 1. The user data
     let userLoaded$ = this.cv4s.onUserByIdData(this.userId, true, true)
       .pipe(tap((user)=>{
         this.user = user
@@ -40,9 +46,12 @@ export class ChatMasterDiscussionListComponent  implements OnInit, OnChanges {
         // ====
     }))
 
-    userLoaded$.pipe(distinctUntilChanged((a, b)=>a.id === b.id))
-      .subscribe((event)=>{
-
+    let discussionsLoaded$ = userLoaded$.pipe(distinctUntilChanged((a, b)=>a.id === b.id))
+      .pipe(switchMap((user)=>{
+        return this.ccms.onDiscussions(user.id, true, true)
+          .pipe(filter(e=>e.length > 0))
+      }))
+      /*.subscribe((event)=>{
         this.ccms.onDiscussions(this.user.id, true, true)
           .pipe(filter(e=>e.length > 0)) // Can be deleted later  
           .subscribe((discussions)=>{
@@ -58,9 +67,24 @@ export class ChatMasterDiscussionListComponent  implements OnInit, OnChanges {
         })
         this.cs.post(`/chat/request-update/${this.user.id}`, {})
           .subscribe(data => null)
-        */
+        *//*
+      })*/
+    
+    let searchValue$ = merge(this.searchControl.valueChanges, of(null))
+    
+    combineLatest([discussionsLoaded$, searchValue$])
+      .subscribe(([discussions, query])=>{
+        this.discussionList = discussions
+        this.displayedDiscussionList = discussions.filter((discussion)=>{
+          if (!query) return true
+          let fullname = `${discussion.firstname} ${discussion.lastname}`
+          let email = discussion.email
+          return fullname.toLowerCase().includes(query.toLowerCase()) || email.toLowerCase().includes(query.toLowerCase())
+        })
+        this.cdr.detectChanges() // Might be deleted later
       })
-
+    
+    
   }
 
   private _computeOnlineStatus(){

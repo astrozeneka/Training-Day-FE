@@ -96,6 +96,14 @@ export class CoachChatMasterService {
           let lastMessage = messages[0]
           // Replace the last message of the discussion
           discussions[updatedIndex].messages = [lastMessage]
+          // Increment the unread count
+          discussions[updatedIndex].unread++
+          // Sort
+          discussions = discussions.sort((a, b)=>{
+            let dateA = a.messages.length > 0 ? Date.parse(a.messages[0].created_at as string) : 0
+            let dateB = b.messages.length > 0 ? Date.parse(b.messages[0].created_at as string) : 0
+            return dateB - dateA
+          })
           outputSubject.next(discussions)
           // update cache storage
           this.discussionsData[userId].set(discussions)

@@ -37,6 +37,7 @@ import { StoreSportCoachComponent } from './store-sport-coach/store-sport-coach.
 import { SwipeableStoreTabsComponent } from './swipeable-store-tabs/swipeable-store-tabs.component';
 import { ChatMasterTabsComponent } from './chat-master-tabs/chat-master-tabs.component';
 import { ChatMasterDiscussionListComponent } from './chat-master-discussion-list/chat-master-discussion-list.component';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -88,7 +89,8 @@ import { ChatMasterDiscussionListComponent } from './chat-master-discussion-list
   imports: [
     CommonModule,
     IonicModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule
   ],
   exports: [
     HeaderComponent,

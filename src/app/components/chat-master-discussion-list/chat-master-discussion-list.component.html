@@ -1,8 +1,15 @@
 <div class="discussion-list">
+  <div>
+    <ion-searchbar
+      [formControl]="searchControl"
+      placeholder="Rechercher"
+    ></ion-searchbar>
+  </div>
   <ion-item
-    *ngFor="let discussion of discussionList"
+    *ngFor="let discussion of displayedDiscussionList"
     style="cursor:pointer"
     [class.unread]="discussion.unread"
+    [routerLink]="['/chat-detail-v4', user.id, discussion.id]"
   >
     <ion-avatar slot="start">
         <img src="{{discussion.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
