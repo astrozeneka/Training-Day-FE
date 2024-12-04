@@ -46,7 +46,6 @@ export class CoachChatSettingsComponent  implements OnInit {
       merge(...observables)
         .pipe(debounceTime(1000))
         .subscribe(async()=>{
-          console.log("Vos paramètres ont été mises à jour") // NO need to show feedback message
           this.user.user_settings = {
             ...this.user.user_settings, 
             ...(data['available'] != null)?{available:data['available']}:{},

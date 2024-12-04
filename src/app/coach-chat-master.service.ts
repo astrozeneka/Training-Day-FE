@@ -88,6 +88,7 @@ export class CoachChatMasterService {
       if (event.startsWith('message.') && !Number.isNaN(parseInt(event.split('.')[1]))){
         let messages:IMessage[] = data
         let correspondent_id = parseInt(event.split('.')[1])
+        if (messages.length > 1) return; // We except that only a single message is fired, a multiple message in one shot is for message-detail loading
         // Patch the already existing data
         this.discussionsData[userId].get().then((discussions:Discussion[])=>{
           let updatedIndex = discussions.findIndex((item)=>item.id == correspondent_id)
@@ -97,7 +98,9 @@ export class CoachChatMasterService {
           // Replace the last message of the discussion
           discussions[updatedIndex].messages = [lastMessage]
           // Increment the unread count
-          discussions[updatedIndex].unread++
+          console.log("Here, increment", data)
+          if (lastMessage.sender_id != userId)
+            discussions[updatedIndex].unread++
           // Sort
           discussions = discussions.sort((a, b)=>{
             let dateA = a.messages.length > 0 ? Date.parse(a.messages[0].created_at as string) : 0
@@ -135,5 +138,17 @@ export class CoachChatMasterService {
 
   private _eventId(){
     return 'master-updated'
+  }
+
+  /**
+   * Reset unread count
+   */
+  public resetBadgeForCorrespondent(self_id:number, correspondent_id:number){
+    this.discussionsData[self_id].get().then((data:Discussion[])=>{
+      let updatedIndex = data.findIndex((item)=>item.id == correspondent_id)
+      data[updatedIndex].unread = 0
+      this.discussionsSubject[self_id].next(data)
+      this.discussionsData[self_id].set(data)
+    })
   }
 }

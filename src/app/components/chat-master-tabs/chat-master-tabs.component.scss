@@ -1,0 +1,16 @@
+ion-tab-bar{
+    max-height: 67px;
+    height: 37px!important;
+    padding-top: 0px !important;
+
+    & .inner{
+        //margin-top: calc(0px - env(safe-area-inset-top));
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    & ion-tab-button{
+        height: 40px !important;
+    }
+}

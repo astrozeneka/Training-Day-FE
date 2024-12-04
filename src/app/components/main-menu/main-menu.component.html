@@ -161,8 +161,14 @@
     <div *ngIf="user?.function === 'customer' || user?.function === 'coach' || user?.function === 'nutritionist'">
         <h4>Espace personnel</h4>
         <ion-button (click)="menuNavigate('/profile')" expand="full" fill="clear">Mon profil</ion-button>
-        <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear" id="chat-button-item">
-            {{user.function==='customer'?'Mon coach':'Messagerie'}}
+        <ion-button (click)="menuNavigate('/chat')" expand="full" fill="clear" id="chat-button-item" *ngIf="user.function == 'customer'">
+            Mon Coach
+            <ion-chip *ngIf="unreadMessages > 0" color="danger">
+              {{ unreadMessages }}
+            </ion-chip>
+        </ion-button>
+        <ion-button (click)="menuNavigate('/chat-master-v4')" expand="full" fill="clear" id="chat-button-item" *ngIf="user.function == 'coach' || user.function == 'nutritionist'">
+            Messagerie
             <ion-chip *ngIf="unreadMessages > 0" color="danger">
               {{ unreadMessages }}
             </ion-chip>

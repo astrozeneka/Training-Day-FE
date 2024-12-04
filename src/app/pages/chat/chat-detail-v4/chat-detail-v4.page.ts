@@ -14,6 +14,7 @@ import { Platform, ActionSheetController, AlertController } from '@ionic/angular
 import { Browser } from '@capacitor/browser';
 import { FeedbackService } from 'src/app/feedback.service';
 import { HttpEventType } from '@angular/common/http';
+import { CoachChatMasterService } from 'src/app/coach-chat-master.service';
 const distinctUntilObjectChanged = distinctUntilChanged((a, b) => isEqual(a, b))
 
 interface IFile {
@@ -78,7 +79,8 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private fs: FeedbackService,
     private alertController:AlertController,
-    public router: Router
+    public router: Router,
+    private ccms: CoachChatMasterService
   ) { }
 
   async ngOnInit() {
@@ -102,6 +104,9 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
           let url = correspondent.thumbnail64 || correspondent.profile_image?.permalink
           this.correspondent.avatar_url = url ? `${environment.rootEndpoint}/storage/${url}` : '/assets/samples/profile-sample-1.jpg'
         })
+      
+      // Reset master chip count
+      this.ccms.resetBadgeForCorrespondent(userId, correspondentId)
     });
 
     // Handle badge (same as the old codebase)
@@ -134,7 +139,7 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
   private _initializeMessages() {
     this.cv4s.onMessages(this.user.id, this.correspondent.id, this.offset, true, true)
       .subscribe(messages=>{
-        console.log(messages)
+        // console.log(messages)
         this._updateMessageList(messages)
       })
   }
@@ -155,7 +160,7 @@ export class ChatDetailV4Page implements OnInit, AfterViewInit {
     // Update the date offset (the oldest loaded message)
     if (messages.length > 0) {
       this.offset = this.messageList[this.messageList.length - 1].created_at as Date
-      console.log(this.offset)
+      // console.log(this.offset)
     }
   }
 
