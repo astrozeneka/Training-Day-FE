@@ -1,10 +1,21 @@
 import { Injectable } from '@angular/core';
 import StoredData from './components-submodules/stored-data/StoredData';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { BroadcastingService } from './broadcasting.service';
 import { ContentService } from './content.service';
+import { Discussion } from './models/Interfaces';
+import { Storage } from '@ionic/storage-angular';
+import IMessage from './models/IMessages';
 
 export type coachTabOption = 'coach'|'nutritionist'
+
+export class StoredDiscussions extends StoredData<Discussion[]> {
+  constructor(key: string, storage: Storage) {
+    super(key, storage);
+  }
+
+  // I think no need to customize
+}
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +26,10 @@ export class CoachChatMasterService {
   // activeTabSubject = new BehaviorSubject<coachTabOption>('coach')
   // activeTab$ = this.activeTabSubject.asObservable()
 
+  discussionsData: {[key: number]: StoredDiscussions} = {} // Indexed by userId
+  discussionsSubject: {[key: number]: BehaviorSubject<Discussion[]>} = {} // Indexed by userId
+  discussions$: {[key: number]: Observable<Discussion[]>} = {} // Indexed by userId
+
   constructor(
     private cs: ContentService,
     private bs: BroadcastingService
@@ -22,11 +37,95 @@ export class CoachChatMasterService {
     this.activeTabData = new StoredData<coachTabOption>('activeTab', this.cs.storage)
   }
 
+  /**
+   * Used to store the currently activated tab in the swipeable content
+   */
   onActiveTab(){
     let output$ = new Subject<coachTabOption>()
     this.activeTabData.get().then((data:coachTabOption)=>{
       output$.next(data)
     })
     return output$
+  }
+
+  onDiscussions(userId: number, fromCache: boolean, fromServer: boolean){
+    if (!this.discussionsData[userId]){
+      this.discussionsData[userId] = new StoredDiscussions(`discussions-${userId}`, this.cs.storage)
+      this.discussionsSubject[userId] = new BehaviorSubject<Discussion[]>([])
+      this.discussions$[userId] = this.discussionsSubject[userId].asObservable()
+    }
+    let outputSubject = this.discussionsSubject[userId]
+    let output$ = this.discussions$[userId]
+
+    // The new way to listen to pusher (similar to chat-v4)
+    // aster-updated doesn't work actually, but we need to bind_global, then listen
+    let channel = this.bs.pusher.subscribe(this._channelId(userId))
+    channel.bind(this._eventId(), ({data, metainfo})=>{
+      // ======
+      // Data preparation can be done here (see chat-v4)
+      // ======
+      if(typeof data == "object") // Here data is an object, but should be array (This is from the way localStorage stores items)
+        data = Object.values(data)
+      for(let i = 0; i < data.length; i++){
+        let url = data[i].thumbnail64 || data[i].profile_image?.permalink
+        data[i].avatar_url = url ? this.cs.addPrefix(url) : undefined
+      }
+      data = data.filter((item:any)=>item.id != userId) // Cannot Chat himself
+      data = data.sort((a, b)=>{ // Filter and sort
+        let dateA = a.messages.length > 0 ? Date.parse(a.messages[0].created_at) : 0
+        let dateB = b.messages.length > 0 ? Date.parse(b.messages[0].created_at) : 0
+        return dateB - dateA
+      })
+
+      outputSubject.next(data)
+      // Update cache storage
+      this.discussionsData[userId].set(data)
+    })
+
+    // (experimental) For real time notification
+    channel.bind_global((event:string, {data, metainfo})=>{
+      // If the pattern message.33 is followed
+      if (event.startsWith('message.') && !Number.isNaN(parseInt(event.split('.')[1]))){
+        let messages:IMessage[] = data
+        let correspondent_id = parseInt(event.split('.')[1])
+        // Patch the already existing data
+        this.discussionsData[userId].get().then((discussions:Discussion[])=>{
+          let updatedIndex = discussions.findIndex((item)=>item.id == correspondent_id)
+          // Sort by created_at (latest first)
+          messages = messages.sort((a, b)=>Date.parse(b.created_at as string) - Date.parse(a.created_at as string))
+          let lastMessage = messages[0]
+          // Replace the last message of the discussion
+          discussions[updatedIndex].messages = [lastMessage]
+          outputSubject.next(discussions)
+          // update cache storage
+          this.discussionsData[userId].set(discussions)
+        })
+      }
+    })
+
+    if (fromCache){
+      this.discussionsData[userId].get().then((data:Discussion[])=>{
+        outputSubject.next(data)
+      })
+    }
+
+    if (fromServer){
+      this._requestUpdate(userId)
+    }
+
+    return output$
+  }
+
+  private _requestUpdate(userId:number){
+    this.cs.post(`/chat/request-update/${userId}`, {})
+      .subscribe(data => null)
+  }
+
+  private _channelId(userId){
+    return `messages.${userId}`
+  }
+
+  private _eventId(){
+    return 'master-updated'
   }
 }

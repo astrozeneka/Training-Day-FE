@@ -1,11 +1,31 @@
 <div class="discussion-list">
-  <!--
   <ion-item
     *ngFor="let discussion of discussionList"
     style="cursor:pointer"
     [class.unread]="discussion.unread"
   >
-    {{ discussion.firstname}} {{ discussion.lastname }}
+    <ion-avatar slot="start">
+        <img src="{{discussion.avatar_url ?? '../../../assets/samples/profile-sample-1.jpg'}}" alt="Profile Picture">
+    </ion-avatar>
+    <div class="item-inner">
+        <div class="item-header">
+            {{ discussion.firstname }} {{ discussion.lastname === '_' ? '': discussion.lastname }}
+            <ion-badge *ngIf="discussion.isActive" color="success">En ligne</ion-badge>
+        </div>
+        <div class="item-body">
+            <span *ngIf="discussion.messages[0]?.content?.includes('[deleted]')">[Message supprimé]</span>
+            <span *ngIf="!discussion.messages[0]?.content?.includes('[deleted]')">{{ discussion.messages[0]?.content }}</span>
+        </div>
+    </div>
+    <div class="message-info">
+        <div class="date">
+            {{ discussion.messages[0]?.created_at | date: 'dd MMM yyyy HH:mm' }}
+        </div>
+        <div class="chip" *ngIf="discussion.unread">{{ discussion.unread }}</div>
+        <!--
+            <ion-chip *ngIf="entity.unread" color="danger">{{ entity.unread }}</ion-chip>
+        -->
+    </div>
   </ion-item>
-  -->
+  
 </div>

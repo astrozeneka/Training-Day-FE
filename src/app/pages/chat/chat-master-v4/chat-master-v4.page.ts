@@ -2,7 +2,9 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewCh
 import { Router } from '@angular/router';
 import { firstValueFrom, map, Observable, tap } from 'rxjs';
 import { CoachChatMasterService, coachTabOption } from 'src/app/coach-chat-master.service';
+import { ContentService } from 'src/app/content.service';
 import { User } from 'src/app/models/Interfaces';
+import { environment } from 'src/environments/environment';
 import Swiper from 'swiper';
 
 @Component({
@@ -12,15 +14,21 @@ import Swiper from 'swiper';
 })
 export class ChatMasterV4Page implements OnInit, AfterViewInit {
 
+  // Currently logged user
+  user:User = null
+
   // Tabs
   selectedTab: coachTabOption;
   @ViewChild('swiperEl') swiperEl: ElementRef|null = null as any
   activeTab$:Observable<coachTabOption>|null
 
+  swiperIsReady: boolean = false // Is is to check if the swiper is ready
+
   constructor(
     private ccms: CoachChatMasterService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private cs: ContentService
   ) { }
 
   ngOnInit() {
@@ -30,6 +38,12 @@ export class ChatMasterV4Page implements OnInit, AfterViewInit {
       this.selectedTab = tab ?? 'coach'
       return this.selectedTab
     }))
+
+    // The currently logged user (the old way for loading user)
+    this.cs.userStorageObservable.gso$()
+      .subscribe((user: User) => {
+        this.user = user
+      })
   }
 
   async ngAfterViewInit() {
@@ -44,6 +58,7 @@ export class ChatMasterV4Page implements OnInit, AfterViewInit {
     }
     Object.assign(this.swiperEl?.nativeElement, swiperParams)
     this.swiperEl.nativeElement.initialize()
+    this.swiperIsReady = true
   }
 
   onSlideChange = (param:Swiper|any)=>{
@@ -62,4 +77,5 @@ export class ChatMasterV4Page implements OnInit, AfterViewInit {
 
   onReachEnd(event){} // UNUSED
 
+  environment = environment
 }

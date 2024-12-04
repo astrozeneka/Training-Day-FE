@@ -27,12 +27,17 @@
       #swiperEl
     >
       <swiper-slide>
+        <!-- It is ugly to see the inner content load before the containing swiper -->
         <app-chat-master-discussion-list
-          [userId]="14"
+          [userId]="user?.id"
+          *ngIf="swiperIsReady"
         ></app-chat-master-discussion-list>
       </swiper-slide>
       <swiper-slide>
-        Nutritionist chat
+        <app-chat-master-discussion-list
+          [userId]="environment.nutritionistId"
+          *ngIf="swiperIsReady"
+        ></app-chat-master-discussion-list>
       </swiper-slide>
     </swiper-container>
   </div>

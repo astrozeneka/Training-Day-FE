@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { distinctUntilChanged, tap } from 'rxjs';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { distinctUntilChanged, filter, tap } from 'rxjs';
 import { BroadcastingService } from 'src/app/broadcasting.service';
 import { ChatV4Service } from 'src/app/chat-v4.service';
+import { CoachChatMasterService } from 'src/app/coach-chat-master.service';
 import { ContentService } from 'src/app/content.service';
-import { User, UserSettings } from 'src/app/models/Interfaces';
+import { Discussion, User, UserSettings } from 'src/app/models/Interfaces';
 
 @Component({
   selector: 'app-chat-master-discussion-list',
@@ -17,10 +18,15 @@ export class ChatMasterDiscussionListComponent  implements OnInit, OnChanges {
   @Output() onUser = new EventEmitter<User>() // (experimental)
   isOnline:boolean = false
 
+  // The discussion list to be displayed
+  discussionList: Discussion[] = []
+
   constructor(
     private cv4s: ChatV4Service,
     private bs: BroadcastingService,
-    private cs: ContentService
+    private cs: ContentService,
+    private ccms: CoachChatMasterService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -37,6 +43,14 @@ export class ChatMasterDiscussionListComponent  implements OnInit, OnChanges {
     userLoaded$.pipe(distinctUntilChanged((a, b)=>a.id === b.id))
       .subscribe((event)=>{
 
+        this.ccms.onDiscussions(this.user.id, true, true)
+          .pipe(filter(e=>e.length > 0)) // Can be deleted later  
+          .subscribe((discussions)=>{
+            console.log("Here ", this.user.id)
+            this.discussionList = discussions
+            this.cdr.detectChanges()
+          })
+        /*
         // Pusher listener
         console.log("Subscribe")
         this.bs.pusher.subscribe(this._channelId()).bind(this._eventId(), (data)=>{
@@ -44,7 +58,7 @@ export class ChatMasterDiscussionListComponent  implements OnInit, OnChanges {
         })
         this.cs.post(`/chat/request-update/${this.user.id}`, {})
           .subscribe(data => null)
-          
+        */
       })
 
   }
@@ -71,10 +85,16 @@ export class ChatMasterDiscussionListComponent  implements OnInit, OnChanges {
 
   ngOnChanges() {}
 
+  /**
+   * @deprecated Pusher is now handled by coach-chat-master.service.ts
+   */
   private _channelId(){
     return `messages.${this.user?.id ?? this.userId}`
   }
 
+  /**
+   * @deprecated Pusher is now handled by coach-chat-master.service.ts
+   */
   private _eventId(){
     return 'master-updated'
   }

@@ -1,3 +1,5 @@
+import IMessage from "./IMessages"
+
 export interface User {
     id: number
     role_id: number
@@ -86,3 +88,9 @@ export interface User {
     payment_id: number
   }
   
+export interface Discussion extends User {
+  messages: IMessage[]
+  unread: number
+  isActive: boolean
+  avatar_url: any
+}

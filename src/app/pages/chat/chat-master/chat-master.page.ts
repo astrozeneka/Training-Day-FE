@@ -113,6 +113,7 @@ export class ChatMasterPage implements OnInit {
       this.instantMessagingInitialized = true
       this.broadcastingService.pusher.subscribe(`messages.${this.user.id}`)
         .bind_global((event, {data, metainfo})=>{
+          console.log("bind_global", event) // e.g., message.11
           // Data is the message data from the backend
           if(data instanceof Array){ // Sometimes, there is a bug here
             data.forEach(message=>{
