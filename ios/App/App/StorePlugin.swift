@@ -200,24 +200,21 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
     }
   
   @objc func presentRedeemCodeSheet(_ call: CAPPluginCall){
-    
-    
     print("Presenting redeem code sheet")
-    guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-      call.reject("No active UIWindowScene found")
-      return
-    }
-    Task {
-      do {
-        try await AppStore.presentOfferCodeRedeemSheet(in: scene)
-        print("Redeem code sheet presented")
-        call.resolve()
-      } catch {
-        call.reject("Failed to present redeem code sheet")
+    DispatchQueue.main.async {
+      guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+        call.reject("No active UIWindowScene found")
+        return
+      }
+      Task {
+        do {
+          try await AppStore.presentOfferCodeRedeemSheet(in: scene)
+          print("Redeem code sheet presented")
+          call.resolve()
+        } catch {
+          call.reject("Failed to present redeem code sheet")
+        }
       }
     }
-    
-    
-    call.resolve()
   }
 }

@@ -5,7 +5,7 @@ import {Router} from "@angular/router";
 import StorePlugin, { AndroidProduct, Product, Transaction } from "../../../custom-plugins/store.plugin";
 import {environment} from "../../../../environments/environment";
 import {FeedbackService} from "../../../feedback.service";
-import {BehaviorSubject, catchError, filter, finalize} from "rxjs";
+import {BehaviorSubject, catchError, combineLatest, filter, finalize, Subject, tap} from "rxjs";
 import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
 import { PurchaseService } from 'src/app/purchase.service';
 import { Platform } from '@ionic/angular';
@@ -40,6 +40,7 @@ export class PurchaseInvoicePage implements OnInit {
 
   // Redeem code
   redeemCodeEnabled = environment.redeemCodeEnabled
+  redeemCodeSheetPresented$:Subject<any> = new Subject() // Fired after the redeem code sheet is presented
 
   constructor(
     private contentService: ContentService,
@@ -132,8 +133,10 @@ export class PurchaseInvoicePage implements OnInit {
         }
       })
     }
+
     if (this.platform.is('capacitor') && this.platform.is('ios')){
       // Separated due to the experimental nature of the plugin
+      let iosOnPurchase$ = new Subject<Transaction>()
       StorePlugin.addListener('onIOSPurchase', (purchases:{purchases:Transaction[]}) => {
         console.log("onIOSPurchase fired " + JSON.stringify(purchases))
         if (purchases.purchases.length > 0){
@@ -141,10 +144,21 @@ export class PurchaseInvoicePage implements OnInit {
           (transaction as any).currency = 'EUR'; // TODO, update to local currency (typing must be solved later)
           (transaction as any).amount = this.productList[this.productId as string].price * 100; // No need to apply patch for iOS
           (transaction as any).product_id = this.productId
-          this.purchaseCompleted(transaction)
+          // this.purchaseCompleted(transaction) // Actually moved to the purchaseCompleted method
+          iosOnPurchase$.next(transaction)
         }
       })
+      
+      combineLatest([
+        this.redeemCodeSheetPresented$.pipe(tap((res) => console.log("REDEEMCODESHEETPRESENTED$: " + JSON.stringify(res)))),
+        iosOnPurchase$.pipe(tap((res) => console.log("IOSONPURCHASE$: " + JSON.stringify(res))))
+      ])
+        .subscribe(([redeemCodeResult, transaction]) => {
+          console.log("Combine redeemCodeResult and transaction")
+          this.purchaseCompleted(transaction)
+        })
     }
+
   }
 
   async continueToPayment(){
@@ -230,7 +244,7 @@ export class PurchaseInvoicePage implements OnInit {
         {
           modalTitle: "Votre achat d'abonnement a été effectué",
           modalContent: 'Bienvenue chez Training Day vous pouvez dès à présent prendre rendez-vous avez votre ' +
-            ["smiley"].includes(this.productId) ? "nutritionniste" : "coach",
+            (["smiley"].includes(this.productId) ? "nutritionniste" : "coach"),
           ...feedbackOpts
         }
       )
@@ -301,7 +315,8 @@ export class PurchaseInvoicePage implements OnInit {
       this.isLoading = true
       this.loadingStep = "(1/2) Connexion à l'App Store"
       this.purchaseService.presentRedeemCodeSheet().then((res)=>{
-        console.log(res)
+        this.isLoading = false
+        this.redeemCodeSheetPresented$.next(res)
       })
     } else if (this.platform.is('capacitor') && this.platform.is('android')){
       this.router.navigate(['/promo-code-android'])
