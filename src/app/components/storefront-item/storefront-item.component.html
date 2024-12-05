@@ -17,8 +17,18 @@
     shape="round"
     (click)="triggerAction()"
     [disabled]="disabled || !product"
+    *ngIf="loggedIn"
   >
     Choisir
+  </ion-button>
+  <ion-button
+    [color]="color"
+    expand="block"
+    shape="round"
+    routerLink="/login"
+    *ngIf="!loggedIn"
+  >
+    Se connecter pour continuer
   </ion-button>
   <p class="helper ion-text-center">
     <ng-content select="*[slot='helper']"></ng-content>
