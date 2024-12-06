@@ -8,20 +8,26 @@ const mockStorePlugin: StorePlugin = {
     }
   },
   purchaseProductById: async(options: { productId: string, type: string|undefined }) => {
-    return {
-      success: true,
-      transaction: {
-        bundleId: "com.codecrane.trainingday",
-        deviceVerification: "7y5pfMkpenu2tSLQxnSk9MmCRUHQOcX6u1LNgwzOr4UbXXd/b5ERZ+LPAKFKneqm",
-        deviceVerificationNonce: "11BEBBF1-DD64-4F8E-A335-3D1C9F8E5FF5",
-        quantity: 1,
-        transactionId: 1,
-        signedDate: "2021-07-09T17:00:00Z",
-        inAppOwnershipType: "PURCHASED",
-        id: undefined, // TransactionId: 2000000730775813
-        environment: undefined // Environment: "Sandbox" or "Xcode"
-      }
-    }
+    return new Promise((resolve)=>{
+      setTimeout(()=>{
+        let uid = Math.floor(Math.random() * 1000000);
+        resolve({
+          success: true,
+          transaction: {
+            // The product_id is not included in the transaction for iOS
+            bundleId: "com.codecrane.trainingday",
+            deviceVerification: `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx${uid}`,
+            deviceVerificationNonce: `XXXXXX-XXXX-XXXX-XXX-${uid}`,
+            quantity: 1,
+            transactionId: 1,
+            signedDate: (new Date()).toISOString(),
+            inAppOwnershipType: "PURCHASED",
+            id: undefined, // TransactionId: 2000000730775813
+            environment: 'fake' // Environment: "Sandbox" or "Xcode"
+          }
+        })
+      }, 1000)
+    })
   },
   addListener: (eventName: string, listenerFunc: Function) => {
   },

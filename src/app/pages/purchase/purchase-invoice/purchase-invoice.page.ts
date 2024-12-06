@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {ContentService} from "../../../content.service";
 import {FormControl} from "@angular/forms";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import StorePlugin, { AndroidProduct, Product, Transaction } from "../../../custom-plugins/store.plugin";
 import {environment} from "../../../../environments/environment";
 import {FeedbackService} from "../../../feedback.service";
@@ -10,6 +10,7 @@ import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-dete
 import { PurchaseService } from 'src/app/purchase.service';
 import { Platform } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
+import { PlatformType } from 'src/app/models/Interfaces';
 
 @Component({
   selector: 'app-purchase-invoice',
@@ -42,6 +43,9 @@ export class PurchaseInvoicePage implements OnInit {
   redeemCodeEnabled = environment.redeemCodeEnabled
   redeemCodeSheetPresented$:Subject<any> = new Subject() // Fired after the redeem code sheet is presented
 
+  // The platform
+  os: PlatformType
+
   constructor(
     private contentService: ContentService,
     private feedbackService: FeedbackService,
@@ -49,7 +53,8 @@ export class PurchaseInvoicePage implements OnInit {
     private themeDetection: ThemeDetection,
     private purchaseService: PurchaseService,
     private platform: Platform,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {
     this.contentService.storage.get('subscription_slug').then((value) => {
       this.subscriptionSlug = value;
@@ -110,7 +115,7 @@ export class PurchaseInvoicePage implements OnInit {
     // In the future, should find a common architecture that
     // both Android and iOS can use
     // 2. Listen for the purchase event (only on Android)
-    if (this.platform.is('capacitor') && this.platform.is('android')) {
+    if (this.os == 'android') {
       StorePlugin.addListener('onPurchase', (purchases:{purchases:AndroidProduct[]}) => {
         console.log("onPurchase fired " + JSON.stringify(purchases))
         // We expected that only one product has been purchased
@@ -134,7 +139,7 @@ export class PurchaseInvoicePage implements OnInit {
       })
     }
 
-    if (this.platform.is('capacitor') && this.platform.is('ios')){
+    if (this.os == 'ios'){
       // Separated due to the experimental nature of the plugin
       let iosOnPurchase$ = new Subject<Transaction>()
       StorePlugin.addListener('onIOSPurchase', (purchases:{purchases:Transaction[]}) => {
@@ -159,21 +164,33 @@ export class PurchaseInvoicePage implements OnInit {
         })
     }
 
+    // 3. The emulation mode (for debugging only), TODO, refactor this code to a higher level
+    if (!environment.production){
+      this.os = (this.route.snapshot.queryParamMap.get('mode') ?? 'ios') as PlatformType
+    } else {
+      if (this.platform.is('android')){
+        this.os = 'android'
+      } else {
+        this.os = 'ios'
+      }
+    }
   }
 
   async continueToPayment(){
-    if(environment.paymentMethod == 'inAppPurchase' && this.platform.is('capacitor')){
+    if(environment.paymentMethod == 'inAppPurchase'/* && this.platform.is('capacitor')*/){
+      // Notes: testing components through the web is also important thing
       this.isLoading = true
-      if (this.platform.is('android')){
+      console.log(this.os)
+      if (this.os == 'android'){
         this.loadingStep = "(1/2) Connexion à Google Play"
-      } else {
+      } else if (this.os == 'ios') {
         this.loadingStep = "(1/2) Connexion à l'App Store"
       }
       // Confirm purchase
       //let res:any = (await StorePlugin.purchaseProductById({productId: this.productId!})) as any;
       console.log("Calling purchaseProductById, productId: " + this.productId + ", productType: " + this.productType)
       let productId = this.productId;
-      if (this.productType == 'subs' && this.platform.is('android')) productId = 'training_day'; // Applying patch (only for android)
+      if (this.productType == 'subs' && this.os == 'android') productId = 'training_day'; // Applying patch (only for android)
       
       let res:{success:any, transaction:any}
       try {
@@ -186,7 +203,7 @@ export class PurchaseInvoicePage implements OnInit {
         this.loadingStep = null
       }
       // Android flow ends here
-      if (this.platform.is('ios')){
+      if (this.os == 'ios'){
         // IMPORTANT: In iOS, the following data should added to the transaction (this code part should normally managed by the native code)
         // TODO later, put the code below inside the native code
         res.transaction.currency = 'EUR' // TODO, update to local currency
@@ -196,6 +213,8 @@ export class PurchaseInvoicePage implements OnInit {
       }
       // The android counterparts will use the plugin eveing listener
     }else{
+      // Testing payment through the web is important
+      // Dead code
       this.feedbackService.registerNow("The payment purchase is not availble", "danger")
     }
   }
@@ -206,9 +225,9 @@ export class PurchaseInvoicePage implements OnInit {
     this.cdr.detectChanges()
     console.log("Processing purchase completed"); // WE ARE HERE
     let url = ""
-    if (this.platform.is('ios')){
+    if (this.os == 'ios'){
       url = '/payments/registerIAPTransaction'
-    }else if(this.platform.is('android') && this.platform.is('capacitor')){
+    }else if(this.os == 'android'){
       url = '/payments/registerAndroidIAPTransaction';
       // Patch the product_id (for android only)
       (product as AndroidProduct).productId = this.productId
@@ -311,14 +330,14 @@ export class PurchaseInvoicePage implements OnInit {
 
   // Redeem code sheet
   presentRedeemSheet(){
-    if (this.platform.is('capacitor') && this.platform.is('ios')) {
+    if (this.os == 'ios'){
       this.isLoading = true
       this.loadingStep = "(1/2) Connexion à l'App Store"
       this.purchaseService.presentRedeemCodeSheet().then((res)=>{
         this.isLoading = false
         this.redeemCodeSheetPresented$.next(res)
       })
-    } else if (this.platform.is('capacitor') && this.platform.is('android')){
+    } else if (this.os == 'android'){
       this.router.navigate(['/promo-code-android'])
     } else{
       this.feedbackService.registerNow("La fonctionnalité n'est pas disponible sur cette plateforme", "danger")

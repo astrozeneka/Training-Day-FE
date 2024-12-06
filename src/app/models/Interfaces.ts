@@ -94,3 +94,5 @@ export interface Discussion extends User {
   isActive: boolean
   avatar_url: any
 }
+
+export type PlatformType = 'android' | 'ios'
