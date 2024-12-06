@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Platform} from "@ionic/angular";
-import StorePlugin, { AndroidProduct, AndroidSubscription, Product } from './custom-plugins/store.plugin';
+import StorePlugin, { AndroidProduct, AndroidSubscription, Product, StorePluginEvent } from './custom-plugins/store.plugin';
 import { FeedbackService } from './feedback.service';
 
 @Injectable({
@@ -105,9 +105,9 @@ export class PurchaseService { // This class cannot be used anymore due to andro
 
   // Method 2: Purchase a product by its ID
   // Product type is only required for android
-  async purchaseProductById(productId:string, productType=null, offerToken=null) {
+  async purchaseProductById(productId:string, productType=null, offerToken=null, os=null) {
     let extraParams = {}
-    if (this.platform.is('capacitor') && this.platform.is('android')){
+    if (os == 'android'){
       // Reverse mapping
       productId = this.iosAndroidProductNameMap[productId] || productId // Map if exists, otherwise, use the original
       if (productType == "subs"){
@@ -116,7 +116,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
         }
       }
     }
-    return await StorePlugin.purchaseProductById({productId: productId, type: productType, ...extraParams});
+    return await StorePlugin.purchaseProductById({productId: productId, type: productType, ...extraParams}, os);
   }
 
   // Method 3(experimental features): Load entitlements from Android

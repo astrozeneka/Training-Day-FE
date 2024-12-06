@@ -7,25 +7,43 @@ const mockStorePlugin: StorePlugin = {
       
     }
   },
-  purchaseProductById: async(options: { productId: string, type: string|undefined }) => {
+  purchaseProductById: async(options: { productId: string, type: string|undefined}, os) => {
     return new Promise((resolve)=>{
       setTimeout(()=>{
         let uid = Math.floor(Math.random() * 1000000);
-        resolve({
-          success: true,
-          transaction: {
-            // The product_id is not included in the transaction for iOS
-            bundleId: "com.codecrane.trainingday",
-            deviceVerification: `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx${uid}`,
-            deviceVerificationNonce: `XXXXXX-XXXX-XXXX-XXX-${uid}`,
-            quantity: 1,
-            transactionId: 1,
-            signedDate: (new Date()).toISOString(),
-            inAppOwnershipType: "PURCHASED",
-            id: undefined, // TransactionId: 2000000730775813
-            environment: 'fake' // Environment: "Sandbox" or "Xcode"
-          }
-        })
+        if (os == 'ios'){
+          resolve({
+            success: true,
+            transaction: {
+              // The product_id is not included in the transaction for iOS
+              bundleId: "com.codecrane.trainingday",
+              deviceVerification: `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx${uid}`,
+              deviceVerificationNonce: `XXXXXX-XXXX-XXXX-XXX-${uid}`,
+              quantity: 1,
+              transactionId: 1,
+              signedDate: (new Date()).toISOString(),
+              inAppOwnershipType: "PURCHASED",
+              id: undefined, // TransactionId: 2000000730775813
+              environment: 'fake' // Environment: "Sandbox" or "Xcode"
+            }
+          })
+        } else if (os == 'android'){
+          Store.webListeners['onPurchase']?.(
+            {
+              "purchases":[
+                {
+                  "orderId":`GPA.XXXX-XXXX-XXXX-${uid}`,
+                  "packageName":"com.trainingday",
+                  "purchaseTime":(new Date()).getTime(),
+                  "purchaseState":1,
+                  "purchaseToken":`xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx${uid}`,
+                  "quantity":1,
+                  "acknowledged":false
+                }
+              ]
+            }
+          );
+        }
       }, 1000)
     })
   },
@@ -102,11 +120,12 @@ const mockStorePlugin: StorePlugin = {
         resolve({message: "Fakely consumed"})
       }, 1300);
     })
-  }
+  },
+  webListeners: {}
 }
 export interface StorePlugin {
   getProducts(options: { }): Promise<{ products: any[]}>
-  purchaseProductById(options: { productId: string, type: string|undefined, offerToken?: string|undefined}): Promise<{ success: boolean, transaction: Transaction }>
+  purchaseProductById(options: { productId: string, type: string|undefined, offerToken?: string|undefined}, os?): Promise<{ success: boolean, transaction: Transaction }>
   addListener(eventName: string, listenerFunc: Function): void; // @deprecated
   getPurchasedNonRenewable(options: { }): Promise<{ products: any[] }>, // @deprecated
 
@@ -131,6 +150,9 @@ export interface StorePlugin {
 
   // (Experimental) Consume product
   forceAndroidConsumeProduct(options: {purchaseToken: String}): Promise<{ message: string }>
+
+  // A crucial item for testing
+  webListeners: {[key: string]: Function}
 }
 export interface Transaction {
   bundleId: string;
@@ -224,5 +246,12 @@ if (Capacitor.isNativePlatform()) {
   Store = registerPlugin<StorePlugin>('Store');
 } else {
   Store = mockStorePlugin;
+  Store.webListeners = {}
+  Store.addListener = (eventName: string, listenerFunc: Function) => {
+    Store.webListeners[eventName] = listenerFunc;
+  }
 }
+
+export type StorePluginEvent = 'onPurchase'|'onPurchaseAborted'
+
 export default Store;

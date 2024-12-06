@@ -92,6 +92,17 @@ export class PurchaseInvoicePage implements OnInit {
       console.log("Loading offer token from storag (offerToken):", value)
       this.offerToken = value
     })
+
+    // 3. The emulation mode (for debugging only), TODO, refactor this code to a higher level
+    if (!environment.production){
+      this.os = (this.route.snapshot.queryParamMap.get('mode') ?? 'ios') as PlatformType
+    } else {
+      if (this.platform.is('android')){
+        this.os = 'android'
+      } else {
+        this.os = 'ios'
+      }
+    }
   }
 
   async ngOnInit() {
@@ -116,6 +127,8 @@ export class PurchaseInvoicePage implements OnInit {
     // both Android and iOS can use
     // 2. Listen for the purchase event (only on Android)
     if (this.os == 'android') {
+      //this.purchaseService.addListener('onPurchase', (purchases:{purchases:AndroidProduct[]}) => {
+      console.log("Registering listener for android")
       StorePlugin.addListener('onPurchase', (purchases:{purchases:AndroidProduct[]}) => {
         console.log("onPurchase fired " + JSON.stringify(purchases))
         // We expected that only one product has been purchased
@@ -163,17 +176,6 @@ export class PurchaseInvoicePage implements OnInit {
           this.purchaseCompleted(transaction)
         })
     }
-
-    // 3. The emulation mode (for debugging only), TODO, refactor this code to a higher level
-    if (!environment.production){
-      this.os = (this.route.snapshot.queryParamMap.get('mode') ?? 'ios') as PlatformType
-    } else {
-      if (this.platform.is('android')){
-        this.os = 'android'
-      } else {
-        this.os = 'ios'
-      }
-    }
   }
 
   async continueToPayment(){
@@ -194,7 +196,7 @@ export class PurchaseInvoicePage implements OnInit {
       
       let res:{success:any, transaction:any}
       try {
-        res = (await this.purchaseService.purchaseProductById(productId!, this.productType!, this.offerToken)) as any;
+        res = (await this.purchaseService.purchaseProductById(productId!, this.productType!, this.offerToken, this.os)) as any;
         console.log("Purchase result: " + JSON.stringify(res), "info")
       } catch (e) {
         console.log("Error in purchaseProductById: " + JSON.stringify(e), "error")
