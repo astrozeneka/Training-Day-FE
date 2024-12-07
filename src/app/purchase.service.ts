@@ -27,11 +27,20 @@ export class PurchaseService { // This class cannot be used anymore due to andro
     'sportcoach_6w': 'sportcoach__45d'
   }
 
+  os:'ios'|'android' = null
   constructor(
     private platform: Platform,
     private feedbackService: FeedbackService
   ) {
-    
+    if (!platform.is('capacitor')){
+      this.os = StorePlugin.emulatedOS
+    } else {
+      if (this.platform.is('android')){
+        this.os = 'android'
+      } else {
+        this.os = 'ios'
+      }
+    }
   }
 
   // Method 1: Get the list of products
@@ -39,16 +48,18 @@ export class PurchaseService { // This class cannot be used anymore due to andro
   async getProducts(type=null): Promise<{ products: Product[]}> {
     // Fetch the list of products from the store
     // Check if on web
-    if (this.platform.is('capacitor')){ // cordova ??? maybe capacitor
+    if (true){
       let products:Product[] = [];
-      if (this.platform.is('ios')) {
+      console.log(this.os)
+      if (this.os == 'ios') {
         products = (await StorePlugin.getProducts({})).products
         return {
           products: products
         }
-      } else if (this.platform.is('android')) {
+      } else if (this.os == 'android') {
         // The typo can lead to confusion
         let androidProductList:AndroidProduct[]|AndroidSubscription[] = (await StorePlugin.getProducts({type: type})).products
+        console.log("android product list: ", JSON.stringify(androidProductList))
         // Standardize the output format to fit the existing front-end code
         if (type == 'inapp' || type == null) { // In-app purchases (default)
           products = (androidProductList as AndroidProduct[]).map((product:AndroidProduct) => {

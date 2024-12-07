@@ -1,48 +1,196 @@
 import {Capacitor, registerPlugin} from '@capacitor/core'
 const mockStorePlugin: StorePlugin = {
-  getProducts: async() => {
-    return {
-      "products":[
-        {"price":12.99,"id":"foodcoach_1w","displayName":"Food Coaching (1 Month)","displayPrice":"$12.99","description":"Get 1 month of food coaching program"},{"id":"sportcoach_6w","displayPrice":"$49.99","price":49.99,"description":"Get 6 weeks of sport coaching program","displayName":"Sport Coaching (6 Weeks)"},{"description":"Get 1 week of sport coaching program","displayName":"Sport Coaching (1 Week)","price":12.99,"displayPrice":"$12.99","id":"sportcoach_1w"},{"displayName":"Food Coaching (1 Month)","price":44.99,"id":"foodcoach_4w","displayPrice":"$44.99","description":"Get 1 month of food coaching program"},{"description":"Get 5 training sessions.","id":"trainer5","displayName":"Personal Trainer (5 sessions)","displayPrice":"$249.00","price":249},{"id":"sportcoach_4w","description":"Get 1 month of sport coaching program","displayPrice":"$44.99","displayName":"Sport Coaching (1 Month)","price":44.99},{"displayName":"Pack Alonzo","description":"Get Alonzo subscription","id":"alonzo","price":44.99,"displayPrice":"$44.99"},{"displayPrice":"$449.00","description":"Get 10 training sessions.","price":449,"id":"trainermax","displayName":"Personal Trainer (10 sessions)"},{"description":"Get Hoylt subscription","price":6.99,"id":"hoylt","displayName":"Pack Hoylt","displayPrice":"$6.99"},{"price":24.99,"displayPrice":"$24.99","displayName":"Pack Gursky","description":"Get Gursky subscription","id":"gursky"},{"price":22.99,"displayName":"Pack Moreno","description":"Get Moreno subscription","displayPrice":"$22.99","id":"moreno"},{"id":"trainer1","displayName":"Personal Trainer (1 session)","description":"Get one training session.","displayPrice":"$49.99","price":49.99},{"id":"smiley","description":"Get Smiley subscription","price":24.99,"displayName":"Pack Smiley","displayPrice":"$24.99"},{"displayName":"Food Coaching (6 Weeks)","price":49.99,"id":"foodcoach_6w","description":"Get 6 weeks of food coaching program","displayPrice":"$49.99"}]
-      
+  getProducts: async(options: {type:'subs'|'inapp'|null}) => { // Type is only for android
+    if (Store.emulatedOS == 'ios'){
+      return {
+        "products":[
+          {"price":12.99,"id":"foodcoach_1w","displayName":"Food Coaching (1 Month)","displayPrice":"$12.99","description":"Get 1 month of food coaching program"},{"id":"sportcoach_6w","displayPrice":"$49.99","price":49.99,"description":"Get 6 weeks of sport coaching program","displayName":"Sport Coaching (6 Weeks)"},{"description":"Get 1 week of sport coaching program","displayName":"Sport Coaching (1 Week)","price":12.99,"displayPrice":"$12.99","id":"sportcoach_1w"},{"displayName":"Food Coaching (1 Month)","price":44.99,"id":"foodcoach_4w","displayPrice":"$44.99","description":"Get 1 month of food coaching program"},{"description":"Get 5 training sessions.","id":"trainer5","displayName":"Personal Trainer (5 sessions)","displayPrice":"$249.00","price":249},{"id":"sportcoach_4w","description":"Get 1 month of sport coaching program","displayPrice":"$44.99","displayName":"Sport Coaching (1 Month)","price":44.99},{"displayName":"Pack Alonzo","description":"Get Alonzo subscription","id":"alonzo","price":44.99,"displayPrice":"$44.99"},{"displayPrice":"$449.00","description":"Get 10 training sessions.","price":449,"id":"trainermax","displayName":"Personal Trainer (10 sessions)"},{"description":"Get Hoylt subscription","price":6.99,"id":"hoylt","displayName":"Pack Hoylt","displayPrice":"$6.99"},{"price":24.99,"displayPrice":"$24.99","displayName":"Pack Gursky","description":"Get Gursky subscription","id":"gursky"},{"price":22.99,"displayName":"Pack Moreno","description":"Get Moreno subscription","displayPrice":"$22.99","id":"moreno"},{"id":"trainer1","displayName":"Personal Trainer (1 session)","description":"Get one training session.","displayPrice":"$49.99","price":49.99},{"id":"smiley","description":"Get Smiley subscription","price":24.99,"displayName":"Pack Smiley","displayPrice":"$24.99"},{"displayName":"Food Coaching (6 Weeks)","price":49.99,"id":"foodcoach_6w","description":"Get 6 weeks of food coaching program","displayPrice":"$49.99"}]
+      }
+    } else if (Store.emulatedOS == 'android'){
+      if (options.type == 'inapp' || options.type == null){
+        return {"products": [
+          {
+              "productId": "foodcoach__30d",
+              "type": "inapp",
+              "title": "Programme Alimentaire (1 Mois) (Training-Day)",
+              "name": "Programme Alimentaire (1 Mois)",
+              "description": "Un programme alimentaire mensuel",
+              "oneTimePurchaseOfferDetails": {
+                  "priceAmountMicros": 44990000,
+                  "priceCurrencyCode": "USD",
+                  "formattedPrice": "44,99 $US"
+              }
+          },
+          {
+              "productId": "foodcoach__45d",
+              "type": "inapp",
+              "title": "Programme Alimentaire (6 Semaines) (Training-Day)",
+              "name": "Programme Alimentaire (6 Semaines)",
+              "description": "Un programme alimentaire pour 6 semaines",
+              "oneTimePurchaseOfferDetails": {
+                  "priceAmountMicros": 54990000,
+                  "priceCurrencyCode": "USD",
+                  "formattedPrice": "54,99 $US"
+              }
+          },
+          {
+              "productId": "foodcoach__7d",
+              "type": "inapp",
+              "title": "Programme Alimentaire (7 Jours) (Training-Day)",
+              "name": "Programme Alimentaire (7 Jours)",
+              "description": "Un programme alimentaire hebdomadaire",
+              "oneTimePurchaseOfferDetails": {
+                  "priceAmountMicros": 12990000,
+                  "priceCurrencyCode": "USD",
+                  "formattedPrice": "12,99 $US"
+              }
+          },
+          {
+              "productId": "sportcoach__30d",
+              "type": "inapp",
+              "title": "Programme Sportif (1 Mois) (Training-Day)",
+              "name": "Programme Sportif (1 Mois)",
+              "description": "Programme sportif mensuel",
+              "oneTimePurchaseOfferDetails": {
+                  "priceAmountMicros": 44990000,
+                  "priceCurrencyCode": "USD",
+                  "formattedPrice": "44,99 $US"
+              }
+          },
+          {
+              "productId": "sportcoach__45d",
+              "type": "inapp",
+              "title": "Programme Sportif (6 Semaines) (Training-Day)",
+              "name": "Programme Sportif (6 Semaines)",
+              "description": "Un programme sportif pour 6 semaines",
+              "oneTimePurchaseOfferDetails": {
+                  "priceAmountMicros": 54990000,
+                  "priceCurrencyCode": "USD",
+                  "formattedPrice": "54,99 $US"
+              }
+          },
+          {
+              "productId": "sportcoach__7d",
+              "type": "inapp",
+              "title": "Programme Sportif (7 Jours) (Training-Day)",
+              "name": "Programme Sportif (7 Jours)",
+              "description": "Un programme sportif hebdomadaire",
+              "oneTimePurchaseOfferDetails": {
+                  "priceAmountMicros": 12990000,
+                  "priceCurrencyCode": "USD",
+                  "formattedPrice": "12,99 $US"
+              }
+          }
+        ]}
+      } else if (options.type == 'subs'){
+        return {products: [
+          {
+              "productId": "training_day",
+              "type": "subs",
+              "title": "Abonnement Training Day (Training-Day)",
+              "name": "Abonnement Training Day",
+              "description": "",
+              "subscriptionOfferDetails": [
+                  {
+                      "basePlanId": "hoylt",
+                      "offerIdToken": "Afjq3G9u8w3rdHzDd7en+FMV3Hmu1SopbCMeX9l0/Y1wINgfoOb47FMTUonoAK0rp7980d0gyxIZHBw=",
+                      "offerTags": [],
+                      "pricingPhases": [
+                          {
+                              "priceAmountMicros": 10990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "10,99 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 1,
+                              "billingCycleCount": 0
+                          }
+                      ]
+                  },
+                  {
+                      "basePlanId": "moreno",
+                      "offerIdToken": "Afjq3G9LD6I21UPcY7zejcKIe+fvmI8oMJieaO+NeONlit5O2mZXF3r8RxYNUpnC8oFX8WBSsmkBxxg=",
+                      "offerTags": [],
+                      "pricingPhases": [
+                          {
+                              "priceAmountMicros": 31990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "31,99 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 1,
+                              "billingCycleCount": 0
+                          }
+                      ]
+                  },
+                  {
+                      "basePlanId": "alonzo",
+                      "offerIdToken": "Afjq3G8wdc+JqxUi/lJ6xvg1X2sp2CIJr133uDj8fSnqNpAsr5OVxXl0pgrctaSbFRuzu2f9TeRqmuM=",
+                      "offerTags": [],
+                      "pricingPhases": [
+                          {
+                              "priceAmountMicros": 49990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "49,99 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 1,
+                              "billingCycleCount": 0
+                          }
+                      ]
+                  }
+              ]
+          }
+        ]}
+      } else {
+        console.log(options.type)
+        return {products: []}
+      }
+    } else {
+      return {products: []}
     }
   },
+  emulatedPurchaseBehavior: 'alwaysAllow',
+  emulatedOS: 'android',
   purchaseProductById: async(options: { productId: string, type: string|undefined}, os) => {
-    return new Promise((resolve)=>{
+    return new Promise((resolve, reject)=>{
       setTimeout(()=>{
         let uid = Math.floor(Math.random() * 1000000);
         if (os == 'ios'){
-          resolve({
-            success: true,
-            transaction: {
-              // The product_id is not included in the transaction for iOS
-              bundleId: "com.codecrane.trainingday",
-              deviceVerification: `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx${uid}`,
-              deviceVerificationNonce: `XXXXXX-XXXX-XXXX-XXX-${uid}`,
-              quantity: 1,
-              transactionId: 1,
-              signedDate: (new Date()).toISOString(),
-              inAppOwnershipType: "PURCHASED",
-              id: undefined, // TransactionId: 2000000730775813
-              environment: 'fake' // Environment: "Sandbox" or "Xcode"
-            }
-          })
+          if (Store.emulatedPurchaseBehavior == 'alwaysAllow'){
+            resolve({
+              success: true,
+              transaction: {
+                // The product_id is not included in the transaction for iOS
+                bundleId: "com.codecrane.trainingday",
+                deviceVerification: `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx${uid}`,
+                deviceVerificationNonce: `XXXXXX-XXXX-XXXX-XXX-${uid}`,
+                quantity: 1,
+                transactionId: 1,
+                signedDate: (new Date()).toISOString(),
+                inAppOwnershipType: "PURCHASED",
+                id: undefined, // TransactionId: 2000000730775813
+                environment: 'fake' // Environment: "Sandbox" or "Xcode"
+              }
+            })
+          } else if (Store.emulatedPurchaseBehavior == 'alwaysDisallow'){
+            reject({message: "Transaction annulée par l'utilisateur [Emulation]"})
+          }
         } else if (os == 'android'){
-          Store.webListeners['onPurchase']?.(
-            {
-              "purchases":[
-                {
-                  "orderId":`GPA.XXXX-XXXX-XXXX-${uid}`,
-                  "packageName":"com.trainingday",
-                  "purchaseTime":(new Date()).getTime(),
-                  "purchaseState":1,
-                  "purchaseToken":`xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx${uid}`,
-                  "quantity":1,
-                  "acknowledged":false
-                }
-              ]
-            }
-          );
+          if (Store.emulatedPurchaseBehavior == 'alwaysAllow'){
+            Store.webListeners['onPurchase']?.(
+              {
+                "purchases":[
+                  {
+                    "orderId":`GPA.XXXX-XXXX-XXXX-${uid}`,
+                    "packageName":"com.trainingday",
+                    "purchaseTime":(new Date()).getTime(),
+                    "purchaseState":1,
+                    "purchaseToken":`xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx${uid}`,
+                    "quantity":1,
+                    "acknowledged":false
+                  }
+                ]
+              }
+            );
+          }
         }
       }, 1000)
     })
@@ -125,6 +273,8 @@ const mockStorePlugin: StorePlugin = {
 }
 export interface StorePlugin {
   getProducts(options: { }): Promise<{ products: any[]}>
+  emulatedPurchaseBehavior: 'alwaysAllow'|'alwaysDisallow' // Used for testing only
+  emulatedOS: 'ios'|'android' // Used for testing only
   purchaseProductById(options: { productId: string, type: string|undefined, offerToken?: string|undefined}, os?): Promise<{ success: boolean, transaction: Transaction }>
   addListener(eventName: string, listenerFunc: Function): void; // @deprecated
   getPurchasedNonRenewable(options: { }): Promise<{ products: any[] }>, // @deprecated
@@ -250,8 +400,8 @@ if (Capacitor.isNativePlatform()) {
   Store.addListener = (eventName: string, listenerFunc: Function) => {
     Store.webListeners[eventName] = listenerFunc;
   }
+  (window as any).StorePlugin = Store;
 }
 
 export type StorePluginEvent = 'onPurchase'|'onPurchaseAborted'
-
 export default Store;

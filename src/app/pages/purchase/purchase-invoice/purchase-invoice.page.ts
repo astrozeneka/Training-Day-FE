@@ -95,7 +95,7 @@ export class PurchaseInvoicePage implements OnInit {
 
     // 3. The emulation mode (for debugging only), TODO, refactor this code to a higher level
     if (!environment.production){
-      this.os = (this.route.snapshot.queryParamMap.get('mode') ?? 'ios') as PlatformType
+      this.os = StorePlugin.emulatedOS
     } else {
       if (this.platform.is('android')){
         this.os = 'android'
@@ -141,8 +141,9 @@ export class PurchaseInvoicePage implements OnInit {
           }
         }
       })
-      // On Purchase abortion
+      // On Purchase abortion (iOS and android ?)
       StorePlugin.addListener('onPurchaseAborted', (data)=>{
+        console.log("onPurchaseAborted fired " + JSON.stringify(data))
         if (this.isLoading){
           this.isLoading = false
           this.loadingStep = null
@@ -234,6 +235,7 @@ export class PurchaseInvoicePage implements OnInit {
       // Patch the product_id (for android only)
       (product as AndroidProduct).productId = this.productId
     }
+    (product as any).purchaseTime = Math.round((product as any).purchaseTime / 1000)
     this.contentService.post(url, product)
       .pipe(catchError(err => {
         console.error("StorePlugin error: " + JSON.stringify(err));

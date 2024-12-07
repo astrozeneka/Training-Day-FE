@@ -34,6 +34,7 @@ export class StoreFoodCoachComponent  implements OnInit {
     // 2. Load and prepare product list from the store
     this.purchaseService.getProducts('inapp').then((d)=>{
       let productList:Product[] = d.products
+      console.log(productList)
       this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
     })
   }
