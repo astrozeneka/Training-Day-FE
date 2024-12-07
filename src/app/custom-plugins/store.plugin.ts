@@ -1,12 +1,13 @@
 import {Capacitor, registerPlugin} from '@capacitor/core'
+import { BehaviorSubject, Observable, Subject } from 'rxjs'
 const mockStorePlugin: StorePlugin = {
   getProducts: async(options: {type:'subs'|'inapp'|null}) => { // Type is only for android
-    if (Store.emulatedOS == 'ios'){
+    if (mockStorePlugin._emulatedOSData == 'ios'){
       return {
         "products":[
           {"price":12.99,"id":"foodcoach_1w","displayName":"Food Coaching (1 Month)","displayPrice":"$12.99","description":"Get 1 month of food coaching program"},{"id":"sportcoach_6w","displayPrice":"$49.99","price":49.99,"description":"Get 6 weeks of sport coaching program","displayName":"Sport Coaching (6 Weeks)"},{"description":"Get 1 week of sport coaching program","displayName":"Sport Coaching (1 Week)","price":12.99,"displayPrice":"$12.99","id":"sportcoach_1w"},{"displayName":"Food Coaching (1 Month)","price":44.99,"id":"foodcoach_4w","displayPrice":"$44.99","description":"Get 1 month of food coaching program"},{"description":"Get 5 training sessions.","id":"trainer5","displayName":"Personal Trainer (5 sessions)","displayPrice":"$249.00","price":249},{"id":"sportcoach_4w","description":"Get 1 month of sport coaching program","displayPrice":"$44.99","displayName":"Sport Coaching (1 Month)","price":44.99},{"displayName":"Pack Alonzo","description":"Get Alonzo subscription","id":"alonzo","price":44.99,"displayPrice":"$44.99"},{"displayPrice":"$449.00","description":"Get 10 training sessions.","price":449,"id":"trainermax","displayName":"Personal Trainer (10 sessions)"},{"description":"Get Hoylt subscription","price":6.99,"id":"hoylt","displayName":"Pack Hoylt","displayPrice":"$6.99"},{"price":24.99,"displayPrice":"$24.99","displayName":"Pack Gursky","description":"Get Gursky subscription","id":"gursky"},{"price":22.99,"displayName":"Pack Moreno","description":"Get Moreno subscription","displayPrice":"$22.99","id":"moreno"},{"id":"trainer1","displayName":"Personal Trainer (1 session)","description":"Get one training session.","displayPrice":"$49.99","price":49.99},{"id":"smiley","description":"Get Smiley subscription","price":24.99,"displayName":"Pack Smiley","displayPrice":"$24.99"},{"displayName":"Food Coaching (6 Weeks)","price":49.99,"id":"foodcoach_6w","description":"Get 6 weeks of food coaching program","displayPrice":"$49.99"}]
       }
-    } else if (Store.emulatedOS == 'android'){
+    } else if (mockStorePlugin._emulatedOSData == 'android'){
       if (options.type == 'inapp' || options.type == null){
         return {"products": [
           {
@@ -148,7 +149,18 @@ const mockStorePlugin: StorePlugin = {
     }
   },
   emulatedPurchaseBehavior: 'alwaysAllow',
-  emulatedOS: 'android',
+
+  // OS emulation
+  _emulatedOSData: 'android',
+  _emulatedOS$: new BehaviorSubject<'ios'|'android'>('android'),
+  onEmulatedOS: () => {
+    return Store._emulatedOS$.asObservable();
+  },
+  setEmulatedOS: (os: 'ios'|'android') => {
+    mockStorePlugin._emulatedOSData = os;
+    Store._emulatedOS$.next(os);
+  },
+
   purchaseProductById: async(options: { productId: string, type: string|undefined}, os) => {
     return new Promise((resolve, reject)=>{
       setTimeout(()=>{
@@ -274,7 +286,14 @@ const mockStorePlugin: StorePlugin = {
 export interface StorePlugin {
   getProducts(options: { }): Promise<{ products: any[]}>
   emulatedPurchaseBehavior: 'alwaysAllow'|'alwaysDisallow' // Used for testing only
-  emulatedOS: 'ios'|'android' // Used for testing only
+
+  // OS emulation (Used for testing only)
+  _emulatedOSData: 'ios'|'android'
+  _emulatedOS$: BehaviorSubject<'ios'|'android'>
+  onEmulatedOS(): (Observable<'ios'|'android'>),
+  setEmulatedOS(os: 'ios'|'android'): void
+
+
   purchaseProductById(options: { productId: string, type: string|undefined, offerToken?: string|undefined}, os?): Promise<{ success: boolean, transaction: Transaction }>
   addListener(eventName: string, listenerFunc: Function): void; // @deprecated
   getPurchasedNonRenewable(options: { }): Promise<{ products: any[] }>, // @deprecated
@@ -298,10 +317,10 @@ export interface StorePlugin {
   // The redeem code sheet (in Android)
   openAndroidPromoDeepLink(options: {url: String}): Promise<{ message: string }>; // Might be updated later
 
-  // (Experimental) Consume product
+  // Consume product (for manual testing)
   forceAndroidConsumeProduct(options: {purchaseToken: String}): Promise<{ message: string }>
 
-  // A crucial item for testing
+  // Registered listener (for testing only)
   webListeners: {[key: string]: Function}
 }
 export interface Transaction {

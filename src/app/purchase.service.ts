@@ -33,7 +33,9 @@ export class PurchaseService { // This class cannot be used anymore due to andro
     private feedbackService: FeedbackService
   ) {
     if (!platform.is('capacitor')){
-      this.os = StorePlugin.emulatedOS
+      StorePlugin.onEmulatedOS().subscribe((os) => {
+        this.os = os
+      })
     } else {
       if (this.platform.is('android')){
         this.os = 'android'

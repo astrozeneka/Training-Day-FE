@@ -93,9 +93,11 @@ export class PurchaseInvoicePage implements OnInit {
       this.offerToken = value
     })
 
-    // 3. The emulation mode (for debugging only), TODO, refactor this code to a higher level
+    // 3. The emulation mode (for testing only)
     if (!environment.production){
-      this.os = StorePlugin.emulatedOS
+      StorePlugin.onEmulatedOS().subscribe((os) => {
+        this.os = os
+      })
     } else {
       if (this.platform.is('android')){
         this.os = 'android'
