@@ -11,6 +11,7 @@ import { PurchaseService } from 'src/app/purchase.service';
 import { Platform } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 import { PlatformType } from 'src/app/models/Interfaces';
+import { DarkModeService } from 'src/app/dark-mode.service';
 
 @Component({
   selector: 'app-purchase-invoice',
@@ -18,12 +19,6 @@ import { PlatformType } from 'src/app/models/Interfaces';
   styleUrls: ['./purchase-invoice.page.scss'],
 })
 export class PurchaseInvoicePage implements OnInit {
-  subscriptionSlug: string = "";
-  subscriptionLabel: string = "";
-  subscriptionDays: number = 0;
-  subscriptionConsumables: number = 0;
-  subscriptionExtraInfo: string = ""; // Duration or quantity
-  subscriptionPrice: number = 0;
 
   productList:any = {} // Bound to the Store
   productId:string|undefined = undefined
@@ -34,9 +29,9 @@ export class PurchaseInvoicePage implements OnInit {
   isLoading: boolean = false;
   loadingStep: string = null;
 
-  // 2. Determine the product type depending on the productId
+  // 2. Determine the product type depending on the productId whether inapp or subs
   // productId:string|undefined = undefined
-  productType: string = null; // (only required for Android)
+  productType: 'inapp'|'subs'|'null' = null; // (only required for Android)
   productDataBS: BehaviorSubject<{id: string, type: string}> = new BehaviorSubject(null)
 
   // Redeem code
@@ -54,30 +49,9 @@ export class PurchaseInvoicePage implements OnInit {
     private purchaseService: PurchaseService,
     private platform: Platform,
     private cdr: ChangeDetectorRef,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dms: DarkModeService
   ) {
-    this.contentService.storage.get('subscription_slug').then((value) => {
-      this.subscriptionSlug = value;
-    });
-    this.contentService.storage.get('subscription_label').then((value) => {
-      this.subscriptionLabel = value;
-    });
-    this.contentService.storage.get('subscription_days').then((value) => {
-      this.subscriptionDays = value;
-      if(this.subscriptionDays){
-        this.subscriptionExtraInfo = this.subscriptionDays + " jours";
-      }
-    });
-    this.contentService.storage.get('subscription_consumable').then((value) => {
-      this.subscriptionConsumables = value;
-      if(this.subscriptionConsumables){
-        this.subscriptionExtraInfo = this.subscriptionConsumables + " séance(s)";
-      }
-    });
-    this.contentService.storage.get('subscription_price').then((value) => {
-      this.subscriptionPrice = value;
-    });
-
     //  Both 'productId' and 'offerToken' are both passed thorugh storage
     this.contentService.storage.get('productId').then((value) => {
       this.productId = value;
@@ -118,13 +92,6 @@ export class PurchaseInvoicePage implements OnInit {
       this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
     })
 
-    // The dark mode (the code below is reused, should be refactored)
-    try {
-      this.useDarkMode = await this.isAvailable() && (await this.isDarkModeEnabled()).value;
-    } catch (e) {
-      console.log("Getting device theme not available on web");
-    }
-
     // In the future, should find a common architecture that
     // both Android and iOS can use
     // 2. Listen for the purchase event (only on Android)
@@ -143,7 +110,7 @@ export class PurchaseInvoicePage implements OnInit {
           }
         }
       })
-      // On Purchase abortion (iOS and android ?)
+      // On Purchase abortion (android only)
       StorePlugin.addListener('onPurchaseAborted', (data)=>{
         console.log("onPurchaseAborted fired " + JSON.stringify(data))
         if (this.isLoading){
@@ -251,7 +218,7 @@ export class PurchaseInvoicePage implements OnInit {
       })
   }
 
-  private redirectWithFeedback(){
+  private async redirectWithFeedback(){
     // The code below is redundant, should be refactored
     let feedbackOpts = {
       type: 'modal',
@@ -260,7 +227,7 @@ export class PurchaseInvoicePage implements OnInit {
       secondaryButtonText: 'Retour à l\'accueil',
       primaryButtonAction: '/chat',
       secondaryButtonAction: '/home',
-      modalImage: this.useDarkMode ? 'assets/logo-dark-cropped.png' : 'assets/logo-light-cropped.png',
+      modalImage: (await this.dms.isAvailableAndEnabled()) ? 'assets/logo-dark-cropped.png' : 'assets/logo-light-cropped.png',
     }
     if(["hoylt", "gursky", "moreno", "smiley", "alonzo"].includes(this.productId)){ // Auto-renewables
       this.feedbackService.register(
@@ -299,30 +266,6 @@ export class PurchaseInvoicePage implements OnInit {
   }
 
   protected readonly environment = environment;
-
-  useDarkMode: boolean = true;
-  /**
-   * The code below is redundant, should be refactored for better code quality
-   */
-  private async isAvailable(): Promise<any> {
-    try {
-      let dark_mode_available: ThemeDetectionResponse = await this.themeDetection.isAvailable();
-      return dark_mode_available;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  }
-
-  private async isDarkModeEnabled(): Promise<ThemeDetectionResponse> {
-    try {
-      let dark_mode_enabled: ThemeDetectionResponse = await this.themeDetection.isDarkModeEnabled();
-      return dark_mode_enabled;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  }
 
   // 10. Open CGV
   openCGV(){

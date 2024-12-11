@@ -1,6 +1,9 @@
 import { Injectable, OnInit } from '@angular/core';
 import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
 
+/**
+ * @deprecated
+ */
 @Injectable({
   providedIn: 'root'
 })

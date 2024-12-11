@@ -148,17 +148,27 @@ const mockStorePlugin: StorePlugin = {
       return {products: []}
     }
   },
-  emulatedPurchaseBehavior: 'alwaysAllow',
+
+  // Emulation purchase behavior
+  _emulatedPurchaseBehaviorData: 'alwaysAllow',
+  _emulatedPurchaseBehavior$: new BehaviorSubject<'alwaysAllow'|'alwaysDisallow'>('alwaysAllow'),
+  onEmulatedPurchaseBehavior: () => {
+    return mockStorePlugin._emulatedPurchaseBehavior$.asObservable();
+  },
+  setEmulatedPurchaseBehavior: (behavior: 'alwaysAllow'|'alwaysDisallow') => {
+    mockStorePlugin._emulatedPurchaseBehaviorData = behavior;
+    mockStorePlugin._emulatedPurchaseBehavior$.next(behavior);
+  },
 
   // OS emulation
   _emulatedOSData: 'android',
-  _emulatedOS$: new BehaviorSubject<'ios'|'android'>('android'),
+  _emulatedOSSubject: new BehaviorSubject<'ios'|'android'>('android'),
   onEmulatedOS: () => {
-    return Store._emulatedOS$.asObservable();
+    return mockStorePlugin._emulatedOSSubject.asObservable();
   },
   setEmulatedOS: (os: 'ios'|'android') => {
     mockStorePlugin._emulatedOSData = os;
-    Store._emulatedOS$.next(os);
+    mockStorePlugin._emulatedOSSubject.next(os);
   },
 
   purchaseProductById: async(options: { productId: string, type: string|undefined}, os) => {
@@ -166,7 +176,7 @@ const mockStorePlugin: StorePlugin = {
       setTimeout(()=>{
         let uid = Math.floor(Math.random() * 1000000);
         if (os == 'ios'){
-          if (Store.emulatedPurchaseBehavior == 'alwaysAllow'){
+          if (Store._emulatedPurchaseBehaviorData == 'alwaysAllow'){
             resolve({
               success: true,
               transaction: {
@@ -182,11 +192,11 @@ const mockStorePlugin: StorePlugin = {
                 environment: 'fake' // Environment: "Sandbox" or "Xcode"
               }
             })
-          } else if (Store.emulatedPurchaseBehavior == 'alwaysDisallow'){
+          } else if (Store._emulatedPurchaseBehaviorData == 'alwaysDisallow'){
             reject({message: "Transaction annulée par l'utilisateur [Emulation]"})
           }
         } else if (os == 'android'){
-          if (Store.emulatedPurchaseBehavior == 'alwaysAllow'){
+          if (Store._emulatedPurchaseBehaviorData == 'alwaysAllow'){
             Store.webListeners['onPurchase']?.(
               {
                 "purchases":[
@@ -202,6 +212,8 @@ const mockStorePlugin: StorePlugin = {
                 ]
               }
             );
+          } else if (Store._emulatedPurchaseBehaviorData == 'alwaysDisallow'){
+            Store.webListeners['onPurchaseAborted']?.({message: "Transaction annulée par l'utilisateur [Emulation]"})
           }
         }
       }, 1000)
@@ -285,13 +297,18 @@ const mockStorePlugin: StorePlugin = {
 }
 export interface StorePlugin {
   getProducts(options: { }): Promise<{ products: any[]}>
-  emulatedPurchaseBehavior: 'alwaysAllow'|'alwaysDisallow' // Used for testing only
+  
+  // Purchase behavior (used for testing only)
+  _emulatedPurchaseBehaviorData: 'alwaysAllow'|'alwaysDisallow' // Used for testing only
+  _emulatedPurchaseBehavior$: BehaviorSubject<'alwaysAllow'|'alwaysDisallow'> // Used for testing only
+  onEmulatedPurchaseBehavior(): Observable<'alwaysAllow'|'alwaysDisallow'> // Used for testing only
+  setEmulatedPurchaseBehavior(behavior: 'alwaysAllow'|'alwaysDisallow'): void // Used for testing only
 
   // OS emulation (Used for testing only)
-  _emulatedOSData: 'ios'|'android'
-  _emulatedOS$: BehaviorSubject<'ios'|'android'>
-  onEmulatedOS(): (Observable<'ios'|'android'>),
-  setEmulatedOS(os: 'ios'|'android'): void
+  _emulatedOSData: 'ios'|'android' // Used for testing only
+  _emulatedOSSubject: BehaviorSubject<'ios'|'android'> // Used for testing only
+  onEmulatedOS(): (Observable<'ios'|'android'>), // Used for testing only
+  setEmulatedOS(os: 'ios'|'android'): void // Used for testing only
 
 
   purchaseProductById(options: { productId: string, type: string|undefined, offerToken?: string|undefined}, os?): Promise<{ success: boolean, transaction: Transaction }>

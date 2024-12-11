@@ -23,13 +23,6 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngIf="environment.paymentMethod === 'stripe'">
-                <td>1</td>
-                <td>
-                    Abonnement {{ subscriptionLabel }} ({{ subscriptionExtraInfo}})
-                </td>
-                <td>{{ subscriptionPrice / 100}} €</td>
-            </tr>
             <tr *ngIf="environment.paymentMethod === 'inAppPurchase' && productList && productId">
                 <td>1</td>
                 <td>
@@ -43,7 +36,6 @@
             <tr>
                 <td></td>
                 <td><strong>Total</strong></td>
-                <td *ngIf="environment.paymentMethod === 'stripe'"><strong>{{ subscriptionPrice / 100 }} €</strong></td>
                 <td *ngIf="environment.paymentMethod === 'inAppPurchase' && productList && productId">
                     <strong>{{ productList[productId].displayPrice }}
                         <span *ngIf="['hoylt', 'alonzo', 'moreno'].includes(productId)">/ mois</span>

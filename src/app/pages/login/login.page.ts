@@ -19,6 +19,7 @@ import {environment} from "../../../environments/environment";
 import {BroadcastingService} from "../../broadcasting.service";
 import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
 import PasswordToggle from 'src/app/utils/PasswordToggle';
+import { DarkModeService } from 'src/app/dark-mode.service';
 
 @Component({
   selector: 'app-login',
@@ -43,6 +44,9 @@ export class LoginPage extends FormComponent implements OnInit {
   // tooglable object for password display
   passwordToggle = new PasswordToggle()
 
+  // Darkmode
+  useDarkMode:boolean = false;
+
   constructor(
     private contentService: ContentService,
     private feedbackService: FeedbackService,
@@ -50,8 +54,8 @@ export class LoginPage extends FormComponent implements OnInit {
     private router: Router,
     private httpClient: HttpClient,
     private broadcastingService: BroadcastingService,
-
     private themeDetection: ThemeDetection,
+    private dms: DarkModeService
   ) {
     super()
   }
@@ -172,11 +176,7 @@ export class LoginPage extends FormComponent implements OnInit {
     )*/
 
     // Checking if the darkmode is enabled
-    try {
-      this.useDarkMode = await this.isDarkModeAvailable() && (await this.isDarkModeEnabled()).value;
-    } catch (e) {
-      console.log("Getting device theme not available on web");
-    }
+    this.useDarkMode = await this.dms.isAvailableAndEnabled()
   }
 
   async requestLogin({email, password}){
@@ -331,27 +331,6 @@ export class LoginPage extends FormComponent implements OnInit {
           console.log(res)
         })
       Browser.open({url: authenticationAuthUrl})
-    }
-  }
-
-  // For managing the logo depending on the dark/light mode
-  useDarkMode: boolean = true; // On web, Ionic use dark by default
-  private async isDarkModeAvailable(): Promise<any> {
-    try {
-      let dark_mode_available: ThemeDetectionResponse = await this.themeDetection.isAvailable();
-      return dark_mode_available;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  }
-  private async isDarkModeEnabled(): Promise<ThemeDetectionResponse> {
-    try {
-      let dark_mode_enabled: ThemeDetectionResponse = await this.themeDetection.isDarkModeEnabled();
-      return dark_mode_enabled;
-    } catch (e) {
-      console.log(e);
-      throw e;
     }
   }
 }

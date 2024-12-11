@@ -4,6 +4,7 @@ import {ContentService} from "../../content.service";
 import {Browser} from "@capacitor/browser";
 import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
 import { FeedbackService } from 'src/app/feedback.service';
+import { DarkModeService } from 'src/app/dark-mode.service';
 
 @Component({
   selector: 'app-welcome-menu',
@@ -17,7 +18,8 @@ export class WelcomeMenuPage implements OnInit {
     private router:Router,
     public contentService:ContentService,
     private themeDetection: ThemeDetection,
-    private feedbackService: FeedbackService
+    private feedbackService: FeedbackService,
+    private dms: DarkModeService
   ) {
     this.router.events.subscribe(async (event:any)=>{
       if (event instanceof NavigationEnd && event.url === '/welcome-menu') {
@@ -30,7 +32,7 @@ export class WelcomeMenuPage implements OnInit {
 
   async ngOnInit() {
     try {
-      this.useDarkMode = await this.isAvailable() && (await this.isDarkModeEnabled()).value;
+      this.useDarkMode = await this.dms.isAvailableAndEnabled();
     } catch (e) {
       console.log("Getting device theme not available on web");
     }
@@ -41,26 +43,6 @@ export class WelcomeMenuPage implements OnInit {
       await Browser.open({url: url})
     }else{
       this.router.navigate([url]);
-    }
-  }
-
-  private async isAvailable(): Promise<any> {
-    try {
-      let dark_mode_available: ThemeDetectionResponse = await this.themeDetection.isAvailable();
-      return dark_mode_available;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  }
-
-  private async isDarkModeEnabled(): Promise<ThemeDetectionResponse> {
-    try {
-      let dark_mode_enabled: ThemeDetectionResponse = await this.themeDetection.isDarkModeEnabled();
-      return dark_mode_enabled;
-    } catch (e) {
-      console.log(e);
-      throw e;
     }
   }
 }

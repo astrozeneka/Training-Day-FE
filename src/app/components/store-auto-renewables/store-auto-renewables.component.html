@@ -23,12 +23,12 @@
     <div class="ion-padding-horizontal">
       <app-storefront-item
         color="dark"
-        [product]="productList['gursky']"
+        [product]="productList['hoylt']"
         [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
-        (action)="clickSubscriptionOption('gursky')"
+        (action)="clickSubscriptionOption('hoylt')"
       >
         <div slot="title">
-            Pack Gursky
+            Pack Hoylt
         </div>
         <div slot="description">
             Découvrez notre offre de base incluant un accès aux trainings sur la plateforme et aux outils de suivi.
@@ -40,6 +40,25 @@
       </app-storefront-item>
     </div>
     <div class="ion-padding-horizontal">
+      <app-storefront-item
+        color="warning"
+        [product]="productList['gursky']"
+        [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
+        (action)="clickSubscriptionOption('gursky')"
+      >
+        <div slot="title">
+            Pack Gursky
+        </div>
+        <div slot="description">
+            Découvrez notre offre de base incluant un accès aux trainings sur la plateforme et aux outils de suivi, un bilan mensuel et
+            un suivi et accompagnement par votre coach.
+        </div>
+        <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
+            Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
+        </div>
+      </app-storefront-item>
+    </div>
+    <!--<div class="ion-padding-horizontal">
       <app-storefront-item
         color="warning"
         [product]="productList['moreno']"
@@ -57,7 +76,7 @@
             Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
         </div>
       </app-storefront-item>
-    </div>
+    </div>-->
     <div class="ion-padding-horizontal">
       <app-storefront-item
         color="danger"
