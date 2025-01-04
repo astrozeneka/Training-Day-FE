@@ -27,6 +27,20 @@ EOF
 
 1. The soketi services doesn't start on startup ( Solved )
 
+## Virtualhost setup for front-end
+
+```
+<VirtualHost *:8090>
+       ServerName training-day-fe.codecrane.me
+       DocumentRoot /var/www/Training-Day-FE/www
+       <Directory /var/www/Training-Day-FE>
+              AllowOverride All
+       </Directory>
+RewriteEngine on
+RewriteCond %{SERVER_NAME} =training-day-fe.codecrane.me
+RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>
+```
 
 # Icon attributions
 <a href="https://www.flaticon.com/free-stickers/punching-bag" title="punching bag stickers">Punching bag stickers created by vectorsmarket15 - Flaticon</a>
