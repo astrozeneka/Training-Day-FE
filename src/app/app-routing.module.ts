@@ -228,6 +228,10 @@ const routes: Routes = [
     path: 'chat-master-v4',
     loadChildren: () => import('./pages/chat/chat-master-v4/chat-master-v4.module').then( m => m.ChatMasterV4PageModule)
   },
+  {
+    path: 'video-aws-test',
+    loadChildren: () => import('./pages/video-aws-test/video-aws-test.module').then( m => m.VideoAwsTestPageModule)
+  },
 ];
 
 @NgModule({
