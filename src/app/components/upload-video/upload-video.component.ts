@@ -24,6 +24,8 @@ export class UploadVideoComponent  implements ControlValueAccessor, OnInit {
   @Input() label: string = "Ajouter une vidéo";
   @Input() formControl: any = undefined;
   file: any = undefined;
+  // This will automatically send the video to the server after the user select the file
+  @Input() autoload: boolean = true;
 
   progress = 0;
 
@@ -96,6 +98,11 @@ export class UploadVideoComponent  implements ControlValueAccessor, OnInit {
   }
 
   uploadVideo(event: any){
+    if (!this.autoload){
+      this.formControl.setValue(event.target.files[0]);
+      return;
+    }
+
     // Should send a POST request to the s
     const file = event.target.files[0];
     // Should load the video using ReadFile and then send it to the serve

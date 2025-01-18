@@ -15,8 +15,12 @@ export const environment = {
   // rootEndpoint: 'http://192.168.1.187:8000',
   // apiEndpoint: 'http://192.168.88.188:8000/api',
   // rootEndpoint: 'http://192.168.88.188:8000',
-  apiEndpoint: 'http://192.168.1.231:8000/api',
-  rootEndpoint: 'http://192.168.1.231:8000',
+
+  //apiEndpoint: 'http://192.168.1.231:8000/api',
+  //rootEndpoint: 'http://192.168.1.231:8000',
+
+  apiEndpoint: 'http://localhost:8080/api',
+  rootEndpoint: 'http://localhost:8080',
 
   // Pusher configuration
   pusher_app_key: 'app-key',

@@ -54,3 +54,7 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 
 <!-- Branch -->
 android-iap is the currently published branch
+
+## S3 access
+username: training-day-be
+pass: greatestIsLove<3
