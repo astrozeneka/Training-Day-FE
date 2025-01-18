@@ -22,7 +22,26 @@ export class VideoAwsTestPage implements OnInit {
   ngOnInit() {
     const videoElement:HTMLVideoElement = document.getElementById('my-video') as HTMLVideoElement;
     const hlsSource = "https://trainingday-videos.s3.ap-southeast-1.amazonaws.com/1.La-garde.m3u8"
-    console.log(Hls);
+    
+    this.videoPlayer = videojs(videoElement, {
+      controls: true,
+      autoplay: false,
+      preload: 'auto',
+      sources: (
+        [
+          {
+            src: hlsSource,
+            type: 'application/x-mpegURL'
+          }
+        ] as any
+      )
+    })
+    this.videoPlayer.hlsQualitySelector();
+    // Handling error
+    this.videoPlayer.on('error', ()=>{
+      console.log('video-js error occured:', this.videoPlayer.error())
+    })
+    /*
     if ((Hls as any).isSupported()) {
       const hls = new Hls.default();
       hls.loadSource(hlsSource);
@@ -38,7 +57,7 @@ export class VideoAwsTestPage implements OnInit {
       hls.attachMedia(videoElement);
     } else {
       console.log("HLS not supported");
-    }
+    }*/
     /*
     this.videoPlayer = videojs('my-video', {
       autoplay: true,

@@ -81,7 +81,7 @@ public class StorePlugin extends Plugin {
     // Handle promo code sheet (Play Store) broadcast receiver
     System.out.println("StorePlugin: Registering promo receiver");
     IntentFilter filter = new IntentFilter(Intent.ACTION_VIEW);
-    getContext().registerReceiver(promoReceiver, filter);
+    getContext().registerReceiver(promoReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
 
   }
 
