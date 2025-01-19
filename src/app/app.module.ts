@@ -16,6 +16,7 @@ import {DevComponentsModule} from "./dev-prod-components/dev-components.module";
 import {ProdComponentsModule} from "./dev-prod-components/prod-components.module";
 import { DisplayListPipe } from './display-list.pipe';
 import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
+import { CustomRouteReuseStrategy } from './custom-route-reuse-strategy';
 
 @NgModule({
   declarations: [

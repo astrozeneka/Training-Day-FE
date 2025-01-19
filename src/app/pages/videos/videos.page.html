@@ -28,8 +28,9 @@
                 <!-- WARNING, the video availability should be computed from the backend model -->
                 <div class="video-card ion-padding" [ngClass]="{ 'locked': (user?.function == 'customer' || !user) && !item.available }">
                     <div class="left" (click)="goToVideo(item.id)">
-                        <img src="/assets/logo-light-1024x1024-noalpha.jpg" alt="Vidéo thumbnail" class="card-image" *ngIf="!item.thumbnail"/>
-                        <img [src]="getUrl(item.thumbnail.permalink)" alt="Vidéo thumbnail" class="card-image" *ngIf="item.thumbnail"/>
+                        <img src="/assets/logo-light-1024x1024-noalpha.jpg" alt="Vidéo thumbnail" class="card-image" *ngIf="!item.thumbnail && !item.thumbnailUrl"/>
+                        <img [src]="item.thumbnailUrl" alt="Vidéo thumbnail" class="card-image" *ngIf="item.thumbnailUrl"/>
+                        <img [src]="getUrl(item.thumbnail.permalink)" alt="Vidéo thumbnail" class="card-image" *ngIf="item.thumbnail && !item.thumbnailUrl"/>
                         <ion-icon name="play-circle-outline"></ion-icon>
                     </div>
                     <div class="right">
@@ -55,6 +56,9 @@
                                 </span>
                             </span>
                         </p>
+                        <div *ngIf="item.awsUrl && !item.thumbnailUrl">
+                            <app-ux-button size="small" [loading]="thumbnailIsLoading" (click)="loadThumbnails()" [fixedWidth]="true">Rafaîchir la miniature</app-ux-button>
+                        </div>
                     </div>
                     <div class="placeholder"></div>
                     <!-- WARNING, the video availability should be computed from the backend model -->

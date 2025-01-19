@@ -9,7 +9,8 @@ import * as Hls from 'hls.js';
   templateUrl: './video-aws-test.page.html',
   styleUrls: [
     './video-aws-test.page.scss',
-    "../../../../node_modules/video.js/dist/video-js.css"],
+    "../../../../node_modules/video.js/dist/video-js.css"
+  ],
   encapsulation: ViewEncapsulation.None // Add this line to change style scope
 })
 export class VideoAwsTestPage implements OnInit {
@@ -21,7 +22,8 @@ export class VideoAwsTestPage implements OnInit {
 
   ngOnInit() {
     const videoElement:HTMLVideoElement = document.getElementById('my-video') as HTMLVideoElement;
-    const hlsSource = "https://trainingday-videos.s3.ap-southeast-1.amazonaws.com/1.La-garde.m3u8"
+    // const hlsSource = "https://trainingday-videos.s3.ap-southeast-1.amazonaws.com/1.La-garde.m3u8"
+    const hlsSource = "https://trainingday-vod-streams.s3.ap-southeast-1.amazonaws.com/assets/8a939dbf-1b39-406e-875a-68570949828e/HLS/file-5.m3u8"
     
     this.videoPlayer = videojs(videoElement, {
       controls: true,

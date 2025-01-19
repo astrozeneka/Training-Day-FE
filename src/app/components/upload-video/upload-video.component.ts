@@ -27,7 +27,7 @@ export class UploadVideoComponent  implements ControlValueAccessor, OnInit {
   // This will automatically send the video to the server after the user select the file
   @Input() autoload: boolean = true;
 
-  progress = 0;
+  @Input() progress = 0;
 
   constructor(
     private http: HttpClient,

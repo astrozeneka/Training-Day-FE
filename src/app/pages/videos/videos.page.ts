@@ -2,8 +2,9 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
 import {environment} from "../../../environments/environment";
-import { debounce, debounceTime, filter, first, last } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { catchError, debounce, debounceTime, filter, finalize, first, last } from 'rxjs/operators';
+import { animationFrameScheduler, BehaviorSubject, throwError } from 'rxjs';
+import { FeedbackService } from 'src/app/feedback.service';
 
 @Component({
   selector: 'app-videos',
@@ -44,12 +45,17 @@ export class VideosPage implements OnInit {
   }
 
   // Improve UX by adding a video spinner while loading the video
-  isLoading = true
+  isLoading = true;
+
+  // The thumbnail loading mechanism
+  thumbnailIsLoading:boolean = false
 
   constructor(
     private router: Router,
     protected contentService: ContentService,
-    protected cdr: ChangeDetectorRef
+    protected cdr: ChangeDetectorRef,
+    private cs: ContentService,
+    private fs: FeedbackService
   ) {
     // OLD cde, delete later
     /*console.log("Subscribe video loading")
@@ -80,7 +86,6 @@ export class VideosPage implements OnInit {
       .subscribe((event:NavigationEnd) => {
         this.category = event.url.split('/').slice(2).join('/') ?? ''
         this.title = this.slugDescriptions[this.category]
-        console.log("Here")
         this.filterSubject.next({'f_category': this.category})
         //this.filterSubject.next(this.category != '' ? {'f_category': this.category} : {})
       })
@@ -132,4 +137,24 @@ export class VideosPage implements OnInit {
     this.isLoading = false
   }
 
+  // The thumbnail loading event
+  loadThumbnails(){
+    this.thumbnailIsLoading = true
+    // Launch the http post request
+    this.cs.post('/video-s3/sync', {})
+      .pipe(
+        catchError((error)=>{
+          console.log("Error: ", error)
+          return throwError(()=>error)
+        }),
+        finalize(()=>{
+          this.thumbnailIsLoading = false
+        })
+      )
+      .subscribe((response:any)=>{
+        // Handle the response
+        this.fs.register('Les miniatures ont été mises à jour', 'success')
+        this.router.navigate(['/home'])
+      })
+  }
 }

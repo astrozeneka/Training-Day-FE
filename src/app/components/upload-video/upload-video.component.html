@@ -7,9 +7,12 @@
         expand="block"
         size="small"
         (click)="clickButton($event)"
-    >
-        <ion-icon name="cloud-upload-outline"></ion-icon>
-        <ion-label>{{ label }}</ion-label>
+    >  
+        <div class="inner">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+            <ion-label *ngIf="autoload || (!autoload && !formControl.value)">{{ label }}</ion-label>
+            <ion-label *ngIf="!autoload && formControl.value">{{ formControl.value.name }}</ion-label>
+        </div>
     </ion-button>
 
     <ion-progress-bar [value]="progress"></ion-progress-bar>

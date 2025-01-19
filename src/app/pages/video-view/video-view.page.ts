@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {environment} from "../../../environments/environment";
 import {ContentService} from "../../content.service";
@@ -6,13 +6,20 @@ import {FeedbackService} from "../../feedback.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {finalize} from "rxjs";
 import { AlertController } from '@ionic/angular';
+import videojs from 'video.js';
+import 'videojs-hls-quality-selector';
+import '@videojs/http-streaming';  // Import VHS plugin
 
 @Component({
   selector: 'app-video-view',
   templateUrl: './video-view.page.html',
-  styleUrls: ['./video-view.page.scss'],
+  styleUrls: [
+    './video-view.page.scss',
+    "../../../../node_modules/video.js/dist/video-js.css"
+  ],
+    encapsulation: ViewEncapsulation.None // Add this line to change style scope
 })
-export class VideoViewPage implements OnInit {
+export class VideoViewPage implements OnInit, AfterViewInit {
   videoUrl:any = null
   videoId:any = null
   video:any = null
@@ -39,12 +46,17 @@ export class VideoViewPage implements OnInit {
   formValid = false
   isFormLoading = false
 
+  // The video element reference
+  @ViewChild('videoElement', { static: false }) videoElement:any = undefined
+  videoPlayer: any; // A video-js object
+
   constructor(
     public router: Router,
     public contentService: ContentService,
     public feedbackService: FeedbackService,
     public route: ActivatedRoute,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private cdr: ChangeDetectorRef
   ) {
     this.videoId = this.route.snapshot.paramMap.get('id')
     this.router.events.subscribe(async (event)=>{
@@ -53,8 +65,17 @@ export class VideoViewPage implements OnInit {
         await this.contentService.storage.get('token')
         this.contentService.getOne(`/video-details/${this.videoId}`, {}).subscribe((res:any)=>{
           this.video = res
-          console.log(this.video)
-          this.videoUrl = environment.rootEndpoint + '/' + this.video.file.permalink
+
+          
+          if (this.video.file){
+            // The old way (Back-end server) of loading videos
+            this.videoUrl = environment.rootEndpoint + '/' + this.video.file.permalink
+          } else if (this.video.hlsUrl) {
+            // The new way (AWS S3) of loading videos
+            console.log("HLS Url detected")
+            this.videoUrl = this.video.hlsUrl
+          }
+          this.cdr.detectChanges()
           // Manage the tags by removing the category (training or boxing) from the tags
 
           let tags = this.video.tags.split(',')
@@ -66,6 +87,9 @@ export class VideoViewPage implements OnInit {
           // Patch the value (In next steps, fully typed expression should be used)
           this.video.privilege = this.video.privilege.join(',')
           this.form.patchValue(this.video)
+
+          // Manage the reader
+          this.initVideoJsReader()
 
           // THe older way to patch value (should be removed later)
           /*
@@ -86,6 +110,35 @@ export class VideoViewPage implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit(){
+    // this.setVideoJsReader()
+    console.log("videoElement", this.videoElement)
+  }
+
+  initVideoJsReader(){
+    // Manage the VideoJS reader
+    let videoElement = this.videoElement.nativeElement as HTMLVideoElement
+    this.videoPlayer = videojs(videoElement, {
+      controls: true,
+      autoplay: false,
+      preload: 'auto',
+      sources: (
+        [
+          {
+            src: this.videoUrl,
+            type: 'application/x-mpegURL'
+          }
+        ] as any
+      )
+    })
+    // Manage video styles
+    this.videoPlayer.hlsQualitySelector();
+    // Handling error
+    this.videoPlayer.on('error', ()=>{
+      console.log('video-js error occured:', this.videoPlayer.error())
+    })
   }
 
   submit(event:any){

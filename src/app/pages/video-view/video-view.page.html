@@ -11,14 +11,16 @@
 
 <ion-content>
     <!-- Video reader -->
-    <div *ngIf="video">
-        <div>
+    <div>
 
-            <video width="100%" controls>
-                <source [src]="videoUrl" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
+        <video width="100%" controls *ngIf="video?.file">
+            <source [src]="videoUrl" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <video #videoElement [id]="'my-video-' + videoId" class="video-js" controls preload="auto" style="width: 100%; " *ngIf="video?.hlsUrl">
+        </video>
+    </div>
+    <div *ngIf="video">
         <div *ngIf="!user || (user?.function !== 'admin' && user?.function !== 'coach')">
             <p class="ion-padding helper">
                 <b>Tags: </b> {{ video?.tags }}
