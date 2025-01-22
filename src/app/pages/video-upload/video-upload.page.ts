@@ -106,7 +106,7 @@ export class VideoUploadPage extends FormComponent{
           }
         })
     } else if (data.destination == 's3'){
-      let fileData = this.fileControl.value
+      let fileData = (this.fileControl.value as any).blob ? (this.fileControl.value as any).blob : this.fileControl.value
       if (!fileData){
         this.feedbackService.registerNow('Veuillez sélectionner un fichier', 'danger')
         this.isFormLoading = false
@@ -117,7 +117,7 @@ export class VideoUploadPage extends FormComponent{
       // Step 1. request for presigned-url from back-end server
       
       this.isFormLoading = true
-      this.cs.get('/video-upload/get-presigned-url?file_name=' + fileData.name + '&file_type=' + fileData.type)
+      this.cs.get('/video-upload/get-presigned-url?file_name=' + this.fileControl.value.name + '&file_type=' + this.fileControl.value.type)
         .pipe(
           finalize(()=>{}),
           catchError((error)=>{
@@ -129,7 +129,7 @@ export class VideoUploadPage extends FormComponent{
           console.log('Response: ', response);
           // Step 2. Upload the file to the S3 server as binary
           const formData = new FormData();
-          formData.append('file', fileData as any);
+          formData.append('file', fileData as any, this.fileControl.value.name);
           console.log(fileData.type)
 
           const req = new HttpRequest('PUT', response[0].url, fileData, {

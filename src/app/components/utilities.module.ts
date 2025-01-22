@@ -39,6 +39,7 @@ import { ChatMasterTabsComponent } from './chat-master-tabs/chat-master-tabs.com
 import { ChatMasterDiscussionListComponent } from './chat-master-discussion-list/chat-master-discussion-list.component';
 import { RouterModule } from '@angular/router';
 import { CoachChatSettingsComponent } from './coach-chat-settings/coach-chat-settings.component';
+import { AngularInfiniteListV2Component } from '../components-submodules/angular-infinite-list-v2/angular-infinite-list-v2.component';
 
 
 
@@ -86,7 +87,8 @@ import { CoachChatSettingsComponent } from './coach-chat-settings/coach-chat-set
     // External projects
     UxButtonComponent,
     InfiniteListComponent,
-    PhonePrefixSelectComponent
+    PhonePrefixSelectComponent,
+    AngularInfiniteListV2Component,
   ],
   imports: [
     CommonModule,
@@ -117,13 +119,16 @@ import { CoachChatSettingsComponent } from './coach-chat-settings/coach-chat-set
     SwipeableStoreTabsComponent,
     
     DisplayListPipe,
+    ChatMasterDiscussionListComponent,
+    CoachChatSettingsComponent,
 
+
+    // External projects
     UxButtonComponent,
     InfiniteListComponent,
     PhonePrefixSelectComponent,
     ChatMasterTabsComponent,
-    ChatMasterDiscussionListComponent,
-    CoachChatSettingsComponent,
+    AngularInfiniteListV2Component,
   ]
 })
 export class UtilitiesModule { }

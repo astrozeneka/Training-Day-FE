@@ -16,12 +16,13 @@
         <div class="spinner-container" [class]="(isLoading?'':'hidden')">
             <ion-spinner name="crescent"></ion-spinner>
         </div>
-        <app-infinite-list
+        <app-angular-infinite-list-v2
             [httpHeaders]="jwtToken ? { 'Authorization': 'Bearer ' + jwtToken } : {}"
             [httpUrl]="contentService.apiEndpoint + '/videos'"
             [filter$]="filter$"
             [restrictFilter]="true"
             (afterLoad)="onAfterLoad($event)"
+            [cacheSlug]="slug"
             *ngIf="true"
         >
             <ng-template let-item>
@@ -56,7 +57,7 @@
                                 </span>
                             </span>
                         </p>
-                        <div *ngIf="item.awsUrl && !item.thumbnailUrl">
+                        <div *ngIf="item.awsUrl && !item.thumbnailUrl && user.function === 'admin'">
                             <app-ux-button size="small" [loading]="thumbnailIsLoading" (click)="loadThumbnails()" [fixedWidth]="true">Rafaîchir la miniature</app-ux-button>
                         </div>
                     </div>
@@ -69,7 +70,7 @@
                     </div>
                 </div>
             </ng-template>
-        </app-infinite-list>
+        </app-angular-infinite-list-v2>
         <!--
         <div *ngIf="videos.length === 0" class="ion-padding">
             <p>Aucune vidéo disponible pour le moment</p>

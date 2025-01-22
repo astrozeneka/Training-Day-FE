@@ -5,6 +5,18 @@ import {environment} from "../../../environments/environment";
 import {ContentService} from "../../content.service";
 import { Platform } from '@ionic/angular';
 import { FilePicker } from '@capawesome/capacitor-file-picker';
+import { ChangeDetectorRef } from '@angular/core';
+
+function base64ToBlob(base64String, contentType = '') {
+  const byteCharacters = atob(base64String);
+  const byteArrays = [];
+  for (let i = 0; i < byteCharacters.length; i++) {
+      byteArrays.push(byteCharacters.charCodeAt(i));
+  }
+  const byteArray = new Uint8Array(byteArrays);
+  return new File([byteArray], "video.mp4", { type: contentType });
+  // return new Blob([byteArray], { type: contentType });
+}
 
 @Component({
   selector: 'app-upload-video',
@@ -32,7 +44,8 @@ export class UploadVideoComponent  implements ControlValueAccessor, OnInit {
   constructor(
     private http: HttpClient,
     private contentService: ContentService,
-    private platform: Platform
+    private platform: Platform,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -49,23 +62,42 @@ export class UploadVideoComponent  implements ControlValueAccessor, OnInit {
       try{
         result = await FilePicker.pickVideos({
           limit: 1,
-          readData: true
+          readData: true // Experimental, change true for the old way
         })
       }catch(e){
         return;
       }
-      if (result['files'].length > 0) { // == 1
-        let file = result["files"][0]
-        let data = result.files[0].data
-        data = "data:" + file.mimeType + ";base64," + data
-        this.file = {
-          name: file.name,
-          type: file.mimeType,
-          base64: data 
+      if (!this.autoload){ // Autoload is deactivated (the new way)
+        if (result['files'].length > 0) { // == 1
+          let fileData = result['files'][0]
+          let previewUrl = `data:${fileData.mimeType};base64,${fileData.data}`;
+          let fileBlob = this.dataUriToBlob(previewUrl);
+          this.formControl.setValue({
+            name: result['files'][0].name,
+            // Should add 'type' or 'mimeType' as well
+            blob: fileBlob // Specific to mobile
+          });
+          console.log("=>" + this.formControl.value.name)
+          this.cdr.detectChanges();
+          return;
+          
+        } else {
+          console.log("No file selected");
         }
+      } else { // THe old way: load the file first, and send data later
+        if (result['files'].length > 0) { // == 1
+          let file = result["files"][0]
+          let data = result.files[0].data
+          data = "data:" + file.mimeType + ";base64," + data
+          this.file = {
+            name: file.name,
+            type: file.mimeType,
+            base64: data 
+          }
+        }
+        console.log("File picked, processing to upload");
+        this.processVideoUpload();
       }
-      console.log("File picked, processing to upload");
-      this.processVideoUpload();
     } else {
       this.fileInput.nativeElement.click();
     }
@@ -98,10 +130,13 @@ export class UploadVideoComponent  implements ControlValueAccessor, OnInit {
   }
 
   uploadVideo(event: any){
-    if (!this.autoload){
+    if (!this.autoload){ // Autoload is deactivated (the new way)
       this.formControl.setValue(event.target.files[0]);
+      console.log(event.target.files[0]);
       return;
     }
+    // THe old way: load the file first, and send data later
+
 
     // Should send a POST request to the s
     const file = event.target.files[0];
@@ -155,5 +190,21 @@ export class UploadVideoComponent  implements ControlValueAccessor, OnInit {
 
   registerOnTouched(fn: any) {
     this.onTouch = fn
+  }
+
+  /**
+   * https://github.com/the-vv/college-notifier-app/blob/36a17186a0865fba01669fea2da70ac44e86a5d4/src/app/shared/file-upload/file-upload.component.ts#L122
+   * @param dataURI 
+   * @returns 
+   */
+  private dataUriToBlob(dataURI: string) {
+    const splitDataURI = dataURI.split(',');
+    const byteString = splitDataURI[0].indexOf('base64') >= 0 ? atob(splitDataURI[1]) : decodeURI(splitDataURI[1]);
+    const mimeString = splitDataURI[0].split(':')[1].split(';')[0];
+    const ia = new Uint8Array(byteString.length);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ia], { type: mimeString });
   }
 }
