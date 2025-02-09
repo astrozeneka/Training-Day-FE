@@ -40,6 +40,7 @@ import { ChatMasterDiscussionListComponent } from './chat-master-discussion-list
 import { RouterModule } from '@angular/router';
 import { CoachChatSettingsComponent } from './coach-chat-settings/coach-chat-settings.component';
 import { AngularInfiniteListV2Component } from '../components-submodules/angular-infinite-list-v2/angular-infinite-list-v2.component';
+import { ImagePickerComponent } from './image-picker/image-picker.component';
 
 
 
@@ -80,6 +81,7 @@ import { AngularInfiniteListV2Component } from '../components-submodules/angular
     ChatMasterTabsComponent,
     ChatMasterDiscussionListComponent,
     CoachChatSettingsComponent,
+    ImagePickerComponent,
 
     // Pipes
     DisplayListPipe,
@@ -117,6 +119,7 @@ import { AngularInfiniteListV2Component } from '../components-submodules/angular
     StoreFoodCoachComponent,
     StoreSportCoachComponent,
     SwipeableStoreTabsComponent,
+    ImagePickerComponent,
     
     DisplayListPipe,
     ChatMasterDiscussionListComponent,

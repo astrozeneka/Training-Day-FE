@@ -1,0 +1,23 @@
+<div class="image-picker">
+  <!-- Preview -->
+  <div class="preview">
+    <!-- todo -->
+  </div>
+  
+  <!-- Accept file format provided as a component Input -->
+  <input type="file" #fileInput class="ion-hide" [accept]="accept" (change)="fileInputChanged($event)">
+  <ion-button
+        color="medium"
+        fill="solid"
+        expand="block"
+        size="small"
+        (click)="clickButton($event)"
+  >
+    <div class="inner">
+      <ion-icon name="cloud-upload-outline"></ion-icon>
+      <div>
+        {{ formControl.value ? formControl.value.name : label }}
+      </div>
+    </div>
+  </ion-button>
+</div>

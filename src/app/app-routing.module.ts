@@ -232,6 +232,10 @@ const routes: Routes = [
     path: 'video-aws-test',
     loadChildren: () => import('./pages/video-aws-test/video-aws-test.module').then( m => m.VideoAwsTestPageModule)
   },
+  {
+    path: 'add-recipe',
+    loadChildren: () => import('./pages/add-recipe/add-recipe.module').then( m => m.AddRecipePageModule)
+  },
 ];
 
 @NgModule({
