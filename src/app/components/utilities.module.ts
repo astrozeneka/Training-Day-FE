@@ -41,6 +41,7 @@ import { RouterModule } from '@angular/router';
 import { CoachChatSettingsComponent } from './coach-chat-settings/coach-chat-settings.component';
 import { AngularInfiniteListV2Component } from '../components-submodules/angular-infinite-list-v2/angular-infinite-list-v2.component';
 import { ImagePickerComponent } from './image-picker/image-picker.component';
+import { OutlineInputComponent } from '../components-submodules/outline-input/outline-input.component';
 
 
 
@@ -82,6 +83,7 @@ import { ImagePickerComponent } from './image-picker/image-picker.component';
     ChatMasterDiscussionListComponent,
     CoachChatSettingsComponent,
     ImagePickerComponent,
+    OutlineInputComponent,
 
     // Pipes
     DisplayListPipe,
@@ -120,6 +122,7 @@ import { ImagePickerComponent } from './image-picker/image-picker.component';
     StoreSportCoachComponent,
     SwipeableStoreTabsComponent,
     ImagePickerComponent,
+    OutlineInputComponent,
     
     DisplayListPipe,
     ChatMasterDiscussionListComponent,

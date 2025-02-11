@@ -134,7 +134,7 @@ export class VideoUploadPage extends FormComponent{
 
           const req = new HttpRequest('PUT', response[0].url, fileData, {
             headers: new HttpHeaders({
-              'Content-Type': fileData.type
+              'Content-Type': fileData.type // A bug might arise here (see add-recipe.page.ts)
             }),
             reportProgress: true,
           });

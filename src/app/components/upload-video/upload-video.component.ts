@@ -74,8 +74,8 @@ export class UploadVideoComponent  implements ControlValueAccessor, OnInit {
           let fileBlob = this.dataUriToBlob(previewUrl);
           this.formControl.setValue({
             name: result['files'][0].name,
-            // Should add 'type' or 'mimeType' as well
-            blob: fileBlob // Specific to mobile
+            blob: fileBlob, // Specific to mobile
+            type: result['files'][0].mimeType
           });
           console.log("=>" + this.formControl.value.name)
           this.cdr.detectChanges();

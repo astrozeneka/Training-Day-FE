@@ -7,7 +7,7 @@
   <!-- Accept file format provided as a component Input -->
   <input type="file" #fileInput class="ion-hide" [accept]="accept" (change)="fileInputChanged($event)">
   <ion-button
-        color="medium"
+        [color]="color"
         fill="solid"
         expand="block"
         size="small"

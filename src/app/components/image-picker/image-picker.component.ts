@@ -35,6 +35,12 @@ export class ImagePickerComponent  implements OnInit, ControlValueAccessor {
   // Feedback error
   @Input() errorText: string = undefined
 
+  // The color
+  @Input() color: string = "medium"
+
+  // Choose to select image or file
+  @Input() mode: string = "image"
+
   constructor(
       private http: HttpClient,
       private contentService: ContentService,
@@ -55,11 +61,21 @@ export class ImagePickerComponent  implements OnInit, ControlValueAccessor {
     if (this.platform.is('capacitor')){
       let result
       try{
-        result = await FilePicker.pickImages({
-          limit: 1,
-          readData: true,
-          skipTranscoding: false
-        })
+        if (this.mode === 'image'){
+          result = await FilePicker.pickImages({
+            limit: 1,
+            readData: true,
+            skipTranscoding: false
+          })
+        } else if (this.mode === 'file'){
+          result = await FilePicker.pickFiles({
+            limit: 1,
+            readData: true
+          })
+        } else {
+          console.error("Mode not supported")
+          return
+        }
       } catch (e){
         console.error(e)
       }
@@ -69,7 +85,8 @@ export class ImagePickerComponent  implements OnInit, ControlValueAccessor {
         let fileBlob = this.dataUriToBlob(previewUrl);
         this.formControl?.setValue({
           name: result['files'][0].name,
-          blob: fileBlob
+          blob: fileBlob,
+          type: result['files'][0].mimeType
         });
         this.cdr.detectChanges()
       }

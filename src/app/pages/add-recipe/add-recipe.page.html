@@ -5,6 +5,7 @@
           <ion-menu-button></ion-menu-button>
       </ion-buttons>
       <ion-title>Ajouter une recette</ion-title>
+      <ion-progress-bar [value]="progress" *ngIf="progress"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
@@ -13,17 +14,32 @@
   <form [formGroup]="form" (submit)="submit()">
 
     <!-- ion-item is deprecated and will be removed later -->
-    <ion-item>
+    <div class="input-wrapper">
+      <app-outline-input
+        label="Titre"
+        formControlName="title"
+        [errorText]="displayedError.title"
+      ></app-outline-input>
+    </div>
+    <!--<ion-item>
       <ion-input
         label="Titre"
         label-placement="floating"
         formControlName="title"
         [errorText]="displayedError.title"
       ></ion-input>
-    </ion-item>
+    </ion-item>-->
 
-    <!-- ion-item is deprecated -->
-    <ion-item>
+    <!-- Will be changed to text area later (not now) -->
+    <div class="input-wrapper">
+      <app-outline-input
+        label="Description"
+        formControlName="description"
+        [errorText]="displayedError.description"
+      ></app-outline-input>
+    </div>
+    
+    <!--<ion-item>
       <ion-textarea
               label="Description"
               label-placement="floating"
@@ -31,25 +47,23 @@
               [rows]="5"
               [errorText]="displayedError.description"
       ></ion-textarea>
-    </ion-item>
+    </ion-item>-->
 
-    <!-- ion-item is deprecated -->
-    <ion-item>
-      <ion-textarea
-              label="Ingrédients"
-              label-placement="floating"
-              formControlName="category"
-              [rows]="5"
-              [errorText]="displayedError.category"
-      ></ion-textarea>
-    </ion-item>
+    <div class="input-wrapper">
+      <app-outline-input
+        label="Catégorie"
+        formControlName="category"
+        [errorText]="displayedError.category"
+      ></app-outline-input>
+    </div>
 
     <!-- Image picker -->
-    <div>
+    <div class="image-picker-wrapper">
       <div class="label">
         Image représentative
       </div>
       <app-image-picker
+        color="light"
         label="Image"
         formControlName="image"
         [errorText]="displayedError.image"
@@ -57,41 +71,47 @@
     </div>
 
     <!-- PDF pickers -->
-    <div>
+    <div class="image-picker-wrapper">
       <div class="label">
-        PDF pour petit smartphone
+        PDF pour petit smartphone (facult.)
       </div>
       <app-image-picker
+        color="light"
         label="Sélectionner un fichier"
         accept="application/pdf"
         formControlName="pdfSmallPhone"
         [errorText]="displayedError.pdfSmallPhone"
+        mode="file"
       ></app-image-picker>
     </div>
     
     <!-- PDF pickers -->
-    <div>
+    <div class="image-picker-wrapper">
       <div class="label">
         PDF pour smartphone
       </div>
       <app-image-picker
+        color="light"
         label="Sélectionner un fichier"
         accept="application/pdf"
         formControlName="pdfLargePhone"
         [errorText]="displayedError.pdfLargePhone"
+        mode="file"
       ></app-image-picker>
     </div>
     
     <!-- PDF pickers -->
-    <div>
+    <div class="image-picker-wrapper">
       <div class="label">
-        PDF pour tablette
+        PDF pour tablette (facult.)
       </div>
       <app-image-picker
+        color="light"
         label="Sélectionner un fichier"
         accept="application/pdf"
         formControlName="pdfTablet"
         [errorText]="displayedError.pdfTablet"
+        mode="file"
       ></app-image-picker>
     </div>
 
