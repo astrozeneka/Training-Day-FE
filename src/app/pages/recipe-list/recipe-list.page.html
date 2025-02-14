@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <app-back-button></app-back-button>
+          <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Les recettes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <!-- This style is not coherent with the current figma design -->
+  <h1 class="display-1 ion-padding">Découvrez nos recettes</h1>
+  <div class="recipes-wrapper">
+    <a [routerLink]="['/recipe-detail', recipe.id]" *ngFor="let recipe of recipes">
+      <div class="recipe">
+        <div class="recipe-image">
+          <img [src]="recipe.imageUrl" alt="Image de la recette">
+        </div>
+        <div class="headings">
+          <div class="title">{{ recipe.title }}</div>
+          <div class="subtitle">{{ recipe.category }}</div>
+        </div>
+      </div>
+    </a>
+  </div>

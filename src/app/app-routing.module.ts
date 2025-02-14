@@ -236,6 +236,14 @@ const routes: Routes = [
     path: 'add-recipe',
     loadChildren: () => import('./pages/add-recipe/add-recipe.module').then( m => m.AddRecipePageModule)
   },
+  {
+    path: 'recipe-list',
+    loadChildren: () => import('./pages/recipe-list/recipe-list.module').then( m => m.RecipeListPageModule)
+  },
+  {
+    path: 'recipe-detail/:id',
+    loadChildren: () => import('./pages/recipe-detail/recipe-detail.module').then( m => m.RecipeDetailPageModule)
+  },
 ];
 
 @NgModule({

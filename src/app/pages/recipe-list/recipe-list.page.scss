@@ -1,0 +1,30 @@
+
+.recipes-wrapper{
+    text-align: center;
+}
+
+.recipe{
+    display: inline-block;
+    width: 120px;
+    margin: 10px;
+
+    & .recipe-image{
+        height: 120px;
+        width: 120px;
+        overflow: hidden;
+        border-radius: 50%;
+        & img{
+            width: 120px;
+        }
+    }
+
+    & .headings{
+        & .title{
+            margin-top: 5px;
+            color: --ion-color-dark;
+        }
+        & .subtitle{
+            color: #888888;
+        }
+    }
+}

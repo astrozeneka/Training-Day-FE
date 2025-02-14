@@ -18,18 +18,18 @@ export class AddRecipePage implements OnInit {
     'description': new FormControl('', [Validators.required]), // In the BE, it is not required
     'category': new FormControl('', [Validators.required]),
     'image': new FormControl(null, [Validators.required]),
-    'pdfSmallPhone': new FormControl(null, []),
-    'pdfLargePhone': new FormControl(null, [Validators.required]),
-    'pdfTablet': new FormControl(null, []),
+    'docSmallPhone': new FormControl(null, []),
+    'docLargePhone': new FormControl(null, [Validators.required]),
+    'docTablet': new FormControl(null, []),
   })
   displayedError = {
     'title': undefined,
     'description': undefined,
     'category': undefined,
     'image': undefined,
-    'pdfSmallPhone': undefined,
-    'pdfLargePhone': undefined,
-    'pdfTablet': undefined,
+    'docSmallPhone': undefined,
+    'docLargePhone': undefined,
+    'docTablet': undefined,
   }
   valid:boolean = false;
   isFormLoading: boolean = false
@@ -105,9 +105,9 @@ export class AddRecipePage implements OnInit {
   reset(){
     this.form.reset()
     this.form.get('image')?.setValue(null)
-    this.form.get('pdfSmallPhone')?.setValue(null)
-    this.form.get('pdfLargePhone')?.setValue(null)
-    this.form.get('pdfTablet')?.setValue(null)
+    this.form.get('docSmallPhone')?.setValue(null)
+    this.form.get('docLargePhone')?.setValue(null)
+    this.form.get('docTablet')?.setValue(null)
     this.progress = 0;
   }
 
@@ -117,12 +117,12 @@ export class AddRecipePage implements OnInit {
     let fileUploaders = []
     if (this.form.value.image)
       fileUploaders.push(this.submitFile(`/recipe-upload/get-presigned-url`, this.form.value.image, 'image'))
-    if (this.form.value.pdfSmallPhone)
-      fileUploaders.push(this.submitFile(`/recipe-upload/get-presigned-url`, this.form.value.pdfSmallPhone, 'pdfSmallPhone'))
-    if (this.form.value.pdfLargePhone)
-      fileUploaders.push(this.submitFile(`/recipe-upload/get-presigned-url`, this.form.value.pdfLargePhone, 'pdfLargePhone'))
-    if (this.form.value.pdfTablet)
-      fileUploaders.push(this.submitFile(`/recipe-upload/get-presigned-url`, this.form.value.pdfTablet, 'pdfTablet'))
+    if (this.form.value.docSmallPhone)
+      fileUploaders.push(this.submitFile(`/recipe-upload/get-presigned-url`, this.form.value.docSmallPhone, 'docSmallPhone'))
+    if (this.form.value.docLargePhone)
+      fileUploaders.push(this.submitFile(`/recipe-upload/get-presigned-url`, this.form.value.docLargePhone, 'docLargePhone'))
+    if (this.form.value.docTablet)
+      fileUploaders.push(this.submitFile(`/recipe-upload/get-presigned-url`, this.form.value.docTablet, 'docTablet'))
     console.log(fileUploaders)
     // Merge all the requests
     let files = []
@@ -141,9 +141,7 @@ export class AddRecipePage implements OnInit {
             if (!files.includes(res.slug)){
               files.push(res.slug)
             }
-            //this.updateFileUploadProgress((event as any).loaded, (event as any).total, res.slug, fileUploaders.length)
             this.updateFileUploadProgress((res as any).loaded, (res as any).total, res.slug, fileUploaders.length)
-            //this.updateFileUploadProgress(event.loaded, event.total)
           }
           if (res.type === HttpEventType.Response && files.includes(res.slug)){
             files = files.filter((slug)=>slug !== res.slug)
@@ -161,10 +159,12 @@ export class AddRecipePage implements OnInit {
             description: this.form.value.description,
             category: this.form.value.category,
             imageUrl: urls['image'] ?? '',
-            pdfSmallPhoneUrl: urls['pdfSmallPhone'] ?? '',
-            pdfLargePhoneUrl: urls['pdfLargePhone'] ?? '',
-            pdfTabletUrl: urls['pdfTablet'] ?? '',
+            docLargePhoneUrl: urls['docLargePhone'] ?? null,
+            // Optional fields
+            ...(urls['docSmallPhone'] ? {docSmallPhoneUrl: urls['docSmallPhone']} : {}),
+            ...(urls['docTablet'] ? {docTabletUrl: urls['docTablet']} : {})
           }
+          console.log(data)
           return this.cs.post('/recipes', data)
             .pipe(catchError((err)=>{
               console.error(JSON.stringify(err))
