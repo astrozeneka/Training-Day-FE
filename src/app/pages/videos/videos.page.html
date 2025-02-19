@@ -16,7 +16,54 @@
         <div class="spinner-container" [class]="(isLoading?'':'hidden')">
             <ion-spinner name="crescent"></ion-spinner>
         </div>
-        <app-angular-infinite-list-v2
+        <!-- we have two choice, using infinite list only or using caching only -->
+        <!-- otherwise, it will be buggy (on mobile) -->
+        <div class="ion-padding ion-text-center" *ngIf="videos.length === 0 && !isLoading">
+            Aucune vidéo n'est disponible dans cette catégorie
+        </div>
+        <div class="video-card ion-padding" *ngFor="let item of videos" [ngClass]="{ 'locked': (user?.function == 'customer' || !user) && !item.available }">
+            <div class="left" (click)="goToVideo(item.id)">
+                <img src="/assets/logo-light-1024x1024-noalpha.jpg" alt="Vidéo thumbnail" class="card-image" *ngIf="!item.thumbnail && !item.thumbnailUrl"/>
+                <img [src]="item.thumbnailUrl" alt="Vidéo thumbnail" class="card-image" *ngIf="item.thumbnailUrl"/>
+                <img [src]="getUrl(item.thumbnail.permalink)" alt="Vidéo thumbnail" class="card-image" *ngIf="item.thumbnail && !item.thumbnailUrl"/>
+                <ion-icon name="play-circle-outline"></ion-icon>
+            </div>
+            <div class="right">
+                <h3 class="card-title" (click)="goToVideo(item.id)">
+                    {{ item['title'] }}
+                </h3>
+                <p>
+                    <ion-badge color="medium" *ngIf="item.hidden">Private</ion-badge>
+                </p>
+                <div class="stars" *ngIf="false"><!-- Hide it for now, maybe later -->
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                    <ion-icon name="star-outline"></ion-icon>
+                </div>
+                <p>{{ item['description'] }}</p>
+                <p *ngIf="user?.function == 'admin' || user?.function == 'coach'">
+                    <b>Accessible par :</b>
+                    <span>
+                        <span class="capitalize" *ngFor="let privilege of item.privilege; let i = index"><span *ngIf="i > 0">,</span>
+                             {{ privilege }}
+                        </span>
+                    </span>
+                </p>
+                <div *ngIf="item.awsUrl && !item.thumbnailUrl && user.function === 'admin'">
+                    <app-ux-button size="small" [loading]="thumbnailIsLoading" (click)="loadThumbnails()" [fixedWidth]="true">Rafaîchir la miniature</app-ux-button>
+                </div>
+            </div>
+            <div class="placeholder"></div>
+            <!-- WARNING, the video availability should be computed from the backend model -->
+            <div class="privilege-banner" *ngIf="(user?.function == 'customer' || !user) && !item.available">
+                Cette vidéo est réservé aux membres 
+                    <span *ngIf="item.privilege[0] != 'alonzo'"><b>{{ item.privilege[0] }}</b> ou supérieur</span>
+                    <span *ngIf="item.privilege[0]"><b>{{ item.privilege | displayList:0 }}</b></span>
+            </div>
+        </div>
+        <!--<app-angular-infinite-list-v2
             [httpHeaders]="jwtToken ? { 'Authorization': 'Bearer ' + jwtToken } : {}"
             [httpUrl]="contentService.apiEndpoint + '/videos'"
             [filter$]="filter$"
@@ -26,7 +73,7 @@
             *ngIf="true"
         >
             <ng-template let-item>
-                <!-- WARNING, the video availability should be computed from the backend model -->
+                !-- WARNING, the video availability should be computed from the backend model --
                 <div class="video-card ion-padding" [ngClass]="{ 'locked': (user?.function == 'customer' || !user) && !item.available }">
                     <div class="left" (click)="goToVideo(item.id)">
                         <img src="/assets/logo-light-1024x1024-noalpha.jpg" alt="Vidéo thumbnail" class="card-image" *ngIf="!item.thumbnail && !item.thumbnailUrl"/>
@@ -41,7 +88,7 @@
                         <p>
                             <ion-badge color="medium" *ngIf="item.hidden">Private</ion-badge>
                         </p>
-                        <div class="stars" *ngIf="false"><!-- Hide it for now, maybe later -->
+                        <div class="stars" *ngIf="false">
                             <ion-icon name="star-outline"></ion-icon>
                             <ion-icon name="star-outline"></ion-icon>
                             <ion-icon name="star-outline"></ion-icon>
@@ -62,7 +109,7 @@
                         </div>
                     </div>
                     <div class="placeholder"></div>
-                    <!-- WARNING, the video availability should be computed from the backend model -->
+                    !-- WARNING, the video availability should be computed from the backend model --
                     <div class="privilege-banner" *ngIf="(user?.function == 'customer' || !user) && !item.available">
                         Cette vidéo est réservé aux membres 
                             <span *ngIf="item.privilege[0] != 'alonzo'"><b>{{ item.privilege[0] }}</b> ou supérieur</span>
@@ -70,7 +117,7 @@
                     </div>
                 </div>
             </ng-template>
-        </app-angular-infinite-list-v2>
+        </app-angular-infinite-list-v2>-->
         <!--
         <div *ngIf="videos.length === 0" class="ion-padding">
             <p>Aucune vidéo disponible pour le moment</p>

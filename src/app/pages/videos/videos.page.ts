@@ -2,9 +2,10 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
 import {environment} from "../../../environments/environment";
-import { catchError, debounce, debounceTime, filter, finalize, first, last } from 'rxjs/operators';
+import { catchError, debounce, debounceTime, distinctUntilChanged, filter, finalize, first, last, tap } from 'rxjs/operators';
 import { animationFrameScheduler, BehaviorSubject, throwError } from 'rxjs';
 import { FeedbackService } from 'src/app/feedback.service';
+import { VideoService } from 'src/app/video.service';
 
 @Component({
   selector: 'app-videos',
@@ -15,7 +16,7 @@ export class VideosPage implements OnInit {
   user = undefined
   title = '';
   category = undefined
-  videos:any = []
+  /// videos:any = [] // Moved below
   videoLoading = false
   jwtToken = undefined
 
@@ -45,17 +46,21 @@ export class VideosPage implements OnInit {
   }
 
   // Improve UX by adding a video spinner while loading the video
-  isLoading = true;
+  isLoading = false;
 
   // The thumbnail loading mechanism
   thumbnailIsLoading:boolean = false
+
+  // Videos (infinite list is not convenient)
+  videos: any[] = []
 
   constructor(
     private router: Router,
     protected contentService: ContentService,
     protected cdr: ChangeDetectorRef,
     private cs: ContentService,
-    private fs: FeedbackService
+    private fs: FeedbackService,
+    private vs: VideoService
   ) {
     // OLD cde, delete later
     /*console.log("Subscribe video loading")
@@ -86,8 +91,22 @@ export class VideosPage implements OnInit {
       .subscribe((event:NavigationEnd) => {
         this.category = event.url.split('/').slice(2).join('/') ?? ''
         this.title = this.slugDescriptions[this.category]
-        this.filterSubject.next({'f_category': this.category})
-        //this.filterSubject.next(this.category != '' ? {'f_category': this.category} : {})
+        this.filterSubject.next({'f_category': this.category})        // Unused anymore
+
+        this.videos = [] // Reset previously loaded data
+        this.isLoading = true
+        this.vs.onVideoList(this.category, true, true)
+          .pipe(
+            tap(()=>{
+              this.isLoading = false
+            }),
+            distinctUntilChanged((a,b)=>a.length === b.length),
+          )
+          .subscribe((videos)=>{
+            console.log(videos)
+            this.videos = videos
+            this.cdr.detectChanges()
+          })
       })
     
     this.jwtToken = await this.contentService.storage.get('token')
