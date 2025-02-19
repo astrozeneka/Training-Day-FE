@@ -25,6 +25,7 @@ export class RecipeListPage implements OnInit {
   ngOnInit() {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(filter((event:NavigationEnd) => event.url == '/recipe-list'))
       .subscribe(() => {
         // Switch map architecture might be better (to see leter)
         // Load recipes here

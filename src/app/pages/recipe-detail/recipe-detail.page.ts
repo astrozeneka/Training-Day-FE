@@ -4,6 +4,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, distinctUntilChanged, tap, throwError } from 'rxjs';
 import { ContentService } from 'src/app/content.service';
+import { User } from 'src/app/models/Interfaces';
 import { Recipe, RecipesService } from 'src/app/recipes.service';
 
 @Component({
@@ -18,6 +19,9 @@ export class RecipeDetailPage implements OnInit {
   recipe: Recipe = null
   docUrl: SafeResourceUrl
 
+  // User data
+  user:User = null
+
   constructor(
       public router: Router,
       public cs: ContentService,
@@ -27,12 +31,7 @@ export class RecipeDetailPage implements OnInit {
       private rs: RecipesService,
       private http: HttpClient
     ) { 
-    this.recipeId = parseInt(this.route.snapshot.paramMap.get('id'))
-    // Load one (experimental)
-    /*this.cs.getOne(`/recipes/${this.recipeId}`, {}).subscribe((data:Recipe)=>{
-      this.recipe = data
-      this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.recipe.pdfLargePhoneUrl)
-    })*/
+      this.recipeId = parseInt(this.route.snapshot.paramMap.get('id'))
       this.rs.onRecipeDetail(this.recipeId)
       .pipe(
         tap((data:Recipe)=>{
@@ -87,6 +86,14 @@ export class RecipeDetailPage implements OnInit {
   }
 
   ngOnInit() {
+
+    this.cs.userStorageObservable.getStorageObservable().subscribe((res)=>{
+      this.user = res
+    })
+
   }
 
+  editRecipe(){
+    this.router.navigate(['/edit-recipe/', this.recipeId])
+  }
 }

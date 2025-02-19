@@ -60,7 +60,7 @@ export class RecipesService {
     
     // 2. Fire from the server
     if (fromServer){
-      this.cs.getCollection('/recipes').subscribe(({data, metainfo}: any)=>{
+      this.cs.getCollection('/recipes', 0, {}, 99999).subscribe(({data, metainfo}: any)=>{
         additionalEvents$.next(data)
         this.recipesData.set(data)
       })

@@ -237,6 +237,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/add-recipe/add-recipe.module').then( m => m.AddRecipePageModule)
   },
   {
+    path: 'edit-recipe/:id',
+    loadChildren: () => import('./pages/add-recipe/add-recipe.module').then( m => m.AddRecipePageModule)
+  },
+  {
     path: 'recipe-list',
     loadChildren: () => import('./pages/recipe-list/recipe-list.module').then( m => m.RecipeListPageModule)
   },

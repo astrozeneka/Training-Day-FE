@@ -118,6 +118,7 @@ export class ImagePickerComponent  implements OnInit, ControlValueAccessor {
    */
   writeValue(obj: any): void {
     // Generally empty
+    console.log(`Attempting to write value`, obj)
   }
 
   onChange: any = () => {};
