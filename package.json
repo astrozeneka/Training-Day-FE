@@ -36,7 +36,6 @@
     "@capacitor/status-bar": "^5.0.6",
     "@capawesome/capacitor-badge": "^6.0.0",
     "@capawesome/capacitor-file-picker": "^6.2.0",
-    "@capawesome/capacitor-live-update": "^6.6.0",
     "@capgo/native-audio": "^6.4.4",
     "@editorjs/editorjs": "^2.28.2",
     "@ionic-native/core": "^5.36.0",

@@ -24,7 +24,7 @@ dependencies {
     implementation project(':capawesome-capacitor-live-update')
     implementation project(':capgo-native-audio')
     implementation "androidx.webkit:webkit:1.4.0"
-    implementation "com.android.billingclient:billing:6.0.1"
+    implementation "com.android.billingclient:billing:4.0.0"
 }
 
 

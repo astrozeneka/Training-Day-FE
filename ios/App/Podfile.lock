@@ -1,5 +1,4 @@
 PODS:
-  - Alamofire (5.9.1)
   - Capacitor (5.5.0):
     - CapacitorCordova
   - CapacitorApp (5.0.6):
@@ -27,10 +26,6 @@ PODS:
     - Capacitor
   - CapawesomeCapacitorFilePicker (6.2.0):
     - Capacitor
-  - CapawesomeCapacitorLiveUpdate (6.6.0):
-    - Alamofire (~> 5.9.0)
-    - Capacitor
-    - SSZipArchive (~> 2.2)
   - CapgoNativeAudio (6.4.4):
     - Capacitor
   - CordovaPlugins (5.5.0):
@@ -88,7 +83,6 @@ PODS:
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
   - PromisesObjC (2.3.1)
-  - SSZipArchive (2.4.3)
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
@@ -105,7 +99,6 @@ DEPENDENCIES:
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
   - "CapawesomeCapacitorBadge (from `../../node_modules/@capawesome/capacitor-badge`)"
   - "CapawesomeCapacitorFilePicker (from `../../node_modules/@capawesome/capacitor-file-picker`)"
-  - "CapawesomeCapacitorLiveUpdate (from `../../node_modules/@capawesome/capacitor-live-update`)"
   - "CapgoNativeAudio (from `../../node_modules/@capgo/native-audio`)"
   - CordovaPlugins (from `../capacitor-cordova-ios-plugins`)
   - CordovaPluginsResources (from `../capacitor-cordova-ios-plugins`)
@@ -113,7 +106,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Alamofire
     - Firebase
     - FirebaseCore
     - FirebaseCoreInternal
@@ -123,7 +115,6 @@ SPEC REPOS:
     - GoogleUtilities
     - nanopb
     - PromisesObjC
-    - SSZipArchive
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -154,8 +145,6 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capawesome/capacitor-badge"
   CapawesomeCapacitorFilePicker:
     :path: "../../node_modules/@capawesome/capacitor-file-picker"
-  CapawesomeCapacitorLiveUpdate:
-    :path: "../../node_modules/@capawesome/capacitor-live-update"
   CapgoNativeAudio:
     :path: "../../node_modules/@capgo/native-audio"
   CordovaPlugins:
@@ -164,7 +153,6 @@ EXTERNAL SOURCES:
     :path: "../capacitor-cordova-ios-plugins"
 
 SPEC CHECKSUMS:
-  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   Capacitor: 018b78e70c892da9e2ca16481978c3ce09fa491a
   CapacitorApp: 3bef09d0bbb9698fd1766398499f306647156bbf
   CapacitorBrowser: 4dc0624a8c372054f64f31e53c6375ce300b28cc
@@ -179,7 +167,6 @@ SPEC CHECKSUMS:
   CapacitorStatusBar: f7e05ad7e5fb1a1cdacd2f0b55d488550ca07c41
   CapawesomeCapacitorBadge: 4df4bd752f7fcf0cedfc0748bca1cbe8a0e29794
   CapawesomeCapacitorFilePicker: c40822f0a39f86855321943c7829d52bca7f01bd
-  CapawesomeCapacitorLiveUpdate: 4d650ce302392757a5bde6b1744dd6a9eb9adc6a
   CapgoNativeAudio: 68fb5745ce49b998142f7cb8934a84815f0737b2
   CordovaPlugins: 4137c6c361c1938201af9f699d0ac40e5f3b7f57
   CordovaPluginsResources: 0c211f770ed91763a179ebcd9b9346e120b70662
@@ -192,8 +179,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
-  SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
 
-PODFILE CHECKSUM: 2b14c0758d5cdd40a2d808ce6479ea64bc5e07be
+PODFILE CHECKSUM: 2681a93c2a21ce27d505e24781f837aedbfe09e6
 
 COCOAPODS: 1.16.2
