@@ -86,7 +86,7 @@ export class RecipeDetailPage implements OnInit {
   }
 
   ngOnInit() {
-
+    // Load the user information
     this.cs.userStorageObservable.getStorageObservable().subscribe((res)=>{
       this.user = res
     })

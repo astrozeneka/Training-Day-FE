@@ -2,6 +2,7 @@ import { HttpClient, HttpEventType, HttpHeaders, HttpRequest } from '@angular/co
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavigationEnd, Router } from '@angular/router';
+import { ActionSheetController } from '@ionic/angular';
 import { catchError, distinctUntilChanged, filter, finalize, map, merge, of, switchMap, tap, throwError } from 'rxjs';
 import { ContentService } from 'src/app/content.service';
 import { FeedbackService } from 'src/app/feedback.service';
@@ -42,6 +43,13 @@ export class AddRecipePage implements OnInit {
   formMode: 'add'|'edit' = 'add';
   recipeId: number = undefined; // In case of formMode == 'edit' only
 
+  // Delete button loading
+  deleteIsLoading: boolean = false
+
+  // Category list to improve User experience
+  categories:string[] = []
+
+
   constructor(
       private router:Router,
       private contentService: ContentService,
@@ -49,7 +57,8 @@ export class AddRecipePage implements OnInit {
       private cs: ContentService,
       private http: HttpClient,
       private cdr: ChangeDetectorRef,
-      private rs: RecipesService
+      private rs: RecipesService,
+      private asc: ActionSheetController
     ) { }
 
   ngOnInit() {
@@ -88,6 +97,10 @@ export class AddRecipePage implements OnInit {
         this.form.patchValue({...res, ...imagePlaceholder})
       })
 
+    // Load the category information
+    this.rs.onCategoryData(true, true).subscribe((data:string[])=>{
+      this.categories = data
+    })
   }
 
   _loadedFiles = {}
@@ -243,12 +256,22 @@ export class AddRecipePage implements OnInit {
       )
       .subscribe((res:any)=>{
         this.form.reset()
-        if (res.id) {
-          this.reset()
-          this.feedbackService.register('Votre recette a été ajoutée avec succès', 'success')
-          this.router.navigate(['/home'])
-        } else {
-          this.feedbackService.registerNow('Erreur lors de l\'ajout de la recette', 'danger')
+        if (this.formMode == 'add'){
+          if (res.id) {
+            this.reset()
+            this.feedbackService.register('Votre recette a été ajoutée avec succès', 'success')
+            this.router.navigate(['/recipe-list'])
+          } else {
+            this.feedbackService.registerNow('Erreur lors de l\'ajout de la recette', 'danger')
+          }
+        } else { // this.formMode == 'edit'
+          if (res.id) {
+            this.reset()
+            this.feedbackService.register('Votre recette a été modifiée avec succès', 'success')
+            this.router.navigate(['/recipe-list'])
+          } else {
+            this.feedbackService.registerNow('Erreur lors de la modification de la recette', 'danger')
+          }
         }
       })
       
@@ -286,5 +309,44 @@ export class AddRecipePage implements OnInit {
       console.log(res)
     })
     */
+  }
+
+  async promptDelete(){
+    let as = await this.asc.create({
+      'header': 'Action',
+      'buttons': [
+        {
+          text: 'Supprimer',
+          role: 'destructive',
+          handler: ()=>{
+            this.deleteIsLoading = true
+            this.cs.delete(`/recipes/${this.recipeId}`, [] as any)
+              .pipe(
+                catchError((err)=>{
+                  console.error(`Error while deleting recipe: ${JSON.stringify(err)}`)
+                  return throwError(()=>err)
+                }),
+                finalize(()=>{
+                  this.deleteIsLoading = false
+                })
+              )
+              .subscribe((res)=>{
+                this.feedbackService.register('Recette supprimée avec succès', 'success')
+                this.router.navigate(['/recipe-list'])
+              })
+          }
+        },
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          handler: ()=>{
+          }
+        }
+      ]})
+    await as.present()
+  }
+
+  chooseCategory(event:{val:string}){
+    this.form.get('category').setValue(event.val)
   }
 }

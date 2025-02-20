@@ -15,7 +15,9 @@
 
 <ion-content fullscreen="true">
   <div class="pdf-container" *ngIf="docUrl">
-    <!--<iframe [src]="pdfUrl" width="100%" height="100%"></iframe>-->
     <img [src]="docUrl" class="doc-image">
+  </div>
+  <div class="spinner" *ngIf="!docUrl">
+    <ion-spinner></ion-spinner>
   </div>
 </ion-content>

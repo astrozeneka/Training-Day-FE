@@ -55,6 +55,11 @@
         formControlName="category"
         [errorText]="displayedError.category"
       ></app-outline-input>
+      <div class="chip-list">
+        <ion-chip *ngFor="let c of categories" (click)="chooseCategory({val:c})"
+          [color]="c === form.get('category').value ? 'primary' : 'medium'"
+        >{{ c }}</ion-chip>
+      </div>
     </div>
 
     <!-- Image picker -->
@@ -65,6 +70,7 @@
       <app-image-picker
         color="light"
         label="Image"
+        accept="image/png,image/jpeg"
         formControlName="image"
         [errorText]="displayedError.image"
       ></app-image-picker>
@@ -78,7 +84,7 @@
       <app-image-picker
         color="light"
         label="Sélectionner un fichier"
-        accept="image/*"
+        accept="image/png,image/jpeg,image/tiff"
         formControlName="docSmallPhone"
         [errorText]="displayedError.docSmallPhone"
         mode="image"
@@ -93,7 +99,7 @@
       <app-image-picker
         color="light"
         label="Sélectionner un fichier"
-        accept="image/*"
+        accept="image/png,image/jpeg,image/tiff"
         formControlName="docLargePhone"
         [errorText]="displayedError.docLargePhone"
         mode="image"
@@ -108,13 +114,17 @@
       <app-image-picker
         color="light"
         label="Sélectionner un fichier"
-        accept="image/*"
+        accept="image/png,image/jpeg,image/tiff"
         formControlName="docTablet"
         [errorText]="displayedError.docTablet"
         mode="image"
       ></app-image-picker>
     </div>
 
-    <app-ux-button expand="block" [disabled]="!valid" shape="round" [loading]="isFormLoading">Envoyer</app-ux-button>
+    <div class="controls">
+      <app-ux-button expand="block" [disabled]="!valid" shape="round" [loading]="isFormLoading" *ngIf="formMode=='add'">Ajouter</app-ux-button>
+      <app-ux-button expand="block" [disabled]="!valid" shape="round" [loading]="isFormLoading" *ngIf="formMode=='edit'">Mettre à jour</app-ux-button>
+      <app-ux-button *ngIf="formMode == 'edit'" type="button" expand="block" fill="clear" color="danger" (click)="promptDelete()" [loading]="deleteIsLoading">Supprimer</app-ux-button>
+    </div>
   </form>
 </ion-content>

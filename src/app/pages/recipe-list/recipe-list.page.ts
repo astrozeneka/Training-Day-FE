@@ -4,6 +4,8 @@ import { ContentService } from '../../content.service';
 import { FeedbackService } from '../../feedback.service';
 import { filter, Observable, Subject } from 'rxjs';
 import { RecipesService } from '../../recipes.service';
+import { User } from 'src/app/models/Interfaces';
+import { PopoverController } from '@ionic/angular';
 
 
 @Component({
@@ -13,13 +15,22 @@ import { RecipesService } from '../../recipes.service';
 })
 export class RecipeListPage implements OnInit {
   recipes = []
+  displayedRecipes = []
+
+  // User
+  user:User = undefined
+
+  // Categories
+  categories: string[] = []
+  filter:string|undefined = undefined
 
   constructor(
       private router: Router,
       protected cs: ContentService,
       protected cdr: ChangeDetectorRef,
       private fs: FeedbackService,
-      private rs: RecipesService
+      private rs: RecipesService,
+      private popoverController: PopoverController
   ) { }
 
   ngOnInit() {
@@ -31,10 +42,39 @@ export class RecipeListPage implements OnInit {
         // Load recipes here
         this.rs.onRecipesData(true, true)
           .subscribe((recipes) => {
-            console.log(recipes)
             this.recipes = recipes
+            this.processRecipeFilter()
           })
       })
+
+    // Load the user information
+    this.cs.userStorageObservable.getStorageObservable().subscribe((res)=>{
+      this.user = res
+    })
+
+    // Load the categories
+    this.rs.onCategoryData(true, true).subscribe((categories) => {
+      this.categories = categories
+    })
   }
 
+  goToAddRecipe(){
+    this.router.navigate(['/add-recipe'])
+  }
+
+  filterBy(category:string){
+    console.log("Filter by: ", category)
+    this.filter = category
+    this.processRecipeFilter()
+    this.popoverController.dismiss()
+  }
+
+  processRecipeFilter(){
+    if (this.filter == undefined){
+      this.displayedRecipes = this.recipes
+    } else {
+      this.displayedRecipes = this.recipes.filter((recipe) => recipe.category == this.filter)
+    }
+    this.cdr.detectChanges()
+  }
 }

@@ -5,15 +5,54 @@
           <ion-menu-button></ion-menu-button>
       </ion-buttons>
       <ion-title>Les recettes</ion-title>
+      <ion-buttons slot="end"  *ngIf="user?.function === 'admin' || user?.function === 'coach' || user?.function === 'nutritionist'">
+        <ion-button (click)="goToAddRecipe()">
+          Ajouter
+        </ion-button>
+      </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 
 <ion-content>
+
+  <div class="top-tab" *ngIf="user?.function === 'admin' || user?.function === 'coach' || user?.function === 'nutritionist'">
+    <div>
+      <ion-button
+        fill="clear"
+        color="dark"
+        expand="full"
+        id="privilege-popover-button"
+      >
+        <ion-icon slot="icon-only" name="funnel-outline"></ion-icon>
+        Filtrer
+      </ion-button>
+      <ion-popover trigger="privilege-popover-button">
+        <ng-template>
+          <ion-content>
+            <ion-list>
+              <ion-item [button]="true" (click)="filterBy(undefined)">Tous</ion-item>
+              <ion-item [button]="true" (click)="filterBy(c)" *ngFor="let c of categories">{{ c }}</ion-item>
+            </ion-list>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+    </div>
+    <div>
+      <ion-button
+        fill="clear"
+        color="dark"
+        expand="full"
+        id="date-popover-button"
+        disabled="true"
+      >
+      </ion-button>
+    </div>
+  </div>
   <!-- This style is not coherent with the current figma design -->
-  <h1 class="display-1 ion-padding">Découvrez nos recettes</h1>
+  <h1 class="display-1 ion-padding" *ngIf="!user || user && (user?.function == 'customer')">Découvrez nos recettes</h1>
   <div class="recipes-wrapper">
-    <a [routerLink]="['/recipe-detail', recipe.id]" *ngFor="let recipe of recipes">
+    <a [routerLink]="['/recipe-detail', recipe.id]" *ngFor="let recipe of displayedRecipes">
       <div class="recipe">
         <div class="recipe-image">
           <img [src]="recipe.imageUrl" alt="Image de la recette">

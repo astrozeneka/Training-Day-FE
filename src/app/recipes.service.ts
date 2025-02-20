@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import StoredData from './components-submodules/stored-data/StoredData';
-import { BehaviorSubject, catchError, filter, map, merge, Observable, Subject, switchMap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, filter, map, merge, Observable, of, Subject, switchMap, throwError } from 'rxjs';
 import { ContentService } from './content.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -36,6 +36,10 @@ export class RecipesService {
   recipeDetailsSubject: {[key:number]: BehaviorSubject<Recipe>} = {}
   recipeDetails$: {[key:number]: Observable<Recipe>} = {}
 
+  categoryData: StoredData<string[]>
+  categorySubject: BehaviorSubject<string[]>
+  categories$: Observable<string[]>
+
   constructor(
     private cs: ContentService,
     private http: HttpClient
@@ -43,6 +47,10 @@ export class RecipesService {
     this.recipesData = new StoredData<Recipe[]>('recipes', this.cs.storage)
     this.recipesSubject = new BehaviorSubject<Recipe[]>([])
     this.recipes$ = this.recipesSubject.asObservable()
+
+    this.categoryData = new StoredData<string[]>('recipeCategory', this.cs.storage)
+    this.categorySubject = new BehaviorSubject<string[]>([])
+    this.categories$ = this.categorySubject.asObservable()
   }
 
   /**
@@ -107,11 +115,15 @@ export class RecipesService {
             // let observers = [] // Todo later ...
             let docLargePhoneBase64 = this.getbase64ImageFromUrl(data.docLargePhoneUrl)
             return new Observable((observer)=>{
-              docLargePhoneBase64.subscribe((base64String)=>{
-                data.docLargePhoneBase64 = base64String
-                observer.next(data)
-                observer.complete()
-              })
+              docLargePhoneBase64
+                .pipe((catchError((err)=>{
+                  return of(null)
+                })))
+                .subscribe((base64String)=>{
+                  data.docLargePhoneBase64 = base64String
+                  observer.next(data)
+                  observer.complete()
+                })
             })
           } else {
             // Return only the data
@@ -165,5 +177,29 @@ export class RecipesService {
           return base64String
         })
     )
+  }
+
+  onCategoryData(fromCache=true, fromServer=true):Observable<string[]>{
+    let additionalEvents$ = new Subject<string[]>() // No need to use behavioral since the observable is subscribed before it fire data
+
+    // 1. Fire the cached data
+    if (fromCache) {
+      this.categoryData.get().then((data:string[])=>{
+        this.categorySubject.next(data)
+      })
+    }
+
+    // 2. Fire from the server
+    if (fromServer) {
+      this.cs.getCollection('/recipe-categories', 0, {}, 99999).subscribe((data: [])=>{
+        additionalEvents$.next(data)
+        this.categoryData.set(data)
+      })
+    }
+
+    // Prepare output
+    let output$ = merge(this.categories$, additionalEvents$)
+    output$ = output$.pipe(filter((data)=>data?.length>0))
+    return output$
   }
 }

@@ -7,6 +7,7 @@
     display: inline-block;
     width: 120px;
     margin: 10px;
+    vertical-align: top;
 
     & .recipe-image{
         height: 120px;
@@ -27,4 +28,28 @@
             color: #888888;
         }
     }
+}
+
+.top-tab{ // Reused component
+    display: flex;
+    flex-direction: row;
+  
+    & > div{
+        // 0 0 50%
+        flex: 1;
+    }
+  
+    & ion-icon{
+        font-size: 1.25em;
+        margin-right: .2em;
+    }
+  
+    & ion-button{
+        text-transform: none;
+    }
+  }
+
+// Specific to this page
+.top-tab{
+    margin-bottom: 24px;
 }
