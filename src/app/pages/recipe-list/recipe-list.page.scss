@@ -1,12 +1,18 @@
 
 .recipes-wrapper{
-    text-align: center;
+    margin-left: 22px; 
+    margin-right: 22px;
+    margin-bottom: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 10px;
 }
 
 .recipe{
     display: inline-block;
     width: 120px;
-    margin: 10px;
     vertical-align: top;
 
     & .recipe-image{
