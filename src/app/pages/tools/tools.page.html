@@ -1,13 +1,90 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>tools</ion-title>
+      <ion-buttons slot="start">
+          <app-back-button></app-back-button>
+          <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Les accessoires</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">tools</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <!-- some header here (according to the new theme) -->
+  <div class="tools">
+    <app-rounded-card
+      [routerLink]="'/app-gps'"
+    >
+      <div slot="image">
+        <img title="GPS" src="../../../assets/medias/IMG_0961_1024x683.jpeg"/>
+      </div>
+      <div slot="title">
+        GPS
+      </div>
+      <div slot="description">
+        Calculez vos kilomètres parcourus avec l'application GPS.
+      </div>
+    </app-rounded-card>
+
+    <!-- Chronomètre -->
+    <app-rounded-card
+      [routerLink]="'/app-timer'"
+    >
+      <div slot="image">
+        <img title="GPS" src="../../../assets/medias/IMG_0962_1024x683.jpeg"/>
+      </div>
+      <div slot="title">
+        Chronomètre
+      </div>
+      <div slot="description">
+        Entraînez-vous avec l'application chronomètre réglable pour chaque tour d'entraînement.
+      </div>
+    </app-rounded-card>
+
+    <!-- Calculateur d'IMC -->
+    <app-rounded-card
+      [routerLink]="'/app-imc'"
+    >
+      <div slot="image">
+        <img title="IMC" src="../../../assets/medias/IMG_0965_1024x683.jpeg"/>
+      </div>
+      <div slot="title">
+        Calculateur d'IMC
+      </div>
+      <div slot="description">
+        Découvrez notre application calculateur d'IMC pour connaître votre indice de masse corporelle.
+      </div>
+    </app-rounded-card>
+
+    <!-- Calculateur de calorie -->
+    <app-rounded-card
+      [routerLink]="'/app-calories'"
+    >
+      <div slot="image">
+        <img title="IMC" src="../../../assets/medias/IMG_0965_1024x683.jpeg"/>
+      </div>
+      <div slot="title">
+        Calculateur de calorie
+      </div>
+      <div slot="description">
+        Découvrez notre application calculateur de calories.
+      </div>
+    </app-rounded-card>
+
+
+    <!-- Suivi du poids -->
+    <app-rounded-card
+      [routerLink]="'/app-weight-tracking'"
+    >
+      <div slot="image">
+        <img title="Suivi du poids" src="../../../assets/medias/image-calendar-2_612x250.jpeg"/>
+      </div>
+      <div slot="title">
+        Suivi du poids
+      </div>
+      <div slot="description">
+        Découvrez notre application suivi du poids.
+      </div>
+    </app-rounded-card>
+  </div>
+  <app-bottom-navbar-placeholder></app-bottom-navbar-placeholder>
 </ion-content>

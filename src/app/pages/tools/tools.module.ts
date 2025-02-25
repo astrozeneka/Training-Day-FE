@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { ToolsPageRoutingModule } from './tools-routing.module';
 
 import { ToolsPage } from './tools.page';
+import { UtilitiesModule } from 'src/app/components/utilities.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ToolsPageRoutingModule
+    ToolsPageRoutingModule,
+    UtilitiesModule
   ],
   declarations: [ToolsPage]
 })

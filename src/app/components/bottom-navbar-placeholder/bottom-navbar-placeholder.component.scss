@@ -1,0 +1,4 @@
+.app-bottom-navbar-placeholder{
+    display: inline-block;
+    height: calc(64px + env(safe-area-inset-bottom));
+}

@@ -1,0 +1,25 @@
+<div class="rounded-card">
+  <div class="header">
+    <div class="img-container">
+      <ng-content select="*[slot='image']"></ng-content>
+    </div>
+  </div>
+  <div class="content">
+    <div class="title">
+      <ng-content select="*[slot='title']"></ng-content>
+    </div>
+    <div class="description">
+      <ng-content select="*[slot='description']"></ng-content>
+    </div>
+  </div>
+  <div class="actions">
+    <ion-button
+      [color]="color"
+      expand="block"
+      shape="round"
+      (click)="triggerAction()"
+    >
+      {{ actionText}}
+    </ion-button>
+  </div>
+</div>

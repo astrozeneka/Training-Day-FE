@@ -48,6 +48,8 @@ import { AutorenewableBubblesComponent } from '../autorenewable-bubbles/autorene
 // Swiper-js
 import { register } from 'swiper/element';
 import { BottomNavbarComponent } from './bottom-navbar/bottom-navbar.component';
+import { RoundedCardComponent } from './rounded-card/rounded-card.component';
+import { BottomNavbarPlaceholderComponent } from '../bottom-navbar-placeholder/bottom-navbar-placeholder.component';
 
 
 @NgModule({
@@ -92,6 +94,8 @@ import { BottomNavbarComponent } from './bottom-navbar/bottom-navbar.component';
     SubscriptionBubblesComponent,
     AutorenewableBubblesComponent,
     BottomNavbarComponent,
+    RoundedCardComponent,
+    BottomNavbarPlaceholderComponent,
 
     // Pipes
     DisplayListPipe,
@@ -134,6 +138,8 @@ import { BottomNavbarComponent } from './bottom-navbar/bottom-navbar.component';
     SubscriptionBubblesComponent,
     AutorenewableBubblesComponent,
     BottomNavbarComponent,
+    RoundedCardComponent,
+    BottomNavbarPlaceholderComponent,
     
     DisplayListPipe,
     ChatMasterDiscussionListComponent,
