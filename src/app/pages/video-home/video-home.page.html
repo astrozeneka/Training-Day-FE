@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <app-back-button></app-back-button>
+          <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Nos vidéos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- some header here (according to the new theme) -->
+  <div class="video-home">
+    <div class="card-list">
+      <!-- Training everyday -->
+      <app-rounded-card
+        [routerLink]="'/video-menu/training'"
+      >
+        <div slot="image">
+          <img title="Training of the day" src="../../../assets/medias/rounded-cards/sample-image-training-of-the-day.jpg"/>
+        </div>
+        <div slot="title">
+          Training of the day
+        </div>
+        <div slot="description">
+          Découvrez notre sélection de vidéos pour vous entraîner tous les jours.
+        </div>
+      </app-rounded-card>
+
+      <!-- Boxing everyday -->
+      <app-rounded-card
+      [routerLink]="'/video-menu/boxing'"
+      >
+        <div slot="image">
+          <img title="Training of the day" src="../../../assets/medias/rounded-cards/sample-image-boxing-of-the-day.jpg"/>
+        </div>
+        <div slot="title">
+          Boxing of the day
+        </div>
+        <div slot="description">
+          Découvrez notre sélection de vidéos pour vous entraîner tous les jours.
+        </div>
+      </app-rounded-card>
+    </div>
+  </div>
+</ion-content>

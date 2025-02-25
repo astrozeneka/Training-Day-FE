@@ -49,7 +49,7 @@ import { AutorenewableBubblesComponent } from '../autorenewable-bubbles/autorene
 import { register } from 'swiper/element';
 import { BottomNavbarComponent } from './bottom-navbar/bottom-navbar.component';
 import { RoundedCardComponent } from './rounded-card/rounded-card.component';
-import { BottomNavbarPlaceholderComponent } from '../bottom-navbar-placeholder/bottom-navbar-placeholder.component';
+import { BottomNavbarPlaceholderComponent } from './bottom-navbar-placeholder/bottom-navbar-placeholder.component';
 
 
 @NgModule({

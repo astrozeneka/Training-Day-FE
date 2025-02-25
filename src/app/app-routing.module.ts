@@ -252,6 +252,10 @@ const routes: Routes = [
     path: 'tools',
     loadChildren: () => import('./pages/tools/tools.module').then( m => m.ToolsPageModule)
   },
+  {
+    path: 'video-home',
+    loadChildren: () => import('./pages/video-home/video-home.module').then( m => m.VideoHomePageModule)
+  },
 ];
 
 @NgModule({
