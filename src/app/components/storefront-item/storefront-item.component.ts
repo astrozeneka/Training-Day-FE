@@ -12,6 +12,7 @@ export class StorefrontItemComponent  implements OnInit {
   @Input() color: string = 'primary';
   @Input() disabled: boolean = false;
   @Output() action: EventEmitter<any> = new EventEmitter();
+  @Input() variant: 'default'|'swipeable' = 'default'
   loggedIn: boolean = false;
   
   // The IAP produc to display

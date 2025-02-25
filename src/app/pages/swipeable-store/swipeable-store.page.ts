@@ -25,7 +25,8 @@ export class SwipeableStorePage implements OnInit, AfterViewInit {
       on: {
         slideChange: this.onSlideChange,
         reachEnd: this.onReachEnd,
-      }
+      },
+      allowTouchMove: false,
     }
     Object.assign(this.swiperEl?.nativeElement, swiperParams)
   }

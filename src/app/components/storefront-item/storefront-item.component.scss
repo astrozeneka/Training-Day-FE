@@ -1,8 +1,8 @@
 
 
 .storefront-item{
-    margin-top: 46px;
-    margin-bottom: 46px;
+    margin-top: var(--margin-top, 46px);
+    margin-bottom: var(--margin-bottom, 46px);
     & .display-1{
         display: flex;
         flex-direction: row;
@@ -25,5 +25,23 @@
     & .helper{
         font-size: small;
         color: var(--ion-color-medium)!important;
+    }
+
+
+    &.swipeable{
+        height: 100%;
+        & h2{
+            margin-top: 0!important;
+        }
+        & p.description{
+            margin: 0!important;
+            flex-grow: 1;
+        }
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between
+        ion-button{
+            margin-top: 12px;
+        }
     }
 }

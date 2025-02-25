@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {HeaderComponent} from "./header/header.component";
 import {IonicModule} from "@ionic/angular";
@@ -42,7 +42,11 @@ import { CoachChatSettingsComponent } from './coach-chat-settings/coach-chat-set
 import { AngularInfiniteListV2Component } from '../components-submodules/angular-infinite-list-v2/angular-infinite-list-v2.component';
 import { ImagePickerComponent } from './image-picker/image-picker.component';
 import { OutlineInputComponent } from '../components-submodules/outline-input/outline-input.component';
+import { SubscriptionBubblesComponent } from '../subscription-bubbles/subscription-bubbles.component';
+import { AutorenewableBubblesComponent } from '../autorenewable-bubbles/autorenewable-bubbles.component';
 
+// Swiper-js
+import { register } from 'swiper/element';
 
 
 @NgModule({
@@ -84,6 +88,8 @@ import { OutlineInputComponent } from '../components-submodules/outline-input/ou
     CoachChatSettingsComponent,
     ImagePickerComponent,
     OutlineInputComponent,
+    SubscriptionBubblesComponent,
+    AutorenewableBubblesComponent,
 
     // Pipes
     DisplayListPipe,
@@ -123,6 +129,8 @@ import { OutlineInputComponent } from '../components-submodules/outline-input/ou
     SwipeableStoreTabsComponent,
     ImagePickerComponent,
     OutlineInputComponent,
+    SubscriptionBubblesComponent,
+    AutorenewableBubblesComponent,
     
     DisplayListPipe,
     ChatMasterDiscussionListComponent,
@@ -135,6 +143,11 @@ import { OutlineInputComponent } from '../components-submodules/outline-input/ou
     PhonePrefixSelectComponent,
     ChatMasterTabsComponent,
     AngularInfiniteListV2Component,
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class UtilitiesModule { }
+export class UtilitiesModule { 
+  constructor() {
+    register()
+  }
+}

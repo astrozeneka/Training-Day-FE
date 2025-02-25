@@ -1,0 +1,116 @@
+<div class="autorenewable-bubblesf">
+
+  <swiper-container navigation="false" pagination="true" #swiperEl
+    slides-per-view="auto"
+    centered-slides="true" 
+    space-between="30"
+    >
+    <!--
+    autoplay-delay="2500"  -->
+    <swiper-slide>
+      <div class="bubble">
+        <app-storefront-item color="dark" [product]="productList['hoylt']"
+          [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
+          (action)="clickSubscriptionOption('hoylt')"
+          variant="swipeable"
+        >
+          <div slot="title">
+            Pack Hoylt
+          </div>
+          <div slot="description">
+            Inclut <!-- accès aux trainings sur la plateforme et aux outils de suivi.
+            L'offre inclut aussi un bilan mensuel avec votre coach. -->
+            <ul>
+              <li>Accès au programme sportif</li>
+              <li>Accès au programme alimentaire</li>
+            </ul>
+          </div>
+          <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
+            Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
+          </div>
+        </app-storefront-item>
+      </div>
+    </swiper-slide>
+    <swiper-slide>
+      <div class="bubble">
+        <app-storefront-item color="warning" [product]="productList['gursky']"
+          [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
+          (action)="clickSubscriptionOption('gursky')"
+          variant="swipeable"
+        >
+          <div slot="title">
+            Pack Gursky
+          </div>
+          <div slot="description">
+            Inclut <!-- un accès aux trainings sur la plateforme et aux outils de suivi, un
+            bilan mensuel et
+            un suivi et accompagnement par votre coach. -->
+            <ul>
+              <li>Accès au programme sportif</li>
+              <li>Accès au programme alimentaire</li>
+              <li>Suivi avec le nutritionniste</li>
+            </ul>
+          </div>
+          <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
+            Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
+          </div>
+        </app-storefront-item>
+      </div>
+    </swiper-slide>
+    <swiper-slide>
+      <div class="bubble">
+        <app-storefront-item color="danger" [product]="productList['smiley']"
+          [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
+          (action)="(clickSubscriptionOption('smiley'))"
+          variant="swipeable"
+        >
+          <div slot="title">
+            Pack Smiley
+          </div>
+          <div slot="description">
+            Inclut <!-- un accès aux trainings sur la plateforme et aux outils de suivi, un
+            bilan mensuel et
+            un suivi et accompagnement par le nutritionniste.-->
+            <ul>
+              <li>Accès au programme sportif</li>
+              <li>Accès au programme alimentaire</li>
+              <li>Suivi avec le coach</li>
+            </ul>
+          </div>
+          <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
+            Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
+          </div>
+        </app-storefront-item>
+      </div>
+    </swiper-slide>
+    <swiper-slide>
+      <div class="bubble">
+        <app-storefront-item
+          color="primary"
+          [product]="productList['alonzo']"
+          [disabled]="user && (user.renewable_id && !active_entitled_subscription)"
+          (action)="clickSubscriptionOption('alonzo')"
+          variant="swipeable"
+        >
+          <div slot="title">
+              Pack alonzo
+          </div>
+          <div slot="description">
+              Inclut <!-- un accès aux trainings sur la plateforme et aux outils de suivi, un bilan mensuel,
+              un suvi et accompagnement avec votre coach.
+              Cette offre inclut aussi un bilan et suivi diététique avec un nutritionniste.-->
+              <ul>
+                <li>Accès au programme sportif</li>
+                <li>Accès au programme alimentaire</li>
+                <li>Suivi avec le coach</li>
+                <li>Suivi avec le nutritionniste</li>
+              </ul>
+          </div>
+          <div slot="helper" *ngIf="user && (user.renewable_id && !active_entitled_subscription)">
+              Vous avez déjà un abonnement actif. Vous ne pouvez pas souscrire à un autre abonnement.
+          </div>
+        </app-storefront-item>
+      </div>
+    </swiper-slide>
+  </swiper-container>
+</div>
