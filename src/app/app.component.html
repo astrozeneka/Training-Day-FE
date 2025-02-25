@@ -5,6 +5,9 @@
     </ion-menu>
     <div class="ion-page" id="main">
       <ion-router-outlet></ion-router-outlet>
+      <div class="floating-bottom" *ngIf="bnus.bottomNavbarAvailable">
+        <app-bottom-navbar></app-bottom-navbar>
+      </div>
     </div>
   </ion-split-pane>
 </ion-app>

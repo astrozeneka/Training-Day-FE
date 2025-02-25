@@ -47,6 +47,7 @@ import { AutorenewableBubblesComponent } from '../autorenewable-bubbles/autorene
 
 // Swiper-js
 import { register } from 'swiper/element';
+import { BottomNavbarComponent } from './bottom-navbar/bottom-navbar.component';
 
 
 @NgModule({
@@ -90,6 +91,7 @@ import { register } from 'swiper/element';
     OutlineInputComponent,
     SubscriptionBubblesComponent,
     AutorenewableBubblesComponent,
+    BottomNavbarComponent,
 
     // Pipes
     DisplayListPipe,
@@ -131,6 +133,7 @@ import { register } from 'swiper/element';
     OutlineInputComponent,
     SubscriptionBubblesComponent,
     AutorenewableBubblesComponent,
+    BottomNavbarComponent,
     
     DisplayListPipe,
     ChatMasterDiscussionListComponent,

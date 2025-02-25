@@ -1,3 +1,6 @@
+@import '../mixins';
+
+
 app-main-menu{
   overflow: scroll!important;
   height: 100vh!important;
@@ -6,4 +9,16 @@ app-main-menu{
 
 .ion-page{
   z-index: -99;
+}
+
+ion-app{
+  & .floating-bottom{
+      @include floating-bottom;
+  }
+  /*& app-bottom-navbar{
+      position: fixed!important;
+      bottom: 0;
+      width: 100%;
+      
+  }*/
 }

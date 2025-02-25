@@ -1,0 +1,58 @@
+<div class="bottom-navbar">
+  <div class="nav">
+    <ion-button
+      fill="clear"
+      (click)="goToTab('home')"
+      [class]="tabName === 'home' ? 'active' : ''"
+    >
+      <div class="inner">
+        <ion-icon src="/assets/icon/menu/home.svg" class="home-icon"></ion-icon>
+        <div class="label">Accueil</div>
+      </div>
+    </ion-button>
+    <ion-button
+      fill="clear"
+      (click)="goToTab('tools')"
+      [class]="tabName === 'tools' ? 'active' : ''"
+    >
+      <div class="inner">
+        <ion-icon src="/assets/icon/menu/tools.svg" class="tools-icon"></ion-icon>
+        <div class="label">Accessoires</div>
+      </div>
+    </ion-button>
+    <div>
+      <ion-button
+        fill="solid"
+        color="primary"
+        class="central-button"
+        (click)="goToTab('videos')"
+        [class]="tabName === 'videos' ? 'active' : ''"
+        shape="round"
+      >
+        <div class="inner">
+          <ion-icon src="/assets/icon/menu/training.svg"></ion-icon>
+        </div>
+      </ion-button>
+    </div>
+    <ion-button
+      fill="clear"
+      (click)="goToTab('recipe-list')"
+      [class]="tabName === 'recipe-list' ? 'active' : ''"
+    >
+      <div class="inner">
+        <ion-icon src="/assets/icon/menu/nutrition.svg" class="nutrition-icon"></ion-icon>
+        <div class="label">Nutrition</div>
+      </div>
+    </ion-button>
+    <ion-button
+      fill="clear"
+      (click)="goToTab('profile')"
+      [class]="tabName === 'profile' ? 'active' : ''"
+    >
+      <div class="inner">
+        <ion-icon src="/assets/icon/menu/profile.svg" class="profile-icon"></ion-icon>
+        <div class="label">Profil</div>
+      </div>
+    </ion-button>
+  </div>
+</div>

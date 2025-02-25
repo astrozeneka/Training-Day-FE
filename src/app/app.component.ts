@@ -11,6 +11,7 @@ import { catchError, throwError } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PurchaseService } from './purchase.service';
 import { set } from 'date-fns';
+import { BottomNavbarUtilsService } from './bottom-navbar-utils.service';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit{
     private alertController: AlertController, // For later, it can be used inside a separate service
     private sanitize: DomSanitizer,
     public purchaseService: PurchaseService,
+    public bnus:BottomNavbarUtilsService
   ) {
 
     router.events.subscribe((event)=>{
@@ -90,7 +92,7 @@ export class AppComponent implements OnInit{
     })
       .pipe(catchError((error) => {
         //console.error("Error while synching device entitlements", JSON.stringify(error))
-        if (!environment.production)
+        if (!environment.production && false)
           this.feedbackService.registerNow("Error while syncing device entitlements :" + error, "danger")
         return throwError(error)
       }))

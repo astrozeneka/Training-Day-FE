@@ -29,11 +29,21 @@
 :root {
   --ion-background-color: #ffffff; /* Light mode default */
   --ion-background-color-rgb: 255, 255, 255;
+  --ion-foreground-color: #000000;
+  --ion-foreground-color-rgb: 0, 0, 0;
+
+  --ion-color-darkgrey: #484848;
+  --ion-color-lightgrey: #a5a5a5;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --ion-background-color: #1a0303; /* Dark mode default */
     --ion-background-color-rgb: 0, 0, 0;
+    --ion-foreground-color: rgb(255, 255, 255);
+    --ion-foreground-color-rgb: 255, 255, 255;
+
+    --ion-color-darkgrey: #7a7a7a;
+    --ion-color-lightgrey: #484848;
   }
 }
 
