@@ -50,6 +50,7 @@ import { register } from 'swiper/element';
 import { BottomNavbarComponent } from './bottom-navbar/bottom-navbar.component';
 import { RoundedCardComponent } from './rounded-card/rounded-card.component';
 import { BottomNavbarPlaceholderComponent } from './bottom-navbar-placeholder/bottom-navbar-placeholder.component';
+import { CondensedMenuItemComponent } from './condensed-menu-item/condensed-menu-item.component';
 
 
 @NgModule({
@@ -96,6 +97,7 @@ import { BottomNavbarPlaceholderComponent } from './bottom-navbar-placeholder/bo
     BottomNavbarComponent,
     RoundedCardComponent,
     BottomNavbarPlaceholderComponent,
+    CondensedMenuItemComponent,
 
     // Pipes
     DisplayListPipe,
@@ -140,6 +142,7 @@ import { BottomNavbarPlaceholderComponent } from './bottom-navbar-placeholder/bo
     BottomNavbarComponent,
     RoundedCardComponent,
     BottomNavbarPlaceholderComponent,
+    CondensedMenuItemComponent,
     
     DisplayListPipe,
     ChatMasterDiscussionListComponent,

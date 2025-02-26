@@ -256,6 +256,14 @@ const routes: Routes = [
     path: 'video-home',
     loadChildren: () => import('./pages/video-home/video-home.module').then( m => m.VideoHomePageModule)
   },
+  {
+    path: 'recipe-home',
+    loadChildren: () => import('./pages/recipe-home/recipe-home.module').then( m => m.RecipeHomePageModule)
+  },
+  {
+    path: 'recipe-by-category/:category',
+    loadChildren: () => import('./pages/recipe-by-category/recipe-by-category.module').then( m => m.RecipeByCategoryPageModule)
+  },
 ];
 
 @NgModule({

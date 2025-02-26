@@ -8,7 +8,7 @@ import { filter } from 'rxjs';
 export class BottomNavbarUtilsService {
   bottomNavbarAvailable: boolean = false // Hidden by default
 
-  tabSequences = ['home', 'tools', 'videos', 'recipe-list', 'profile']
+  tabSequences = ['home', 'tools', 'videos', 'recipe-home', 'profile']
   
   constructor(
     private route: ActivatedRoute,

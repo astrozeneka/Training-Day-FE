@@ -1,0 +1,23 @@
+<div clas="wrapper">
+  <ion-button
+    expand="block"
+    (click)="click($event)"
+    shape="round"
+  >
+    <div class="inner">
+      <div class="left">
+        <div class="img-container">
+          <img [src]="img" alt="condensed-menu-item"/>
+        </div>
+      </div>
+      <div class="center">
+        <ng-content></ng-content>
+      </div>
+      <div class="right">
+        <div class="arrow-container">
+          <ion-icon src="/assets/icon/condensed-menu/arrow.svg" class="arrow"/>
+        </div>
+      </div>
+    </div>
+  </ion-button>
+</div>

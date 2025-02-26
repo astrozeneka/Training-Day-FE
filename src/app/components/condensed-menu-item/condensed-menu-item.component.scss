@@ -1,0 +1,56 @@
+ion-button{
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    --border-width: 1px;
+    --border-color: var(--ion-color-lightgrey);
+    --border-style: solid;
+    --background: var(--ion-color-background);
+    --box-shadow: none;
+    --color: var(--ion-color-dark);
+    --padding-start: 0px;
+    --padding-end: 0px;
+
+    & .inner{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+
+        & .left{
+            & .img-container{
+                padding: 2px;
+                height: 60px;
+                width: 60px;
+                border-radius: 50%;
+                overflow: hidden;
+            }
+        }
+
+        & .center{
+            flex-grow: 1;
+            text-transform: none;
+            font-size: 18px;
+            text-align: left;
+        }
+
+        & .right{
+            & .arrow-container{
+                width: 60px; // Same size as the image
+                height: 60px; // Same size as the image
+                padding: 2px;
+                // Center the arrow
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                // The arrow
+                & .arrow{
+                    // fill: var(--ion-foreground-color);
+                    fill: var(--ion-color-darkgrey);
+                }
+            }
+        }
+    }
+}
