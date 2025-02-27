@@ -26,7 +26,10 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "present", returnType: CAPPluginReturnPromise),
         
         // The redeem code sheet
-        CAPPluginMethod(name: "presentRedeemCodeSheet", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "presentRedeemCodeSheet", returnType: CAPPluginReturnPromise),
+        
+        // Promotional offer
+        CAPPluginMethod(name: "fetchPromotionalOffer", returnType: CAPPluginReturnPromise)
     ]
     
     private var store: Store?
@@ -214,6 +217,31 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         } catch {
           call.reject("Failed to present redeem code sheet")
         }
+      }
+    }
+  }
+  
+  @objc func fetchPromotionalOffer(_ call: CAPPluginCall){
+    guard let productId = call.getString("productId") else {
+      call.reject("Missing productId")
+      return
+    }
+    
+    Task {
+      if let promoOffers = await store?.fetchPromotionalOffers(for: productId) {
+        let offersArray = promoOffers.map {[
+          "offerId": $0.id,
+          "displayPrice": $0.displayPrice,
+          "periodValue": $0.period.value,
+          "periodUnit": $0.period.unit.localizedDescription,
+          "price": $0.price,
+          "paymentMode": $0.paymentMode.rawValue,
+          "periodCount": $0.periodCount,
+          "type": $0.type.rawValue
+        ]}
+        call.resolve(["offers": offersArray])
+      } else {
+        call.reject("No promotional offers found")
       }
     }
   }

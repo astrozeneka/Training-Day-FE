@@ -29,3 +29,18 @@ table{
     margin-left: 1em !important;
   }
 }
+
+// For the promotional offer
+.promo-offers{
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+swiper-slide{
+  width: 200px;
+}
+
+.loader-wrapper{
+  height: 50px;
+  display: flex;
+  justify-content: center;
+}

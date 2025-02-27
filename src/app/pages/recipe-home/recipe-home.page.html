@@ -10,10 +10,9 @@
 <ion-content>
   <div class="recipe-home">
     <div class="menu">
-      <app-condensed-menu-item routerLink="/recipe-by-category/petit-dejeuner">Petit déjeuner</app-condensed-menu-item>
-      <app-condensed-menu-item routerLink="/recipe-by-category/dejeuner">Déjeuner</app-condensed-menu-item>
-      <app-condensed-menu-item routerLink="/recipe-by-category/diner">Dîner</app-condensed-menu-item>
-      <app-condensed-menu-item routerLink="/recipe-by-category/encas">Encas</app-condensed-menu-item>
+      <app-condensed-menu-item [img]="category.imageUrl" [routerLink]="'/recipe-by-category/' + category.name" *ngFor="let category of categories">
+        {{ category.name }}
+      </app-condensed-menu-item>
     </div>
   </div>
 </ion-content>

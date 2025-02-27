@@ -293,7 +293,10 @@ const mockStorePlugin: StorePlugin = {
       }, 1300);
     })
   },
-  webListeners: {}
+  webListeners: {},
+  fetchPromotionalOffer: async(options: { productId: string })=>{
+    return {"offers":[{"type":"AdhocOffer","periodCount":1,"periodValue":6,"displayPrice":"$39.99","periodUnit":"Mois","paymentMode":"PayUpFront","price":39.99000000000001,"offerId":"hoylt6mo"}]}
+  }
 }
 export interface StorePlugin {
   getProducts(options: { }): Promise<{ products: any[]}>
@@ -339,6 +342,9 @@ export interface StorePlugin {
 
   // Registered listener (for testing only)
   webListeners: {[key: string]: Function}
+
+  // fetchPromotionalOffer
+  fetchPromotionalOffer: (options: { productId: string })=>Promise<any>
 }
 export interface Transaction {
   bundleId: string;
@@ -426,6 +432,16 @@ export interface PricingPhase {
   recurrenceMode: number
 }
 
+export interface PromoOfferIOS {
+  type: string
+  periodCount: number
+  periodValue: number
+  displayPrice: string
+  periodUnit: string
+  paymentMode: string
+  price: number
+  offerId: string
+}
 
 let Store: StorePlugin;
 if (Capacitor.isNativePlatform()) {

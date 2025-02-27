@@ -33,7 +33,9 @@
   --ion-foreground-color-rgb: 0, 0, 0;
 
   --ion-color-darkgrey: #484848;
+  --ion-color-darkgrey-rgb: 72, 72, 72;
   --ion-color-lightgrey: #a5a5a5;
+  --ion-color-lightgrey-rgb: 165, 165, 165;
   
 }
 @media (prefers-color-scheme: dark) {
@@ -44,7 +46,9 @@
     --ion-foreground-color-rgb: 255, 255, 255;
 
     --ion-color-darkgrey: #7a7a7a;
+    --ion-color-darkgrey-rgb: 122, 122, 122;
     --ion-color-lightgrey: #484848;
+    --ion-color-lightgrey-rgb: 72, 72, 72;
   }
 }
 

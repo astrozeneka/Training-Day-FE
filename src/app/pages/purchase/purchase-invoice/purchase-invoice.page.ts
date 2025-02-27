@@ -1,17 +1,19 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {ContentService} from "../../../content.service";
 import {FormControl} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import StorePlugin, { AndroidProduct, Product, Transaction } from "../../../custom-plugins/store.plugin";
+import StorePlugin, { AndroidProduct, Product, PromoOfferIOS, Transaction } from "../../../custom-plugins/store.plugin";
 import {environment} from "../../../../environments/environment";
 import {FeedbackService} from "../../../feedback.service";
-import {BehaviorSubject, catchError, combineLatest, filter, finalize, Subject, tap} from "rxjs";
+import {BehaviorSubject, catchError, combineLatest, distinctUntilChanged, distinctUntilKeyChanged, filter, finalize, merge, Observable, Subject, tap} from "rxjs";
 import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
 import { PurchaseService } from 'src/app/purchase.service';
 import { Platform } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 import { PlatformType } from 'src/app/models/Interfaces';
 import { DarkModeService } from 'src/app/dark-mode.service';
+import StoredData from 'src/app/components-submodules/stored-data/StoredData';
+import { add } from 'date-fns';
 
 @Component({
   selector: 'app-purchase-invoice',
@@ -40,6 +42,12 @@ export class PurchaseInvoicePage implements OnInit {
 
   // The platform
   os: PlatformType
+
+  // Promotional offers
+  promoOffers: PromoOfferIOS[] = []
+  promoOffersAreLoading: boolean = false
+
+  @ViewChild('swiperEl') swiperEl: ElementRef | null = null as any
 
   constructor(
     private contentService: ContentService,
@@ -146,6 +154,17 @@ export class PurchaseInvoicePage implements OnInit {
           this.purchaseCompleted(transaction)
         })
     }
+
+    // X. Load promotional offers (need to configure later)
+    this.promoOffersAreLoading = true
+    this.purchaseService.onPromoOfferIOS('hoylt', true, true)
+      .pipe(
+        distinctUntilKeyChanged('length'),
+      )
+      .subscribe((offers:PromoOfferIOS[]) => {
+        this.promoOffers = offers
+        this.promoOffersAreLoading = false
+      })
   }
 
   async continueToPayment(){
@@ -291,5 +310,12 @@ export class PurchaseInvoicePage implements OnInit {
     } else{
       this.feedbackService.registerNow("La fonctionnalité n'est pas disponible sur cette plateforme", "danger")
     }
+  }
+
+  testFetchPromotionalOffer(){
+    // For hoylt
+    StorePlugin.fetchPromotionalOffer({productId: "hoylt"}).then((res) => {
+      console.log("fetchPromotionalOffer result: " + JSON.stringify(res))
+    })
   }
 }

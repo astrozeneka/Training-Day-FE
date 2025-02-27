@@ -1,0 +1,487 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "0FA48A9A",
+  "nonRenewingSubscriptions" : [
+    {
+      "displayPrice" : "49.99",
+      "familyShareable" : false,
+      "internalID" : "6538727085",
+      "localizations" : [
+        {
+          "description" : "Get 6 weeks of food coaching program",
+          "displayName" : "Food Coaching (6 Weeks)",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Profitez de 6 semaines de coaching",
+          "displayName" : "Programme Alimentaire 6 Sem.",
+          "locale" : "fr"
+        }
+      ],
+      "productID" : "foodcoach_6w",
+      "referenceName" : "Programme Alimentaire 6 Semaines",
+      "type" : "NonRenewingSubscription"
+    },
+    {
+      "displayPrice" : "12.99",
+      "familyShareable" : false,
+      "internalID" : "6538727303",
+      "localizations" : [
+        {
+          "description" : "Get 1 month of food coaching program",
+          "displayName" : "Food Coaching (1 Month)",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Profitez d'une semaine de coaching",
+          "displayName" : "Programme Alimentaire Hebdo.",
+          "locale" : "fr"
+        }
+      ],
+      "productID" : "foodcoach_1w",
+      "referenceName" : "Programme Alimentaire Hebdomadaire",
+      "type" : "NonRenewingSubscription"
+    },
+    {
+      "displayPrice" : "44.99",
+      "familyShareable" : false,
+      "internalID" : "6538727227",
+      "localizations" : [
+        {
+          "description" : "Get 1 month of food coaching program",
+          "displayName" : "Food Coaching (1 Month)",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Profitez d'un mois de coaching",
+          "displayName" : "Programme Alimentaire Mensuel",
+          "locale" : "fr"
+        }
+      ],
+      "productID" : "foodcoach_4w",
+      "referenceName" : "Programme Alimentaire Mensuel",
+      "type" : "NonRenewingSubscription"
+    },
+    {
+      "displayPrice" : "49.99",
+      "familyShareable" : false,
+      "internalID" : "6538727482",
+      "localizations" : [
+        {
+          "description" : "Profitez de 6 semaines de programme sportif",
+          "displayName" : "Programme Sportif 6 Semaines",
+          "locale" : "fr"
+        },
+        {
+          "description" : "Get 6 weeks of sport coaching program",
+          "displayName" : "Sport Coaching (6 Weeks)",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "sportcoach_6w",
+      "referenceName" : "Programme Sportif 6 Semaines",
+      "type" : "NonRenewingSubscription"
+    },
+    {
+      "displayPrice" : "12.99",
+      "familyShareable" : false,
+      "internalID" : "6538727173",
+      "localizations" : [
+        {
+          "description" : "Get 1 week of sport coaching program",
+          "displayName" : "Sport Coaching (1 Week)",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Profitez d'une semaine de programme sportif",
+          "displayName" : "Programme Sportif Hebdo.",
+          "locale" : "fr"
+        }
+      ],
+      "productID" : "sportcoach_1w",
+      "referenceName" : "Programme Sportif Hebdomadaire",
+      "type" : "NonRenewingSubscription"
+    },
+    {
+      "displayPrice" : "44.99",
+      "familyShareable" : false,
+      "internalID" : "6642652969",
+      "localizations" : [
+        {
+          "description" : "Profitez d'un mois de programme sportif",
+          "displayName" : "Programme Sportif Mensuel",
+          "locale" : "fr"
+        },
+        {
+          "description" : "Get 1 month of sport coaching program",
+          "displayName" : "Sport Coaching (1 Month)",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "sportcoach_4w",
+      "referenceName" : "Programme Sportif Mensuel",
+      "type" : "NonRenewingSubscription"
+    }
+  ],
+  "products" : [
+    {
+      "displayPrice" : "49.99",
+      "familyShareable" : false,
+      "internalID" : "6505030169",
+      "localizations" : [
+        {
+          "description" : "Get one training session.",
+          "displayName" : "Personal Trainer (1 session)",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Bénéficiez d'une séance d'entraînement.",
+          "displayName" : "Personal Trainer (1 Séance)",
+          "locale" : "fr"
+        }
+      ],
+      "productID" : "trainer1",
+      "referenceName" : "Personal Trainer (1 séance)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "449.0",
+      "familyShareable" : false,
+      "internalID" : "6538727587",
+      "localizations" : [
+        {
+          "description" : "Bénéficiez de 10 séances d'entraînement.",
+          "displayName" : "Personal Trainer (10 séances)",
+          "locale" : "fr"
+        },
+        {
+          "description" : "Get 10 training sessions.",
+          "displayName" : "Personal Trainer (10 sessions)",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "trainermax",
+      "referenceName" : "Personal Trainer (10 séances)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "249.0",
+      "familyShareable" : false,
+      "internalID" : "6505030021",
+      "localizations" : [
+        {
+          "description" : "Get 5 training sessions.",
+          "displayName" : "Personal Trainer (5 sessions)",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Bénéficiez de 5 séances d'entraînement.",
+          "displayName" : "Personal Trainer (5 séances)",
+          "locale" : "fr"
+        }
+      ],
+      "productID" : "trainer5",
+      "referenceName" : "Personal Trainer (5 séances)",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6477325664",
+    "_developerTeamID" : "FPUNC48548",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 762342345.07575703,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21500897",
+      "localizations" : [
+
+      ],
+      "name" : "Training-Day",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+            {
+              "eligibility" : [
+                "existing",
+                "expired",
+                "new"
+              ],
+              "internalID" : "BA67886A",
+              "isStackable" : true,
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "referenceName" : "Free-Alonzo",
+              "subscriptionPeriod" : "P3M"
+            },
+            {
+              "eligibility" : [
+                "new",
+                "existing",
+                "expired"
+              ],
+              "internalID" : "67F56DD5",
+              "isStackable" : true,
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "referenceName" : "Start-Alonzo",
+              "subscriptionPeriod" : "P1M"
+            }
+          ],
+          "displayPrice" : "44.99",
+          "familyShareable" : false,
+          "groupNumber" : 5,
+          "internalID" : "6538726957",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Profitez de l'abonnement Alonzo",
+              "displayName" : "Pack Alonzo",
+              "locale" : "fr"
+            },
+            {
+              "description" : "Get Alonzo subscription",
+              "displayName" : "Pack Alonzo",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "alonzo",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pack Alonzo",
+          "subscriptionGroupID" : "21500897",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "24.99",
+          "familyShareable" : false,
+          "groupNumber" : 3,
+          "internalID" : "6738393570",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Profitez de l'abonnement Gursky",
+              "displayName" : "Pack Gursky",
+              "locale" : "fr"
+            },
+            {
+              "description" : "Get Gursky subscription",
+              "displayName" : "Pack Gursky",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "gursky",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pack Gursky",
+          "subscriptionGroupID" : "21500897",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+            {
+              "displayPrice" : "39.99",
+              "internalID" : "41F7B0E5",
+              "numberOfPeriods" : 1,
+              "offerID" : "hoylt6mo",
+              "paymentMode" : "payUpFront",
+              "referenceName" : "hoylt-6-mo",
+              "subscriptionPeriod" : "P6M"
+            }
+          ],
+          "codeOffers" : [
+            {
+              "eligibility" : [
+                "new"
+              ],
+              "internalID" : "49881405",
+              "isStackable" : true,
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "referenceName" : "Découverte Hoylt",
+              "subscriptionPeriod" : "P1M"
+            },
+            {
+              "displayPrice" : "3.99",
+              "eligibility" : [
+                "new"
+              ],
+              "internalID" : "9B543EFC",
+              "isStackable" : true,
+              "numberOfPeriods" : 3,
+              "paymentMode" : "payAsYouGo",
+              "referenceName" : "Test Promo Hoylt",
+              "subscriptionPeriod" : "P1M"
+            }
+          ],
+          "displayPrice" : "6.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6538726862",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Get Hoylt subscription",
+              "displayName" : "Pack Hoylt",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "Profitez de l'abonnement Hoylt",
+              "displayName" : "Pack Hoylt",
+              "locale" : "fr"
+            }
+          ],
+          "productID" : "hoylt",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pack Hoylt",
+          "subscriptionGroupID" : "21500897",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "22.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6538727000",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Get Moreno subscription",
+              "displayName" : "Pack Moreno",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "Profitez de l'abonnement Moreno",
+              "displayName" : "Pack Moreno",
+              "locale" : "fr"
+            }
+          ],
+          "productID" : "moreno",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pack Moreno",
+          "subscriptionGroupID" : "21500897",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "24.99",
+          "familyShareable" : false,
+          "groupNumber" : 4,
+          "internalID" : "6738393837",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Get Smiley subscription",
+              "displayName" : "Pack Smiley",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "Profitez de l'abonnement Smiley",
+              "displayName" : "Pack Smiley",
+              "locale" : "fr"
+            }
+          ],
+          "productID" : "smiley",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pack Smiley",
+          "subscriptionGroupID" : "21500897",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

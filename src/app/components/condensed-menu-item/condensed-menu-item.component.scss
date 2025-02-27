@@ -19,11 +19,11 @@ ion-button{
         width: 100%;
 
         & .left{
+            padding: 2px;
             & .img-container{
-                padding: 2px;
                 height: 60px;
                 width: 60px;
-                border-radius: 50%;
+                border-radius: 100%;
                 overflow: hidden;
             }
         }

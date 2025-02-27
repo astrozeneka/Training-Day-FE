@@ -45,6 +45,27 @@
             </tbody>
         </table>
     </div>
+
+    <div class="ion-padding">
+        <h2 class="display-1">Les offers promotionnelles</h2>
+        <div *ngIf="promoOffers" class="promo-offers"><!-- replace by slider later-->
+            <swiper-container navigation="false" pagination="true" #swiperEl
+                slides-per-view="auto"
+                centered-slides="true" 
+                space-between="30"
+            >
+                <swiper-slide>
+                    <app-promo-offer-card *ngFor="let promoOffer of promoOffers" [promoOffer]="promoOffer"></app-promo-offer-card>
+                </swiper-slide>
+                <swiper-slide>
+                    <app-promo-offer-card *ngFor="let promoOffer of promoOffers" [promoOffer]="promoOffer"></app-promo-offer-card>
+                </swiper-slide>
+            </swiper-container>
+        </div>
+        <div *ngIf="promoOffersAreLoading" class="loader-wrapper">
+            <ion-spinner></ion-spinner>
+        </div>
+    </div>
     <br/>
     <form>
         <ion-item>
@@ -84,5 +105,6 @@
                 <ion-spinner name="dots"></ion-spinner>
             </div>
         </div>
+        <ion-button (click)="testFetchPromotionalOffer()">Test fetchPromotionalOffer</ion-button>
     </div>
 </ion-content>

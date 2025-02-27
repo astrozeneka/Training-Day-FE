@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import {Platform} from "@ionic/angular";
-import StorePlugin, { AndroidProduct, AndroidSubscription, Product, StorePluginEvent } from './custom-plugins/store.plugin';
+import StorePlugin, { AndroidProduct, AndroidSubscription, Product, PromoOfferIOS, StorePluginEvent } from './custom-plugins/store.plugin';
 import { FeedbackService } from './feedback.service';
+import StoredData from './components-submodules/stored-data/StoredData';
+import { BehaviorSubject, filter, merge, Observable, Subject } from 'rxjs';
+import { ContentService } from './content.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,9 +31,17 @@ export class PurchaseService { // This class cannot be used anymore due to andro
   }
 
   os:'ios'|'android' = null
+
+  // Promotional offers (cached using the usual loading mechanism)
+  promoOffers: {[key:string]: StoredData<PromoOfferIOS[]>} = {}
+  promoOffersSubject: {[key:string]: BehaviorSubject<PromoOfferIOS[]>} = {}
+  promoOffers$: {[key:string]: Observable<PromoOfferIOS[]>} = {}
+  
+
   constructor(
     private platform: Platform,
-    private feedbackService: FeedbackService
+    private feedbackService: FeedbackService,
+    private cs: ContentService
   ) {
     if (!platform.is('capacitor')){
       StorePlugin.onEmulatedOS().subscribe((os) => {
@@ -61,7 +72,6 @@ export class PurchaseService { // This class cannot be used anymore due to andro
       } else if (this.os == 'android') {
         // The typo can lead to confusion
         let androidProductList:AndroidProduct[]|AndroidSubscription[] = (await StorePlugin.getProducts({type: type})).products
-        console.log("android product list: ", JSON.stringify(androidProductList))
         // Standardize the output format to fit the existing front-end code
         if (type == 'inapp' || type == null) { // In-app purchases (default)
           products = (androidProductList as AndroidProduct[]).map((product:AndroidProduct) => {
@@ -143,5 +153,39 @@ export class PurchaseService { // This class cannot be used anymore due to andro
   // The redeem code
   async presentRedeemCodeSheet() {
     return StorePlugin.presentRedeemCodeSheet();
+  }
+
+
+
+  // Load promo offers
+  onPromoOfferIOS(productId: string, fromCache=true, fromServer=true): Observable<PromoOfferIOS[]>{
+    // Prepare dictionary
+    if (!this.promoOffers[productId]){
+      this.promoOffers[productId] = new StoredData<PromoOfferIOS[]>('promoOffers-' + productId, this.cs.storage)
+      this.promoOffersSubject[productId] = new BehaviorSubject<PromoOfferIOS[]>(null)
+      this.promoOffers$[productId] = this.promoOffersSubject[productId].asObservable()
+    }
+
+    let additionalEvents$ = new Subject<PromoOfferIOS[]>() // No need to use behavioral since the observable is subscribed before it fire data
+
+    // 1. Fire from the cache
+    if (fromCache) {
+      this.promoOffers[productId].get().then((data:PromoOfferIOS[])=>{
+        additionalEvents$.next(data)
+      })
+    }
+
+    // 2. Load from server (device)
+    if (fromServer) {
+      StorePlugin.fetchPromotionalOffer({productId: productId}).then((data:{offers:PromoOfferIOS[]})=>{
+        this.promoOffers[productId].set(data.offers)
+        additionalEvents$.next(data.offers)
+      })
+    }
+
+    // Prepare output
+    let output$ = merge(this.promoOffers$[productId], additionalEvents$)
+    output$ = output$.pipe(filter((data)=>data?.length>0))
+    return output$
   }
 }

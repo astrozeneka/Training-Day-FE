@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
@@ -9,6 +9,7 @@ import { PurchaseInvoicePageRoutingModule } from './purchase-invoice-routing.mod
 import { PurchaseInvoicePage } from './purchase-invoice.page';
 import {UtilitiesModule} from "../../../components/utilities.module";
 import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
+import { register } from 'swiper/element';
 
 @NgModule({
   imports: [
@@ -22,6 +23,11 @@ import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
   declarations: [PurchaseInvoicePage],
   providers: [
     ThemeDetection
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class PurchaseInvoicePageModule {}
+export class PurchaseInvoicePageModule {
+  constructor() {
+    register() // no need to sue this
+  }
+}

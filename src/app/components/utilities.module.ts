@@ -51,6 +51,7 @@ import { BottomNavbarComponent } from './bottom-navbar/bottom-navbar.component';
 import { RoundedCardComponent } from './rounded-card/rounded-card.component';
 import { BottomNavbarPlaceholderComponent } from './bottom-navbar-placeholder/bottom-navbar-placeholder.component';
 import { CondensedMenuItemComponent } from './condensed-menu-item/condensed-menu-item.component';
+import { PromoOfferCardComponent } from './promo-offer-card/promo-offer-card.component';
 
 
 @NgModule({
@@ -98,6 +99,7 @@ import { CondensedMenuItemComponent } from './condensed-menu-item/condensed-menu
     RoundedCardComponent,
     BottomNavbarPlaceholderComponent,
     CondensedMenuItemComponent,
+    PromoOfferCardComponent,
 
     // Pipes
     DisplayListPipe,
@@ -143,6 +145,7 @@ import { CondensedMenuItemComponent } from './condensed-menu-item/condensed-menu
     RoundedCardComponent,
     BottomNavbarPlaceholderComponent,
     CondensedMenuItemComponent,
+    PromoOfferCardComponent,
     
     DisplayListPipe,
     ChatMasterDiscussionListComponent,

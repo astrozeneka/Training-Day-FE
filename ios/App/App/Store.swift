@@ -82,6 +82,31 @@ class Store:NSObject {
         }
     }
     
+    @MainActor
+    func fetchPromotionalOffers(for productId: String) async -> [Product.SubscriptionOffer]? {
+      do {
+        // 1. Fetch the product
+        let products = try await Product.products(for: [productId])
+        guard let product = products.first else {
+          print("Product '\(productId)' not found")
+          return nil
+        }
+        
+        // 2. Check if the product has a subscription
+        guard let subscription = product.subscription else {
+          print("Product '\(productId)'  is not a subscription or has no promotional offers")
+          return nil
+        }
+        
+        // 3. Get the promotional offers
+        let promoOffers = subscription.promotionalOffers
+        return promoOffers
+      } catch {
+        print("Failed to fetch product \(error)")
+        return nil
+      }
+    }
+    
     private func addPurchased(_ product: Product, _ transaction: Transaction? = nil){
         switch product.type {
         case .consumable:

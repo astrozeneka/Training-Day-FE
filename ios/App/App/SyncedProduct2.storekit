@@ -1,15 +1,5 @@
 {
-  "appPolicies" : {
-    "eula" : "",
-    "policies" : [
-      {
-        "locale" : "en_US",
-        "policyText" : "",
-        "policyURL" : ""
-      }
-    ]
-  },
-  "identifier" : "C144167D",
+  "identifier" : "FE59CBF9",
   "nonRenewingSubscriptions" : [
     {
       "displayPrice" : "49.99",
@@ -37,14 +27,14 @@
       "internalID" : "6538727303",
       "localizations" : [
         {
-          "description" : "Profitez d'une semaine de coaching",
-          "displayName" : "Programme Alimentaire Hebdo.",
-          "locale" : "fr"
-        },
-        {
           "description" : "Get 1 month of food coaching program",
           "displayName" : "Food Coaching (1 Month)",
           "locale" : "en_US"
+        },
+        {
+          "description" : "Profitez d'une semaine de coaching",
+          "displayName" : "Programme Alimentaire Hebdo.",
+          "locale" : "fr"
         }
       ],
       "productID" : "foodcoach_1w",
@@ -57,14 +47,14 @@
       "internalID" : "6538727227",
       "localizations" : [
         {
-          "description" : "Get 1 month of food coaching program",
-          "displayName" : "Food Coaching (1 Month)",
-          "locale" : "en_US"
-        },
-        {
           "description" : "Profitez d'un mois de coaching",
           "displayName" : "Programme Alimentaire Mensuel",
           "locale" : "fr"
+        },
+        {
+          "description" : "Get 1 month of food coaching program",
+          "displayName" : "Food Coaching (1 Month)",
+          "locale" : "en_US"
         }
       ],
       "productID" : "foodcoach_4w",
@@ -129,6 +119,26 @@
       ],
       "productID" : "sportcoach_4w",
       "referenceName" : "Programme Sportif Mensuel",
+      "type" : "NonRenewingSubscription"
+    },
+    {
+      "displayPrice" : "29.99",
+      "familyShareable" : false,
+      "internalID" : "6538727349",
+      "localizations" : [
+        {
+          "description" : "Sport Coaching (1 Month)",
+          "displayName" : "Sport Coaching (1 Month)",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Programme Sportif Mensuel",
+          "displayName" : "Programme Sportif Mensuel",
+          "locale" : "fr"
+        }
+      ],
+      "productID" : "coachsport_4w",
+      "referenceName" : "Programme Sportif Mensuel (old)",
       "type" : "NonRenewingSubscription"
     }
   ],
@@ -196,17 +206,14 @@
   ],
   "settings" : {
     "_applicationInternalID" : "6477325664",
-    "_developerTeamID" : "K8FHK5UWGD",
+    "_developerTeamID" : "FPUNC48548",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 753812000.06865001,
+    "_lastSynchronizedDate" : 762342100.89604199,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
       {
-        "current" : {
-          "index" : 2,
-          "type" : "generic"
-        },
+        "current" : null,
         "enabled" : false,
         "name" : "Load Products"
       },
@@ -265,7 +272,32 @@
 
           ],
           "codeOffers" : [
-
+            {
+              "eligibility" : [
+                "existing",
+                "expired",
+                "new"
+              ],
+              "internalID" : "2AACAE31",
+              "isStackable" : true,
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "referenceName" : "Free-Alonzo",
+              "subscriptionPeriod" : "P3M"
+            },
+            {
+              "eligibility" : [
+                "expired",
+                "existing",
+                "new"
+              ],
+              "internalID" : "9EEE2305",
+              "isStackable" : true,
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "referenceName" : "Start-Alonzo",
+              "subscriptionPeriod" : "P1M"
+            }
           ],
           "displayPrice" : "44.99",
           "familyShareable" : false,
@@ -288,10 +320,7 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pack Alonzo",
           "subscriptionGroupID" : "21500897",
-          "type" : "RecurringSubscription",
-          "winbackOffers" : [
-
-          ]
+          "type" : "RecurringSubscription"
         },
         {
           "adHocOffers" : [
@@ -321,21 +350,26 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pack Gursky",
           "subscriptionGroupID" : "21500897",
-          "type" : "RecurringSubscription",
-          "winbackOffers" : [
-
-          ]
+          "type" : "RecurringSubscription"
         },
         {
           "adHocOffers" : [
-
+            {
+              "displayPrice" : "39.99",
+              "internalID" : "468890DB",
+              "numberOfPeriods" : 1,
+              "offerID" : "hoylt6mo",
+              "paymentMode" : "payUpFront",
+              "referenceName" : "hoylt-6-mo",
+              "subscriptionPeriod" : "P6M"
+            }
           ],
           "codeOffers" : [
             {
               "eligibility" : [
                 "new"
               ],
-              "internalID" : "18D01775",
+              "internalID" : "F66A9A2C",
               "isStackable" : true,
               "numberOfPeriods" : 1,
               "paymentMode" : "free",
@@ -347,7 +381,7 @@
               "eligibility" : [
                 "new"
               ],
-              "internalID" : "02516C55",
+              "internalID" : "98682ED9",
               "isStackable" : true,
               "numberOfPeriods" : 3,
               "paymentMode" : "payAsYouGo",
@@ -362,24 +396,21 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Get Hoylt subscription",
-              "displayName" : "Pack Hoylt",
-              "locale" : "en_US"
-            },
-            {
               "description" : "Profitez de l'abonnement Hoylt",
               "displayName" : "Pack Hoylt",
               "locale" : "fr"
+            },
+            {
+              "description" : "Get Hoylt subscription",
+              "displayName" : "Pack Hoylt",
+              "locale" : "en_US"
             }
           ],
           "productID" : "hoylt",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pack Hoylt",
           "subscriptionGroupID" : "21500897",
-          "type" : "RecurringSubscription",
-          "winbackOffers" : [
-
-          ]
+          "type" : "RecurringSubscription"
         },
         {
           "adHocOffers" : [
@@ -395,24 +426,21 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Profitez de l'abonnement Moreno",
-              "displayName" : "Pack Moreno",
-              "locale" : "fr"
-            },
-            {
               "description" : "Get Moreno subscription",
               "displayName" : "Pack Moreno",
               "locale" : "en_US"
+            },
+            {
+              "description" : "Profitez de l'abonnement Moreno",
+              "displayName" : "Pack Moreno",
+              "locale" : "fr"
             }
           ],
           "productID" : "moreno",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pack Moreno",
           "subscriptionGroupID" : "21500897",
-          "type" : "RecurringSubscription",
-          "winbackOffers" : [
-
-          ]
+          "type" : "RecurringSubscription"
         },
         {
           "adHocOffers" : [
@@ -442,16 +470,13 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pack Smiley",
           "subscriptionGroupID" : "21500897",
-          "type" : "RecurringSubscription",
-          "winbackOffers" : [
-
-          ]
+          "type" : "RecurringSubscription"
         }
       ]
     }
   ],
   "version" : {
-    "major" : 4,
+    "major" : 3,
     "minor" : 0
   }
 }

@@ -22,23 +22,36 @@ export interface Recipe{
   docTabletBase64?: string
 }
 
+export class RecipeCategory{
+  name: string
+  imageUrl: string
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class RecipesService {
   cachingEnabled = true
   
+  // Recipes data
   recipesData: StoredData<Recipe[]>
   recipesSubject: BehaviorSubject<Recipe[]>
   recipes$: Observable<Recipe[]>
 
+  // Recipe details data
   recipeDetailsData: {[key:number]: StoredData<Recipe>} = {}
   recipeDetailsSubject: {[key:number]: BehaviorSubject<Recipe>} = {}
   recipeDetails$: {[key:number]: Observable<Recipe>} = {}
 
+  // Recipe category (deprecated, the below categoryDetails is much more efficient)
   categoryData: StoredData<string[]>
   categorySubject: BehaviorSubject<string[]>
   categories$: Observable<string[]>
+
+  // Recipe category details
+  categoryDetailsData: StoredData<RecipeCategory[]>
+  categoryDetailsSubject: BehaviorSubject<RecipeCategory[]>
+  categoryDetails$: Observable<RecipeCategory[]>
 
   constructor(
     private cs: ContentService,
@@ -51,6 +64,10 @@ export class RecipesService {
     this.categoryData = new StoredData<string[]>('recipeCategory', this.cs.storage)
     this.categorySubject = new BehaviorSubject<string[]>([])
     this.categories$ = this.categorySubject.asObservable()
+
+    this.categoryDetailsData = new StoredData<RecipeCategory[]>('recipeCategoryDetails', this.cs.storage)
+    this.categoryDetailsSubject = new BehaviorSubject<RecipeCategory[]>([])
+    this.categoryDetails$ = this.categoryDetailsSubject.asObservable()
   }
 
   /**
@@ -199,6 +216,30 @@ export class RecipesService {
 
     // Prepare output
     let output$ = merge(this.categories$, additionalEvents$)
+    output$ = output$.pipe(filter((data)=>data?.length>0))
+    return output$
+  }
+
+  onCategoryDetailsData(fromCache=true, fromServer=true): Observable<RecipeCategory[]>{
+    let additionalEvents$ = new Subject<RecipeCategory[]>() // No need to use behavioral since the observable is subscribed before it fire data
+
+    // 1. Fire the cached data
+    if (fromCache) {
+      this.categoryDetailsData.get().then((data:RecipeCategory[])=>{
+        this.categoryDetailsSubject.next(data)
+      })
+    }
+
+    // 2. Fire from the server
+    if (fromServer) {
+      this.cs.getCollection('/recipe-category-details', 0, {}, 99999).subscribe((data: [])=>{
+        additionalEvents$.next(data)
+        this.categoryDetailsData.set(data)
+      })
+    }
+
+    // Prepare output
+    let output$ = merge(this.categoryDetails$, additionalEvents$)
     output$ = output$.pipe(filter((data)=>data?.length>0))
     return output$
   }
