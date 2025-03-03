@@ -46,6 +46,9 @@ export class PurchaseInvoicePage implements OnInit {
   // Promotional offers
   promoOffers: PromoOfferIOS[] = []
   promoOffersAreLoading: boolean = false
+  promotionalText: string = undefined;
+  promotionalDisplayPrice: string = undefined;
+  iosPromoOffer: PromoOfferIOS = null
 
   @ViewChild('swiperEl') swiperEl: ElementRef | null = null as any
 
@@ -185,7 +188,7 @@ export class PurchaseInvoicePage implements OnInit {
       
       let res:{success:any, transaction:any}
       try {
-        res = (await this.purchaseService.purchaseProductById(productId!, this.productType!, this.offerToken, this.os)) as any;
+        res = (await this.purchaseService.purchaseProductById(productId!, this.productType!, this.offerToken, this.os, this.iosPromoOffer.offerId, this.iosPromoOffer.signatureInfo)) as any;
         console.log("Purchase result: " + JSON.stringify(res), "info")
       } catch (e) {
         console.log("Error in purchaseProductById: " + JSON.stringify(e), "error")
@@ -317,5 +320,11 @@ export class PurchaseInvoicePage implements OnInit {
     StorePlugin.fetchPromotionalOffer({productId: "hoylt"}).then((res) => {
       console.log("fetchPromotionalOffer result: " + JSON.stringify(res))
     })
+  }
+
+  chooseOffer(offer: PromoOfferIOS){
+    this.iosPromoOffer = offer
+    this.promotionalText = `Promotion ${offer.displayPrice} pour ${offer.periodValue} ${offer.periodUnit}`
+    this.promotionalDisplayPrice = offer.displayPrice
   }
 }

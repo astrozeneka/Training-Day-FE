@@ -26,10 +26,15 @@
             <tr *ngIf="environment.paymentMethod === 'inAppPurchase' && productList && productId">
                 <td>1</td>
                 <td>
-                    {{ productList[productId]?.displayName }}
+                    {{ productList[productId]?.displayName }} <br/>
+                    <strong *ngIf="promotionalText" class="promotionalText">{{ promotionalText }}</strong>
                 </td>
-                <td>{{ productList[productId]?.displayPrice }}
-                    <span *ngIf="['hoylt', 'alonzo', 'moreno'].includes(productId)">/ mois</span>
+                <td *ngIf="!promotionalDisplayPrice">{{ productList[productId]?.displayPrice }}
+                    <span *ngIf="['hoylt', 'alonzo', 'moreno', 'gursky', 'smiley'].includes(productId)">/ mois</span>
+                </td>
+                <!-- If promotion has been chosen -->
+                <td *ngIf="promotionalDisplayPrice">
+                    {{ promotionalDisplayPrice }}
                 </td>
             </tr>
             <!-- The total -->
@@ -37,8 +42,11 @@
                 <td></td>
                 <td><strong>Total</strong></td>
                 <td *ngIf="environment.paymentMethod === 'inAppPurchase' && productList && productId">
-                    <strong>{{ productList[productId].displayPrice }}
-                        <span *ngIf="['hoylt', 'alonzo', 'moreno'].includes(productId)">/ mois</span>
+                    <strong *ngIf="!promotionalDisplayPrice">{{ productList[productId].displayPrice }}
+                        <span *ngIf="['hoylt', 'alonzo', 'moreno', 'gursky', 'smiley'].includes(productId)">/ mois</span>
+                    </strong>
+                    <!-- If promotion has been chosen -->
+                    <strong *ngIf="promotionalDisplayPrice">{{ promotionalDisplayPrice }}
                     </strong>
                 </td>
             </tr>
@@ -55,10 +63,10 @@
                 space-between="30"
             >
                 <swiper-slide>
-                    <app-promo-offer-card *ngFor="let promoOffer of promoOffers" [promoOffer]="promoOffer"></app-promo-offer-card>
+                    <app-promo-offer-card *ngFor="let promoOffer of promoOffers" [promoOffer]="promoOffer" (action)="chooseOffer($event)"></app-promo-offer-card>
                 </swiper-slide>
                 <swiper-slide>
-                    <app-promo-offer-card *ngFor="let promoOffer of promoOffers" [promoOffer]="promoOffer"></app-promo-offer-card>
+                    <app-promo-offer-card *ngFor="let promoOffer of promoOffers" [promoOffer]="promoOffer" (action)="chooseOffer($event)"></app-promo-offer-card>
                 </swiper-slide>
             </swiper-container>
         </div>

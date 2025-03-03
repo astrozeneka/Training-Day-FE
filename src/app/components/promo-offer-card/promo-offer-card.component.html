@@ -10,7 +10,10 @@
       <div class="price display-1">{{ promoOffer.displayPrice }}</div>
     </div>
     <div class="controls">
-      <app-ux-button fill="clear" shape="round">Choisir</app-ux-button>
+      <app-ux-button fill="clear" shape="round" [loading]="signatureIsLoading" 
+        [disabled]="!offerSignature" [fixedWidth]="true"
+        (click)="triggerAction()"
+      >Choisir</app-ux-button>
     </div>
   </div>
 </div>

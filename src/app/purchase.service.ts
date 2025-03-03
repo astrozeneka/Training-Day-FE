@@ -128,8 +128,14 @@ export class PurchaseService { // This class cannot be used anymore due to andro
 
   // Method 2: Purchase a product by its ID
   // Product type is only required for android
-  async purchaseProductById(productId:string, productType=null, offerToken=null, os=null) {
-    let extraParams = {}
+  async purchaseProductById(productId:string, productType=null, offerToken=null, os=null, offerId=null, offerSignatureInfo=null) {
+    let extraParams = {} as any
+    if (offerSignatureInfo){
+      extraParams.iOSOfferSignature = offerSignatureInfo
+      console.log(`Passing offerSignatureInfo: ${JSON.stringify(offerSignatureInfo)}`)
+    }
+    if (offerId)
+      extraParams.offerId = offerId
     if (os == 'android'){
       // Reverse mapping
       productId = this.iosAndroidProductNameMap[productId] || productId // Map if exists, otherwise, use the original
@@ -139,7 +145,11 @@ export class PurchaseService { // This class cannot be used anymore due to andro
         }
       }
     }
-    return await StorePlugin.purchaseProductById({productId: productId, type: productType, ...extraParams}, os);
+    if (offerSignatureInfo){
+      return await StorePlugin.purchaseProductWithDiscount({productId: productId, type: productType, ...extraParams}, os); // Why use os ??
+    } else {
+      return await StorePlugin.purchaseProductById({productId: productId, type: productType, ...extraParams}, os); // Why use os ??
+    }
   }
 
   // Method 3(experimental features): Load entitlements from Android

@@ -29,7 +29,8 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "presentRedeemCodeSheet", returnType: CAPPluginReturnPromise),
         
         // Promotional offer
-        CAPPluginMethod(name: "fetchPromotionalOffer", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "fetchPromotionalOffer", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "purchaseProductWithDiscount", returnType: CAPPluginReturnPromise)
     ]
     
     private var store: Store?
@@ -96,6 +97,42 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
                 call.reject(error.localizedDescription)
             }
         }
+    }
+  
+    @objc func purchaseProductWithDiscount(_ call: CAPPluginCall){
+      guard let signatureInfo = call.getObject("iOSOfferSignature") else {
+        call.reject("signatureInfo is required")
+        return
+      }
+      guard let productID = call.getString("productId") else {
+        call.reject("productId is required")
+        return
+      }
+      guard let offerID = call.getString("offerId") else {
+        call.reject("offerId is required")
+        return
+      }
+      guard let product = self.store?.products.first(where: {$0.id == productID}) else {
+        call.reject("Product not found")
+        return
+      }
+      
+      Task <Void, Never> {
+        do {
+          if let handledTransaction = try await self.store?.purchaseWithDiscount(product, offerId: offerID, signatureInfo: signatureInfo){
+            print("Here")
+          } else {
+            call.reject("Transaction annulée par l'utilisateur")
+          }
+        } catch {
+          call.reject(error.localizedDescription)
+        }
+      }
+      
+      // Sample return
+      call.resolve([
+        "message": "Hello"
+      ])
     }
     
     @objc func getPurchasedNonRenewable(_ call: CAPPluginCall) {
@@ -231,6 +268,7 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
       if let promoOffers = await store?.fetchPromotionalOffers(for: productId) {
         let offersArray = promoOffers.map {[
           "offerId": $0.id,
+          "productId": productId,
           "displayPrice": $0.displayPrice,
           "periodValue": $0.period.value,
           "periodUnit": $0.period.unit.localizedDescription,

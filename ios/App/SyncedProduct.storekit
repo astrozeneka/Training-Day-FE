@@ -277,8 +277,8 @@
             },
             {
               "eligibility" : [
-                "new",
                 "existing",
+                "new",
                 "expired"
               ],
               "internalID" : "67F56DD5",

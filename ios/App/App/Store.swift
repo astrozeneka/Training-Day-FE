@@ -137,6 +137,44 @@ class Store:NSObject {
             return nil
         }
     }
+  
+    @MainActor
+    func purchaseWithDiscount(_ product: Product, offerId: String, signatureInfo: [String: Any]) async throws -> Transaction? {
+      guard let keyIdentifier = signatureInfo["keyIdentifier"] as? String else {
+        throw NSError(domain: "Invalid KeyIndentifier Data", code: 0, userInfo: nil)
+      }
+      guard let nonceString = signatureInfo["nonce"] as? String else {
+        throw NSError(domain: "Invalid nonce Data", code: 0, userInfo: nil)
+      }
+      guard let timestamp = signatureInfo["timestamp"] as? Int else {
+        throw NSError(domain: "Invalid timestamp data", code: 0, userInfo: nil)
+      }
+      guard let signatureString = signatureInfo["signature"] as? String else {
+        throw NSError(domain: "Invalid signature data", code: 0, userInfo: nil)
+      }
+      guard let signatureData = Data(base64Encoded: signatureString) else {
+        throw NSError(domain: "Error converting signature string to data", code: 0, userInfo: nil)
+      }
+      guard let nonce = UUID(uuidString: nonceString) else {
+        throw NSError(domain: "Invalid converting nonce data", code: 0, userInfo: nil)
+      }
+      
+      
+      let result = try await product.purchase(options: [.promotionalOffer(offerID: offerId, keyID: keyIdentifier, nonce: nonce, signature: signatureData, timestamp: timestamp)])
+      
+      switch result {
+      case .success(let verification):
+        let transaction = try verification.payloadValue
+        await transaction.finish()
+        return transaction
+      case .userCancelled:
+        return nil
+      case .pending:
+        return nil
+      @unknown default:
+        throw NSError(domain: "Unknown purchase state", code: 1, userInfo: nil)
+      }
+    }
     
     @MainActor
     private func handle(transactionVerification result: VerificationResult <Transaction> ) async -> Transaction? {

@@ -295,7 +295,10 @@ const mockStorePlugin: StorePlugin = {
   },
   webListeners: {},
   fetchPromotionalOffer: async(options: { productId: string })=>{
-    return {"offers":[{"type":"AdhocOffer","periodCount":1,"periodValue":6,"displayPrice":"$39.99","periodUnit":"Mois","paymentMode":"PayUpFront","price":39.99000000000001,"offerId":"hoylt6mo"}]}
+    return {"offers":[{"type":"AdhocOffer","periodCount":1,"periodValue":6,"displayPrice":"$39.99","periodUnit":"Mois","paymentMode":"PayUpFront","price":39.99000000000001,"offerId":"hoylt6mo","productId":"hoylt"}]}
+  },
+  purchaseProductWithDiscount: async(options: { productId: string, type: string|undefined, offerSignatureInfo: IOSPromoOfferSignatureInfo}, os)=>{
+    return {"message": "Hello from web"}
   }
 }
 export interface StorePlugin {
@@ -345,6 +348,9 @@ export interface StorePlugin {
 
   // fetchPromotionalOffer
   fetchPromotionalOffer: (options: { productId: string })=>Promise<any>
+
+  // Purchase using a promotional offer
+  purchaseProductWithDiscount: (options: { productId: string, type: string|undefined, offerSignatureInfo: IOSPromoOfferSignatureInfo}, os)=>Promise<{ message: string }>
 }
 export interface Transaction {
   bundleId: string;
@@ -432,6 +438,13 @@ export interface PricingPhase {
   recurrenceMode: number
 }
 
+export interface IOSPromoOfferSignatureInfo {
+  signature: string
+  nonce: string
+  timestamp: number
+  keyIdentifier: string
+}
+
 export interface PromoOfferIOS {
   type: string
   periodCount: number
@@ -441,6 +454,8 @@ export interface PromoOfferIOS {
   paymentMode: string
   price: number
   offerId: string
+  productId: string
+  signatureInfo: IOSPromoOfferSignatureInfo
 }
 
 let Store: StorePlugin;
