@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
@@ -499,6 +500,55 @@ public class StorePlugin extends Plugin {
         call.resolve(output);
       } else {
         call.reject("Failed to consume product: " + result.getDebugMessage());
+      }
+    });
+  }
+
+  @PluginMethod()
+  public void acknowledgeAndroidPurchase(PluginCall call){
+    String purchaseToken = call.getString("purchaseToken");
+    System.out.println("StorePlugin: Acknowledging purchase with purchase token: " + purchaseToken);
+    if (!billingClient.isReady()){
+      billingClient.startConnection(new BillingClientStateListener() {
+        @Override
+        public void onBillingSetupFinished(BillingResult billingResult) {
+          if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+            System.out.println("StorePlugin: Billing client is ready");
+            _acknowledgeAndroidPurchase(call);
+          } else {
+            System.out.println("StorePlugin: Error code: " + billingResult.getResponseCode());
+            // Error 3: It generally show if the billing client is not available (due to geographical location or device restrictions)
+          }
+        }
+        @Override
+        public void onBillingServiceDisconnected() {
+          // Try to restart the connection on the next request to
+          // Google Play by calling the startConnection() method.
+        }
+      });
+    } else {
+      _acknowledgeAndroidPurchase(call);
+    }
+  }
+
+  private void _acknowledgeAndroidPurchase(PluginCall call){
+    String purchaseToken = call.getString("purchaseToken");
+
+    if (purchaseToken == null || purchaseToken.isEmpty()) {
+      call.reject("Purchase token is required.");
+      return;
+    }
+
+    AcknowledgePurchaseParams acknowledgeParams = AcknowledgePurchaseParams.newBuilder()
+      .setPurchaseToken(purchaseToken)
+      .build();
+    billingClient.acknowledgePurchase(acknowledgeParams, result -> {
+      if (result.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+        JSObject output = new JSObject();
+        output.put("message", "Purchase acknowledged");
+        call.resolve(output);
+      } else {
+        call.reject("Failed to acknowledge purchase: " + result.getDebugMessage());
       }
     });
   }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Platform } from '@ionic/angular';
 import { ContentService } from 'src/app/content.service';
 import { Product } from 'src/app/custom-plugins/store.plugin';
 import { FeedbackService } from 'src/app/feedback.service';
@@ -16,12 +17,15 @@ export class StoreSportCoachComponent  implements OnInit {
 
   user: User|null = null
   productList: { [key: string]: Product } = {}
+  os: 'android'|'ios' = null
+
   
   constructor(
     private cs: ContentService,
     private router: Router,
     private feedbackService: FeedbackService,
-    private purchaseService: PurchaseService
+    private purchaseService: PurchaseService,
+    private platform: Platform
   ) { }
 
   ngOnInit() {
@@ -36,6 +40,9 @@ export class StoreSportCoachComponent  implements OnInit {
       this.productList = productList.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
     })
 
+    // 3. The platform
+    if (this.platform.is('capacitor'))
+      this.os = this.platform.is('android') ? 'android' : 'ios'
   }
 
 
@@ -50,7 +57,11 @@ export class StoreSportCoachComponent  implements OnInit {
       } else if (environment.paymentMethod === 'inAppPurchase') {
         await this.cs.storage.set('productId', productId)
       }
-      this.router.navigate(['/purchase-invoice'])
+      if (this.os === 'android'){
+        this.router.navigate(['/android-purchase-invoice'])
+      }else{
+        this.router.navigate(['/ios-purchase-invoice'])
+      }
     }
   }
 }

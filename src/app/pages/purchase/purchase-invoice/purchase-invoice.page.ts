@@ -24,7 +24,7 @@ export class PurchaseInvoicePage implements OnInit {
 
   productList:any = {} // Bound to the Store
   productId:string|undefined = undefined
-  offerToken:string|undefined = undefined // Used for subscriptions
+  offerToken:string|undefined = undefined // Used for android subscriptions
 
   acceptConditions: FormControl = new FormControl(false);
 

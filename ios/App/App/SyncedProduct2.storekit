@@ -1,4 +1,14 @@
 {
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
   "identifier" : "FE59CBF9",
   "nonRenewingSubscriptions" : [
     {
@@ -274,9 +284,9 @@
           "codeOffers" : [
             {
               "eligibility" : [
-                "existing",
+                "new",
                 "expired",
-                "new"
+                "existing"
               ],
               "internalID" : "2AACAE31",
               "isStackable" : true,
@@ -287,8 +297,8 @@
             },
             {
               "eligibility" : [
-                "expired",
                 "existing",
+                "expired",
                 "new"
               ],
               "internalID" : "9EEE2305",
@@ -320,7 +330,10 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pack Alonzo",
           "subscriptionGroupID" : "21500897",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         },
         {
           "adHocOffers" : [
@@ -350,7 +363,10 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pack Gursky",
           "subscriptionGroupID" : "21500897",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         },
         {
           "adHocOffers" : [
@@ -410,7 +426,10 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pack Hoylt",
           "subscriptionGroupID" : "21500897",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         },
         {
           "adHocOffers" : [
@@ -440,7 +459,10 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pack Moreno",
           "subscriptionGroupID" : "21500897",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         },
         {
           "adHocOffers" : [
@@ -470,13 +492,16 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pack Smiley",
           "subscriptionGroupID" : "21500897",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         }
       ]
     }
   ],
   "version" : {
-    "major" : 3,
+    "major" : 4,
     "minor" : 0
   }
 }

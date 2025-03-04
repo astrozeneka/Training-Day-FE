@@ -293,6 +293,13 @@ const mockStorePlugin: StorePlugin = {
       }, 1300);
     })
   },
+  acknowledgeAndroidPurchase(options: {purchaseToken: String}){
+    return new Promise((resolve, reject) => {
+      setTimeout(()=>{
+        resolve({message: "Fakely acknowledged"})
+      }, 1300);
+    })
+  },
   webListeners: {},
   fetchPromotionalOffer: async(options: { productId: string })=>{
     return {"offers":[{"type":"AdhocOffer","periodCount":1,"periodValue":6,"displayPrice":"$39.99","periodUnit":"Mois","paymentMode":"PayUpFront","price":39.99000000000001,"offerId":"hoylt6mo","productId":"hoylt"}]}
@@ -342,6 +349,9 @@ export interface StorePlugin {
 
   // Consume product (for manual testing)
   forceAndroidConsumeProduct(options: {purchaseToken: String}): Promise<{ message: string }>
+
+  // Acknowledge product
+  acknowledgeAndroidPurchase(options: {purchaseToken: String}): Promise<{ message: string }>
 
   // Registered listener (for testing only)
   webListeners: {[key: string]: Function}

@@ -264,6 +264,18 @@ const routes: Routes = [
     path: 'recipe-by-category/:category',
     loadChildren: () => import('./pages/recipe-by-category/recipe-by-category.module').then( m => m.RecipeByCategoryPageModule)
   },
+  {
+    path: 'iap-and-subscriptions',
+    loadChildren: () => import('./pages/iap-and-subscriptions/iap-and-subscriptions.module').then( m => m.IapAndSubscriptionsPageModule)
+  },
+  {
+    path: 'android-purchase-invoice',
+    loadChildren: () => import('./pages/purchase-invoice/android-purchase-invoice/android-purchase-invoice.module').then( m => m.AndroidPurchaseInvoicePageModule)
+  },
+  {
+    path: 'ios-purchase-invoice',
+    loadChildren: () => import('./pages/purchase-invoice/ios-purchase-invoice/ios-purchase-invoice.module').then( m => m.IosPurchaseInvoicePageModule)
+  },
 ];
 
 @NgModule({
