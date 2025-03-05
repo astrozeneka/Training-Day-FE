@@ -111,12 +111,13 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage impl
     this.loadingStep = "(1/3) Connexion à Google Play"
 
     // Specific to android, for subscription, the product id is "training_day" instead of hoylt, moreno, etc.
+    let productId = this.productId
     if (this.productType == 'subs')
-      this.productId = 'training_day'
-    console.log(`Product id is ${this.productId}`)
+      productId = 'training_day'
+    console.log(`Product id is ${productId}`)
 
     // Launch the payment
-    let purchaseObs = from(this.purchaseService.purchaseProductById(this.productId, this.productType, this.offerToken, 'android', null, null))
+    let purchaseObs = from(this.purchaseService.purchaseProductById(productId, this.productType, this.offerToken, 'android', null, null))
       .pipe(
         catchError((err)=>{
           console.error(`Error while purchasing product ${this.productId} : ${JSON.stringify(err)}`)
@@ -146,8 +147,11 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage impl
         return data.purchases[0]
       }),
       switchMap((product)=>{
+        console.log(`Handle purchase success: ${JSON.stringify(product)}`)
         this.loadingStep = "(2/3) Enregistrement de l'achat"
         this.cdr.detectChanges();
+        // Restored the patched product_id
+        // In android, the product_id in the Google Play Store is training_day, contrary to App Store which uses hoylt, moreno, etc.
         (product as AndroidProduct).productId = this.productId;
         (product as any).purchaseTime = Math.round((product as any).purchaseTime / 1000)
         return this.cs.post('/payments/registerAndroidIAPTransaction', product)
@@ -156,6 +160,8 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage impl
             this.isLoading = false
             this.loadingStep = null
             return null
+          }), tap(()=>{
+            console.log("Correctly saved purchase to the server");
           }))
       }),
       filter((data)=>data!=null)

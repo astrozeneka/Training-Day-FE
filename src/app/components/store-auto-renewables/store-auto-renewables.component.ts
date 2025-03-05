@@ -98,12 +98,18 @@ export class StoreAutoRenewablesComponent extends EntitlementReady implements On
       this.feedbackService.registerNow('Pour continuer, veuillez créer un compte ou vous connecter.')
     }else{
       await this.cs.storage.set('productId', productId)
-        if(this.platform.is('android')){ // Android subscription need to pass the offerToken
-          let offerToken = (this.productList[productId] as any as AndroidSubscription).androidOfferToken
-          console.log("Offer token is : " + offerToken)
-          await this.cs.storage.set('offerToken', offerToken)
-        }
-        this.router.navigate(['/purchase-invoice'])
+      if(this.platform.is('android')){ // Android subscription need to pass the offerToken
+        let offerToken = (this.productList[productId] as any as AndroidSubscription).androidOfferToken
+        console.log("Offer token is : " + offerToken)
+        await this.cs.storage.set('offerToken', offerToken)
+      }
+      if (this.is_ios){
+        this.router.navigate(['/purchase-invoice-ios'])
+      } else if (this.is_android){
+        this.router.navigate(['/purchase-invoice-android'])
+      } else {
+        console.error(`Unknown platform`)
+      }
     }
   }
 

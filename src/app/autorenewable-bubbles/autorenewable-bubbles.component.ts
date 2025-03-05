@@ -23,7 +23,7 @@ type Subscription = IOSSubscription|AndroidSubscription // Same as in store-auto
 export class AutorenewableBubblesComponent extends EntitlementReady implements OnInit, AfterViewInit {
   @Input() productList: { [key: string]: Product } = {}
   user: User = null
-
+  os: 'android'|'ios' = null
 
   selectedTab: 'tab1' | 'tab2' | 'tab3' = 'tab1';
   @ViewChild('swiperEl') swiperEl: ElementRef | null = null as any
@@ -77,6 +77,10 @@ export class AutorenewableBubblesComponent extends EntitlementReady implements O
         return acc
       }, {} as any)
     })
+
+    // 3. The platform
+    if (this.platform.is('capacitor'))
+      this.os = this.platform.is('android') ? 'android' : 'ios'
   }
 
   ngAfterViewInit(): void {
@@ -126,7 +130,11 @@ export class AutorenewableBubblesComponent extends EntitlementReady implements O
           console.log("Offer token is : " + offerToken)
           await this.cs.storage.set('offerToken', offerToken)
         }
-        this.router.navigate(['/purchase-invoice'])
+        if (this.os === 'android'){
+          this.router.navigate(['/android-purchase-invoice'])
+        }else{
+          this.router.navigate(['/ios-purchase-invoice'])
+        }
     }
   }
 }
