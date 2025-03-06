@@ -228,6 +228,18 @@
         </div>
     </div>
 
+    <div *ngIf="entity?.renewable_id">
+        <h3 class="display-1 ion-padding">Terminer mon abonnement</h3>
+        <div class="span-button ion-padding-horizontal">
+            <span>
+                Vous pouvez terminer votre abonnement à tout moment.
+            </span>
+            <ion-button size="small" (click)="cancelSubscription()">
+                Se désabonner
+            </ion-button>
+        </div>
+    </div>
+
     <div *ngIf="entity && entity.function === 'customer'">
         <h3 class="display-1 ion-padding">Privilèges(s)</h3>
         <div *ngIf="grouped_perishables && grouped_perishables['food-coach']">

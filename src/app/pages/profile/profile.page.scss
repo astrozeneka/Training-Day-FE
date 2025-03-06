@@ -43,8 +43,14 @@ ion-item b{
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   & > span{
     flex-grow: 1;
     font-size: 0.8em;
+    display: inline-block;
+    height: 100%;
+  }
+  & ion-button{
+    text-transform: none;
   }
 }

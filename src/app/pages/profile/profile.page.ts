@@ -2,10 +2,10 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
-import {catchError, finalize, merge, of, throwError} from "rxjs";
+import {catchError, filter, finalize, merge, Observable, of, switchMap, throwError} from "rxjs";
 import {FeedbackService} from "../../feedback.service";
 import {FormComponent} from "../../components/form.component";
-import {ModalController, Platform} from "@ionic/angular";
+import {AlertController, ModalController, Platform} from "@ionic/angular";
 import {
   PasswordConfirmationModalComponent
 } from "../../components/password-confirmation-modal/password-confirmation-modal.component";
@@ -68,7 +68,9 @@ export class ProfilePage extends FormComponent implements OnInit {
     private contentService: ContentService,
     private feedbackService: FeedbackService,
     private modalCtrl: ModalController,
-    private platform: Platform
+    private platform: Platform,
+    private alertCtrl: AlertController,
+    private cs: ContentService
   ) {
     super();
     router.events.subscribe(async(event: any)=>{ // This way of loading data is not suitable for angular
@@ -336,6 +338,46 @@ export class ProfilePage extends FormComponent implements OnInit {
     .subscribe(async(res)=>{
       this.feedbackService.registerNow("Vos paramètres ont été mises à jour", 'success')
     })*/
+  }
+
+  async cancelSubscription(){
+    // Display an Alert to confirm the subscription ending
+    (new Observable(observer => {
+      this.alertCtrl.create({
+        header: 'Confirmation',
+        message: 'Voulez-vous mettre fin à votre abonnement ?',
+        buttons: [
+          {
+            text: 'Annuler',
+            role: 'cancel',
+            handler: () => {
+              observer.next(false);
+              observer.complete();
+            }
+          },
+          {
+            text: 'Confirmer',
+            handler: () => {
+              observer.next(true);
+              observer.complete();
+            }
+          }
+        ]
+      }).then((alert)=>{
+        alert.present()
+      })
+    }))
+      .pipe(
+        filter((val)=>val === true),
+        switchMap((val:boolean)=>{
+          console.log("Canceling subscription")
+          return this.cs.post('/end-android-subscription', {})
+        })
+      )
+      .subscribe((res)=>{
+        console.log(`Response from /end-android-subscription: ${res}`)
+      })
+    
   }
 
 }
