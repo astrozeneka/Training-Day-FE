@@ -257,9 +257,9 @@
   </div>
 
   <h4></h4>
-    <div *ngIf="user">
-        <ion-button (click)="contentService.logout()" expand="full" fill="clear">Se déconnecter</ion-button>
-    </div>
+  <div *ngIf="user">
+    <ion-button (click)="contentService.logout()" expand="full" fill="clear" color="danger">Se déconnecter</ion-button>
+  </div>
 
 </ion-list>
 

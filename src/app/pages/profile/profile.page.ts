@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
-import {catchError, filter, finalize, merge, Observable, of, switchMap, throwError} from "rxjs";
+import {catchError, filter, finalize, from, merge, Observable, of, switchMap, throwError} from "rxjs";
 import {FeedbackService} from "../../feedback.service";
 import {FormComponent} from "../../components/form.component";
 import {AlertController, ModalController, Platform} from "@ionic/angular";
@@ -277,10 +277,16 @@ export class ProfilePage extends FormComponent implements OnInit {
   }
 
   presentManageModal(){
-    if(this.platform.is('ios') || true){
+    if(this.platform.is('ios')){
       let res = StorePlugin.present({
         message: "Manage subscription"
       })
+    }else if(this.platform.is('android')){
+      from(StorePlugin.openAndroidSubscriptionManagementPage({productId: 'training_day'}))
+        .pipe(catchError((e)=>{
+          console.error(`Error while calling native code: ${JSON.stringify(e)}`)
+          return throwError(()=>e)
+        }))
     }else{
       this.feedbackService.registerNow("La gestion des abonnements n'est pas disponible sur cette plateforme", 'danger')
     }
@@ -340,7 +346,7 @@ export class ProfilePage extends FormComponent implements OnInit {
     })*/
   }
 
-  async cancelSubscription(){
+  /*async cancelSubscription(){
     // Display an Alert to confirm the subscription ending
     (new Observable(observer => {
       this.alertCtrl.create({
@@ -370,14 +376,17 @@ export class ProfilePage extends FormComponent implements OnInit {
       .pipe(
         filter((val)=>val === true),
         switchMap((val:boolean)=>{
-          console.log("Canceling subscription")
-          return this.cs.post('/end-android-subscription', {})
+          return from(StorePlugin.openAndroidSubscriptionManagementPage({productId: 'training_day'}))
+            .pipe(catchError((e)=>{
+              console.error(`Error while calling native code: ${JSON.stringify(e)}`)
+              return throwError(()=>e)
+            }))
         })
       )
       .subscribe((res)=>{
-        console.log(`Response from /end-android-subscription: ${res}`)
+        console.log(`Response after opening: ${res}`)
       })
     
-  }
+  }*/
 
 }

@@ -552,4 +552,25 @@ public class StorePlugin extends Plugin {
       }
     });
   }
+
+  @PluginMethod()
+  public void openAndroidSubscriptionManagementPage(PluginCall call){
+    String packageName = getContext().getPackageName();
+    String subscriptionProductId = call.getString("productId");
+
+    if (subscriptionProductId == null || subscriptionProductId.isEmpty()) {
+      call.reject("Product ID is required.");
+      return;
+    }
+
+    Uri uri = Uri.parse("https://play.google.com/store/account/subscriptions?package=" + packageName + "&sku=" + subscriptionProductId);
+    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+    intent.addFlags((Intent.FLAG_ACTIVITY_NEW_TASK));
+
+    getContext().startActivity(intent);
+
+    JSObject output = new JSObject();
+    output.put("message", "Browser opened");
+    call.resolve(output);
+  }
 }

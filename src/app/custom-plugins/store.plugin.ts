@@ -306,6 +306,10 @@ const mockStorePlugin: StorePlugin = {
   },
   purchaseProductWithDiscount: async(options: { productId: string, type: string|undefined, offerSignatureInfo: IOSPromoOfferSignatureInfo}, os)=>{
     return {"message": "Hello from web"}
+  },
+  openAndroidSubscriptionManagementPage: async(options: { productId: string })=>{
+    // Fakely return something
+    return {"message": "Hello from web"}
   }
 }
 export interface StorePlugin {
@@ -361,6 +365,9 @@ export interface StorePlugin {
 
   // Purchase using a promotional offer
   purchaseProductWithDiscount: (options: { productId: string, type: string|undefined, offerSignatureInfo: IOSPromoOfferSignatureInfo}, os)=>Promise<{ message: string }>
+
+  // Open Browser
+  openAndroidSubscriptionManagementPage: (options: { productId: string })=>Promise<{ message: string}>
 }
 export interface Transaction {
   bundleId: string;

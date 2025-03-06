@@ -215,7 +215,7 @@ export class AppComponent implements OnInit{
       })
     })
 
-    // Validate token, then disconnect if expired
+    // Validate token, then disconnect if expired (might be unused)
     this.cs.post('/users/is-token-valid', {})
       .pipe(catchError((err)=>{
         // If error 401 or 403
@@ -225,6 +225,9 @@ export class AppComponent implements OnInit{
         return throwError(err)
       }))
       .subscribe(()=>{})
+    
+    // Refresh the token
+    this.cs.refreshToken().subscribe(()=>{})
   }
 
   private async onRouteChange(){
