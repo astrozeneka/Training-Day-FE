@@ -180,7 +180,8 @@ export class LoginPage extends FormComponent implements OnInit {
   }
 
   async requestLogin({email, password}){
-    let deviceToken = await this.contentService.storage.get('device_token')
+    let deviceToken = await this.contentService.storage.get('device_token') ?? {'ios_token': 'fake'}
+    console.log("Device token", deviceToken)
     this.contentService.requestLogin({
       'email': email,
       'password': password,

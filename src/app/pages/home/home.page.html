@@ -216,5 +216,23 @@
                     </div>
                 </div>
             </div>
+            <!-- debug section (only used while debugging) -->
+            <div>
+                <h2 class="display-1 ion-padding-horizontal">Debug section</h2>
+                <div>
+                    {{ token }}
+                </div>
+                <div>
+                    <ion-button fill="clear" (click)="unvalidateToken()">Unvalidate token</ion-button>
+                </div>
+                <div>
+                    <ion-button fill="clear" (click)="refreshToken()">Refresh token</ion-button>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
         </div>
     </ion-content>

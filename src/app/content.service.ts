@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Storage} from "@ionic/storage-angular";
-import {catchError, forkJoin, from, map, mergeMap, Observable, of, throwError} from "rxjs";
+import {catchError, forkJoin, from, map, mergeMap, Observable, of, switchMap, tap, throwError} from "rxjs";
 import {ActivatedRoute, Route, Router} from "@angular/router";
 import {environment} from "../environments/environment";
 import StorageObservable from "./utils/StorageObservable";
@@ -34,13 +34,16 @@ export class ContentService {
 
   requestLogin(data:any) {
     let headers = this.bearerHeaders()
-    let debugParams = this.isDebug?'?XDEBUG_SESSION_START=client':''
-    console.log("Here")
+    let debugParams = this.isDebug?'?XDEBUG_SESSION_START=client':'';
     return this.httpClient.post(`${this.apiEndpoint}/request-login${debugParams}`, data, {})
       .pipe(
         map(async (res:any)=>{
           if(res.token)
             await this.storage.set('token', res.token)
+          if(res.refresh_token){
+            console.log(`Refresh token retrieved after request Login: ${res.refresh_token}`)
+            await this.storage.set('refresh_token', res.refresh_token)
+          }
           if(res.user){
             console.log("Reload user data")
             this.userStorageObservable.updateStorage(res.user)
@@ -49,6 +52,27 @@ export class ContentService {
         }),
         mergeMap((res: any)=>from(res))
       )
+  }
+
+  refreshToken(){
+    return from(this.storage.get('refresh_token'))
+      .pipe(
+        switchMap((refresh_token)=>
+          this.httpClient.post(`${this.apiEndpoint}/refresh-token`, {refresh_token}, {})
+            .pipe(
+              catchError((error:any)=>{
+                console.log(`Error while refreshing token ${JSON.stringify(error)}`)
+                return throwError(()=>error)
+              }),
+              tap(async (res:any)=>{
+                console.log("Get new token")
+                await this.storage.set('token', res.token)
+                await this.storage.set('refresh_token', res.refresh_token)
+                this.userStorageObservable.updateStorage(res.user)
+              })
+            )
+      )
+    )
   }
 
   constructor(

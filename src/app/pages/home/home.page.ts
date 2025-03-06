@@ -24,6 +24,9 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
 
   videos:any = []
 
+  // Used for debugging only
+  token:string = undefined
+
   override form = new FormGroup({
     'email': new FormControl('', [Validators.required, Validators.email])
   })
@@ -64,6 +67,11 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
     // The user data
     this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
       this.user = user
+    })
+
+    // Debugging (to be removed later)
+    this.contentService.storage.get('token').then((token)=>{
+      this.token = token
     })
   }
 
@@ -123,5 +131,33 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
     const timeDifference = trialEndDate.getTime() - currentDate.getTime();
     const days = timeDifference / (1000 * 3600 * 24);
     return Math.ceil(days);
+  }
+
+  /**
+   * Used for debugging
+   */
+  async unvalidateToken(){
+    let token = await this.contentService.storage.get('token')
+    let bearerHeaders = await this.contentService.bearerHeaders()
+    console.log(`Token now: ${token}`, bearerHeaders)
+    await this.contentService.storage.set('token', 'invalid_token');
+
+    token = await this.contentService.storage.get('token')
+    console.log(`Token is now: ${token}`, bearerHeaders)
+  }
+
+  async refreshToken(){
+    let token = await this.contentService.storage.get('token')
+    console.log(`Token is: ${token}`)
+
+    this.contentService.refreshToken().subscribe((res:any)=>{
+      // Sleep 1s
+      setTimeout(async ()=>{
+        let newToken = await this.contentService.storage.get('token')
+        console.log(`Token has changed: ${token} -> ${newToken}`)
+        this.token = newToken
+        this.cdRef.detectChanges()
+      }, 1000)
+    })
   }
 }

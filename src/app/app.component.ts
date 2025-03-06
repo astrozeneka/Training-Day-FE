@@ -34,7 +34,8 @@ export class AppComponent implements OnInit{
     private alertController: AlertController, // For later, it can be used inside a separate service
     private sanitize: DomSanitizer,
     public purchaseService: PurchaseService,
-    public bnus:BottomNavbarUtilsService
+    public bnus:BottomNavbarUtilsService,
+    private cs: ContentService
   ) {
 
     router.events.subscribe((event)=>{
@@ -213,6 +214,17 @@ export class AppComponent implements OnInit{
         }
       })
     })
+
+    // Validate token, then disconnect if expired
+    this.cs.post('/users/is-token-valid', {})
+      .pipe(catchError((err)=>{
+        // If error 401 or 403
+        if(err.status == 401 || err.status == 403){
+          this.cs.logout()
+        }
+        return throwError(err)
+      }))
+      .subscribe(()=>{})
   }
 
   private async onRouteChange(){
