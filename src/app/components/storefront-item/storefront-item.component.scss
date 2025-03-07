@@ -12,9 +12,14 @@
 
     & .price{
         // Fit all text in one row
-        white-space: nowrap;
+        //white-space: nowrap;
         min-width: 60px;
         text-align: center;
+        & .prefix, & .suffix{
+            color: var(--ion-color-lightgrey);
+            font-size: 14px;
+            height: 16px;
+        }
     }
 
     & .description{

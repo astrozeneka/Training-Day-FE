@@ -5,7 +5,9 @@
       -
     </div>
     <div *ngIf="product" class="price">
-      {{ product.displayPrice }}
+      <div class="prefix">{{ displayPricePrefix }}</div>
+      <div class="main">{{ displayPrice }}</div>
+      <div class="suffix" *ngIf="displayPriceSuffix">{{ displayPriceSuffix }}</div>
     </div>
   </h2>
   <p class="description">

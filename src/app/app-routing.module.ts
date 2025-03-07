@@ -276,6 +276,10 @@ const routes: Routes = [
     path: 'ios-purchase-invoice',
     loadChildren: () => import('./pages/purchase-invoice/ios-purchase-invoice/ios-purchase-invoice.module').then( m => m.IosPurchaseInvoicePageModule)
   },
+  {
+    path: 's1-personal-info',
+    loadChildren: () => import('./pages/onboarding/s1-personal-info/s1-personal-info.module').then( m => m.S1PersonalInfoPageModule)
+  },
 ];
 
 @NgModule({

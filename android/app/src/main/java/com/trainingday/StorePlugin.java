@@ -190,7 +190,7 @@ public class StorePlugin extends Plugin {
           JSArray subscriptionListJson = new JSArray();
           for (ProductDetails.SubscriptionOfferDetails subscription: details.getSubscriptionOfferDetails()){
             JSObject subscriptionJson = new JSObject();
-            subscriptionJson.put("offerId", subscription.getOfferId());
+            subscriptionJson.put("offerId", subscription.getOfferId()); // Optional
             subscriptionJson.put("basePlanId", subscription.getBasePlanId());
             subscriptionJson.put("offerIdToken", subscription.getOfferToken());
 
@@ -208,7 +208,7 @@ public class StorePlugin extends Plugin {
               pricePhasingJson.put("formattedPrice", pricePhase.getFormattedPrice());
               pricePhasingJson.put("billingPeriod", pricePhase.getBillingPeriod());
               pricePhasingJson.put("recurrenceMode", pricePhase.getRecurrenceMode());
-              pricePhasingJson.put("billingCycleCount", pricePhase.getBillingCycleCount());
+              pricePhasingJson.put("billingCycleCount", pricePhase.getBillingCycleCount()); // Optional
               pricePhasingListJson.put(pricePhasingJson);
             }
             subscriptionJson.put("pricingPhases", pricePhasingListJson);

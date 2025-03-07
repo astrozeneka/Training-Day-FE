@@ -44,7 +44,7 @@ export class StoreAutoRenewablesComponent extends EntitlementReady implements On
     this.is_android = this.platform.is('capacitor') && this.platform.is('android');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     // 1. Load user
     this.cs.getUserFromLocalStorage().then(user => {
       this.user = user;
@@ -59,7 +59,7 @@ export class StoreAutoRenewablesComponent extends EntitlementReady implements On
       } catch (error) {
         this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
       }
-    } else if (this.platform.is('capacitor') && this.platform.is('android')) {
+    } else if ((this.platform.is('capacitor') || true) && this.platform.is('android')) {
       try {
         // Load from Android
         products = this.purchaseService.getProducts('subs')
@@ -75,10 +75,19 @@ export class StoreAutoRenewablesComponent extends EntitlementReady implements On
       }
     }
     products.then(({products}) => {
-      this.productList = (products as Subscription[]).reduce((acc, product) => {
-        acc[(product as IOSSubscription).id || (product as AndroidSubscription).productId] = product
-        return acc
-      }, {} as any)
+      // The two code below might be merged into one
+      if (this.platform.is('ios')){
+        this.productList = (products as Subscription[]).reduce((acc, product) => {
+          acc[(product as IOSSubscription).id || (product as AndroidSubscription).productId] = product
+          return acc
+        }, {} as any)
+      } else if (this.platform.is('android')){
+        this.productList = (products as Subscription[]).reduce((acc, product) => {
+          acc[(product as IOSSubscription).id || (product as AndroidSubscription).productId] = product
+          return acc
+        }, {} as any)
+      }
+      //console.log(`Load products from native code: ${JSON.stringify(this.productList)}`)
     })
   }
 

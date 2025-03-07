@@ -1,0 +1,175 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <app-back-button></app-back-button>
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Inscription</ion-title>
+    <ion-progress-bar value="0.1111111111111111"></ion-progress-bar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form [formGroup]="form">
+
+      <div class="ion-padding-horizontal">
+        <div class="onboarding-title">
+          Renseignez vos informations personnelles
+        </div>
+        <div class="onboarding-subtitle">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        </div>
+      </div>
+
+      <ion-item *ngIf="passwordlessLogin">
+          <ion-input
+                  label="username"
+                  label-placement="floating"
+                  formControlName="username"
+                  readonly
+          ></ion-input>
+      </ion-item>
+    <ion-item>
+      <ion-input
+        label="Prénom"
+        formControlName="firstname"
+        labelPlacement="floating"
+        [errorText]="displayedError.firstname"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Nom"
+        label-placement="floating"
+        formControlName="lastname"
+        [errorText]="displayedError.lastname"
+      ></ion-input>
+    </ion-item>
+
+      <div *ngIf="!passwordlessLogin">
+        <ion-item>
+          <ion-input
+            label="Email"
+            label-placement="floating"
+            formControlName="email"
+            [errorText]="displayedError.email"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            [type]="passwordToggle.value ? 'text' : 'password'"
+            label="Mot de passe"
+            label-placement="floating"
+            formControlName="password"
+            [errorText]="displayedError.password"
+          ></ion-input>
+          <ion-button
+            color="medium"
+            fill="clear"
+            class="password-toggle"
+            shape="round"
+            (touchstart)="passwordToggle.toggle($event, true)"
+            (touchend)="passwordToggle.toggle($event, false)"
+            (mousedown)="passwordToggle.toggle($event, true)"
+            (mouseup)="passwordToggle.toggle($event, false)"
+          >
+            <div>
+              <ion-icon slot="end" name="eye"></ion-icon>
+            </div>
+          </ion-button>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            [type]="passwordConfirmToggle.value ? 'text' : 'password'"
+            label="Confirmez le mot de passe"
+            label-placement="floating"
+            formControlName="password_confirm"
+            [errorText]="displayedError.password_confirm"
+          ></ion-input>
+          <ion-button
+            color="medium"
+            fill="clear"
+            class="password-toggle"
+            shape="round"
+            (touchstart)="passwordConfirmToggle.toggle($event, true)"
+            (touchend)="passwordConfirmToggle.toggle($event, false)"
+            (mousedown)="passwordConfirmToggle.toggle($event, true)"
+            (mouseup)="passwordConfirmToggle.toggle($event, false)"
+          >
+            <div>
+              <ion-icon slot="end" name="eye"></ion-icon>
+            </div>
+          </ion-button>
+        </ion-item>
+      </div>
+    <ion-item>
+      <div class="phone-input-wrapper">
+        <app-phone-prefix-select
+          justify="end"
+          label="Indicatif"
+          labelPlacement="stacked"
+          formControlName="phone_prefix"
+        ></app-phone-prefix-select>
+        <ion-input
+          label="Téléphone"
+          label-placement="floating"
+          formControlName="phone"
+          [errorText]="displayedError.phone"
+          slot="content"
+          type="phone"
+          inputmode="tel"
+        ></ion-input>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Adresse"
+        label-placement="floating"
+        formControlName="address"
+        [errorText]="displayedError.address"
+      ></ion-input>
+    </ion-item>
+    <div class="city-postal-code">
+      <ion-item>
+        <ion-input
+          label="Ville"
+          label-placement="floating"
+          formControlName="city"
+          [errorText]="displayedError.city"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          label="Code postal"
+          label-placement="floating"
+          formControlName="postal_code"
+          [errorText]="displayedError.postal_code"
+        ></ion-input>
+      </ion-item>
+    </div>
+
+    <div>
+      <ion-item>
+        <ion-label>Accepter <a class="a" (click)="openCGU()">les conditions générales d'utilisation</a></ion-label>
+        <ion-checkbox formControlName="acceptConditions" slot="end" color="primary"></ion-checkbox>
+      </ion-item>
+      <div class="input-error ion-padding-horizontal" *ngIf="form.get('acceptConditions').invalid && form.get('acceptConditions').touched">
+        Vous devez accepter les conditions générales d'utilisation
+      </div>
+    </div>
+
+    <div class="ion-text-center ion-padding">
+      <!--<ion-button (click)="resetForm()" color="medium" *ngIf="!passwordlessLogin">Réinitialiser</ion-button>-->
+      <app-ux-button
+        [loading]="formIsLoading"
+        (click)="submitForm()"
+        [fixedWidth]="true"
+        expand="block"
+        shape="round"
+        class="onboarding-button"
+      >
+        <span>Continuer</span>
+    </app-ux-button>
+    </div>
+  </form>
+</ion-content>

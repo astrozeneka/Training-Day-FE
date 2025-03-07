@@ -84,6 +84,7 @@ const mockStorePlugin: StorePlugin = {
           }
         ]}
       } else if (options.type == 'subs'){
+        /* // used with billingclient v6.0.0 (doesn't support promotional offer)
         return {products: [
           {
               "productId": "training_day",
@@ -140,6 +141,166 @@ const mockStorePlugin: StorePlugin = {
               ]
           }
         ]}
+        */
+        // used with billingclient v7.1.1
+        return {"products": [
+          {
+              "productId": "training_day",
+              "type": "subs",
+              "title": "Abonnement Training Day (Training-Day)",
+              "name": "Abonnement Training Day",
+              "description": "",
+              "subscriptionOfferDetails": [
+                  {
+                      "basePlanId": "hoylt",
+                      "offerIdToken": "AWOstcaBzLJgZ/sGxvCEUPcGIy0MYFoJd4+P9PKwk0ra8KC++LRETRYnCyR5VKo5XnPVrBh/MyLTK9g=",
+                      "offerTags": [],
+                      "pricingPhases": [
+                          {
+                              "priceAmountMicros": 10990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "10,99 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 1,
+                              "billingCycleCount": 0
+                          }
+                      ]
+                  },
+                  {
+                      "basePlanId": "moreno",
+                      "offerIdToken": "AWOstcaDpbzc2cFk9GVsOl9XMeKArfx4dPokr3OE0EcFkezr4BtzUfWiiAaO6H2DIOGsAsxs0ZTivtE=",
+                      "offerTags": [],
+                      "pricingPhases": [
+                          {
+                              "priceAmountMicros": 31990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "31,99 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 1,
+                              "billingCycleCount": 0
+                          }
+                      ]
+                  },
+                  {
+                      "offerId": "gursky6mo",
+                      "basePlanId": "gursky",
+                      "offerIdToken": "AWOstcZSPA4KbkCuaPde0LQyYGzzHPojnOtx+FAdhKiS5cy3Zn9d6qQYZvIKRTGjf2i30j79WByKGLq1PmqVJA==",
+                      "offerTags": [],
+                      "pricingPhases": [
+                          {
+                              "priceAmountMicros": 144990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "144,99 $US",
+                              "billingPeriod": "P6M",
+                              "recurrenceMode": 2,
+                              "billingCycleCount": 1
+                          },
+                          {
+                              "priceAmountMicros": 25990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "25,99 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 1,
+                              "billingCycleCount": 0
+                          }
+                      ]
+                  },
+                  {
+                      "basePlanId": "gursky",
+                      "offerIdToken": "AWOstcZGi+Xre/XLjQGX9Wj5EcaKCCDUd/NgCCVnXwoLiVMoHu7CQFiwqRmv20TduXM222GyKCnydso=",
+                      "offerTags": [],
+                      "pricingPhases": [
+                          {
+                              "priceAmountMicros": 25990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "25,99 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 1,
+                              "billingCycleCount": 0
+                          }
+                      ]
+                  },
+                  {
+                      "basePlanId": "smiley",
+                      "offerIdToken": "AWOstcakwSo1WBFIy8NPWhEsFJxZT7Nez67hpZMhKmFbS8qLrHJHv9pjc682bGPDZmbJ8Djfj4ISdmY=",
+                      "offerTags": [],
+                      "pricingPhases": [
+                          {
+                              "priceAmountMicros": 25990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "25,99 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 1,
+                              "billingCycleCount": 0
+                          }
+                      ]
+                  },
+                  {
+                      "offerId": "alonzoupgrade",
+                      "basePlanId": "alonzo",
+                      "offerIdToken": "AWOstcbou8VdTyxeG8hhqQPn+Rh9xiFyx12iWGe3BWstcft6jWD01sNqFkT1JGkFaoxFOT25JVQhAHwJwFbzFWFwlwQ9fa0=",
+                      "offerTags": [],
+                      "pricingPhases": [
+                          {
+                              "priceAmountMicros": 41790000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "41,79 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 2,
+                              "billingCycleCount": 2
+                          },
+                          {
+                              "priceAmountMicros": 43990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "43,99 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 1,
+                              "billingCycleCount": 0
+                          }
+                      ]
+                  },
+                  {
+                      "offerId": "alonzofree",
+                      "basePlanId": "alonzo",
+                      "offerIdToken": "AWOstcZP9oCgr1paRcye7YNH9oH+zwY7ezUDDFm2UVcHnQLq34PBALq90cbmGBk82rhkiCWiXzNYlStPONMyQTouDQ==",
+                      "offerTags": [],
+                      "pricingPhases": [
+                          {
+                              "priceAmountMicros": 0,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "Gratuit",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 2,
+                              "billingCycleCount": 1
+                          },
+                          {
+                              "priceAmountMicros": 43990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "43,99 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 1,
+                              "billingCycleCount": 0
+                          }
+                      ]
+                  },
+                  {
+                      "basePlanId": "alonzo",
+                      "offerIdToken": "AWOstcZjHPysUCUewzeHLkIgbMRMJdj7r9nZAZ14IMUT1e5nhD/IZJpcnX3AE7fJd8ofHCA4ro4EorQ=",
+                      "offerTags": [],
+                      "pricingPhases": [
+                          {
+                              "priceAmountMicros": 43990000,
+                              "priceCurrencyCode": "USD",
+                              "formattedPrice": "43,99 $US",
+                              "billingPeriod": "P1M",
+                              "recurrenceMode": 1,
+                              "billingCycleCount": 0
+                          }
+                      ]
+                  }
+              ]
+          }
+      ]}
       } else {
         console.log(options.type)
         return {products: []}
@@ -387,7 +548,14 @@ export interface Product {
   displayName: string;
   id: string;
   price: number;
-  androidOfferToken?: string | undefined; // Only for Android
+  androidOfferToken?: string | undefined; // Android Subs only
+  pricingPhases?: PricingPhase[]; // Android Subs only
+  offers?: AndroidSubscriptionOffer[]
+}
+
+export interface AndroidSubscriptionOffer {
+  displayPrice: string;
+  pricingPhases?: PricingPhase[];
 }
 
 

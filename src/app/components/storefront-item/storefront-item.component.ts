@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { ContentService } from 'src/app/content.service';
 import { Product } from 'src/app/custom-plugins/store.plugin';
 import { User } from 'src/app/models/Interfaces';
@@ -8,7 +8,7 @@ import { User } from 'src/app/models/Interfaces';
   templateUrl: './storefront-item.component.html',
   styleUrls: ['./storefront-item.component.scss'],
 })
-export class StorefrontItemComponent  implements OnInit {
+export class StorefrontItemComponent  implements OnInit, OnChanges {
   @Input() color: string = 'primary';
   @Input() disabled: boolean = false;
   @Output() action: EventEmitter<any> = new EventEmitter();
@@ -17,6 +17,11 @@ export class StorefrontItemComponent  implements OnInit {
   
   // The IAP produc to display
   @Input() product: Product;
+
+  // Managing correctly the display price
+  displayPricePrefix = undefined
+  displayPrice = undefined
+  displayPriceSuffix = undefined
 
   constructor(
     private cs: ContentService // Low coupling strategy
@@ -27,6 +32,21 @@ export class StorefrontItemComponent  implements OnInit {
   }
 
   ngOnInit() {}
+
+  ngOnChanges(){
+    if(this.product){
+      let displayPrice = this.product.displayPrice
+      if(displayPrice.includes("À partir de")){
+        this.displayPricePrefix = "À partir de"
+        displayPrice = displayPrice.replace("À partir de", "")
+      }
+      if (displayPrice.includes("/mois")){
+        this.displayPriceSuffix = "/mois"
+        displayPrice = displayPrice.replace("/mois", "")
+      }
+      this.displayPrice = displayPrice
+    }
+  }
 
   triggerAction(){
     this.action.emit();

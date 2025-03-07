@@ -94,23 +94,27 @@ export class PurchaseService { // This class cannot be used anymore due to andro
           
           androidProduct.subscriptionOfferDetails.forEach((offerDetail) => {
             // For this feature, the price phasing is not yet supported
-            if (offerDetail.pricingPhases.length > 1)
-              throw new Error('Multiple pricing phases found, except to only have one')
+            /*if (offerDetail.pricingPhases.length > 1)
+              throw new Error('Multiple pricing phases found, except to only have one')*/
             if (offerDetail.pricingPhases.length == 0)
               throw new Error('No pricing phases found')
-            let pricingPhase = offerDetail.pricingPhases[0]
+            let pricingPhases = offerDetail.pricingPhases
             let capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1)
             console.log("AndroidOfferToken: ", offerDetail.offerIdToken)
             console.log("OfferDetail: ", JSON.stringify(offerDetail))
             products.push({
-              displayPrice: pricingPhase.formattedPrice,
+              displayPrice: pricingPhases[0].formattedPrice,
               description: "Abonnement " + capitalize(offerDetail.basePlanId),
               displayName: capitalize(offerDetail.basePlanId),
               id: offerDetail.basePlanId,
-              price: pricingPhase.priceAmountMicros / 100000,
-              androidOfferToken: offerDetail.offerIdToken
+              price: pricingPhases[0].priceAmountMicros / 1000000,
+              androidOfferToken: offerDetail.offerIdToken,
+              pricingPhases: pricingPhases
             })
           })
+        }
+        if (this.platform.is('android') && type == 'subs'){
+          products = this.groupAndroidSubscriptionOffers(products)
         }
         return {
           products: products
@@ -197,5 +201,94 @@ export class PurchaseService { // This class cannot be used anymore due to andro
     let output$ = merge(this.promoOffers$[productId], additionalEvents$)
     output$ = output$.pipe(filter((data)=>data?.length>0))
     return output$
+  }
+
+  private groupAndroidSubscriptionOffers(products: Product[]):Product[]{
+    let dict = {}
+    products.forEach(product => {
+      if(!dict.hasOwnProperty(product.id)){
+        dict[product.id] = {
+          displayPrice: null, // Typically (à partir de ...) based on the available offers
+          displayName: product.displayName,
+          description: product.description,
+          id: product.id,
+          offers: [],
+          firstPhaseMonthlyPrices: []
+        }
+      }
+      dict[product.id].offers.push({
+        displayPrice: product.displayPrice,
+        price: product.price,
+        androidOfferToken: product.androidOfferToken,
+        pricingPhases: product.pricingPhases
+      })
+      let firstPhaseBillingPeriod = product.pricingPhases[0].billingPeriod // 'P1M', 'P3M', 'P6M', 'P1Y'
+      let firstPhaseBillingNMonth = this.billingPeriodToMonth(firstPhaseBillingPeriod)
+      let firstPhasePrice = product.pricingPhases[0].priceAmountMicros / 1000000
+      dict[product.id].firstPhaseMonthlyPrices.push(firstPhasePrice / firstPhaseBillingNMonth)
+    })
+    // Compute the display price
+    for (let key in dict){
+      let product = dict[key]
+      if (product.offers.length == 1){
+        dict[key].displayPrice = `${product.offers[0].displayPrice}/mois`
+      }else{
+        let minPrice = Math.min(...product.firstPhaseMonthlyPrices)
+        minPrice = (Math.round(minPrice * 100) / 100)
+        let minPriceStr = `À partir de ${this.patchDisplayPrice(product.offers[0].displayPrice, minPrice)}/mois`
+        dict[key].displayPrice = minPriceStr
+      }
+    }
+    // Convert dictionary to array
+    let output = []
+    for (let key in dict)
+      output.push(dict[key])
+    return output
+  }
+
+  private billingPeriodToMonth(billingPeriod:string):number{
+    let dict = {
+      'P1M': 1,
+      'P3M': 3,
+      'P6M': 6,
+      'P1Y': 12
+    }
+    return dict[billingPeriod]
+  }
+
+  private extractCurrency(displayPrice:string):string{
+    return displayPrice.replace(/[0-9.,\s]/g, '');
+  }
+
+  private patchDisplayPrice(templateDisplayPrice: string, value: number):string{
+    // Find the numeric part (digits, comma, or period)
+    const match = templateDisplayPrice.match(/[\d.,]+/);
+    if (!match) {
+      // Fallback: if no number is found, append the value.
+      return templateDisplayPrice + value;
+    }
+
+    const originalNumber = match[0];
+    let newNumberStr = "";
+    
+    // Check if the original number has a decimal point or comma
+    if (originalNumber.includes('.') || originalNumber.includes(',')) {
+      // Determine the separator ('.' is more common, but some locales use ',')
+      const separator = originalNumber.includes('.') ? '.' : ',';
+      const parts = originalNumber.split(separator);
+      // Use the number of decimals in the original for formatting
+      const decimals = parts[1] ? parts[1].length : 0;
+      newNumberStr = value.toFixed(decimals);
+      // If the original separator was a comma, replace the decimal point in our new string
+      if (separator === ',') {
+        newNumberStr = newNumberStr.replace('.', ',');
+      }
+    } else {
+      // No decimal, so use an integer representation (or you could opt to use value.toString())
+      newNumberStr = Math.round(value).toString();
+    }
+    
+    // Replace the found numeric part with the newly formatted value
+    return templateDisplayPrice.replace(originalNumber, newNumberStr);
   }
 }

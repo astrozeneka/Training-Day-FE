@@ -17,10 +17,12 @@ import {ProdComponentsModule} from "./dev-prod-components/prod-components.module
 import { DisplayListPipe } from './display-list.pipe';
 import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
 import { CustomRouteReuseStrategy } from './custom-route-reuse-strategy';
+import { DisplayPricePipe } from './pipes/display-price.pipe';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DisplayPricePipe
   ],
     imports: [
         BrowserModule,
