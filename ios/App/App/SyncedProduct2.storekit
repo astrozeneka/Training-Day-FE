@@ -130,26 +130,6 @@
       "productID" : "sportcoach_4w",
       "referenceName" : "Programme Sportif Mensuel",
       "type" : "NonRenewingSubscription"
-    },
-    {
-      "displayPrice" : "29.99",
-      "familyShareable" : false,
-      "internalID" : "6538727349",
-      "localizations" : [
-        {
-          "description" : "Sport Coaching (1 Month)",
-          "displayName" : "Sport Coaching (1 Month)",
-          "locale" : "en_US"
-        },
-        {
-          "description" : "Programme Sportif Mensuel",
-          "displayName" : "Programme Sportif Mensuel",
-          "locale" : "fr"
-        }
-      ],
-      "productID" : "coachsport_4w",
-      "referenceName" : "Programme Sportif Mensuel (old)",
-      "type" : "NonRenewingSubscription"
     }
   ],
   "products" : [
@@ -159,14 +139,14 @@
       "internalID" : "6505030169",
       "localizations" : [
         {
-          "description" : "Get one training session.",
-          "displayName" : "Personal Trainer (1 session)",
-          "locale" : "en_US"
-        },
-        {
           "description" : "Bénéficiez d'une séance d'entraînement.",
           "displayName" : "Personal Trainer (1 Séance)",
           "locale" : "fr"
+        },
+        {
+          "description" : "Get one training session.",
+          "displayName" : "Personal Trainer (1 session)",
+          "locale" : "en_US"
         }
       ],
       "productID" : "trainer1",
@@ -218,7 +198,7 @@
     "_applicationInternalID" : "6477325664",
     "_developerTeamID" : "FPUNC48548",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 762342100.89604199,
+    "_lastSynchronizedDate" : 763394706.66659999,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -279,16 +259,24 @@
       "subscriptions" : [
         {
           "adHocOffers" : [
-
+            {
+              "displayPrice" : "229.99",
+              "internalID" : "C39BC472",
+              "numberOfPeriods" : 1,
+              "offerID" : "alonzo6mo",
+              "paymentMode" : "payUpFront",
+              "referenceName" : "alonzo-6-mo",
+              "subscriptionPeriod" : "P6M"
+            }
           ],
           "codeOffers" : [
             {
               "eligibility" : [
+                "existing",
                 "expired",
-                "new",
-                "existing"
+                "new"
               ],
-              "internalID" : "2AACAE31",
+              "internalID" : "091F8A0D",
               "isStackable" : true,
               "numberOfPeriods" : 1,
               "paymentMode" : "free",
@@ -298,10 +286,23 @@
             {
               "eligibility" : [
                 "new",
-                "existing",
-                "expired"
+                "expired",
+                "existing"
               ],
-              "internalID" : "9EEE2305",
+              "internalID" : "485FB931",
+              "isStackable" : false,
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "referenceName" : "Free-Alonzo-2",
+              "subscriptionPeriod" : "P2W"
+            },
+            {
+              "eligibility" : [
+                "existing",
+                "expired",
+                "new"
+              ],
+              "internalID" : "0E52E6E0",
               "isStackable" : true,
               "numberOfPeriods" : 1,
               "paymentMode" : "free",
@@ -372,7 +373,7 @@
           "adHocOffers" : [
             {
               "displayPrice" : "39.99",
-              "internalID" : "468890DB",
+              "internalID" : "93EC4F13",
               "numberOfPeriods" : 1,
               "offerID" : "hoylt6mo",
               "paymentMode" : "payUpFront",
@@ -385,7 +386,7 @@
               "eligibility" : [
                 "new"
               ],
-              "internalID" : "F66A9A2C",
+              "internalID" : "1124388F",
               "isStackable" : true,
               "numberOfPeriods" : 1,
               "paymentMode" : "free",
@@ -397,7 +398,7 @@
               "eligibility" : [
                 "new"
               ],
-              "internalID" : "98682ED9",
+              "internalID" : "9A9CE989",
               "isStackable" : true,
               "numberOfPeriods" : 3,
               "paymentMode" : "payAsYouGo",
@@ -466,7 +467,15 @@
         },
         {
           "adHocOffers" : [
-
+            {
+              "displayPrice" : "129.99",
+              "internalID" : "9DE45C34",
+              "numberOfPeriods" : 1,
+              "offerID" : "smiley6mo",
+              "paymentMode" : "payUpFront",
+              "referenceName" : "smiley-6-mo",
+              "subscriptionPeriod" : "P6M"
+            }
           ],
           "codeOffers" : [
 

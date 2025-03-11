@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
 import { Platform } from '@ionic/angular';
-import { BehaviorSubject, catchError, combineLatest, finalize, merge, Observable, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, filter, finalize, from, map, merge, Observable, Subject, switchMap, take, throwError } from 'rxjs';
 import Store, { AndroidEntitlement, AndroidProduct } from 'src/app/custom-plugins/store.plugin';
 import { FeedbackService } from 'src/app/feedback.service';
 import { PurchaseService } from 'src/app/purchase.service';
@@ -39,6 +39,9 @@ export class PromoCodeAndroidPage implements OnInit {
   // Should be refactored in a base class (very low code quality)
   useDarkMode: boolean = true;
 
+  // Product type
+  productType: 'subs' | 'inapp' // The product type (subs or inapp)
+
   constructor(
     private platform: Platform,
     private purchaseService: PurchaseService,
@@ -50,6 +53,9 @@ export class PromoCodeAndroidPage implements OnInit {
   ) { }
 
   async ngOnInit() {
+    // The router element for productType
+    this.productType = this.router.url.split('/').pop() as 'subs' | 'inapp'
+
     // Listen for onPurchase event (Doesn't work), the
     if (this.platform.is('capacitor') && this.platform.is('android')) {
       Store.addListener('onPurchase', (purchases:{purchases:AndroidProduct[]}) => {
@@ -72,13 +78,19 @@ export class PromoCodeAndroidPage implements OnInit {
     })
 
     // 3. Handle the 'merged' subscription
-    combineLatest([this.submitted$, this.onResume$]).subscribe(async([submitted, onResume])=>{
+
+    combineLatest([this.submitted$, this.onResume$])
+    .pipe(filter(()=>false))
+    .subscribe(async([submitted, onResume])=>{
       if(submitted && onResume){
         // this.feedbackService.registerNow("User is back in the webview after entering promo code", "secondary")
         console.log("User is back in the webview after entering promo code")
 
+        this.formIsLoading = false
+
         // Check user entitlements
         let newEntitlements = await this.getEntitlements()
+        console.log(`Entitlement retrieved: ${JSON.stringify(newEntitlements)}`)
 
         let currentTokens = this.currentEntitlement.map(e=>e.purchaseToken)
         let newTokens = newEntitlements.map(e=>e.purchaseToken)
@@ -198,20 +210,81 @@ export class PromoCodeAndroidPage implements OnInit {
       return
     }
 
-
     let url = "https://play.google.com/redeem?code=" + this.form.value.promoCode
-    Store.openAndroidPromoDeepLink({url: url}).then(res=>
-      this.submitted$.next(true)
-    )
+    from(Store.openAndroidPromoDeepLink({url: url}))
+      .pipe(
+        catchError(err=>{
+          console.log("Error while opening the promo code deep link")
+          return throwError(()=>err)
+        }),
+        switchMap(()=>this.onResume$.pipe(take(1))),
+        switchMap(()=>{
+          return from(this.getEntitlements())
+        }),
+        switchMap((newEntitlements:any[])=>{
+          console.log("User finished entering the code")
+          console.log("Here are newEntitlements: " + JSON.stringify(newEntitlements))
+          let currentTokens = this.currentEntitlement.map(e=>e.purchaseToken)
+          let newTokens = newEntitlements.map(e=>e.purchaseToken)
+          let addedTokens = newTokens.filter(e=>!currentTokens.includes(e))
+          this.currentEntitlement = newEntitlements
+  
+          if (addedTokens.length == 0) {
+            this.feedbackService.registerNow("Aucun achat n'a été enregistré", "dark")
+            return throwError(()=>new Error("No purchase has been registered"))
+          } else if (addedTokens.length > 1) {
+            this.feedbackService.registerNow("Plusieurs achats ont été enregistrés, veuillez signaler l'administrateur", "warn")
+          }
+          let addedToken = addedTokens[0]
+          console.log("Purchase token is : " + addedToken)
+
+          // added entitlements (expected to have length == 1)
+          let addedEntitlements = newEntitlements.filter(e=>e.purchaseToken == addedToken)
+
+          // Acknowledge the purchase
+          return from(Store.acknowledgeAndroidPurchase({purchaseToken: addedToken}))
+            .pipe(
+              map((res)=>{
+                return {res, addedEntitlements}
+              }),
+              catchError(err=>{
+                console.error(`Error while acknowledging purchase: ${JSON.stringify(err)}`)
+                this.formIsLoading = false
+                return throwError(()=>err)
+              })
+            )
+        }),
+        switchMap(({res, addedEntitlements})=>{
+          // Sync the entitlements to the backend server
+          console.log(`Purchase acknowledged: ${JSON.stringify(res)}, ${JSON.stringify(addedEntitlements)}`)
+          return from(this.cs.post('/users/sync-entitlements', {
+            entitlements: addedEntitlements,
+            platform: 'android'
+          }))
+          .pipe(
+            map((res)=>{return {res, entitlements: addedEntitlements}}),
+            catchError(err=>{
+              console.log(`Error while syncing entitlements: ${JSON.stringify(err)}`)
+              this.feedbackService.registerNow(`Erreur lors de la synchronisation des achats`, "danger")
+              return throwError(()=>err)
+            })
+          )
+        })
+      )
+      .subscribe(({res, entitlements: addedEntitlements})=>{
+        // res is a result from 'http' request
+        this.feedbackService.registerNow("Achat enregistré", "dark")
+        this.prepareSuccessFeedback(addedEntitlements[0])
+      })
   }
 
   async getEntitlements(): Promise<AndroidEntitlement[]>{
-    let androidData = (await this.purchaseService.getAndroidEntitlements()) as any as {entitlements: AndroidEntitlement[]}
+    let androidData = (await this.purchaseService.getAndroidEntitlements(this.productType)) as any as {entitlements: AndroidEntitlement[]}
     return androidData.entitlements
   }
 
   async verifyEntitlements(event){
-    let androidData = (await this.purchaseService.getAndroidEntitlements()) as any as {entitlements: AndroidEntitlement[]}
+    let androidData = (await this.purchaseService.getAndroidEntitlements(this.productType)) as any as {entitlements: AndroidEntitlement[]}
     console.log("Fetch data from android")
     let list = androidData.entitlements.map(e=>e.products.join('+')).join(", ")
     this.feedbackService.registerNow("Android Entitlements[L] : " + list, "secondary")

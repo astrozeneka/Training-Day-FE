@@ -2,10 +2,9 @@ import {Capacitor, registerPlugin} from '@capacitor/core'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'
 const mockStorePlugin: StorePlugin = {
   getProducts: async(options: {type:'subs'|'inapp'|null}) => { // Type is only for android
-    if (mockStorePlugin._emulatedOSData == 'ios'){
+    if (/*mockStorePlugin._emulatedOSData == 'ios'*/true){
       return {
-        "products":[
-          {"price":12.99,"id":"foodcoach_1w","displayName":"Food Coaching (1 Month)","displayPrice":"$12.99","description":"Get 1 month of food coaching program"},{"id":"sportcoach_6w","displayPrice":"$49.99","price":49.99,"description":"Get 6 weeks of sport coaching program","displayName":"Sport Coaching (6 Weeks)"},{"description":"Get 1 week of sport coaching program","displayName":"Sport Coaching (1 Week)","price":12.99,"displayPrice":"$12.99","id":"sportcoach_1w"},{"displayName":"Food Coaching (1 Month)","price":44.99,"id":"foodcoach_4w","displayPrice":"$44.99","description":"Get 1 month of food coaching program"},{"description":"Get 5 training sessions.","id":"trainer5","displayName":"Personal Trainer (5 sessions)","displayPrice":"$249.00","price":249},{"id":"sportcoach_4w","description":"Get 1 month of sport coaching program","displayPrice":"$44.99","displayName":"Sport Coaching (1 Month)","price":44.99},{"displayName":"Pack Alonzo","description":"Get Alonzo subscription","id":"alonzo","price":44.99,"displayPrice":"$44.99"},{"displayPrice":"$449.00","description":"Get 10 training sessions.","price":449,"id":"trainermax","displayName":"Personal Trainer (10 sessions)"},{"description":"Get Hoylt subscription","price":6.99,"id":"hoylt","displayName":"Pack Hoylt","displayPrice":"$6.99"},{"price":24.99,"displayPrice":"$24.99","displayName":"Pack Gursky","description":"Get Gursky subscription","id":"gursky"},{"price":22.99,"displayName":"Pack Moreno","description":"Get Moreno subscription","displayPrice":"$22.99","id":"moreno"},{"id":"trainer1","displayName":"Personal Trainer (1 session)","description":"Get one training session.","displayPrice":"$49.99","price":49.99},{"id":"smiley","description":"Get Smiley subscription","price":24.99,"displayName":"Pack Smiley","displayPrice":"$24.99"},{"displayName":"Food Coaching (6 Weeks)","price":49.99,"id":"foodcoach_6w","description":"Get 6 weeks of food coaching program","displayPrice":"$49.99"}]
+        "products":[{"displayPrice":"269,00 €","price":269,"description":"Bénéficiez de 5 séances d'entraînement.","id":"trainer5","displayName":"Personal Trainer (5 séances)"},{"displayPrice":"29,99 €","id":"gursky","description":"Profitez de l'abonnement Gursky","displayName":"Pack Gursky","price":29.99},{"displayName":"Personal Trainer (1 Séance)","description":"Bénéficiez d'une séance d'entraînement.","id":"trainer1","price":59.99,"displayPrice":"59,99 €"},{"description":"Profitez d'une semaine de coaching","id":"foodcoach_1w","price":14.99,"displayPrice":"14,99 €","displayName":"Programme Alimentaire Hebdo."},{"displayName":"Personal Trainer (10 séances)","price":499,"displayPrice":"499,00 €","id":"trainermax","description":"Bénéficiez de 10 séances d'entraînement."},{"price":49.99,"id":"alonzo","displayName":"Pack Alonzo","description":"Profitez de l'abonnement Alonzo","displayPrice":"49,99 €"},{"id":"sportcoach_6w","displayPrice":"59,99 €","description":"Profitez de 6 semaines de programme sportif","displayName":"Programme Sportif 6 Semaines","price":59.99},{"displayName":"Programme Alimentaire Mensuel","description":"Profitez d'un mois de coaching","displayPrice":"49,99 €","price":49.99,"id":"foodcoach_4w"},{"description":"Profitez de l'abonnement Moreno","id":"moreno","displayName":"Pack Moreno","displayPrice":"34,99 €","price":34.99},{"price":14.99,"id":"sportcoach_1w","displayName":"Programme Sportif Hebdo.","description":"Profitez d'une semaine de programme sportif","displayPrice":"14,99 €"},{"price":29.99,"description":"Profitez de l'abonnement Smiley","id":"smiley","displayPrice":"29,99 €","displayName":"Pack Smiley"},{"displayName":"Programme Alimentaire 6 Sem.","description":"Profitez de 6 semaines de coaching","id":"foodcoach_6w","displayPrice":"59,99 €","price":59.99},{"description":"Profitez d'un mois de programme sportif","displayPrice":"49,99 €","id":"sportcoach_4w","displayName":"Programme Sportif Mensuel","price":49.99},{"id":"hoylt","displayName":"Pack Hoylt","description":"Profitez de l'abonnement Hoylt","displayPrice":"9,99 €","price":9.99}]
       }
     } else if (mockStorePlugin._emulatedOSData == 'android'){
       if (options.type == 'inapp' || options.type == null){
@@ -431,6 +430,9 @@ const mockStorePlugin: StorePlugin = {
   getAndroidEntitlements: async() => {
     return {"entitlements":[{"packageName":"com.trainingday","purchaseTime":1732789251193,"purchaseState":1,"purchaseToken":"mlinpdiflmgpemccnllgbpkl.AO-J1OxoPCHef6-iN_UNBTYPvzAHMylBJlnyaMW40UgUeijrPv1DRGc-wxgwJakAFUCOPsgsT_W-QnaR7i4VIcV44VX9_mb-lQ","quantity":1,"acknowledged":true,"products":["foodcoach__30d"]},{"packageName":"com.trainingday","purchaseTime":1732787580811,"purchaseState":1,"purchaseToken":"bdobnfafbkkopgohhpjoflpk.AO-J1OyGu9SbTYmqBDacHAmPZIXvtcHHZtBEMZaCve9Nwpfn9HLfem9E4n4q-Nf814k6GQCWX5NWm4JMAlTYwneUK2JTol822Q","quantity":1,"acknowledged":true,"products":["foodcoach__7d"]},{"packageName":"com.trainingday","purchaseTime":1732788637537,"purchaseState":1,"purchaseToken":"jgbaniplfdffldemoeaphojd.AO-J1Oz8wpDkPmxx5xIVmQrwqTKhyxYsM2Mqa1EHhHxoPrXcA_msmjE32fKtv-cvYt5TnfD05_7YlHowVz8bJX2kF4B2Ngo8zw","quantity":1,"acknowledged":true,"products":["sportcoach__7d"]}]} as any
   },
+  getAndroidSubscriptionEntitlements: async() => {
+    return {"entitlements": []}
+  },
 
   // Redeem code (for ios)
   presentRedeemCodeSheet(){
@@ -463,7 +465,12 @@ const mockStorePlugin: StorePlugin = {
   },
   webListeners: {},
   fetchPromotionalOffer: async(options: { productId: string })=>{
-    return {"offers":[{"type":"AdhocOffer","periodCount":1,"periodValue":6,"displayPrice":"$39.99","periodUnit":"Mois","paymentMode":"PayUpFront","price":39.99000000000001,"offerId":"hoylt6mo","productId":"hoylt"}]}
+    // Mocking for iOS
+    if (options.productId == 'hoylt')
+      return {"offers":[{"type":"AdhocOffer","periodCount":1,"periodValue":6,"displayPrice":"$39.99","periodUnit":"Mois","paymentMode":"PayUpFront","price":39.99000000000001,"offerId":"hoylt6mo","productId":"hoylt"}]}
+    if (options.productId == 'alonzo')
+      return {"offers":[{"periodCount":1,"paymentMode":"PayUpFront","displayPrice":"249,99 €","periodValue":6,"productId":"alonzo","periodUnit":"Mois","type":"AdhocOffer","offerId":"alonzo6mo","price":249.99}]}
+    return {"offers": []}
   },
   purchaseProductWithDiscount: async(options: { productId: string, type: string|undefined, offerSignatureInfo: IOSPromoOfferSignatureInfo}, os)=>{
     return {"message": "Hello from web"}
@@ -504,7 +511,10 @@ export interface StorePlugin {
 
   // Experimental features
   present(options: {message: String }): Promise<{ success: boolean }>
+
+  // Android entitlements for inapp purchase adn subscsription
   getAndroidEntitlements(): Promise<{ entitlements: Transaction[] }>
+  getAndroidSubscriptionEntitlements(): Promise<{ entitlements: Transaction[] }>
 
   // The redeem code sheet (in iOS)
   presentRedeemCodeSheet(): Promise<{ success: boolean }>; // Might be updated later
@@ -550,7 +560,8 @@ export interface Product {
   price: number;
   androidOfferToken?: string | undefined; // Android Subs only
   pricingPhases?: PricingPhase[]; // Android Subs only
-  offers?: AndroidSubscriptionOffer[]
+  offers?: AndroidSubscriptionOffer[];
+  baseOfferDisplayPrice?: string; // Used if offers are available
 }
 
 export interface AndroidSubscriptionOffer {

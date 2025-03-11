@@ -51,6 +51,11 @@ export const environment = {
 
   // Cache prefix
   cachePrefix: 'trainingdaydev_',
+
+  // iOS promo code doesn't work (2024), waiting for next update: 
+  // https://developer.apple.com/forums/thread/742113
+  // https://www.reddit.com/r/iOSProgramming/comments/18cvp7t/cannot_redeem_code/?rdt=53265
+  iosPromoCodeEnabled: false
 };
 
 /*

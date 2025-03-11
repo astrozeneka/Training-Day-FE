@@ -22,6 +22,10 @@ export interface AndroidTransaction extends Transaction {
   styleUrls: ['./android-purchase-invoice.page.scss'],
 })
 export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage implements OnInit{
+
+  // Don't use this anymore, use similar to the os (a formGroup)
+  acceptConditions: FormControl = new FormControl(false);
+
   offerToken:string|undefined = undefined // Used for android subscriptions
 
   productType: 'inapp'|'subs'|'null' = null; // (only required for Android)

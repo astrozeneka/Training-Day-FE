@@ -198,7 +198,7 @@
     "_applicationInternalID" : "6477325664",
     "_developerTeamID" : "FPUNC48548",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 762342345.07575703,
+    "_lastSynchronizedDate" : 763299311.887748,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -259,16 +259,24 @@
       "subscriptions" : [
         {
           "adHocOffers" : [
-
+            {
+              "displayPrice" : "229.99",
+              "internalID" : "AD7F71BC",
+              "numberOfPeriods" : 1,
+              "offerID" : "alonzo6mo",
+              "paymentMode" : "payUpFront",
+              "referenceName" : "alonzo-6-mo",
+              "subscriptionPeriod" : "P6M"
+            }
           ],
           "codeOffers" : [
             {
               "eligibility" : [
-                "existing",
+                "new",
                 "expired",
-                "new"
+                "existing"
               ],
-              "internalID" : "BA67886A",
+              "internalID" : "9B802DDE",
               "isStackable" : true,
               "numberOfPeriods" : 1,
               "paymentMode" : "free",
@@ -277,11 +285,24 @@
             },
             {
               "eligibility" : [
-                "existing",
                 "new",
-                "expired"
+                "expired",
+                "existing"
               ],
-              "internalID" : "67F56DD5",
+              "internalID" : "775E658A",
+              "isStackable" : false,
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "referenceName" : "Free-Alonzo-2",
+              "subscriptionPeriod" : "P2W"
+            },
+            {
+              "eligibility" : [
+                "new",
+                "expired",
+                "existing"
+              ],
+              "internalID" : "AE35E7D3",
               "isStackable" : true,
               "numberOfPeriods" : 1,
               "paymentMode" : "free",
@@ -352,7 +373,7 @@
           "adHocOffers" : [
             {
               "displayPrice" : "39.99",
-              "internalID" : "41F7B0E5",
+              "internalID" : "67DF4B2E",
               "numberOfPeriods" : 1,
               "offerID" : "hoylt6mo",
               "paymentMode" : "payUpFront",
@@ -365,7 +386,7 @@
               "eligibility" : [
                 "new"
               ],
-              "internalID" : "49881405",
+              "internalID" : "98F64418",
               "isStackable" : true,
               "numberOfPeriods" : 1,
               "paymentMode" : "free",
@@ -377,7 +398,7 @@
               "eligibility" : [
                 "new"
               ],
-              "internalID" : "9B543EFC",
+              "internalID" : "E9D0E30D",
               "isStackable" : true,
               "numberOfPeriods" : 3,
               "paymentMode" : "payAsYouGo",
@@ -425,14 +446,14 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Get Moreno subscription",
-              "displayName" : "Pack Moreno",
-              "locale" : "en_US"
-            },
-            {
               "description" : "Profitez de l'abonnement Moreno",
               "displayName" : "Pack Moreno",
               "locale" : "fr"
+            },
+            {
+              "description" : "Get Moreno subscription",
+              "displayName" : "Pack Moreno",
+              "locale" : "en_US"
             }
           ],
           "productID" : "moreno",

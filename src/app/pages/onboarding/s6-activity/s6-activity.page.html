@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>s6-activity</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">s6-activity</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+
+  <!-- Chip-input -->
+  <form [formGroup]="form">
+    <app-chip-input-ng16
+      label="Activité sportive"
+      placeholder="Décrivez votre activité sportive"
+      [options]="activityOptions"
+      formControlName="activity"
+      [keyAccessor]="activityKeyAccessor"
+      [errorText]="displayedError['activity']"
+      mode="single">
+    ></app-chip-input-ng16>
+  </form>
+</ion-content>

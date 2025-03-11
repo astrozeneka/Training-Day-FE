@@ -217,7 +217,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/swipeable-store/swipeable-store.module').then( m => m.StorePageModule)
   },
   {
-    path: 'promo-code-android',
+    path: 'promo-code-android/:productType',
     loadChildren: () => import('./pages/promo-code-android/promo-code-android.module').then( m => m.PromoCodeAndroidPageModule)
   },
   {
@@ -279,6 +279,10 @@ const routes: Routes = [
   {
     path: 's1-personal-info',
     loadChildren: () => import('./pages/onboarding/s1-personal-info/s1-personal-info.module').then( m => m.S1PersonalInfoPageModule)
+  },
+  {
+    path: 's6-activity',
+    loadChildren: () => import('./pages/onboarding/s6-activity/s6-activity.module').then( m => m.S6ActivityPageModule)
   },
 ];
 

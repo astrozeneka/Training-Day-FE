@@ -1,0 +1,58 @@
+<div class="promotional-bubble-selector-component">
+  <div class="wrapper">
+    <ion-button
+      fill="clear"
+      expand="block"
+      color="dark"
+      [class]="'clickable-option ' + ((formControl.value==product)?'active':'')"
+      (click)="chooseOption(product)"
+    >
+      <div class="inner">
+        <div class="topmost">
+          <div class="circle"><div class="active-indicator"></div></div>
+        </div>
+        <div class="row">
+          <div class="left">
+            <div class="title">
+              Abonnement Hoylt standard
+            </div>
+          </div>
+          <div class="right">
+            <div class="price display-1">{{ product.baseOfferDisplayPrice }}</div>
+          </div>
+        </div>
+      </div>
+    </ion-button>
+  </div>
+  <!-- The promotional offers -->
+  <div class="wrapper">
+    <ion-button *ngFor="let offer of product.offers"
+      fill="clear"
+      expand="block"
+      color="dark"
+      class="clickable-option"
+      [class]="'clickable-option ' + ((formControl.value==offer)?'active':'')"
+      (click)="chooseOption(offer)"
+    >
+      <div class="inner">
+
+        <div class="topmost">
+          <div class="circle"><div class="active-indicator"></div></div>
+        </div>
+        <div class="row">
+          <div class="left">
+            <div class="title">
+              Abonnement pour 6 mois
+            </div>
+            <div class="subtitle">
+              Économisez <b>50%</b> sur un abonnement de 6 mois
+            </div>
+          </div>
+          <div class="right">
+            <div class="price display-1">{{ offer.displayPrice }}</div>
+          </div>
+        </div>
+      </div>
+    </ion-button>
+  </div>
+</div>

@@ -11,6 +11,8 @@ import { Platform } from '@ionic/angular';
 import { register } from 'swiper/element/bundle';
 import SwiperCore, { Swiper } from 'swiper';
 import StorePlugin from 'src/app/custom-plugins/store.plugin';
+import { catchError, from, throwError } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 type IOSSubscription = Product  // Same as in store-auto-renewables
 type Subscription = IOSSubscription|AndroidSubscription // Same as in store-auto-renewables
@@ -27,6 +29,8 @@ export class AutorenewableBubblesComponent extends EntitlementReady implements O
 
   selectedTab: 'tab1' | 'tab2' | 'tab3' = 'tab1';
   @ViewChild('swiperEl') swiperEl: ElementRef | null = null as any
+
+  environment = environment
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -52,7 +56,9 @@ export class AutorenewableBubblesComponent extends EntitlementReady implements O
     if (this.platform.is('capacitor') && this.platform.is('ios')){
       try {
         // Load from IOS
-        products = StorePlugin.getProducts({})
+        // products = StorePlugin.getProducts({}) // The old way is to retrieve directly from the plugin
+        console.log("Calling getProducts")
+        products = this.purchaseService.getProducts()
       } catch (error) {
         this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
       }
@@ -134,8 +140,41 @@ export class AutorenewableBubblesComponent extends EntitlementReady implements O
         if (this.os === 'android'){
           this.router.navigate(['/android-purchase-invoice'])
         }else{
+          //this.router.navigate(['/purchase-invoice'])
           this.router.navigate(['/ios-purchase-invoice'])
         }
+    }
+  }
+
+  // Only for iOS
+  isPromoCodeButtonLoading: boolean = false
+  promoCodeLoadingStep: string = undefined
+
+  /**
+   * Promo code doesn't work on iOS
+   * @param productType Only required for android
+   */
+  enterACode(productType:'subs'|'inapp' = null){
+    if (this.os == 'ios'){
+      // 1. In case of iOS
+      this.isPromoCodeButtonLoading = true
+      this.promoCodeLoadingStep = "(1/2) Connexion à l'App Store"
+      from(this.purchaseService.presentRedeemCodeSheet())
+        .pipe(catchError(err => {
+          console.log(`Error while presenting redeem sheet: ${JSON.stringify(err)}`)
+          this.isPromoCodeButtonLoading = false
+          return throwError(()=>err)
+        }))
+        .subscribe(()=>{
+          this.isPromoCodeButtonLoading = false
+          // TODO, handle here
+        })
+    } else if (/*this.os == 'android' || */true){
+      // 2. In case of Android
+      console.log("Redirecting to '/promo-code-android'")
+      this.router.navigate(['/promo-code-android', productType])
+    } else{
+      this.feedbackService.registerNow("La fonctionnalité n'est pas disponible sur cette plateforme", "danger")
     }
   }
 }

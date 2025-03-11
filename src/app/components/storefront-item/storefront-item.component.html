@@ -8,6 +8,7 @@
       <div class="prefix">{{ displayPricePrefix }}</div>
       <div class="main">{{ displayPrice }}</div>
       <div class="suffix" *ngIf="displayPriceSuffix">{{ displayPriceSuffix }}</div>
+      <div class="suffix" *ngIf="!displayPriceSuffix">/mois</div>
     </div>
   </h2>
   <p class="description">

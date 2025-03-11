@@ -11,12 +11,15 @@
 </ion-header>
 
 <ion-content>
-  <h1 class="display-1 ion-padding">Promo code</h1>
+  <h1 class="display-1 ion-padding">Code Promo</h1>
 
   <div class="ion-padding-horizontal">
     <div>
-      <p class="helper">
-        Entrez un code promo pour bénéficier d'une réduction sur votre abonnement ou achats intégrés.
+      <p class="helper" *ngIf="productType == 'subs'">
+        Entrez un code promo pour bénéficier d'une réduction sur votre abonnement.
+      </p>
+      <p class="helper" *ngIf="productType == 'inapp'">
+        Entrez un code promo pour bénéficier d'une réduction sur vos achats intégrés.
       </p>
     </div>
     <form [formGroup]="form" (submit)="submit()">

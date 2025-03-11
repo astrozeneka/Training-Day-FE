@@ -51,7 +51,7 @@ export class StoreAutoRenewablesComponent extends EntitlementReady implements On
     })
 
     // 2. Load product list from the purchase service
-    let products: Promise<{products: IOSSubscription[]|AndroidSubscription[]}>
+    /*let products: Promise<{products: IOSSubscription[]|AndroidSubscription[]}>
     if (this.platform.is('capacitor') && this.platform.is('ios')){
       try {
         // Load from IOS
@@ -88,7 +88,7 @@ export class StoreAutoRenewablesComponent extends EntitlementReady implements On
         }, {} as any)
       }
       //console.log(`Load products from native code: ${JSON.stringify(this.productList)}`)
-    })
+    })*/
   }
 
   async clickOption(option: string){

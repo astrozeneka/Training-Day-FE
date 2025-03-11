@@ -52,6 +52,8 @@ import { RoundedCardComponent } from './rounded-card/rounded-card.component';
 import { BottomNavbarPlaceholderComponent } from './bottom-navbar-placeholder/bottom-navbar-placeholder.component';
 import { CondensedMenuItemComponent } from './condensed-menu-item/condensed-menu-item.component';
 import { PromoOfferCardComponent } from './promo-offer-card/promo-offer-card.component';
+import { ChipInputNg16Component } from '../components-submodules/chip-input-ng16/chip-input-ng16.component';
+import { PromotionalBubbleSelectorComponent } from './promotional-bubble-selector/promotional-bubble-selector.component';
 
 
 @NgModule({
@@ -99,7 +101,8 @@ import { PromoOfferCardComponent } from './promo-offer-card/promo-offer-card.com
     RoundedCardComponent,
     BottomNavbarPlaceholderComponent,
     CondensedMenuItemComponent,
-    PromoOfferCardComponent,
+    PromoOfferCardComponent, // The UI is not suitable for the screen format
+    PromotionalBubbleSelectorComponent,
 
     // Pipes
     DisplayListPipe,
@@ -109,6 +112,7 @@ import { PromoOfferCardComponent } from './promo-offer-card/promo-offer-card.com
     InfiniteListComponent,
     PhonePrefixSelectComponent,
     AngularInfiniteListV2Component,
+    ChipInputNg16Component
   ],
   imports: [
     CommonModule,
@@ -146,6 +150,7 @@ import { PromoOfferCardComponent } from './promo-offer-card/promo-offer-card.com
     BottomNavbarPlaceholderComponent,
     CondensedMenuItemComponent,
     PromoOfferCardComponent,
+    PromotionalBubbleSelectorComponent,
     
     DisplayListPipe,
     ChatMasterDiscussionListComponent,
@@ -158,6 +163,7 @@ import { PromoOfferCardComponent } from './promo-offer-card/promo-offer-card.com
     PhonePrefixSelectComponent,
     ChatMasterTabsComponent,
     AngularInfiniteListV2Component,
+    ChipInputNg16Component
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

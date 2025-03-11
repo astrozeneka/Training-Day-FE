@@ -427,6 +427,76 @@ public class StorePlugin extends Plugin {
       } else {
         System.out.println("StorePlugin: Error code: " + billingResult.getResponseCode());
         // Error 3: It generally show if the billing client is not available (due to geographical location or device restrictions)
+        call.reject("Unable to load subscription entitlements. Error code: " + billingResult.getResponseCode());
+      }
+    });
+  }
+
+  @PluginMethod()
+  public void getAndroidSubscriptionEntitlements(PluginCall call) {
+    System.out.println("getAndroidAutoRenewableEntitlements");
+    if (!billingClient.isReady()){
+      billingClient.startConnection(new BillingClientStateListener() {
+        @Override
+        public void onBillingSetupFinished(BillingResult billingResult) {
+          if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+            System.out.println("StorePlugin: Billing client is ready");
+            loadSubscriptionEntitlements(call);
+          } else {
+            System.out.println("StorePlugin: Error code: " + billingResult.getResponseCode());
+            // Error 3: It generally show if the billing client is not available (due to geographical location or device restrictions)
+          }
+        }
+        @Override
+        public void onBillingServiceDisconnected() {
+          // Try to restart the connection on the next request to
+          // Google Play by calling the startConnection() method.
+        }
+      });
+    } else {
+      loadSubscriptionEntitlements(call);
+    }
+  }
+
+  private void loadSubscriptionEntitlements(PluginCall call){
+    System.out.println("StorePlugin: Loading subscription entitlements");
+    QueryPurchasesParams params = QueryPurchasesParams.newBuilder()
+      .setProductType(BillingClient.ProductType.SUBS)
+      .build();
+    // ...
+    billingClient.queryPurchasesAsync(params, (billingResult, subscriptions) -> {
+      if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+        System.out.println("StorePlugin: Subscription Entitlements loaded");
+        // Print subscriptions as json
+        System.out.println("StorePlugin: Subscriptions: " + subscriptions.size() + " items");
+        // Continue here
+        JSArray entitlementsJson = new JSArray();
+        for (Purchase purchase : subscriptions) {
+          JSObject entitlementJson = new JSObject();
+          // The datastructure is different from the inapp purchases
+          entitlementJson.put("orderId", purchase.getOrderId());
+          entitlementJson.put("packageName", purchase.getPackageName());
+          entitlementJson.put("purchaseTime", purchase.getPurchaseTime());
+          entitlementJson.put("purchaseState", purchase.getPurchaseState());
+          entitlementJson.put("purchaseToken", purchase.getPurchaseToken());
+          entitlementJson.put("autoRenewing", purchase.isAutoRenewing());
+          entitlementJson.put("acknowledged", purchase.isAcknowledged());
+
+          JSArray entitlementProducts = new JSArray();
+          for (String product: purchase.getProducts()) {
+            entitlementProducts.put(product);
+          }
+
+          entitlementJson.put("products", entitlementProducts);
+          entitlementsJson.put(entitlementJson);
+        }
+
+        JSObject result = new JSObject();
+        result.put("entitlements", entitlementsJson);
+        call.resolve(result);
+      } else {
+        System.out.println("StorePlugin: Error code: " + billingResult.getResponseCode());
+        call.reject("Unable to load subscription entitlements. Error code: " + billingResult.getResponseCode());
       }
     });
   }

@@ -7,6 +7,31 @@
     >
     <!--
     autoplay-delay="2500"  -->
+    <swiper-slide *ngIf="os == 'android' || (os == 'ios' && environment.iosPromoCodeEnabled)">
+      <div class="bubble">
+        <div class="code-prompt">
+          <div class="title">J'ai un code</div>
+          <div class="subtitle">
+            Utilisez un code pour bénéficier des réductions sur les abonnements.
+          </div>
+          <div class="controls" *ngIf="os == 'ios'">
+            <app-ux-button fill="clear" expand="block" (click)="enterACode()" shape="round">Saisir un code</app-ux-button>
+          </div>
+          <div class="controls" *ngIf="os == 'android'">
+            <app-ux-button fill="clear" expand="block" (click)="enterACode('subs')" shape="round">
+              <div class='inner'>
+                Saisir un code d'abonnement
+              </div>
+            </app-ux-button>
+            <app-ux-button fill="clear" expand="block" (click)="enterACode('inapp')" shape="round">
+              <div class='inner'>
+                Saisir un code d'achat
+              </div>
+            </app-ux-button>
+          </div>
+        </div>
+      </div>
+    </swiper-slide>
     <swiper-slide>
       <div class="bubble">
         <app-storefront-item color="dark" [product]="productList['hoylt']"

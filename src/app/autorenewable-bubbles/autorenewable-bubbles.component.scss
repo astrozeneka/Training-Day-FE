@@ -26,3 +26,34 @@ swiper-container{
         --margin-bottom: 0px;
     }
 }
+
+
+.code-prompt{
+    display: flex;
+    flex-direction: column;
+
+    & .title{
+        font-size: 24px;
+        font-weight: 400;
+        text-align: center;
+    }
+    
+    & .subtitle{
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 133%;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    & .controls{
+        margin-top: 20px;
+    }
+    
+    & app-ux-button{
+        & .inner{
+            text-transform: none;
+            font-size: 12px;
+        }
+    }
+}

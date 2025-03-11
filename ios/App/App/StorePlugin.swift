@@ -16,6 +16,8 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
     public let jsName = "Store"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "getProducts", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getProductsByIds", returnType: CAPPluginReturnPromise),
+        
         CAPPluginMethod(name: "purchaseProductById", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "getPurchasedNonRenewable", returnType: CAPPluginReturnPromise), // deprecated, will not be used anymore
         
@@ -55,6 +57,10 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
             "products": products
         ])
     }
+  
+  @objc func getProductsByIds(_ call: CAPPluginCall){
+    
+  }
     
     @objc func purchaseProductById(_ call: CAPPluginCall){
         guard let productID = call.getString("productId") else {
@@ -120,19 +126,40 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
       Task <Void, Never> {
         do {
           if let handledTransaction = try await self.store?.purchaseWithDiscount(product, offerId: offerID, signatureInfo: signatureInfo){
-            print("Here")
+            let transactionDetails: [String: Any] = [
+              "bundleId": handledTransaction.appBundleID,
+              "deviceVerification": handledTransaction.deviceVerification.base64EncodedString(),
+              "deviceVerificationNonce": handledTransaction.deviceVerificationNonce.uuidString,
+              // "environment": handledTransaction?.environment,
+              "inAppOwnershipType": handledTransaction.ownershipType.rawValue,
+              //"originalPurchaseDate": handledTransaction?.originalPurchaseDate.formatted() ?? "", // Still have errors
+              //"originalTransactionId": handledTransaction?.originalID ?? 0,
+              //"productId": handledTransaction?.productID ?? "",
+              //"purchaseDate": handledTransaction?.purchaseDate.formatted() ?? "", // Still have errors
+              "quantity": handledTransaction.purchasedQuantity,
+              "signedDate": handledTransaction.signedDate,
+              "transactionId": handledTransaction.id,
+              //"currency": handledTransaction?.currency ?? ""
+              "id": handledTransaction.id, // This is what we want to experiment
+              "environment": handledTransaction.environment.rawValue
+            ]
+            call.resolve([
+              "success": true,
+              "transaction": transactionDetails
+            ])
           } else {
             call.reject("Transaction annulée par l'utilisateur")
           }
         } catch {
+          // call.reject("Promotion not available for the user")
           call.reject(error.localizedDescription)
         }
       }
       
       // Sample return
-      call.resolve([
+      /*call.resolve([
         "message": "Hello"
-      ])
+      ])*/
     }
     
     @objc func getPurchasedNonRenewable(_ call: CAPPluginCall) {
@@ -262,6 +289,15 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
     guard let productId = call.getString("productId") else {
       call.reject("Missing productId")
       return
+    }
+    
+    // Define allowed product IDs
+    let subscriptionIds = ["hoylt", "moreno", "gursky", "smiley", "alonzo"]
+        
+        // If productId is not in the allowed list, return an empty list
+    guard subscriptionIds.contains(productId) else {
+        call.resolve(["offers": []])
+        return
     }
     
     Task {

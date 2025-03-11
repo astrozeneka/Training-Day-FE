@@ -67,13 +67,15 @@ export class AppComponent implements OnInit{
 
     // IN-APP-PURCHASE ENTITLEMENTS MANAGEMENT
     // Loading and synchronizing entitlements
+    // The code logic below will be removed in new version
+    // Subscription/Purchaes management is handled by the back-end server only
     await new Promise((resolve)=>setTimeout(resolve, 1000)) // Wait for the user to be loaded first
     let fromDeviceData:{entitlements: any, subscriptions?: any}
     if (this.platform.is('capacitor')){
       if (this.platform.is('ios'))
         fromDeviceData = (await StorePlugin.getAutoRenewableEntitlements({}))
       else if (this.platform.is('android')){
-        let androidData = (await this.purchaseService.getAndroidEntitlements()) as any as {entitlements: AndroidEntitlement[]}
+        let androidData = (await this.purchaseService.getAndroidEntitlements('inapp')) as any as {entitlements: AndroidEntitlement[]}
         let list = androidData.entitlements.map(e=>e.products.join('+')).join(", ")
         fromDeviceData = {entitlements: androidData.entitlements}
         // TO DELETE LATER
@@ -181,7 +183,7 @@ export class AppComponent implements OnInit{
       }
 
       this.contentService.userStorageObservable.getStorageObservable().subscribe(async (user)=>{
-        if (user?.appointments.length > 0){
+        if (user?.appointments?.length > 0){
           let formatedDate = new Date(user.appointments[0].datetime).toLocaleDateString('fr-FR', {year: 'numeric', month: 'long', day: 'numeric'})
           let formatedTime = new Date(user.appointments[0].datetime).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})
           let html = new IonicSafeString(`Vous avez un rendez-vous à venir le <b>${formatedDate}</b> à <b>${formatedTime}</b>`)

@@ -11,7 +11,6 @@ import { environment } from "src/environments/environment";
 export abstract class AbstractPurchaseInvoicePage {
 
   // Generic properties used by both iOS and android
-  acceptConditions: FormControl = new FormControl(false);
   isLoading: boolean = false;
   loadingStep: string = null;
 

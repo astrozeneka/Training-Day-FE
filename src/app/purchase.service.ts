@@ -3,7 +3,7 @@ import {Platform} from "@ionic/angular";
 import StorePlugin, { AndroidProduct, AndroidSubscription, Product, PromoOfferIOS, StorePluginEvent } from './custom-plugins/store.plugin';
 import { FeedbackService } from './feedback.service';
 import StoredData from './components-submodules/stored-data/StoredData';
-import { BehaviorSubject, filter, merge, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, distinctUntilChanged, distinctUntilKeyChanged, filter, forkJoin, lastValueFrom, map, merge, Observable, of, Subject, take, tap } from 'rxjs';
 import { ContentService } from './content.service';
 
 @Injectable({
@@ -59,6 +59,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
   // Method 1: Get the list of products
   // Type is only required for android
   async getProducts(type=null): Promise<{ products: Product[]}> {
+    console.log("Calling getProducts")
     // Fetch the list of products from the store
     // Check if on web
     if (true){
@@ -66,8 +67,54 @@ export class PurchaseService { // This class cannot be used anymore due to andro
       console.log(this.os)
       if (this.os == 'ios') {
         products = (await StorePlugin.getProducts({})).products
+        console.log(`Ios fetching products: ${JSON.stringify(products)}`)
+        // Load the related promotional offers
+        /*for(let i=0; i<products.length; i++){
+          let product = products[i]
+          console.log(`Load promo for ${product.id}`)
+          this.onPromoOfferIOS(product.id, true, true)
+            .pipe(distinctUntilKeyChanged('length'))
+            .subscribe((data)=>{
+              console.log(`Promo offer loaded for ${product.id}: ${JSON.stringify(data)}`)
+            })
+        }*/
+        let totalRegistered = 0;
+        let totalFired = 0
+        let observables = products.map((product)=>{
+          totalRegistered+= 1
+          return this.onPromoOfferIOS(product.id, false, true).pipe(
+            take(1),
+            //distinctUntilKeyChanged('length'), // No need to use since we have take(1)
+            catchError((error)=>{
+              // Should not pass here anyway
+              console.log(`[] Error loading promo offer for ${product.id}: ${error}`)
+              return of([])
+            }),
+            map((data:PromoOfferIOS[])=>{
+              let promoOffers = data
+              let promotedProduct = {
+                ...product,
+                offers: promoOffers
+              }
+              // Compute monthly prices
+              let monthlyPrices = [product.price]
+              promoOffers.forEach((offer)=>{
+                monthlyPrices.push(this.computeIOSMonthlyPrice(offer))
+              })
+              if (monthlyPrices.length > 1){
+                promotedProduct.baseOfferDisplayPrice = promotedProduct.displayPrice
+                promotedProduct.displayPrice = `À partir de ${this.patchDisplayPrice(product.displayPrice, Math.min(...monthlyPrices))}/mois`
+              }
+              totalFired += 1
+              return promotedProduct
+            })
+          )
+        })
+        // take(1) is used to simulate a complete event
+        // If 'forkJoin' is used, should use take(1) as well
+        let productsWithPromotion = await lastValueFrom(combineLatest(observables).pipe(take(1)))
         return {
-          products: products
+          products: productsWithPromotion
         }
       } else if (this.os == 'android') {
         // The typo can lead to confusion
@@ -100,8 +147,6 @@ export class PurchaseService { // This class cannot be used anymore due to andro
               throw new Error('No pricing phases found')
             let pricingPhases = offerDetail.pricingPhases
             let capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1)
-            console.log("AndroidOfferToken: ", offerDetail.offerIdToken)
-            console.log("OfferDetail: ", JSON.stringify(offerDetail))
             products.push({
               displayPrice: pricingPhases[0].formattedPrice,
               description: "Abonnement " + capitalize(offerDetail.basePlanId),
@@ -149,17 +194,28 @@ export class PurchaseService { // This class cannot be used anymore due to andro
         }
       }
     }
-    if (offerSignatureInfo){
-      return await StorePlugin.purchaseProductWithDiscount({productId: productId, type: productType, ...extraParams}, os); // Why use os ??
-    } else {
-      return await StorePlugin.purchaseProductById({productId: productId, type: productType, ...extraParams}, os); // Why use os ??
+    try{
+      if (offerSignatureInfo){
+        return await StorePlugin.purchaseProductWithDiscount({productId: productId, type: productType, ...extraParams}, os); // Why use os ??
+      } else {
+        return await StorePlugin.purchaseProductById({productId: productId, type: productType, ...extraParams}, os); // Why use os ??
+      }
+    } catch (error){
+      console.log("Error while purchasing product", error)
+      throw error
     }
   }
 
   // Method 3(experimental features): Load entitlements from Android
-  async getAndroidEntitlements() {
+  async getAndroidEntitlements(productType: 'subs' | 'inapp') {
     if (this.platform.is('capacitor') && this.platform.is('android')){
-      return await StorePlugin.getAndroidEntitlements();
+      if (productType == 'inapp') { 
+        return await StorePlugin.getAndroidEntitlements();
+      } else if (productType == 'subs') {
+        return await StorePlugin.getAndroidSubscriptionEntitlements();
+      } else {
+        throw new Error(`Invalid product type: ${productType}`)
+      }
     }
     return await StorePlugin.getAndroidEntitlements(); // Mocked data
   }
@@ -185,6 +241,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
     // 1. Fire from the cache
     if (fromCache) {
       this.promoOffers[productId].get().then((data:PromoOfferIOS[])=>{
+        //if (data.length > 0)
         additionalEvents$.next(data)
       })
     }
@@ -194,12 +251,15 @@ export class PurchaseService { // This class cannot be used anymore due to andro
       StorePlugin.fetchPromotionalOffer({productId: productId}).then((data:{offers:PromoOfferIOS[]})=>{
         this.promoOffers[productId].set(data.offers)
         additionalEvents$.next(data.offers)
+      }).catch((error)=>{
+        console.log(`Error loading promo offer for ${productId}: ${error}`)
+        additionalEvents$.next([])
       })
     }
 
     // Prepare output
     let output$ = merge(this.promoOffers$[productId], additionalEvents$)
-    output$ = output$.pipe(filter((data)=>data?.length>0))
+    output$ = output$.pipe(filter((data)=>data !== null)) // DON'T FILTER EMPTY DATA FROM HERE
     return output$
   }
 
@@ -290,5 +350,23 @@ export class PurchaseService { // This class cannot be used anymore due to andro
     
     // Replace the found numeric part with the newly formatted value
     return templateDisplayPrice.replace(originalNumber, newNumberStr);
+  }
+
+  private computeIOSMonthlyPrice(offer:PromoOfferIOS):number{
+    let price = offer.price
+    let periodUnit = offer.periodUnit
+    let periodUnitNDays = {
+      "Jour": 1,
+      "Day": 1,
+      "Semaine": 7,
+      "Week": 7,
+      "Mois": 30,
+      "Month": 30,
+      "An": 365,
+      "Year": 365
+    }
+    let periodNDays = periodUnitNDays[periodUnit]
+    let monthlyPrice = price / (offer.periodValue * periodNDays / 30)
+    return monthlyPrice
   }
 }
