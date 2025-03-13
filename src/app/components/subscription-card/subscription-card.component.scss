@@ -22,3 +22,20 @@
   border-top: 1px dashed var(--ion-color-medium);
   border-bottom: 1px dashed var(--ion-color-medium);
 }
+
+.subtitle{
+  font-size: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  & > div{
+    & ion-icon{
+      font-size: 16px;
+    }
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+  }
+}

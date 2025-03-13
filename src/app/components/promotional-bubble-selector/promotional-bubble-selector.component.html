@@ -14,11 +14,11 @@
         <div class="row">
           <div class="left">
             <div class="title">
-              Abonnement Hoylt standard
+              {{ product.displayName }}
             </div>
           </div>
           <div class="right">
-            <div class="price display-1">{{ product.baseOfferDisplayPrice }}</div>
+            <div class="price display-1">{{ product?.baseOfferDisplayPrice || product.displayPrice }}</div>
           </div>
         </div>
       </div>

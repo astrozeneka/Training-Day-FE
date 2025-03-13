@@ -3,6 +3,17 @@
         <h4 class="display-3">
             {{ title }}
         </h4>
+        <div class="subtitle">
+            <span>Acheté via </span>
+            <div *ngIf="entity?.system == 'apple'">
+                <ion-icon name="logo-apple"></ion-icon>
+                <span>Apple IAP</span>
+            </div>
+            <div *ngIf="entity?.system == 'google'">
+                <ion-icon name="logo-android"></ion-icon>
+                <span>Android IAP</span>
+            </div>
+        </div>
         <p>{{ description }}</p>
         <p class="helper">
             <ion-badge color="warning">

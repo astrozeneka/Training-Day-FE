@@ -132,12 +132,10 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implemen
           catchError((err)=>{
             console.error(`Error while purchasing the base offer ${this.form.value.offer.productId} : ${JSON.stringify(err)}`)
             this.feedbackService.registerNow("La transaction a été annulée", "dark")
-            return throwError(()=>err)
-          }),
-          finalize(()=>{
             this.isLoading = false
             this.loadingStep = null
             this.processProgress = 0
+            return throwError(()=>err)
           })
         )
     }
