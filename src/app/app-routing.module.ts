@@ -284,6 +284,30 @@ const routes: Routes = [
     path: 's6-activity',
     loadChildren: () => import('./pages/onboarding/s6-activity/s6-activity.module').then( m => m.S6ActivityPageModule)
   },
+  {
+    path: 's2-more-info',
+    loadChildren: () => import('./pages/onboarding/s2-more-info/s2-more-info.module').then( m => m.S2MoreInfoPageModule)
+  },
+  {
+    path: 's3-goal',
+    loadChildren: () => import('./pages/onboarding/s3-goal/s3-goal.module').then( m => m.S3GoalPageModule)
+  },
+  {
+    path: 's4-sleep',
+    loadChildren: () => import('./pages/onboarding/s4-sleep/s4-sleep.module').then( m => m.S4SleepPageModule)
+  },
+  {
+    path: 's5-food-and-water',
+    loadChildren: () => import('./pages/onboarding/s5-food-and-water/s5-food-and-water.module').then( m => m.S5FoodAndWaterPageModule)
+  },
+  {
+    path: 's7-do-sport-regularly',
+    loadChildren: () => import('./pages/onboarding/s7-do-sport-regularly/s7-do-sport-regularly.module').then( m => m.S7DoSportRegularlyPageModule)
+  },
+  {
+    path: 's8-health-status',
+    loadChildren: () => import('./pages/onboarding/s8-health-status/s8-health-status.module').then( m => m.S8HealthStatusPageModule)
+  },
 ];
 
 @NgModule({

@@ -11,9 +11,11 @@
     </ion-toolbar>
   </ion-header>
 
-
+  <br/>
+  <br/>
+  <br/>
   <!-- Chip-input -->
-  <form [formGroup]="form">
+  <form [formGroup]="form" class="ion-padding">
     <app-chip-input-ng16
       label="Activité sportive"
       placeholder="Décrivez votre activité sportive"
@@ -21,7 +23,8 @@
       formControlName="activity"
       [keyAccessor]="activityKeyAccessor"
       [errorText]="displayedError['activity']"
-      mode="single">
+      mode="single"
+      [keyEventDisabled]="false"
     ></app-chip-input-ng16>
   </form>
 </ion-content>

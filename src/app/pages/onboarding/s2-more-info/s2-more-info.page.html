@@ -1,0 +1,66 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>s2-more-info</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">s2-more-info</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="form" (submit)="submit()">
+    <div class="input-wrapper">
+      <app-outline-input
+        label="Mon age"
+        formControlName="age"
+        [errorText]="displayedError.age"
+        inputmode="numeric"
+      ></app-outline-input>
+    </div>
+    <div class="input-wrapper">
+      <app-outline-input
+        label="Mon poids (kg)"
+        formControlName="weight"
+        [errorText]="displayedError.weight"
+        inputmode="numeric"
+      ></app-outline-input>
+    </div>
+    <div class="input-wrapper">
+      <app-outline-input
+        label="Ma taille (cm)"
+        formControlName="height"
+        [errorText]="displayedError.height"
+        inputmode="numeric"
+      ></app-outline-input>
+    </div>
+    <div class="input-wrapper">
+      <app-chip-input-ng16
+        label="Je suis ..."
+        formControlName="sex"
+        [options]="sexOptions"
+        [keyAccessor]="sexKeyAccessor"
+        [errorText]="displayedError.sex"
+        mode="single"
+        [keyEventDisabled]="false"
+      ></app-chip-input-ng16>
+    </div>
+
+
+    <div class="onboarding-floating-bottom-1">
+      <div class="ion-padding">
+        <app-ux-button
+          expand="block" 
+          color="primary" 
+          shape="round" 
+          [disabled]="!form.valid"
+          [loading]="isLoading"
+        >
+          Continuer
+        </app-ux-button>
+      </div>
+    </div>
+  </form>
+</ion-content>

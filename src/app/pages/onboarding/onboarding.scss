@@ -21,3 +21,31 @@
 .onboarding-button span{
     text-transform: none!important;
 }
+
+.onboarding-floating-bottom-1{
+    $height: 80px;
+    height: calc($height + env(safe-area-inset-bottom));
+    &>*{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding-bottom: env(safe-area-inset-bottom);
+        //padding-bottom: 32px;
+        background: var(--ion-background-color);
+        height: calc($height + env(safe-area-inset-bottom));
+    }
+}
+
+.onboarding-floating-bottom-2{
+    $height: 150px;
+    height: calc($height + env(safe-area-inset-bottom));
+    &>*{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding-bottom: env(safe-area-inset-bottom);
+        //padding-bottom: 32px;
+        background: var(--ion-background-color);
+        height: calc($height + env(safe-area-inset-bottom));
+    }
+}
