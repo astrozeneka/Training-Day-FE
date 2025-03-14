@@ -83,7 +83,7 @@
         <ion-button expand="full" type="submit" color="medium" (click)="goTo('/subscribe')" shape="round">S'inscrire gratuitement</ion-button>
         <ion-button expand="full" type="submit" color="tertiary" (click)="goTo('/home')" shape="round">Continuer sans s'inscrire</ion-button>
       </div>
-        <a routerLink="/s6-activity">Test select component</a>
+        <a *ngIf="false" routerLink="/s6-activity">Test select component</a>
         <div *ngIf="false">
             <h3 class="helper">Experimental features</h3>
             <ion-button (click)="continueWith('github')" color="medium">

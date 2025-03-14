@@ -298,9 +298,9 @@
             },
             {
               "eligibility" : [
+                "new",
                 "existing",
-                "expired",
-                "new"
+                "expired"
               ],
               "internalID" : "0E52E6E0",
               "isStackable" : true,
