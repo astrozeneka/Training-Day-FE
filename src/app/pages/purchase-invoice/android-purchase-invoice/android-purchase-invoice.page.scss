@@ -1,50 +1,10 @@
 
-table{
-    width: 100%;
-    border-collapse: collapse;
-    margin: 0;
-    text-align: left;
-  
-    td, th{
-      padding: 1em;
-  
-      .helper{
-        display: block;
-        font-size: .9em;
-      }
-    }
+.android-purchase-invoice{
+  position: relative;
+  height: 100%;
+
+  h1{
+    margin-top: 0px!important;
+    padding-top: 30px; // Override (20 is the default for ion-padding), then additional 10 for the h1
   }
-  
-  .helper{
-    margin-top: 1em;
-    
-    &>div{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    & ion-spinner{
-      font-size: smaller;
-      opacity: 0.7;
-      margin-left: 1em !important;
-    }
-  }
-  
-  // For the promotional offer
-  .promo-offers{
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
-  swiper-slide{
-    width: 200px;
-  }
-  
-  .loader-wrapper{
-    height: 50px;
-    display: flex;
-    justify-content: center;
-  }
-  
-  .promotionalText{
-    color: var(--ion-color-primary);
-  }
+}

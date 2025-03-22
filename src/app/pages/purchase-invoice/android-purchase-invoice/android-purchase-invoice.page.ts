@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, catchError, filter, forkJoin, from, map, Subject, switchMap, take, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ContentService } from '../../../content.service';
@@ -19,7 +19,7 @@ export interface AndroidTransaction extends Transaction {
 @Component({
   selector: 'app-android-purchase-invoice',
   templateUrl: './android-purchase-invoice.page.html',
-  styleUrls: ['./android-purchase-invoice.page.scss'],
+  styleUrls: ['./android-purchase-invoice.page.scss', '../purchase-invoice.scss'],
 })
 export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage implements OnInit{
 
@@ -45,6 +45,16 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage impl
   onPurchaseDone$: Subject <{purchases:AndroidProduct[]}> = new Subject()
   onPurchaseAborted$: Subject <any> = new Subject()
 
+  // Additional fields (to be rearranged later)
+  form: FormGroup = new FormGroup({
+    'offer': new FormControl(null, [Validators.required]),
+    'acceptCGV': new FormControl(false, [Validators.requiredTrue])
+  })
+  product = null
+
+  processProgress = 0
+  offersAreLoading: boolean = false
+
   constructor(
       private cs: ContentService,
       private themeDetection: ThemeDetection,
@@ -61,7 +71,7 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage impl
 
   ngOnInit() {
     // 1. Load productId and offerToken to be used in the page
-    forkJoin({
+    /*forkJoin({
       productId: from(this.cs.storage.get('productId')),
       offerToken: from(this.cs.storage.get('offerToken'))
     })
@@ -82,6 +92,20 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage impl
       )
       .subscribe((data:{products:Product[]}) => {
         this.productList = data.products.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
+      })*/
+    forkJoin({
+      productId: from(this.cs.storage.get('productId')),
+      productList: from(this.purchaseService.getProducts('subs'))
+    })
+      .pipe(map(({productId, productList}) => {
+        this.productList = productList.products.reduce((acc, product) => { acc[product.id] = product; return acc }, {}); 
+        this.productId = productId
+        return productList.products.find((product) => product.id == productId)
+      }))
+      .subscribe((product:Product) => {
+        this.product = product
+        console.log(this.productList, this.productId, this.productList[this.productId])
+        this.cdr.detectChanges()
       })
     
     // 2. Listener that will be able to listen the onPurchase event and link to the related observable
@@ -108,17 +132,33 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage impl
         this.os = 'android'
       })
     }*/
+
+    // 4. Check the productId, then load the set the productType accordingly
+    from(this.cs.storage.get('productId'))
+      .subscribe(productId=>{
+        if (['hoylt', 'moreno', 'gursky', 'smiley', 'alonzo'].includes(productId)) {
+          this.productType = 'subs'
+        } else {
+          this.productType = 'inapp'
+        }
+      })
   }
 
   continueToPayment(){
+    if (!this.form.valid)
+      return;
+
     this.isLoading = true
     this.loadingStep = "(1/3) Connexion à Google Play"
 
     // Specific to android, for subscription, the product id is "training_day" instead of hoylt, moreno, etc.
     let productId = this.productId
-    if (this.productType == 'subs')
+    if (this.productType == 'subs'){
       productId = 'training_day'
-    console.log(`Product id is ${productId}`)
+      this.offerToken = this.form.value.offer.androidOfferToken
+    }
+    //console.log(`Product id is ${productId}, productType is ${this.productType}`)
+    //console.log(`Product JSON: ${JSON.stringify(this.form.value.offer)}`)
 
     // Launch the payment
     let purchaseObs = from(this.purchaseService.purchaseProductById(productId, this.productType, this.offerToken, 'android', null, null))

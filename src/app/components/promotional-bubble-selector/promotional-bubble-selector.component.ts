@@ -23,6 +23,9 @@ export class PromotionalBubbleSelectorComponent  implements ControlValueAccessor
 
   @Input() product:Product
 
+  // Experimental mode: for android, the base offers are included inside the offer property
+  @Input() os:'ios'|'android' = 'ios'
+
   constructor(
       private controlContainer: ControlContainer,
       private cdr: ChangeDetectorRef
@@ -30,9 +33,11 @@ export class PromotionalBubbleSelectorComponent  implements ControlValueAccessor
 
   ngOnInit() {
     this.formControl = this.formControl || this.controlContainer.control?.get(this.formControlName!) as FormControl<any[]|string>;
-    
+    // FOR android
+    // recurringMode: 1 (INFINITE_RECURRING), 2 (FINITE_RECURRING), 3 (NON_RECURRING)
     // Listen for event 
     // TODO ...
+    console.log(this.product)
   }
 
   writeValue(obj: any): void {

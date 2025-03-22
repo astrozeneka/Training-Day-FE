@@ -14,7 +14,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-ios-purchase-invoice',
   templateUrl: './ios-purchase-invoice.page.html',
-  styleUrls: ['./ios-purchase-invoice.page.scss'],
+  styleUrls: ['./ios-purchase-invoice.page.scss', '../purchase-invoice.scss'],
 })
 export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implements OnInit {
   // The form

@@ -25,7 +25,7 @@ type Subscription = IOSSubscription|AndroidSubscription // Same as in store-auto
 export class AutorenewableBubblesComponent extends EntitlementReady implements OnInit, AfterViewInit {
   @Input() productList: { [key: string]: Product } = {}
   user: User = null
-  os: 'android'|'ios' = null
+  os: 'android'|'ios' = 'android' // IMPORTANT, change to 'null' later
 
   selectedTab: 'tab1' | 'tab2' | 'tab3' = 'tab1';
   @ViewChild('swiperEl') swiperEl: ElementRef | null = null as any
@@ -53,18 +53,20 @@ export class AutorenewableBubblesComponent extends EntitlementReady implements O
 
     // 2. Load product list from the purchase service
     let products: Promise<{products: IOSSubscription[]|AndroidSubscription[]}>
+    console.log("here", this.platform.is('android'));
     if (this.platform.is('capacitor') && this.platform.is('ios')){
       try {
         // Load from IOS
         // products = StorePlugin.getProducts({}) // The old way is to retrieve directly from the plugin
-        console.log("Calling getProducts")
+        console.log("Calling getProducts [ios]")
         products = this.purchaseService.getProducts()
       } catch (error) {
         this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
       }
-    } else if ((this.platform.is('capacitor') || true) && this.platform.is('android')) {
+    } else if ((this.platform.is('capacitor') || true) && (this.platform.is('android') || true)) { // IMOPRTANT, REVERT AFTER DEBUGGING SESSION
       try {
         // Load from Android
+        console.log("Calling getProdcuts [android]")
         products = this.purchaseService.getProducts('subs')
       } catch (error) {
         this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');

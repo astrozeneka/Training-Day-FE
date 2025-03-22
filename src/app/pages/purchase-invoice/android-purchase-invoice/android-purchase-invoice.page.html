@@ -1,24 +1,62 @@
 <ion-header>
   <ion-toolbar>
-      <ion-buttons slot="start">
-          <app-back-button></app-back-button>
-          <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>
-          Confirmez votre achat<!-- need to be updated following the template for iOS -->
-      </ion-title>
+    <ion-buttons slot="start">
+        <app-back-button></app-back-button>
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Abonnements</ion-title>
+    <ion-progress-bar [value]="processProgress" *ngIf="processProgress > 0"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <h1 class="display-1 ion-padding">Facture</h1><!-- need to be updated following the template for iOS -->
+  <div class="android-purchase-invoice">
+    <h1 class="display-1 ion-padding">Confirmez votre achat</h1>
+    
+    <form [formGroup]="form">
+      <div class="ion-padding-horizontal description">
+        Veuillez sélectionner votre offre d'abonnement. Les prélèvements seront effectués automatiquement par Google Play Store.
+      </div>
+      <div class="ion-padding-horizontal bubble-wrapper">
+        <app-promotional-bubble-selector *ngIf="productList && productId" [product]="productList[productId]" formControlName="offer" os="android"></app-promotional-bubble-selector>
+        <div class="placeholder" *ngIf="offersAreLoading"><ion-spinner></ion-spinner></div>
+      </div>
+
+      <div class="floating-bottom">
+        <div class="ion-padding">
+          <div class="cgv-row">
+            <ion-label>Accepter <a class="a" (click)="openCGV()">les CGV</a></ion-label>
+            <ion-checkbox formControlName="acceptCGV" slot="end" color="primary"></ion-checkbox>
+          </div>
+
+          <app-ux-button
+            expand="block" 
+            color="primary" 
+            shape="round" 
+            [disabled]="!form.valid"
+            (click)="continueToPayment()"
+            [loading]="isLoading"
+          >
+            Continuer
+          </app-ux-button>
+          <!-- TODO, redeem code -->
+          <div class="helper ion-text-center" style="font-size:smaller">
+            <!-- Enregistrement de votre commande en cours <br/> -->
+            {{ loadingStep }}
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <!--<h1 class="display-1 ion-padding">Facture</h1>
 
   <div class="ion-padding">
       <table>
           <thead>
           <tr>
               <th></th>
-              <th>Désignation</th><!-- need to be updated following the template for iOS -->
+              <th>Désignation</th>
               <th>Prix TTC</th>
           </tr>
           </thead>
@@ -27,14 +65,12 @@
               <td>1</td>
               <td>
                 {{ productList[productId]?.displayName }} <br/>
-                <!-- todo later , promotional text if there is any -->
               </td>
               <td>
                 {{ productList[productId]?.displayPrice }}
                 <span *ngIf="['hoylt', 'alonzo', 'moreno', 'gursky', 'smiley'].includes(productId)">/ mois</span>
               </td>
             </tr>
-            <!-- The total -->
             <tr>
               <td></td>
               <td><strong>Total</strong></td>
@@ -42,14 +78,11 @@
                 <strong>{{ productList[productId].displayPrice }}
                   <span *ngIf="['hoylt', 'alonzo', 'moreno', 'gursky', 'smiley'].includes(productId)">/ mois</span>
                 </strong>
-                <!-- Todo, promotional offer if there is -->
               </td>
             </tr>
           </tbody>
         </table>
     </div>
-
-    <!-- Todo later, the promotional offer, should consider to use a shared component to load them -->
     
     
     <form>
@@ -69,7 +102,6 @@
       >
         Continuer
       </app-ux-button>
-      <!-- TODO, redeem code -->
       <div class="helper ion-text-center" *ngIf="isLoading" style="font-size:smaller">
         Enregistrement de votre commande en cours <br/>
         <div>
@@ -80,4 +112,5 @@
         </div>
       </div>
     </div>
+  -->
 </ion-content>

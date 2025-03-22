@@ -1,5 +1,5 @@
 <div class="promotional-bubble-selector-component">
-  <div class="wrapper">
+  <div class="wrapper" *ngIf="os === 'ios'">
     <ion-button
       fill="clear"
       expand="block"
@@ -42,7 +42,7 @@
         <div class="row">
           <div class="left">
             <div class="title">
-              Abonnement pour 6 mois
+              Abonnement pour {{ offer.pricingPhases[0].billingPeriod }} mois 
             </div>
             <div class="subtitle">
               Économisez <b>50%</b> sur un abonnement de 6 mois

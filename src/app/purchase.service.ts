@@ -198,6 +198,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
       if (offerSignatureInfo){
         return await StorePlugin.purchaseProductWithDiscount({productId: productId, type: productType, ...extraParams}, os); // Why use os ??
       } else {
+        console.log(`Purchasing the base offer, productId: ${productId}, productType: ${productType}, extraParams: ${JSON.stringify(extraParams)}, os: ${os}`)
         return await StorePlugin.purchaseProductById({productId: productId, type: productType, ...extraParams}, os); // Why use os ??
       }
     } catch (error){
