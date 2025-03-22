@@ -54,6 +54,7 @@ import { CondensedMenuItemComponent } from './condensed-menu-item/condensed-menu
 import { PromoOfferCardComponent } from './promo-offer-card/promo-offer-card.component';
 import { ChipInputNg16Component } from '../components-submodules/chip-input-ng16/chip-input-ng16.component';
 import { PromotionalBubbleSelectorComponent } from './promotional-bubble-selector/promotional-bubble-selector.component';
+import { ErrorMessagePipe } from '../pipes/error-message.pipe';
 
 
 @NgModule({
@@ -106,6 +107,7 @@ import { PromotionalBubbleSelectorComponent } from './promotional-bubble-selecto
 
     // Pipes
     DisplayListPipe,
+    ErrorMessagePipe,
 
     // External projects
     UxButtonComponent,
