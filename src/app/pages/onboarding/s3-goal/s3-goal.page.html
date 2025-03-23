@@ -1,13 +1,58 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>s3-goal</ion-title>
+    <ion-buttons slot="start">
+        <app-back-button></app-back-button>
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Inscription</ion-title>
+    <ion-progress-bar value="0.333333333333333"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">s3-goal</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <form [formGroup]="form" (submit)="submit()">
+
+    <div class="ion-padding-horizontal">
+      <div class="onboarding-title">
+        Quels sont vos objectifs ?
+      </div>
+      <div class="onboarding-subtitle">
+        Définissez vos objectifs pour que nous puissions vous proposer des programmes adaptés.
+      </div>
+    </div>
+
+
+    <div class="input-wrapper multi-selector-wrapper">
+      <app-bubble-multi-selector
+        [options]="goalOptions"
+        formControlName="goals"
+        [keyAccessor]="goalKeyAccessor"
+        [errorText]="displayedError.goals"
+        mode="multiple"
+      ></app-bubble-multi-selector>
+    </div>
+    <div [class]="'input-wrapper animated ' + (form.get('goals').value.includes('Autre(s)') ? '' : 'hidden')">
+      <app-outline-input
+        label="Autre(s)"
+        formControlName="otherGoals"
+        [errorText]="displayedError.otherGoals"
+      ></app-outline-input>
+    </div>
+
+    <div class="onboarding-floating-bottom-1">
+      <div class="ion-padding">
+        <app-ux-button
+          expand="block" 
+          color="primary" 
+          shape="round" 
+          [disabled]="!form.valid"
+          [loading]="isLoading"
+        >
+          Continuer
+        </app-ux-button>
+      </div>
+    </div>
+  </form>
 </ion-content>
+

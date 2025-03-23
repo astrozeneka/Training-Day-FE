@@ -55,6 +55,7 @@ import { PromoOfferCardComponent } from './promo-offer-card/promo-offer-card.com
 import { ChipInputNg16Component } from '../components-submodules/chip-input-ng16/chip-input-ng16.component';
 import { PromotionalBubbleSelectorComponent } from './promotional-bubble-selector/promotional-bubble-selector.component';
 import { ErrorMessagePipe } from '../pipes/error-message.pipe';
+import { BubbleMultiSelectorComponent } from './bubble-multi-selector/bubble-multi-selector.component';
 
 
 @NgModule({
@@ -104,6 +105,7 @@ import { ErrorMessagePipe } from '../pipes/error-message.pipe';
     CondensedMenuItemComponent,
     PromoOfferCardComponent, // The UI is not suitable for the screen format
     PromotionalBubbleSelectorComponent,
+    BubbleMultiSelectorComponent,
 
     // Pipes
     DisplayListPipe,
@@ -153,6 +155,7 @@ import { ErrorMessagePipe } from '../pipes/error-message.pipe';
     CondensedMenuItemComponent,
     PromoOfferCardComponent,
     PromotionalBubbleSelectorComponent,
+    BubbleMultiSelectorComponent,
     
     DisplayListPipe,
     ChatMasterDiscussionListComponent,
