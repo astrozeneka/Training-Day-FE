@@ -23,10 +23,10 @@ export class S2MoreInfoPage implements OnInit {
     height: undefined,
     sex: undefined
   }
-  sexKeyAccessor = (option: any) => option
+  sexKeyAccessor = (option: any) => {return {"male": "Homme", "female": "Femme"}[option]}
   sexOptions = [
-    "Homme",
-    "Femme"
+    "male",
+    "female"
   ]
 
   isLoading: boolean = false;

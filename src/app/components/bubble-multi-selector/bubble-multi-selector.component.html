@@ -1,16 +1,21 @@
-<div class="multi-selector-component">
+<div [class]="'multi-selector-component ' + variant">
+  <div class="label">{{ label }}</div>
   <div class="wrapper">
     <ion-button
     *ngFor="let option of options"
       fill="clear"
       expand="block"
       color="dark"
-      [class]="'clickable-option ' + ((formControl.value==option || formControl.value.includes(option))?'active':'')"
+      [class]="'clickable-option ' + ((
+        (mode == 'single' && keyAccessor(this.formControl.value) == keyAccessor(option)) ||
+        (mode == 'multiple' && formControl.value.includes(option))?'active':''))"
       (click)="chooseOption(option)"
     >
       <div class="inner">
         <div class="content">
-          <div>{{ keyAccessor(option) ? keyAccessor(option) : option }}</div>
+          <div>
+            {{ keyAccessor(option) ? keyAccessor(option) : option }}
+          </div>
         </div>
         <div class="right">
           <div class="rounded-rectangle"><div class="active-indicator">

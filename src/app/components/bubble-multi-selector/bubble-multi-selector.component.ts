@@ -19,6 +19,9 @@ export class BubbleMultiSelectorComponent<T> implements OnInit {
   @Input() label: string = ""
   @Input() errorText: string | undefined = undefined
 
+  // Variant
+  @Input() variant: string = 'default';
+
   // The key accessor for custom display
   @Input() keyAccessor: (option: any) => string = (option: any) => option.toString();
 
@@ -41,7 +44,13 @@ export class BubbleMultiSelectorComponent<T> implements OnInit {
     this.formControl.markAsTouched()
     
     if(this.mode === 'single'){
-      this.formControl?.setValue(option)
+      if (this.formControl.value === option){
+        this.formControl.setValue(null)
+        this.onTouch()
+        return
+      } else {
+        this.formControl?.setValue(option)
+      }
     }else{ // this.mode == 'multiple'
       let alreadySelected = this.formControl?.value || [];
       if (alreadySelected.includes(option)){

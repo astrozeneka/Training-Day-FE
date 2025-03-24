@@ -1,0 +1,17 @@
+
+
+.input-wrapper.animated{
+    max-height: 250px;
+    overflow: hidden;
+    // animation on height
+    transition: max-height 0.2s;
+
+    &.multi-selector-wrapper{
+    }
+
+    &.hidden{
+        max-height: 0px;
+        // Delete max-height transiation
+        transition: none;
+    }
+}

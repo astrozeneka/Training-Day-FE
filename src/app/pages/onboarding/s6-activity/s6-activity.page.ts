@@ -20,10 +20,10 @@ export class S6ActivityPage implements OnInit {
 
   activityKeyAccessor = (option: any) => option.text
   activityOptions = [
-    { "slug": "sedentary", "text": "Sédentaire" },
-    { "slug": "light", "text": "Légèrement actif" },
-    { "slug": "moderate", "text": "Modérément actif" },
-    { "slug": "intense", "text": "Très actif" },
+    { "slug": "sedentary", "text": "Sédentaire (Travail de bureau et pas d'activité physique)" },
+    { "slug": "light", "text": "Légèrement actif (Travail de bureau avec activité légère, activité physique occasionnelle)" },
+    { "slug": "moderate", "text": "Modérément actif (Travail avec déplacement fréquents, activité physique régulière)" },
+    { "slug": "intense", "text": "Très actif (Travail physique et activité physique quotidienne)" },
     { "slug": "extreme", "text": "Athlète (+2h de sport intensif par jour)" }
   ]
 

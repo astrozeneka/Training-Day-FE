@@ -1,25 +1,29 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>s4-sleep</ion-title>
+    <ion-buttons slot="start">
+        <app-back-button></app-back-button>
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Inscription</ion-title>
+    <ion-progress-bar value="0.444444444444"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">s4-sleep</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
 
   <form [formGroup]="form" (submit)="submit()">
 
-    <br/>
-    <br/>
-    <br/>
-    <br/>
+    <div class="ion-padding-horizontal">
+      <div class="onboarding-title">
+        Décrivez votre sommeil
+      </div>
+      <div class="onboarding-subtitle">
+        Combien d'heures dormez-vous en moyenne par nuit ?
+      </div>
+    </div>
     
     <div class="input-wrapper">
-      <app-chip-input-ng16
+      <!--<app-chip-input-ng16
         label="Sommeil quotidien"
         formControlName="dailySleepHours"
         [options]="dailySleepHoursOptions"
@@ -27,7 +31,15 @@
         [errorText]="displayedError.dailySleepHours"
         mode="single"
         [keyEventDisabled]="false"
-      ></app-chip-input-ng16>
+      ></app-chip-input-ng16>-->
+      <app-bubble-multi-selector
+        label=""
+        formControlName="dailySleepHours"
+        [options]="dailySleepHoursOptions"
+        [keyAccessor]="dailySleepHoursKeyAccessor"
+        [errorText]="displayedError.dailySleepHours"
+        mode="single"
+      ></app-bubble-multi-selector>
     </div>
 
 

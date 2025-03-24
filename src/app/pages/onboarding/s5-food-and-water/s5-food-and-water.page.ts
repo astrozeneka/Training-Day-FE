@@ -20,14 +20,16 @@ export class S5FoodAndWaterPage implements OnInit {
     dailyWater: undefined
   }
   dailyMealsOptions = [
-    "Moins de 3 repas",
-    "3 repas",
-    "Plus de 3 repas"
+    "1",
+    "2",
+    "3",
+    "4",
+    "Plus de 4",
   ]
   dailyWaterOptions = [
     "Moins de 1L",
-    "Entre 1 et 2L",
-    "Plus de 2L"
+    "Entre 1 et 1.5L",
+    "Plus de 1.5L"
   ]
   dailyMealsKeyAccessor = (option: any) => option
   dailyWaterKeyAccessor = (option: any) => option

@@ -3,7 +3,8 @@
     font-size: 24px;
     font-weight: 400;
     text-align: center;
-    margin-top: 32px;
+    padding-top: 32px;
+    margin-top: 0px;
 }
 
 .onboarding-subtitle{
@@ -12,6 +13,7 @@
     line-height: 133%;
     text-align: center;
     margin-top: 20px;
+    margin-bottom: 55px;
 }
 
 .onboarding-button{
@@ -26,7 +28,8 @@
     $height: 80px;
     height: calc($height + env(safe-area-inset-bottom));
     &>*{
-        position: absolute;
+        position: fixed;
+        z-index: 9999!important;
         bottom: 0;
         width: 100%;
         padding-bottom: env(safe-area-inset-bottom);
@@ -48,4 +51,11 @@
         background: var(--ion-background-color);
         height: calc($height + env(safe-area-inset-bottom));
     }
+}
+
+
+// Padding (shared among all other components)
+.input-wrapper{
+    padding-left: 16px;
+    padding-right: 16px;
 }

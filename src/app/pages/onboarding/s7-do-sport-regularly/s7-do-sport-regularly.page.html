@@ -1,38 +1,48 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>s7-do-sport-regularly</ion-title>
+    <ion-buttons slot="start">
+        <app-back-button></app-back-button>
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Inscription</ion-title>
+    <ion-progress-bar value="0.777777777"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">s7-do-sport-regularly</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <form>
-    <div class="onboarding-floating-bottom-2">
+<ion-content>
+  <form [formGroup]="form" (submit)="submit()">
+
+    <div class="ion-padding-horizontal">
+      <div class="onboarding-title">
+        Pratiques-tu une activité physique actuellement ? 
+      </div>
+      <div class="onboarding-subtitle">
+        
+      </div>
+    </div>
+
+    <div class="input-wrapper">
+      <app-bubble-multi-selector
+        [options]="everydaySportOptions"
+        formControlName="everydaySport"
+        [keyAccessor]="everydaySportKeyAccessor"
+        [errorText]="displayedError['everydaySport']"
+        mode="single"
+      ></app-bubble-multi-selector>
+    </div>
+
+
+    <div class="onboarding-floating-bottom-1">
       <div class="ion-padding">
         <app-ux-button
           expand="block" 
           color="primary" 
-          shape="round"
-          fill="outline"
-          type="button"
-          class="onboarding-button"
+          shape="round" 
+          [disabled]="!form.valid"
+          [loading]="isLoading"
         >
-          <span>Oui, régulièrement</span>
-        </app-ux-button>
-
-        <app-ux-button
-          expand="block" 
-          color="primary" 
-          shape="round"
-          type="button"
-          class="onboarding-button"
-        >
-          <span>Non, pas régulièrement</span>
+          Continuer
         </app-ux-button>
       </div>
     </div>

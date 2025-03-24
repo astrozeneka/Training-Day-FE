@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import StoredData from './components-submodules/stored-data/StoredData';
 import { ContentService } from './content.service';
-import { filter, merge, Observable, Subject } from 'rxjs';
+import { catchError, filter, from, merge, Observable, Subject, switchMap, throwError } from 'rxjs';
 
 export interface OnboardingData {
   age: any,
@@ -69,6 +69,38 @@ export class OnboardingService {
         })
       })
     })
+  }
+
+  /**
+   * Clear onboarding temporary data
+   */
+  clearOnboardingData():Promise<void>{
+    return new Promise(async (resolve) => {
+      await this.onboardingData.set(undefined)
+      this.onboardingDataSubject.next(undefined)
+      resolve()
+    })
+  }
+
+  /**
+   * Save onboarding data to the server
+   */
+  persistOnboardingData(userId:number):Observable<OnboardingData>{
+    return from(this.onboardingData.get())
+      .pipe(switchMap((data:OnboardingData) => {
+        return this.cs.put('/users', {
+          id: userId, 
+          extra_data: data,
+          height: data.height,
+          weight: data.weight,
+          age: data.age,
+          sex: data.sex
+        })
+          .pipe(catchError((error) => { 
+            console.error("Error", error)
+            return throwError(()=>error)
+          })) 
+      })) as Observable<OnboardingData>
   }
 
 }

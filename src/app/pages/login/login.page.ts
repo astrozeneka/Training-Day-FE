@@ -20,6 +20,7 @@ import {BroadcastingService} from "../../broadcasting.service";
 import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-detection/ngx';
 import PasswordToggle from 'src/app/utils/PasswordToggle';
 import { DarkModeService } from 'src/app/dark-mode.service';
+import { OnboardingService } from 'src/app/onboarding.service';
 
 @Component({
   selector: 'app-login',
@@ -55,7 +56,8 @@ export class LoginPage extends FormComponent implements OnInit {
     private httpClient: HttpClient,
     private broadcastingService: BroadcastingService,
     private themeDetection: ThemeDetection,
-    private dms: DarkModeService
+    private dms: DarkModeService,
+    private os: OnboardingService
   ) {
     super()
   }
@@ -211,9 +213,16 @@ export class LoginPage extends FormComponent implements OnInit {
         }catch (e){
           console.error('Device not compatible with PushNotification', e)
         }
-        await this.feedbackService.register("Bonjour, vous êtes connecté", 'success')
-        // Update user data from the server
-        this.router.navigate(['/home'])
+
+        // IF the extra_data is already set, then redirect to the home page, otherwise, let him fill the form
+        let user = await this.contentService.storage.get('user')
+        if (!user.extra_data){
+          this.os.clearOnboardingData()
+          this.router.navigate(['/s2-more-info'])
+        } else {
+          await this.feedbackService.register("Bonjour, vous êtes connecté", 'success')
+          this.router.navigate(['/home'])
+        }
       })
   }
 

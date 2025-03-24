@@ -6,6 +6,7 @@ import {NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {FeedbackService} from "../../feedback.service";
 import {Browser} from "@capacitor/browser";
 import {Platform} from "@ionic/angular";
+import { catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-app-calories',
@@ -33,6 +34,7 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
   }
   loaded = false;
   physicalValidated = false;
+  isLoading: boolean = false;
 
   constructor(
     private contentService: ContentService,
@@ -72,21 +74,13 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
       */
   }
 
-  loadData(){
-    this.contentService.storage.get('user')
-      .then((u)=>{
-        this.user = u
-        this.contentService.getOne(`/users/body/${u.id}`, '')
-          .subscribe(v=>{
-            this.form.patchValue(v)
-            this.loaded = true
-          })
-      })
-  }
-
   ngOnInit() {
+    // 1. Load the user's data from the storage data
     this.contentService.userStorageObservable.getStorageObservable().subscribe((u)=>{
       this.user = u
+      if (u.extra_data){
+        u.activity = JSON.parse(u.extra_data)?.activity?.slug
+      }
       this.form.reset()
       this.form.patchValue(u)
     })
@@ -98,13 +92,20 @@ export class AppCaloriesPage extends FormComponent implements OnInit{
       this.feedbackService.registerNow("Veuillez entrez correctement vos informations", "danger")
       return
     }
+    this.isLoading = true
     if(this.user){
       let obj:any = this.form.value
       obj.id = this.user.id
       this.contentService.put('/users', obj)
+        .pipe(catchError((error)=>{
+          this.isLoading = false
+          console.error("Error", error)
+          return throwError(()=>error)
+        }))
         .subscribe((u)=>{
           this.physicalValidated = true;
           this.calculate()
+          this.isLoading = false
         })
     }else{
       this.physicalValidated = true;

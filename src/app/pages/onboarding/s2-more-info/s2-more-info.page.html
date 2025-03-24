@@ -1,17 +1,27 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>s2-more-info</ion-title>
+    <ion-buttons slot="start">
+        <app-back-button></app-back-button>
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Inscription</ion-title>
+    <ion-progress-bar value="0.22222222"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">s2-more-info</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+<ion-content>
 
   <form [formGroup]="form" (submit)="submit()">
+
+    <div class="ion-padding-horizontal">
+      <div class="onboarding-title">
+        Vous-êtes ?
+      </div>
+      <div class="onboarding-subtitle">
+        Dîtes-nous en plus sur vous.
+      </div>
+    </div>
     <div class="input-wrapper">
       <app-outline-input
         label="Mon age"
@@ -37,6 +47,7 @@
       ></app-outline-input>
     </div>
     <div class="input-wrapper">
+      <!--
       <app-chip-input-ng16
         label="Je suis ..."
         formControlName="sex"
@@ -46,8 +57,19 @@
         mode="single"
         [keyEventDisabled]="false"
       ></app-chip-input-ng16>
+      -->
+      <app-bubble-multi-selector
+        label="Je suis ..."
+        formControlName="sex"
+        [options]="sexOptions"
+        [errorText]="displayedError['sex']"
+        [keyAccessor]="sexKeyAccessor"
+        [mode]="'single'"
+        variant="horizontal"
+      ></app-bubble-multi-selector>
     </div>
 
+    <br/><br/><br/><br/><br/><br/>
     <div class="onboarding-floating-bottom-1">
       <div class="ion-padding">
         <app-ux-button
