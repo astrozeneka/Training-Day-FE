@@ -11,12 +11,12 @@ import { OnboardingService } from 'src/app/onboarding.service';
 })
 export class S2MoreInfoPage implements OnInit {
   
-  form:FormGroup = new FormGroup({
-    age: new FormControl('', [Validators.required]),
-    weight: new FormControl('', [Validators.required, Validators.min(30), Validators.max(300)]),
-    height: new FormControl('', [Validators.required, Validators.min(100), Validators.max(250)]),
+  form: FormGroup = new FormGroup({
+    age: new FormControl('', [Validators.required, Validators.pattern('^[0-9]+$')]),
+    weight: new FormControl('', [Validators.required, Validators.min(30), Validators.max(300), Validators.pattern('^[0-9]+$')]),
+    height: new FormControl('', [Validators.required, Validators.min(100), Validators.max(250), Validators.pattern('^[0-9]+$')]),
     sex: new FormControl('', [Validators.required])
-  })
+  });
   displayedError = {
     age: undefined,
     weight: undefined,

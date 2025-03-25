@@ -42,7 +42,7 @@ export class ForgotPasswordPage implements OnInit {
     this.contentService.post('/password-reset', this.form.value)
       .pipe(catchError(error=>{
         if(error.status == 403){
-          this.feedbackService.register("L'adresse email n'existe pas, veuillez entrer une adresse email inscrite sur la plateforme")
+          this.feedbackService.register(error.error.message, "danger")
           this.router.navigate(['/login'])
         }
         return throwError(error)

@@ -26,6 +26,8 @@ export class ErrorMessagePipe implements PipeTransform {
     } else if ('max' in errors && errors.max && typeof errors.max.max === 'number') {
       const maxValue = errors.max.max;
       return `La valeur doit être inférieure ou égale à ${maxValue}.`;
+    } else if ('pattern' in errors) {
+      return 'Le format est incorrect.';
     } else {
       // Fallback for unknown errors
       return 'Erreur inconnue.';
