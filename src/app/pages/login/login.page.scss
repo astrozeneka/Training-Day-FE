@@ -40,3 +40,12 @@ ion-content{
 .password-toggle{
   @include password-toggle;
 }
+
+// The social authentication
+app-ux-button .inner{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 7px;
+}

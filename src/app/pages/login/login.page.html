@@ -82,6 +82,26 @@
       <div>
         <ion-button expand="full" type="submit" color="medium" (click)="goTo('/subscribe')" shape="round">S'inscrire gratuitement</ion-button>
         <ion-button expand="full" type="submit" color="tertiary" (click)="goTo('/home')" shape="round">Continuer sans s'inscrire</ion-button>
+
+        <!--<ion-button (click)="testPasswordAutofill()" *ngIf="false">Test autofill</ion-button>-->
+
+
+        <hr/>
+
+        <app-ux-button 
+          (click)="continueWithGoogle()" color="medium"
+          expand="full"
+          type="button"
+          shape="round"
+          fill="clear"
+        >
+          <div class="inner">
+            <!-- Used both registering or login -->
+            <img src="/assets/icon/social-menu/google-logo.svg" alt="Google" width="20px" height="20px">
+            <div>Continuer avec Google</div>
+          </div>
+        </app-ux-button>
+        
       </div>
         <a *ngIf="false" routerLink="/s6-activity">Test select component</a>
         <div *ngIf="false">

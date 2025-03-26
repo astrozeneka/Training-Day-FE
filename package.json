@@ -48,6 +48,7 @@
     "@types/hls.js": "^1.0.0",
     "@types/quill": "^1.3.10",
     "@videojs/http-streaming": "^3.16.2",
+    "capacitor-ios-autofill-save-password": "^5.0.0",
     "chart.js": "^4.4.4",
     "chartjs-adapter-date-fns": "^3.0.0",
     "codex-notifier": "^1.1.2",

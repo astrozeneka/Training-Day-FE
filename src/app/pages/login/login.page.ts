@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import { Browser } from "@capacitor/browser";
 import { v4 as uuidv4 } from 'uuid';
 //import { PushNotifications } from '@capacitor/push-notifications';
+import { SavePassword } from 'capacitor-ios-autofill-save-password';
+
 import {
   ActionPerformed,
   PushNotificationSchema,
@@ -10,7 +12,7 @@ import {
   Token,
 } from '@capacitor/push-notifications';
 import {ContentService} from "../../content.service";
-import {catchError, finalize, throwError} from "rxjs";
+import {catchError, finalize, Subject, take, throwError} from "rxjs";
 import {FormComponent} from "../../components/form.component";
 import {DEBUG, FeedbackService} from "../../feedback.service";
 import {Router} from "@angular/router";
@@ -21,6 +23,8 @@ import { ThemeDetection, ThemeDetectionResponse } from '@ionic-native/theme-dete
 import PasswordToggle from 'src/app/utils/PasswordToggle';
 import { DarkModeService } from 'src/app/dark-mode.service';
 import { OnboardingService } from 'src/app/onboarding.service';
+import { App, URLOpenListenerEvent } from '@capacitor/app';
+
 
 @Component({
   selector: 'app-login',
@@ -48,6 +52,9 @@ export class LoginPage extends FormComponent implements OnInit {
   // Darkmode
   useDarkMode:boolean = false;
 
+  // App link handling (for login only) - Subject is the token
+  onOpenedFromGoogleOauth$: Subject<{token: string}> = new Subject()
+
   constructor(
     private contentService: ContentService,
     private feedbackService: FeedbackService,
@@ -57,7 +64,8 @@ export class LoginPage extends FormComponent implements OnInit {
     private broadcastingService: BroadcastingService,
     private themeDetection: ThemeDetection,
     private dms: DarkModeService,
-    private os: OnboardingService
+    private os: OnboardingService,
+    private zone: NgZone
   ) {
     super()
   }
@@ -149,7 +157,7 @@ export class LoginPage extends FormComponent implements OnInit {
      */
 
     // This will handle some passwordless login (when the user came back to the page)
-    window.addEventListener('focus', async ev => {
+    /*window.addEventListener('focus', async ev => {
       console.log("The user is back")
       let tmpUserInfo = await this.contentService.storage.get('tmp-user-info')
       if(tmpUserInfo && tmpUserInfo['next-step'] == 'prompt-user-info'){
@@ -161,7 +169,7 @@ export class LoginPage extends FormComponent implements OnInit {
           'password': tmpUser['password']
         })
       }
-    })
+    })*/
 
     /*this.feedbackService.registerNow(
       null,
@@ -179,16 +187,31 @@ export class LoginPage extends FormComponent implements OnInit {
 
     // Checking if the darkmode is enabled
     this.useDarkMode = await this.dms.isAvailableAndEnabled()
+
+    // Handle deeplink redirection
+    console.log("Register 'appUrlOpen' listener")
+    App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
+      this.feedbackService.registerNow("Deep link received : " + event.url, "secondary")
+      console.log('App opened with URL: ' + event.url);
+      if (event.url.includes('/app/google')){
+        let token = event.url.split('/').pop()
+        this.onOpenedFromGoogleOauth$.next({token: token})
+      }
+    })
   }
 
-  async requestLogin({email, password}){
+  async requestLogin({email = null, password = null, google_token = null}){
     let deviceToken = await this.contentService.storage.get('device_token') ?? {'ios_token': 'fake'}
-    console.log("Device token", deviceToken)
-    this.contentService.requestLogin({
-      'email': email,
-      'password': password,
-      'device_token':  deviceToken
-    })
+    // console.log("Device token", deviceToken)
+
+    let params = {'device_token': deviceToken}
+    if (google_token){
+      params['google_token'] = google_token
+    }else{
+      params['email'] = email
+      params['password'] = password
+    }
+    this.contentService.requestLogin(params)
       .pipe(catchError((error)=>{
         if(error.status == 422){
           this.manageValidationFeedback(error, 'email');
@@ -340,7 +363,48 @@ export class LoginPage extends FormComponent implements OnInit {
           }
           console.log(res)
         })
-      Browser.open({url: authenticationAuthUrl})
+      //Browser.open({url: authenticationAuthUrl})
+      // Redirect the webview (without)
+    }else if(provider == 'google'){
+
     }
+  }
+
+  continueWithGoogle(){
+
+    /*const form = document.createElement('form');
+    form.action = `${environment.rootEndpoint}/oauth/google`;
+    form.method = 'GET';
+    document.body.appendChild(form);
+    form.submit();*/
+
+    Browser.open({url: `${environment.rootEndpoint}/oauth/google`})
+
+    this.onOpenedFromGoogleOauth$
+      .pipe(take(1))
+      .subscribe((res)=>{
+        console.log("Token received :" + JSON.stringify(res))
+        console.log("Request Login")
+        this.requestLogin({
+          'google_token': res.token
+        })
+    })
+
+    // Option 2. using Browser
+    // Browser.open({url: `${environment.rootEndpoint}/oauth/google`})
+  }
+
+  testPasswordAutofill() {
+    console.log("Prompting dialog")
+    SavePassword.promptDialog({
+      username: 'test',
+      password: 'test'
+    })
+      .then((result) => {
+        console.log('SavePassword.promptDialog' + JSON.stringify(result));
+      })
+      .catch((error) => {
+        console.error('SavePassword.promptDialog' + JSON.stringify(error));
+      });
   }
 }

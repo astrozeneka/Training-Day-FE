@@ -14,6 +14,8 @@ PODS:
     - Capacitor
   - CapacitorHaptics (5.0.6):
     - Capacitor
+  - CapacitorIosAutofillSavePassword (5.0.0):
+    - Capacitor
   - CapacitorKeyboard (5.0.6):
     - Capacitor
   - CapacitorPushNotifications (5.1.0):
@@ -93,6 +95,7 @@ DEPENDENCIES:
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorGeolocation (from `../../node_modules/@capacitor/geolocation`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
+  - CapacitorIosAutofillSavePassword (from `../../node_modules/capacitor-ios-autofill-save-password`)
   - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
   - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
@@ -133,6 +136,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/geolocation"
   CapacitorHaptics:
     :path: "../../node_modules/@capacitor/haptics"
+  CapacitorIosAutofillSavePassword:
+    :path: "../../node_modules/capacitor-ios-autofill-save-password"
   CapacitorKeyboard:
     :path: "../../node_modules/@capacitor/keyboard"
   CapacitorPushNotifications:
@@ -161,6 +166,7 @@ SPEC CHECKSUMS:
   CapacitorCordova: 3d3908a3d208a11a75f9df3b18c4405c4de76e1d
   CapacitorGeolocation: 42c2ed469e5c904f516ab8064346ea8cb28f779a
   CapacitorHaptics: c56885bd07919be808b38db507507919ce4d1b09
+  CapacitorIosAutofillSavePassword: 60b1afd83532bfa85ab1c3f1341ce5ac397e3d30
   CapacitorKeyboard: 673a4a303383a61f4d360c871f121f8bbaa745b6
   CapacitorPushNotifications: b65e9e5ed4caa19d614ee8221b26129f6d506e63
   CapacitorSplashScreen: b46e61cc4345d73d510530b0c845a30e3602db40
@@ -180,6 +186,6 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
 
-PODFILE CHECKSUM: 2681a93c2a21ce27d505e24781f837aedbfe09e6
+PODFILE CHECKSUM: 893bd3ab0b17105a96c12fefbd2e5e703cded3d4
 
 COCOAPODS: 1.16.2
