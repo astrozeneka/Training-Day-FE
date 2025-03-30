@@ -57,6 +57,9 @@ export class UserViewComponent extends FormComponent implements OnInit {
       acc[item.slug] = item
       return acc
     }, {})
+
+    // Parse the extra_data json data
+    this.entity.extra_data = JSON.parse(this.entity.extra_data)
   }
 
   loadData(){
@@ -64,6 +67,7 @@ export class UserViewComponent extends FormComponent implements OnInit {
       this.contentService.getOne(`/users/${this.entity.id}`, {})
         .subscribe(data=>{
           this.entity = data;
+          this.entity.extra_data = JSON.parse(this.entity.extra_data)
         })
     }
   }

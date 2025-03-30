@@ -47,3 +47,56 @@
 .capitalize{
   text-transform: capitalize;
 }
+
+
+/**
+ * The info-table (!! warning, THE CODE BELOW IS REUSED by profile.page !!)
+ */
+
+ .info-table-wrapper{
+  padding-top: 15px;
+  padding-bottom: 5px;
+}
+
+.info-table-heading{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+
+  & > div{
+    font-weight: 600;
+  }
+}
+
+.info-table{
+  & {
+    width: 100%;
+    border-collapse: collapse;
+    //background: #fff;
+    overflow: hidden;
+    // box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  & tr {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px;
+      border-bottom: 1px solid var(--ion-color-darkgrey);
+  }
+
+  & tr:last-child {
+      border-bottom: none;
+  }
+
+  & td {
+      padding: 5px;
+      font-size: 16px;
+      color: var(--ion-color-darkgrey);
+  }
+
+  & td:first-child {
+      // font-weight: bold;
+      color: var(--ion-color-dark);
+  }
+}

@@ -153,6 +153,95 @@
         </div>
       </div>
     </div>
+    <div *ngIf="entity.function === 'customer'">
+      <h1 class="ion-padding">Informations supplémentaires</h1>
+      <div *ngIf="entity.extra_data" class="ion-padding-horizontal">
+        <div class="info-table-wrapper">
+          <div class="info-table-heading">
+            <div>Mes informations physiques</div>
+          </div>
+          <table class="info-table">
+            <tr>
+                <td>Poids</td>
+                <td>{{ entity.extra_data.weight }} kg</td>
+            </tr>
+            <tr>
+                <td>Taille</td>
+                <td>{{ entity.extra_data.height }} cm</td>
+            </tr>
+            <tr>
+                <td>Age</td>
+                <td>{{ entity.extra_data.age }} ans</td>
+            </tr>
+            <tr>
+                <td>Sexe</td>
+                <td>{{ entity.extra_data.sex }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="info-table-wrapper">
+          <div class="info-table-heading">
+              <div>Mes objectifs</div>
+          </div>
+          <div class="info-table">
+              <tr *ngFor="let goal of entity.extra_data.goals">
+                  <td *ngIf="!goal.includes('Autre')">{{ goal }}</td>
+                  <td *ngIf="goal.includes('Autre')">{{ goal }}: {{ entity.extra_data.otherGoals }}</td>
+              </tr>
+          </div>
+        </div>
+    
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Mon sommeil</div>
+            </div>
+            <div class="info-table ">
+                <tr><td>{{ entity.extra_data.dailySleepHours }}</td></tr>
+            </div>
+        </div>
+    
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Mon alimentation et mon hydratation</div>
+            </div>
+            <div class="info-table ">
+                <tr><td>Repas</td><td>{{ entity.extra_data.dailyMeals }}</td></tr>
+                <tr><td>Consommation d'eau</td><td>{{ entity.extra_data.dailyWater }}</td></tr>
+            </div>
+        </div>
+    
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Mon activité physique</div>
+            </div>
+            <table class="info-table">
+                <tr><td>{{ entity.extra_data.activity?.text }}</td></tr>
+            </table>
+        </div>
+
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Pratique sportif régulière</div>
+            </div>
+            <table class="info-table">
+                <tr><td>{{ entity.extra_data.everydaySport }}</td></tr>
+            </table>
+        </div>
+
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Soucis de santé</div>
+            </div>
+            <table class="info-table">
+                <tr *ngFor="let condition of entity.extra_data.healthConditions">
+                    <td *ngIf="!condition.includes('Autre')">{{ condition }}</td>
+                    <td *ngIf="condition.includes('Autre')">{{ condition }}: {{ entity.extra_data.otherHealthConditions }}</td>
+                </tr>
+            </table>
+        </div>
+      </div>
+    </div>
     <br/>
     <br/>
   </div>
