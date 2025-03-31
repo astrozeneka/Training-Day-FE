@@ -53,6 +53,11 @@ export class RecipesService {
   categoryDetailsSubject: BehaviorSubject<RecipeCategory[]>
   categoryDetails$: Observable<RecipeCategory[]>
 
+  // Recipe data by category
+  recipeDataByCategory: {[key:string]: StoredData<Recipe[]>} = {}
+  recipeDataByCategorySubject: {[key:string]: BehaviorSubject<Recipe[]>} = {}
+  recipeDataByCategory$: {[key:string]: Observable<Recipe[]>} = {}
+
   constructor(
     private cs: ContentService,
     private http: HttpClient
@@ -243,4 +248,37 @@ export class RecipesService {
     output$ = output$.pipe(filter((data)=>data?.length>0))
     return output$
   }
+
+  /**
+   * Load recipe data by category
+   */
+  onRecipeDataByCategory(category:string, fromCache=true, fromServer=true):Observable<Recipe[]>{
+    if (!this.recipeDataByCategory[category]){
+      this.recipeDataByCategory[category] = new StoredData<Recipe[]>(`recipe-${category}`, this.cs.storage)
+      this.recipeDataByCategorySubject[category] = new BehaviorSubject<Recipe[]>([])
+      this.recipeDataByCategory$[category] = this.recipeDataByCategorySubject[category].asObservable()
+    }
+
+    let additionalEvents$ = new Subject<Recipe[]>()
+    // 1. Fire the cached data
+    if (fromCache) {
+      this.recipeDataByCategory[category].get().then((data:Recipe[])=>{
+        this.recipeDataByCategorySubject[category].next(data)
+      })
+    }
+
+    // 2. Fire from the server
+    if (fromServer) {
+      this.cs.getCollection(`/recipes`, 0, {f_category: category}, 99999).subscribe(({data, metainfo}:any)=>{
+        additionalEvents$.next(data)
+        this.recipeDataByCategory[category].set(data)
+      })
+    }
+
+    // Prepare output
+    let output$ = merge(this.recipeDataByCategory$[category], additionalEvents$)
+    output$ = output$.pipe(filter((data)=>data?.length>0))
+    return output$
+  }
+   
 }

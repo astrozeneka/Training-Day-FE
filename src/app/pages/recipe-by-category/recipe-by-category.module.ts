@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { RecipeByCategoryPageRoutingModule } from './recipe-by-category-routing.module';
 
 import { RecipeByCategoryPage } from './recipe-by-category.page';
+import { UtilitiesModule } from 'src/app/components/utilities.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RecipeByCategoryPageRoutingModule
+    RecipeByCategoryPageRoutingModule,
+    UtilitiesModule
   ],
   declarations: [RecipeByCategoryPage]
 })

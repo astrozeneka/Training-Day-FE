@@ -1,0 +1,69 @@
+/**
+ * The below style block is reused by recipe-list
+ */
+
+.recipes-wrapper{
+    margin-left: 22px; 
+    margin-right: 22px;
+    margin-bottom: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.recipe{
+    display: inline-block;
+    width: 120px;
+    vertical-align: top;
+
+    & .recipe-image{
+        height: 120px;
+        width: 120px;
+        overflow: hidden;
+        border-radius: 50%;
+        & img{
+            width: 120px;
+        }
+    }
+
+    & .headings{
+        & .title{
+            margin-top: 5px;
+            color: --ion-color-dark;
+        }
+        & .subtitle{
+            color: #888888;
+        }
+    }
+}
+
+
+
+/**
+ * The code below are experimental feature for new kind of loader
+ * The code is reused by the onboarding pages
+ */
+ .loading-placeholder {
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 900000;
+    // background blur
+    backdrop-filter: blur(10px);
+    background-color: rgba(var(--ion-color-background-rgb), 0.2);
+
+    opacity: 1;
+    transition: opacity 0.3s;
+
+    &.hidden{
+        z-index: -1;
+        opacity: 0;
+    }
+}
