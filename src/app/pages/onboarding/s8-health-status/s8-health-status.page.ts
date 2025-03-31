@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { catchError, filter, from, switchMap, throwError } from 'rxjs';
 import { ContentService } from 'src/app/content.service';
 import { User } from 'src/app/models/Interfaces';
+import { Location } from '@angular/common';
 import { OnboardingService } from 'src/app/onboarding.service';
 
 @Component({
@@ -39,10 +40,18 @@ export class S8HealthStatusPage implements OnInit {
 
   isLoading: boolean = false
 
+  // Define whether the form is in onboarding mode or edit mode
+  formMode: 'onboarding' | 'edit' = undefined;
+
+  // User id (used to partial update it)
+  userId: number = undefined;
+
   constructor(
     private cs: ContentService,
     private os: OnboardingService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private location: Location
   ) { }
 
   // User information
@@ -53,6 +62,7 @@ export class S8HealthStatusPage implements OnInit {
     // 1. Load user
     this.cs.getUserFromLocalStorage().then(user => {
       this.user = user;
+      this.userId = user.id;
     })
 
     // 2. Load the user data from the onboarding service
@@ -73,18 +83,22 @@ export class S8HealthStatusPage implements OnInit {
       }
       otherHealthConditionsControl?.updateValueAndValidity();
     });
+
+    // 4. Handling form mode
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd && this.router.url.includes('s8-health-status')))
+      .subscribe((event: NavigationEnd) => {
+        this.formMode = (this.route.snapshot.queryParamMap.get("mode") || 'onboarding' as any) as 'onboarding' | 'edit'
+      })
   }
 
-  submit(){
-    // 1. Check if the form is valid
-    if (!this.form.valid)
-      return
-
+  /**
+   * Replacement of the submit() function from the previous version
+   * Only used in onboarding mode
+   */
+  nextStep(){
     this.isLoading = true
-    // 2. Save the form data
     this.os.saveOnboardingData(this.form.value).then(()=>{
-
-      // 3. Persist the data to the backend
       this.os.persistOnboardingData(this.user.id)
         .pipe(
           // 4. Handle errors
@@ -95,13 +109,46 @@ export class S8HealthStatusPage implements OnInit {
           })
         )
         .subscribe((data)=>{
-          console.log("OK")
           this.isLoading = false
           // Go to next page
           this.router.navigate(['home'])
         })
-
     })
+  }
+
+  /**
+   * Used when form mode is edit
+   */
+  update(){
+    this.isLoading = true
+    // 2. Save the form data
+    from(this.os.saveOnboardingData(this.form.value))
+      .pipe(
+        switchMap(() => this.os.partialPersistOnboardingData(this.userId)
+          .pipe(
+            // 4. Handle errors
+            catchError((error) => {
+              this.isLoading = false
+              console.error("Error", error)
+              return throwError(() => error)
+            })
+          ))
+      )
+      .subscribe((res) => {
+        this.isLoading = false
+        this.location.back()
+      })
+  }
+
+  submit(){
+    // 1. Check if the form is valid
+    if (!this.form.valid)
+      return
+
+    if (this.formMode === 'onboarding')
+      return this.nextStep()
+    else if (this.formMode === 'edit')
+      return this.update()
   }
 
 }

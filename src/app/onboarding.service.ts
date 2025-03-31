@@ -103,4 +103,25 @@ export class OnboardingService {
       })) as Observable<OnboardingData>
   }
 
+  /**
+   * Save partial data to the server
+   */
+  partialPersistOnboardingData(userId: number): Observable<OnboardingData> {
+    return from(this.onboardingData.get())
+      .pipe(switchMap((data:OnboardingData) => {
+        return this.cs.put('/user-partial-extra-data', {
+          id: userId, 
+          extra_data: data,
+          height: data.height,
+          weight: data.weight,
+          age: data.age,
+          sex: data.sex
+        })
+          .pipe(catchError((error) => { 
+            console.error("Error", error)
+            return throwError(()=>error)
+          })) 
+      })) as Observable<OnboardingData>
+  }
+
 }

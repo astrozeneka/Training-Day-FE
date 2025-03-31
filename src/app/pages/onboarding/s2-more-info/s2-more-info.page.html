@@ -4,14 +4,18 @@
         <app-back-button></app-back-button>
         <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Inscription</ion-title>
-    <ion-progress-bar value="0.22222222"></ion-progress-bar>
+    <ion-title *ngIf="formMode == 'onboarding'">Inscription</ion-title>
+    <ion-title *ngIf="formMode == 'edit'">Modifier</ion-title>
+    <ion-progress-bar value="0.22222222" *ngIf="formMode == 'onboarding'"></ion-progress-bar>
+    <ion-progress-bar [class]="(isLoading?'':'hidden')" type="indeterminate" *ngIf="formMode == 'edit'"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
 
 <ion-content>
-
+  <div [class]="'loading-placeholder ' + (isLoading ? '' : 'hidden')">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
   <form [formGroup]="form" (submit)="submit()">
 
     <div class="ion-padding-horizontal">
@@ -79,7 +83,8 @@
           [disabled]="!form.valid"
           [loading]="isLoading"
         >
-          Continuer
+          <div *ngIf="formMode == 'onboarding'">Continuer</div>
+          <div *ngIf="formMode == 'edit'">Mettre à jour</div>
         </app-ux-button>
       </div>
     </div>

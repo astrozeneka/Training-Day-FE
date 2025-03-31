@@ -478,6 +478,10 @@ const mockStorePlugin: StorePlugin = {
   openAndroidSubscriptionManagementPage: async(options: { productId: string })=>{
     // Fakely return something
     return {"message": "Hello from web"}
+  },
+  openSafariView: async(options: { url: string })=>{
+    // Fakely return something
+    return {"message": "Hello from web"}
   }
 }
 export interface StorePlugin {
@@ -539,6 +543,9 @@ export interface StorePlugin {
 
   // Open Browser
   openAndroidSubscriptionManagementPage: (options: { productId: string })=>Promise<{ message: string}>
+
+  // Open safari view
+  openSafariView: (options: { url: string })=>Promise<{ message: string }>
 }
 export interface Transaction {
   bundleId: string;

@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
@@ -14,6 +14,7 @@ import StorePlugin from "../../custom-plugins/store.plugin";
 import {EntitlementReady} from "../../abstract-components/EntitlementReady";
 import { ConvertHeicToJpegResult, FilePicker, PickImagesResult } from '@capawesome/capacitor-file-picker';
 import { PhonePrefixSelectComponent } from 'src/app/components-submodules/phone-prefix-select/phone-prefix-select.component';
+import { OnboardingService } from 'src/app/onboarding.service';
 
 
 @Component({
@@ -63,6 +64,9 @@ export class ProfilePage extends FormComponent implements OnInit {
   // 8. Sending verification Email
   verificationEmailIsLoading: boolean = false;
 
+  // 9. Sex attribute key accessor
+  sexKeyAccessor = (option: any) => { return { "male": "Homme", "female": "Femme" }}
+
   constructor(
     private router:Router,
     private contentService: ContentService,
@@ -70,13 +74,14 @@ export class ProfilePage extends FormComponent implements OnInit {
     private modalCtrl: ModalController,
     private platform: Platform,
     private alertCtrl: AlertController,
-    private cs: ContentService
+    private cs: ContentService,
+    private os: OnboardingService,
+    private cdr: ChangeDetectorRef
   ) {
     super();
     router.events.subscribe(async(event: any)=>{ // This way of loading data is not suitable for angular
       if (event instanceof NavigationEnd && event.url == '/profile') {
         this.entity = await this.contentService.storage.get('user')
-        console.log(this.entity);
         // Define one dictionnary by mapping the this.entity.grouped_perishables
         this.grouped_perishables = this.entity.grouped_perishables.reduce((acc:any, item:any)=>{
           acc[item.slug] = item
@@ -101,6 +106,16 @@ export class ProfilePage extends FormComponent implements OnInit {
     // 7. Platform variable
     this.is_ios = this.platform.is('capacitor') && this.platform.is('ios');
     this.is_android = this.platform.is('capacitor') && this.platform.is('android');
+
+    // 8. Synchronize the extra_data from the onboaring service
+    /*this.os.onOnboardingData()
+      .pipe(
+        filter((data)=>data instanceof Object)
+      )
+      .subscribe((data) => {
+        console.log("onOnboardingData", data, data instanceof Object)
+        // this.entity.extra_data = data
+      })*/
   }
 
   ngOnInit() {
@@ -111,6 +126,15 @@ export class ProfilePage extends FormComponent implements OnInit {
       if(this.entity.user_settings){
         this.activityStatusForm.patchValue(this.entity.user_settings)
       }
+
+      // Handle json extra_data
+      if (typeof(this.entity.extra_data ) == "string"){
+        this.entity.extra_data = this.entity.extra_data ? JSON.parse(this.entity.extra_data) : null
+        this.os.onboardingData.set(this.entity.extra_data).then(()=>{
+          this.cdr.detectChanges();
+        })
+      }
+
     })
   }
 
@@ -389,4 +413,7 @@ export class ProfilePage extends FormComponent implements OnInit {
     
   }*/
 
+  updateOnboardingInfo(url:string){
+    this.router.navigateByUrl(`${url}?mode=edit`)
+  }
 }

@@ -136,6 +136,116 @@
     </div>
   </form>
 
+  <div *ngIf="entity?.extra_data" class="ion-padding-horizontal">
+    <h3 class="display-1 ion-padding">Mes informations</h3>
+
+    <div class="info-table-wrapper">
+        <div class="info-table-heading">
+            <div>Mes informations physiques</div>
+            <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s2-more-info')">
+                Modifier
+            </ion-button>
+        </div>
+        <table class="info-table">
+            <tr>
+                <td>Poids</td>
+                <td>{{ entity.extra_data.weight }} kg</td>
+            </tr>
+            <tr>
+                <td>Taille</td>
+                <td>{{ entity.extra_data.height }} cm</td>
+            </tr>
+            <tr>
+                <td>Age</td>
+                <td>{{ entity.extra_data.age }} ans</td>
+            </tr>
+            <tr>
+                <td>Sexe</td>
+                <td>{{ sexKeyAccessor(undefined)[entity.extra_data.sex] }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="info-table-wrapper">
+        <div class="info-table-heading">
+            <div>Mes objectifs</div>
+            <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s3-goal')">
+                Modifier
+            </ion-button>
+        </div>
+        <div class="info-table">
+            <tr *ngFor="let goal of entity.extra_data.goals">
+                <td *ngIf="!goal.includes('Autre')">{{ goal }}</td>
+                <td *ngIf="goal.includes('Autre')">{{ goal }}: {{ entity.extra_data.otherGoals }}</td>
+            </tr>
+        </div>
+    </div>
+    
+    <div class="info-table-wrapper">
+        <div class="info-table-heading">
+            <div>Mon sommeil</div>
+            <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s4-sleep')">
+                Modifier
+            </ion-button>
+        </div>
+        <div class="info-table ">
+            <tr><td>{{ entity.extra_data.dailySleepHours }}</td></tr>
+        </div>
+    </div>
+    
+    <div class="info-table-wrapper">
+        <div class="info-table-heading">
+            <div>Mon alimentation et mon hydratation</div>
+            <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s5-food-and-water')">
+                Modifier
+            </ion-button>
+        </div>
+        <div class="info-table ">
+            <tr><td>Repas</td><td>{{ entity.extra_data.dailyMeals }}</td></tr>
+            <tr><td>Consommation d'eau</td><td>{{ entity.extra_data.dailyWater }}</td></tr>
+        </div>
+    </div>
+    
+    <div class="info-table-wrapper">
+        <div class="info-table-heading">
+            <div>Mon activité physique</div>
+            <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s6-activity')">
+                Modifier
+            </ion-button>
+        </div>
+        <table class="info-table">
+            <tr><td>{{ entity.extra_data.activity?.text }}</td></tr>
+        </table>
+    </div>
+
+    <div class="info-table-wrapper">
+        <div class="info-table-heading">
+            <div>Pratique sportif régulière</div>
+            <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s7-do-sport-regularly')">
+                Modifier
+            </ion-button>
+        </div>
+        <table class="info-table">
+            <tr><td>{{ entity.extra_data.everydaySport }}</td></tr>
+        </table>
+    </div>
+
+    <div class="info-table-wrapper">
+        <div class="info-table-heading">
+            <div>Soucis de santé</div>
+            <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s8-health-status')">
+                Modifier
+            </ion-button>
+        </div>
+        <table class="info-table">
+            <tr *ngFor="let condition of entity.extra_data.healthConditions">
+                <td *ngIf="!condition.includes('Autre')">{{ condition }}</td>
+                <td *ngIf="condition.includes('Autre')">{{ condition }}: {{ entity.extra_data.otherHealthConditions }}</td>
+            </tr>
+        </table>
+    </div>
+  </div>
+
     <div *ngIf="entity">
         <h3 class="display-1 ion-padding">Abonnement</h3>
         <div *ngIf="entity && !entity?.renewable_id && !active_entitled_subscription">
@@ -240,7 +350,8 @@
         </div>
     </div>-->
 
-    <div *ngIf="entity && entity.function === 'customer'">
+    <!-- The below section has been disabled -->
+    <div *ngIf="entity && entity.function === 'customer' && false">
         <h3 class="display-1 ion-padding">Privilèges(s)</h3>
         <div *ngIf="grouped_perishables && grouped_perishables['food-coach']">
             <app-subscription-card

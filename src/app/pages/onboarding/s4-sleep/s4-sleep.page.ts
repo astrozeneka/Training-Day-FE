@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ContentService } from 'src/app/content.service';
 import { OnboardingService } from 'src/app/onboarding.service';
+import { Location } from '@angular/common';
+import { catchError, filter, from, switchMap, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-s4-sleep',
@@ -27,10 +29,18 @@ export class S4SleepPage implements OnInit {
 
   isLoading: boolean = false;
 
+  // Define whether the form is in onboarding mode or edit mode
+  formMode: 'onboarding' | 'edit' = undefined;
+
+  // User id (used to partial update it)
+  userId: number = undefined;
+
   constructor(
     private cs: ContentService,
     private os: OnboardingService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private location: Location
   ) { }
 
   ngOnInit() {
@@ -38,6 +48,51 @@ export class S4SleepPage implements OnInit {
     this.os.onOnboardingData().subscribe((data) => {
       this.form.patchValue(data)
     })
+
+    // 2. Load user
+    this.cs.getUserFromLocalStorage().then(user => {
+      this.userId = user.id;
+    })
+
+    // 3. Handling form mode
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd && this.router.url.includes('s4-sleep')))
+      .subscribe((event: NavigationEnd) => {
+        this.formMode = (this.route.snapshot.queryParamMap.get("mode") || 'onboarding' as any) as 'onboarding' | 'edit'
+      })
+  }
+
+  nextStep(){
+    this.isLoading = true
+    // 2. Safe the form data
+    this.os.saveOnboardingData(this.form.value).then(()=>{
+      this.isLoading = false
+
+      // Go to next page
+      this.router.navigate(['s5-food-and-water'])
+    })
+  }
+
+  update(){
+    this.isLoading = true
+    // 2. Save the form data
+    from(this.os.saveOnboardingData(this.form.value))
+      .pipe(
+        switchMap(() => this.os.partialPersistOnboardingData(this.userId)
+          .pipe(
+            // 4. Handle errors
+            catchError((error) => {
+              this.isLoading = false
+              console.error("Error", error)
+              return throwError(() => error)
+            })
+          )) 
+      )
+      .subscribe((res)=>{
+        console.log(res)
+        this.isLoading = false
+        this.location.back()
+      })
   }
 
   submit() {
@@ -45,12 +100,9 @@ export class S4SleepPage implements OnInit {
     if (!this.form.valid)
       return
 
-    // 2. Save the form data
-    this.os.saveOnboardingData(this.form.value).then(()=>{
-      this.isLoading = false
-
-      // Go to next page
-      this.router.navigate(['s5-food-and-water'])
-    })
+    if (this.formMode === 'onboarding')
+      return this.nextStep()
+    else if (this.formMode === 'edit')
+      return this.update()
   }
 }

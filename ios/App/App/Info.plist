@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AVAudioSessionCategoryOptionMixWithOthers</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>fr</string>
 	<key>CFBundleDisplayName</key>
@@ -18,8 +20,23 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLName</key>
+			<string>com.codecrane.training-day</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>training-day</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>13.0.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
@@ -34,6 +51,17 @@
 	<string>Used for tracking the running distance in the GPS section of the application.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>The photo library access allows the users to select profile picture from their device.</string>
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+			</array>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
@@ -65,20 +93,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>AVAudioSessionCategoryOptionMixWithOthers</key>
-	<true/>
-	<key>LSMinimumSystemVersion</key>
-	<string>13.0.0</string>
-	<key>NSPrivacyAccessedAPITypes</key>
-    <array>
-      <dict>
-        <key>NSPrivacyAccessedAPIType</key>
-        <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
-        <key>NSPrivacyAccessedAPITypeReasons</key>
-        <array>
-          <string>CA92.1</string>
-        </array>
-      </dict>
-    </array>
 </dict>
 </plist>

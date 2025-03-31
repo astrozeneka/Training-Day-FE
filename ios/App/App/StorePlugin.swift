@@ -9,6 +9,7 @@ import Foundation
 import Capacitor
 import SwiftUI
 import StoreKit
+import SafariServices
 
 @objc(StorePlugin)
 public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
@@ -32,7 +33,10 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         
         // Promotional offer
         CAPPluginMethod(name: "fetchPromotionalOffer", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "purchaseProductWithDiscount", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "purchaseProductWithDiscount", returnType: CAPPluginReturnPromise),
+        
+        // Open a safari view (experimental for Google loginà
+        CAPPluginMethod(name: "openSafariView", returnType: CAPPluginReturnPromise)
     ]
     
     private var store: Store?
@@ -318,5 +322,25 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         call.reject("No promotional offers found")
       }
     }
+  }
+  
+  @objc func openSafariView(_ call: CAPPluginCall){
+    guard let urlString = call.getString("url"), let url = URL(string: urlString) else {
+        call.reject("Invalid URL")
+        return
+    }
+    
+    /*DispatchQueue.main.async {
+        let safariVC = SFSafariViewController(url: url)
+        self.bridge?.viewController?.present(safariVC, animated: true, completion: nil)
+        call.resolve()
+    }*/
+    
+    
+    DispatchQueue.main.async {
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        call.resolve()
+    }
+
   }
 }

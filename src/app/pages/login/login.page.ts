@@ -1,9 +1,10 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import { Browser } from "@capacitor/browser";
 import { v4 as uuidv4 } from 'uuid';
 //import { PushNotifications } from '@capacitor/push-notifications';
 import { SavePassword } from 'capacitor-ios-autofill-save-password';
+import StorePlugin from "../../custom-plugins/store.plugin";
 
 import {
   ActionPerformed,
@@ -24,6 +25,7 @@ import PasswordToggle from 'src/app/utils/PasswordToggle';
 import { DarkModeService } from 'src/app/dark-mode.service';
 import { OnboardingService } from 'src/app/onboarding.service';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
+import { Platform } from '@ionic/angular';
 
 
 @Component({
@@ -55,6 +57,9 @@ export class LoginPage extends FormComponent implements OnInit {
   // App link handling (for login only) - Subject is the token
   onOpenedFromGoogleOauth$: Subject<{token: string}> = new Subject()
 
+  // The google login process differs whether the user is on iOS or Android
+  system:'ios'|'android' = null
+
   constructor(
     private contentService: ContentService,
     private feedbackService: FeedbackService,
@@ -65,7 +70,9 @@ export class LoginPage extends FormComponent implements OnInit {
     private themeDetection: ThemeDetection,
     private dms: DarkModeService,
     private os: OnboardingService,
-    private zone: NgZone
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private platform: Platform
   ) {
     super()
   }
@@ -188,16 +195,22 @@ export class LoginPage extends FormComponent implements OnInit {
     // Checking if the darkmode is enabled
     this.useDarkMode = await this.dms.isAvailableAndEnabled()
 
-    // Handle deeplink redirection
-    console.log("Register 'appUrlOpen' listener")
+    // 6. Handle deeplink redirection
     App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
-      this.feedbackService.registerNow("Deep link received : " + event.url, "secondary")
+      /*this.feedbackService.registerNow("Deep link received : " + event.url, "secondary")*/
       console.log('App opened with URL: ' + event.url);
       if (event.url.includes('/app/google')){
         let token = event.url.split('/').pop()
         this.onOpenedFromGoogleOauth$.next({token: token})
       }
     })
+
+    // 7. Detect the platform
+    if (this.platform.is('android')){
+      this.system = 'android'
+    } else {
+      this.system = 'ios'
+    }
   }
 
   async requestLogin({email = null, password = null, google_token = null}){
@@ -211,6 +224,10 @@ export class LoginPage extends FormComponent implements OnInit {
       params['email'] = email
       params['password'] = password
     }
+
+    this.formIsLoading = true;
+    this.cdr.detectChanges()
+
     this.contentService.requestLogin(params)
       .pipe(catchError((error)=>{
         if(error.status == 422){
@@ -251,7 +268,6 @@ export class LoginPage extends FormComponent implements OnInit {
 
   submit(){
     console.log("Submit")
-    this.formIsLoading = true;
     this.requestLogin(this.form.value as any)
   }
 
@@ -372,13 +388,21 @@ export class LoginPage extends FormComponent implements OnInit {
 
   continueWithGoogle(){
 
-    /*const form = document.createElement('form');
+    // Option 1: using a form and safari data (suitable for ios, android ??)
+    const form = document.createElement('form');
     form.action = `${environment.rootEndpoint}/oauth/google`;
     form.method = 'GET';
+    // add os = this.os parameter to the form
+    form.innerHTML = `<input type="hidden" name="os" value="${this.system}">`
     document.body.appendChild(form);
-    form.submit();*/
+    form.submit();
+    
 
-    Browser.open({url: `${environment.rootEndpoint}/oauth/google`})
+    // Option 2: using the browser (the browser doesn' allow the suer to access history)
+    // Browser.open({url: `${environment.rootEndpoint}/oauth/google`})
+
+    // Option 3: using Safari view
+    /*StorePlugin.openSafariView({url: `${environment.rootEndpoint}/oauth/google`})*/
 
     this.onOpenedFromGoogleOauth$
       .pipe(take(1))
@@ -389,9 +413,10 @@ export class LoginPage extends FormComponent implements OnInit {
           'google_token': res.token
         })
     })
+  }
 
-    // Option 2. using Browser
-    // Browser.open({url: `${environment.rootEndpoint}/oauth/google`})
+  testSafariView(){
+    StorePlugin.openSafariView({url: 'https://www.google.com'})
   }
 
   testPasswordAutofill() {
