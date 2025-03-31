@@ -69,7 +69,7 @@ export class ProfilePage extends FormComponent implements OnInit {
 
   constructor(
     private router:Router,
-    private contentService: ContentService,
+    public contentService: ContentService,
     private feedbackService: FeedbackService,
     private modalCtrl: ModalController,
     private platform: Platform,
