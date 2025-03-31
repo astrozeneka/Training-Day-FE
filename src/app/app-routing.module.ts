@@ -308,6 +308,14 @@ const routes: Routes = [
     path: 's8-health-status',
     loadChildren: () => import('./pages/onboarding/s8-health-status/s8-health-status.module').then( m => m.S8HealthStatusPageModule)
   },
+  {
+    path: 'video-by-category/:category',
+    loadChildren: () => import('./pages/video-by-category/video-by-category.module').then( m => m.VideoByCategoryPageModule)
+  },
+  {
+    path: 'video-submenu/:group',
+    loadChildren: () => import('./pages/video-submenu/video-submenu.module').then( m => m.VideoSubmenuPageModule)
+  },
 ];
 
 @NgModule({

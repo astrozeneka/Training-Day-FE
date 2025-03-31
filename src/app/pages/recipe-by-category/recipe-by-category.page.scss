@@ -1,7 +1,17 @@
+
+
+.recipe-by-category>.title{
+    font-size: 24px;
+    font-weight: 400;
+    text-align: center;
+    padding-top: 22px;
+    margin-top: 0px;
+    padding-bottom: 35px;
+}
+
 /**
  * The below style block is reused by recipe-list
  */
-
 .recipes-wrapper{
     margin-left: 22px; 
     margin-right: 22px;
@@ -23,18 +33,21 @@
         width: 120px;
         overflow: hidden;
         border-radius: 50%;
+        background: rgba(var(--ion-color-lightgrey-rgb), 0.5);
         & img{
             width: 120px;
         }
     }
 
     & .headings{
+        text-align: center;
         & .title{
             margin-top: 5px;
             color: --ion-color-dark;
         }
         & .subtitle{
             color: #888888;
+            font-size: 13px;
         }
     }
 }

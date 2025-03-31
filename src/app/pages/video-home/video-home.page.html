@@ -11,10 +11,20 @@
 <ion-content>
   <!-- some header here (according to the new theme) -->
   <div class="video-home">
+
+    <div class="ion-padding-horizontal">
+      <div class="title">
+        Découvez nos vidéos
+      </div>
+      <div class="subtitle">
+        Ces contenus ont été sélectionnés pour vous aider à progresser dans votre entraînement.
+      </div>
+    </div>
+
     <div class="card-list">
       <!-- Training everyday -->
       <app-rounded-card
-        [routerLink]="'/video-menu/training'"
+        [routerLink]="'/video-submenu/training'"
       >
         <div slot="image">
           <img title="Training of the day" src="../../../assets/medias/rounded-cards/sample-image-training-of-the-day.jpg"/>
@@ -29,7 +39,7 @@
 
       <!-- Boxing everyday -->
       <app-rounded-card
-      [routerLink]="'/video-menu/boxing'"
+      [routerLink]="'/video-submenu/boxing'"
       >
         <div slot="image">
           <img title="Training of the day" src="../../../assets/medias/rounded-cards/sample-image-boxing-of-the-day.jpg"/>
@@ -43,4 +53,7 @@
       </app-rounded-card>
     </div>
   </div>
+  
+  <app-button-to-chat></app-button-to-chat>
+  <app-bottom-navbar-placeholder></app-bottom-navbar-placeholder>
 </ion-content>

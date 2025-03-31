@@ -20,14 +20,15 @@ export class BottomNavbarComponent  implements OnInit {
   ) { }
 
   ngOnInit() {
+    let flattenedMatches = Object.values(this.bnus.tabMatches).reduce((acc, val) => acc.concat(val), []);
     merge(
       this.router.events
         .pipe(filter((event) => event instanceof NavigationEnd))
-        .pipe(filter((e) => this.bnus.tabSequences.map(e => '/' + e === this.router.url).includes(true))),
+        .pipe(filter(()=>flattenedMatches.includes(this.router.url.split('/')[1]))),
         of(null)
     )
     .subscribe((e)=>{
-      this.tabName = this.router.url.replace('/', '')
+      this.tabName = this.bnus.getActivatedTabName(this.router.url)
     })
   }
 

@@ -14,8 +14,15 @@
   </div>
   
   <br/><br/>
-  <div>
+  <div class="recipe-by-category">
+
+    <div class="title">
+      {{ category}}
+    </div>
+
     <div class="recipes-wrapper">
+
+
       <a [routerLink]="['/recipe-detail', recipe.id]" *ngFor="let recipe of recipes">
         <div class="recipe">
           <div class="recipe-image">
@@ -29,4 +36,6 @@
       </a>
     </div>
   </div>
+
+  <app-bottom-navbar-placeholder></app-bottom-navbar-placeholder>
 </ion-content>

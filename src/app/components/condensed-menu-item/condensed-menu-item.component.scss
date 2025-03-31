@@ -25,6 +25,16 @@ ion-button{
                 width: 60px;
                 border-radius: 100%;
                 overflow: hidden;
+                background: rgba(var(--ion-color-lightgrey-rgb), 0.5);
+                position: relative;
+
+                & img{
+                    // Center
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
             }
         }
 

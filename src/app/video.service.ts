@@ -16,10 +16,19 @@ export class VideoService {
   videoDetailsSubject: {[key:number]: BehaviorSubject<any>} = {}
   videoDetails$: {[key:number]: any} = {}
 
+  // Video hieararchy
+  videoHierarchyData: StoredData<{[key:string]: string[]}>
+  videoHierarchySubject: BehaviorSubject<{[key:string]: string[]}>
+  videoHierarchy$: Observable<{[key:string]: string[]}>
+
   constructor(
     private cs: ContentService,
     private http: HttpClient
-  ) { }
+  ) { 
+    this.videoHierarchyData = new StoredData<{[key:string]: string[]}>('video-hierarchy', this.cs.storage)
+    this.videoHierarchySubject = new BehaviorSubject<{[key:string]: string[]}>({})
+    this.videoHierarchy$ = this.videoHierarchySubject.asObservable()
+  }
 
   /**
    * Load video list by category
@@ -52,6 +61,29 @@ export class VideoService {
     // Prepare output
     let output$ = merge(this.videoList$[category], additionalEvents$)
     // output$ = output$.pipe(filter((data:any) => data?.length > 0)) // Filter empty data
+    return output$
+  }
+
+  onVideoHiearchy(fromCache=true, fromServer=true):Observable<{[key:string]: string[]}>{
+    let additionalEvents$ = new Subject<{[key:string]: string[]}>()
+
+    // 1. Fire the cached data
+    if (fromCache)
+      this.videoHierarchyData.get().then((data:{[key:string]: string[]})=>{
+        this.videoHierarchySubject.next(data)
+      })
+    
+    // 2. Fire from the server
+    if (fromServer){
+      this.cs.getOne(`/videos/hierarchy`, {}).subscribe((res) => {
+        additionalEvents$.next(res as any)
+        this.videoHierarchyData.set(res as any)
+      })
+    }
+
+    // Prepare output
+    let output$ = merge(this.videoHierarchy$, additionalEvents$)
+    output$ = output$.pipe(filter((data:{[key:string]: string[]}) => Object.keys(data).length > 0)) // Filter empty data
     return output$
   }
 }

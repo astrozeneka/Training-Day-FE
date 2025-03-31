@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+        <app-back-button></app-back-button>
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Les vidéos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <div class="video-submenu">
+
+    <div class="title">
+      {{ descriptions[group] }}
+    </div>
+
+    <app-condensed-menu-item [img]="icons[group + '/' + item]" [routerLink]="'/videos/' + group + '/' + item" *ngFor="let item of menuItems">
+      {{ item }}
+    </app-condensed-menu-item>
+
+  </div>
+  
+  <app-button-to-chat></app-button-to-chat>
+  <app-bottom-navbar-placeholder></app-bottom-navbar-placeholder>
+</ion-content>

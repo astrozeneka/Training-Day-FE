@@ -1,6 +1,7 @@
 <ion-header>
   <ion-toolbar>
       <ion-buttons slot="start">
+          <app-back-button></app-back-button>
           <ion-menu-button></ion-menu-button>
       </ion-buttons>
       <ion-title>Les recettes</ion-title>
@@ -9,6 +10,16 @@
 
 <ion-content>
   <div class="recipe-home">
+
+    <div class="ion-padding-horizontal">
+      <div class="title">
+        Découvez nos recettes
+      </div>
+      <div class="subtitle">
+        Ces recettes ont été sélectionnées pour vous aider les sportifs à s'alimenter sainement.
+      </div>
+    </div>
+
     <div class="menu">
       <app-condensed-menu-item [img]="category.imageUrl" [routerLink]="'/recipe-by-category/' + category.name" *ngFor="let category of categories">
         {{ category.name }}
