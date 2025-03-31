@@ -143,4 +143,15 @@ export class SubscribePage extends FormComponent implements OnInit {
       window.open(url, '_blank')
     }
   }
+
+
+  // Signup with google
+  loginWithGoogle({google_token}: {google_token: string}){
+    this.router.navigate(['/login'], {
+      queryParams: {
+        google_token: google_token
+      }
+    })
+
+  }
 }

@@ -6,7 +6,7 @@
   -->
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content class="ion-padding">
   <app-loader-v2 [isLoading]="formIsLoading"></app-loader-v2>
   <!--
     <ion-header collapse="condense">
@@ -89,19 +89,29 @@
 
         <hr/>
 
+        <app-continue-with-google-button
+          (action)="requestLogin($event)"
+          color="medium"
+          expand="full"
+          type="button"
+          shape="round"
+          fill="clear"
+        ></app-continue-with-google-button>
+
+        <!--
         <app-ux-button 
-          (click)="continueWithGoogle()" color="medium"
+          (click)="continueWithGoogle()"
+          color="medium"
           expand="full"
           type="button"
           shape="round"
           fill="clear"
         >
           <div class="inner">
-            <!-- Used both registering or login -->
             <img src="/assets/icon/social-menu/google-logo.svg" alt="Google" width="20px" height="20px">
             <div>Continuer avec Google</div>
           </div>
-        </app-ux-button>
+        </app-ux-button>-->
         
       </div>
         <a *ngIf="false" routerLink="/s6-activity">Test select component</a>

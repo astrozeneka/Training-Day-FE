@@ -57,6 +57,7 @@ import { PromotionalBubbleSelectorComponent } from './promotional-bubble-selecto
 import { ErrorMessagePipe } from '../pipes/error-message.pipe';
 import { BubbleMultiSelectorComponent } from './bubble-multi-selector/bubble-multi-selector.component';
 import { LoaderV2Component } from './loader-v2/loader-v2.component';
+import { ContinueWithGoogleButtonComponent } from './continue-with-google-button/continue-with-google-button.component';
 
 
 @NgModule({
@@ -108,6 +109,7 @@ import { LoaderV2Component } from './loader-v2/loader-v2.component';
     PromotionalBubbleSelectorComponent,
     BubbleMultiSelectorComponent,
     LoaderV2Component,
+    ContinueWithGoogleButtonComponent,
 
     // Pipes
     DisplayListPipe,
@@ -159,6 +161,7 @@ import { LoaderV2Component } from './loader-v2/loader-v2.component';
     PromotionalBubbleSelectorComponent,
     BubbleMultiSelectorComponent,
     LoaderV2Component,
+    ContinueWithGoogleButtonComponent,
     
     DisplayListPipe,
     ChatMasterDiscussionListComponent,

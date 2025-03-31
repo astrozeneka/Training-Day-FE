@@ -165,5 +165,16 @@
         S'inscrire
     </app-ux-button>
     </div>
+    <div>
+      <app-continue-with-google-button
+        (action)="loginWithGoogle($event)"
+        color="medium"
+        expand="full"
+        type="button"
+        shape="round"
+        fill="clear"
+      ></app-continue-with-google-button>
+    </div>
+    <br/><br/>
   </form>
 </ion-content>

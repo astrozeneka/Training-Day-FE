@@ -1,0 +1,18 @@
+
+<app-ux-button 
+  (click)="trigger()"
+  [color]="color"
+  [expand]="expand"
+  [disabled]="disabled || loading"
+  [shape]="shape"
+  [size]="size"
+  [fill]="fill"
+  [type]="type"
+  [loading]="loading"
+>
+<div class="inner">
+  <!-- Used both registering or login -->
+  <img src="/assets/icon/social-menu/google-logo.svg" alt="Google" width="20px" height="20px">
+  <div>Continuer avec Google</div>
+</div>
+</app-ux-button>

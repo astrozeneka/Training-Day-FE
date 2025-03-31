@@ -13,10 +13,10 @@ import {
   Token,
 } from '@capacitor/push-notifications';
 import {ContentService} from "../../content.service";
-import {catchError, finalize, Subject, take, throwError} from "rxjs";
+import {catchError, filter, finalize, Subject, take, throwError} from "rxjs";
 import {FormComponent} from "../../components/form.component";
 import {DEBUG, FeedbackService} from "../../feedback.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {BroadcastingService} from "../../broadcasting.service";
@@ -72,7 +72,8 @@ export class LoginPage extends FormComponent implements OnInit {
     private os: OnboardingService,
     private zone: NgZone,
     private cdr: ChangeDetectorRef,
-    private platform: Platform
+    private platform: Platform,
+    private route: ActivatedRoute
   ) {
     super()
   }
@@ -211,6 +212,22 @@ export class LoginPage extends FormComponent implements OnInit {
     } else {
       this.system = 'ios'
     }
+
+    // 8. Check whether a google_token is passed through the URL
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd && this.router.url.includes('login')))
+      .subscribe((event: NavigationEnd) => {
+        let googleToken = (this.route.snapshot.queryParamMap.get("google_token") || null) as string
+        if (googleToken){
+          // this.fs.registerNow("Google token provided", "secondary")
+          // console.log("Google token provided")
+          this.requestLogin({
+            'google_token': googleToken
+          })
+        } else {
+          // console.log("Google token not provided")
+        }
+      })
   }
 
   async requestLogin({email = null, password = null, google_token = null}){
@@ -264,6 +281,7 @@ export class LoginPage extends FormComponent implements OnInit {
           this.router.navigate(['/home'])
         }
       })
+    
   }
 
   submit(){
