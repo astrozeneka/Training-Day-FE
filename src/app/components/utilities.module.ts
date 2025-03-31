@@ -58,6 +58,7 @@ import { ErrorMessagePipe } from '../pipes/error-message.pipe';
 import { BubbleMultiSelectorComponent } from './bubble-multi-selector/bubble-multi-selector.component';
 import { LoaderV2Component } from './loader-v2/loader-v2.component';
 import { ContinueWithGoogleButtonComponent } from './continue-with-google-button/continue-with-google-button.component';
+import { ButtonToChatComponent } from './button-to-chat/button-to-chat.component';
 
 
 @NgModule({
@@ -110,6 +111,7 @@ import { ContinueWithGoogleButtonComponent } from './continue-with-google-button
     BubbleMultiSelectorComponent,
     LoaderV2Component,
     ContinueWithGoogleButtonComponent,
+    ButtonToChatComponent,
 
     // Pipes
     DisplayListPipe,
@@ -162,6 +164,7 @@ import { ContinueWithGoogleButtonComponent } from './continue-with-google-button
     BubbleMultiSelectorComponent,
     LoaderV2Component,
     ContinueWithGoogleButtonComponent,
+    ButtonToChatComponent,
     
     DisplayListPipe,
     ChatMasterDiscussionListComponent,
