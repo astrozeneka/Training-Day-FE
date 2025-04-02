@@ -25,7 +25,7 @@ export class BottomNavbarComponent  implements OnInit {
       this.router.events
         .pipe(filter((event) => event instanceof NavigationEnd))
         .pipe(filter(()=>flattenedMatches.includes(this.router.url.split('/')[1]))),
-        of(null)
+      of(null)
     )
     .subscribe((e)=>{
       this.tabName = this.bnus.getActivatedTabName(this.router.url)

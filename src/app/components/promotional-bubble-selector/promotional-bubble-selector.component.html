@@ -1,5 +1,5 @@
 <div class="promotional-bubble-selector-component">
-  <div class="wrapper" *ngIf="os === 'ios'">
+  <!--<div class="wrapper" *ngIf="os === 'ios'">
     <ion-button
       fill="clear"
       expand="block"
@@ -23,7 +23,7 @@
         </div>
       </div>
     </ion-button>
-  </div>
+  </div>-->
   <!-- The promotional offers -->
   <div class="wrapper">
     <ion-button *ngFor="let offer of product.offers"
@@ -35,7 +35,6 @@
       (click)="chooseOption(offer)"
     >
       <div class="inner">
-
         <div class="topmost">
           <div class="circle"><div class="active-indicator"></div></div>
         </div>

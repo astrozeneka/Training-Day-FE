@@ -11,7 +11,7 @@ export class BottomNavbarUtilsService {
   tabSequences = ['home', 'tools', 'videos', 'recipe-home', 'profile']
 
   tabMatches = {
-    'home': ['home', '/'],
+    'home': ['home', '', 'swipeable-store'],
     'tools': ['tools', 'app-gps', 'app-timer', 'app-imc', 'app-calories', 'app-weight-tracking'], 
     'video-home': ['video-home', 'video-submenu', 'videos'], 
     'recipe-home': ['recipe-home', 'recipe-by-category', 'recipe-details'], 
@@ -29,7 +29,6 @@ export class BottomNavbarUtilsService {
       of({url: this.router.url})
     )
       .subscribe((e:any)=>{
-        console.log("Handle", e)
         e = (e as any).url
         if (flattenedMatches.includes(e.split('/')[1])){
           this.bottomNavbarAvailable = true

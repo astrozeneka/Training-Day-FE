@@ -59,6 +59,7 @@ import { BubbleMultiSelectorComponent } from './bubble-multi-selector/bubble-mul
 import { LoaderV2Component } from './loader-v2/loader-v2.component';
 import { ContinueWithGoogleButtonComponent } from './continue-with-google-button/continue-with-google-button.component';
 import { ButtonToChatComponent } from './button-to-chat/button-to-chat.component';
+import { PromotionalBubbleSelectorIosComponent } from './promotional-bubble-selector-ios/promotional-bubble-selector-ios.component';
 
 
 @NgModule({
@@ -108,6 +109,7 @@ import { ButtonToChatComponent } from './button-to-chat/button-to-chat.component
     CondensedMenuItemComponent,
     PromoOfferCardComponent, // The UI is not suitable for the screen format
     PromotionalBubbleSelectorComponent,
+    PromotionalBubbleSelectorIosComponent,
     BubbleMultiSelectorComponent,
     LoaderV2Component,
     ContinueWithGoogleButtonComponent,
@@ -161,6 +163,7 @@ import { ButtonToChatComponent } from './button-to-chat/button-to-chat.component
     CondensedMenuItemComponent,
     PromoOfferCardComponent,
     PromotionalBubbleSelectorComponent,
+    PromotionalBubbleSelectorIosComponent,
     BubbleMultiSelectorComponent,
     LoaderV2Component,
     ContinueWithGoogleButtonComponent,

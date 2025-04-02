@@ -1,4 +1,9 @@
-<div class="autorenewable-bubblesf">
+<div class="autorenewable-bubbles">
+
+  <div class="loader-placeholder" *ngIf="(productList | keyvalue).length === 0">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+
 
   <swiper-container navigation="false" pagination="true" #swiperEl
     slides-per-view="auto"
@@ -138,4 +143,7 @@
       </div>
     </swiper-slide>
   </swiper-container>
+
+
+  {{ productList | json }}
 </div>

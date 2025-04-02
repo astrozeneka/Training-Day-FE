@@ -37,14 +37,14 @@
       "internalID" : "6538727303",
       "localizations" : [
         {
-          "description" : "Get 1 month of food coaching program",
-          "displayName" : "Food Coaching (1 Month)",
-          "locale" : "en_US"
-        },
-        {
           "description" : "Profitez d'une semaine de coaching",
           "displayName" : "Programme Alimentaire Hebdo.",
           "locale" : "fr"
+        },
+        {
+          "description" : "Get 1 month of food coaching program",
+          "displayName" : "Food Coaching (1 Month)",
+          "locale" : "en_US"
         }
       ],
       "productID" : "foodcoach_1w",
@@ -57,14 +57,14 @@
       "internalID" : "6538727227",
       "localizations" : [
         {
-          "description" : "Profitez d'un mois de coaching",
-          "displayName" : "Programme Alimentaire Mensuel",
-          "locale" : "fr"
-        },
-        {
           "description" : "Get 1 month of food coaching program",
           "displayName" : "Food Coaching (1 Month)",
           "locale" : "en_US"
+        },
+        {
+          "description" : "Profitez d'un mois de coaching",
+          "displayName" : "Programme Alimentaire Mensuel",
+          "locale" : "fr"
         }
       ],
       "productID" : "foodcoach_4w",
@@ -139,14 +139,14 @@
       "internalID" : "6505030169",
       "localizations" : [
         {
-          "description" : "Bénéficiez d'une séance d'entraînement.",
-          "displayName" : "Personal Trainer (1 Séance)",
-          "locale" : "fr"
-        },
-        {
           "description" : "Get one training session.",
           "displayName" : "Personal Trainer (1 session)",
           "locale" : "en_US"
+        },
+        {
+          "description" : "Bénéficiez d'une séance d'entraînement.",
+          "displayName" : "Personal Trainer (1 Séance)",
+          "locale" : "fr"
         }
       ],
       "productID" : "trainer1",
@@ -198,7 +198,7 @@
     "_applicationInternalID" : "6477325664",
     "_developerTeamID" : "FPUNC48548",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 763394706.66659999,
+    "_lastSynchronizedDate" : 765133666.33673298,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -260,8 +260,16 @@
         {
           "adHocOffers" : [
             {
+              "internalID" : "018085D6",
+              "numberOfPeriods" : 1,
+              "offerID" : "alonzofree",
+              "paymentMode" : "free",
+              "referenceName" : "alonzo-free",
+              "subscriptionPeriod" : "P3M"
+            },
+            {
               "displayPrice" : "229.99",
-              "internalID" : "C39BC472",
+              "internalID" : "40F9730F",
               "numberOfPeriods" : 1,
               "offerID" : "alonzo6mo",
               "paymentMode" : "payUpFront",
@@ -272,11 +280,11 @@
           "codeOffers" : [
             {
               "eligibility" : [
-                "expired",
                 "existing",
-                "new"
+                "new",
+                "expired"
               ],
-              "internalID" : "091F8A0D",
+              "internalID" : "FD8AB286",
               "isStackable" : true,
               "numberOfPeriods" : 1,
               "paymentMode" : "free",
@@ -286,10 +294,10 @@
             {
               "eligibility" : [
                 "existing",
-                "expired",
-                "new"
+                "new",
+                "expired"
               ],
-              "internalID" : "485FB931",
+              "internalID" : "165309D6",
               "isStackable" : false,
               "numberOfPeriods" : 1,
               "paymentMode" : "free",
@@ -298,11 +306,11 @@
             },
             {
               "eligibility" : [
+                "new",
                 "existing",
-                "expired",
-                "new"
+                "expired"
               ],
-              "internalID" : "0E52E6E0",
+              "internalID" : "88F046C1",
               "isStackable" : true,
               "numberOfPeriods" : 1,
               "paymentMode" : "free",
@@ -373,7 +381,7 @@
           "adHocOffers" : [
             {
               "displayPrice" : "39.99",
-              "internalID" : "93EC4F13",
+              "internalID" : "372B1580",
               "numberOfPeriods" : 1,
               "offerID" : "hoylt6mo",
               "paymentMode" : "payUpFront",
@@ -386,7 +394,7 @@
               "eligibility" : [
                 "new"
               ],
-              "internalID" : "1124388F",
+              "internalID" : "0D321ED8",
               "isStackable" : true,
               "numberOfPeriods" : 1,
               "paymentMode" : "free",
@@ -398,7 +406,7 @@
               "eligibility" : [
                 "new"
               ],
-              "internalID" : "9A9CE989",
+              "internalID" : "1C69CF94",
               "isStackable" : true,
               "numberOfPeriods" : 3,
               "paymentMode" : "payAsYouGo",
@@ -446,14 +454,14 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Get Moreno subscription",
-              "displayName" : "Pack Moreno",
-              "locale" : "en_US"
-            },
-            {
               "description" : "Profitez de l'abonnement Moreno",
               "displayName" : "Pack Moreno",
               "locale" : "fr"
+            },
+            {
+              "description" : "Get Moreno subscription",
+              "displayName" : "Pack Moreno",
+              "locale" : "en_US"
             }
           ],
           "productID" : "moreno",
@@ -469,7 +477,7 @@
           "adHocOffers" : [
             {
               "displayPrice" : "129.99",
-              "internalID" : "9DE45C34",
+              "internalID" : "0C0F38C0",
               "numberOfPeriods" : 1,
               "offerID" : "smiley6mo",
               "paymentMode" : "payUpFront",

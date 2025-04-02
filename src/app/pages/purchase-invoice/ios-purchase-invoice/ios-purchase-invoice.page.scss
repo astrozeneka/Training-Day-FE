@@ -9,3 +9,86 @@
         padding-top: 30px; // Override (20 is the default for ion-padding), then additional 10 for the h1
     }
 }
+
+
+/**
+ * DELETE THE CODE BELOW LATER
+ */
+
+.fake-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.clickable-option{
+    --padding-start: 18px;
+    --padding-end: 18px;
+    --padding-top: 18px;
+    --padding-bottom: 18px;
+    --border-color: var(--ion-color-lightgrey);
+    --border-width: 1px;
+    --border-style: solid;
+
+    & .inner{
+        text-align: left;
+        text-transform: none;
+        width: 100%;
+        font-weight: normal;
+
+        & .topmost{
+            text-align: right;
+            & .circle{
+                background: rgba(var(--ion-color-lightgrey-rgb), 0.4);
+                display: inline-block;
+                width: 15px;
+                height: 15px;
+                border-radius: 50%;
+                overflow: hidden;
+                & .active-indicator{
+                    background: var(--ion-color-primary);
+                    opacity: 0;
+                    transition: opacity 0.4s;
+                    width: 100%;
+                    height: 100%;
+                    display: inline-block;
+                }
+            }
+        }
+
+        & .row{
+            display: flex;
+            flex-direction: row;
+
+            & .left{
+                flex-grow: 1;
+                & .title{}
+
+                & .subtitle{
+                    padding-top: 10px;
+                    color: var(--ion-color-primary);
+                    font-size: 11px;
+                    white-space: wrap;
+                }
+            }
+
+            & .right{
+                & .price{
+                    font-size: 22px;
+                    padding-top: 8px;
+                }
+            }
+        }
+    }
+
+    &.active{
+        --border-color: var(--ion-color-primary);
+
+        & .inner .topmost .circle .active-indicator{
+            opacity: 1;
+        }
+        & .inner .row .left .title{
+            font-weight: 500;
+        }
+    }
+}

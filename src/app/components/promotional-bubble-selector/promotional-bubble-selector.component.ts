@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, forwardRef, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, forwardRef, Input, OnChanges, OnInit } from '@angular/core';
 import { ControlContainer, ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Product, PromoOfferIOS } from 'src/app/custom-plugins/store.plugin';
+import { AndroidSubscriptionOffer, Product, PromoOfferIOS } from 'src/app/custom-plugins/store.plugin';
 
 @Component({
   selector: 'app-promotional-bubble-selector',
@@ -23,7 +23,7 @@ export class PromotionalBubbleSelectorComponent  implements ControlValueAccessor
 
   @Input() product:Product
 
-  // Experimental mode: for android, the base offers are included inside the offer property
+  // Experimental mode: for android, the base offers are included inside the offer property (no need since this component is fully reserved for the android version)
   @Input() os:'ios'|'android' = 'ios'
 
   constructor(

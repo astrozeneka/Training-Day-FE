@@ -18,7 +18,7 @@
         Veuillez sélectionner votre offre d'abonnement. Les prélèvements seront effectués automatiquement par Apple Store.
       </div>
       <div class="ion-padding-horizontal bubble-wrapper">
-        <app-promotional-bubble-selector *ngIf="productList && productId" [product]="productList[productId]" formControlName="offer"></app-promotional-bubble-selector>
+        <app-promotional-bubble-selector-ios *ngIf="productList && productId" [product]="productList[productId]" formControlName="offer"></app-promotional-bubble-selector-ios>
         <div class="placeholder" *ngIf="offersAreLoading"><ion-spinner></ion-spinner></div>
       </div>
 

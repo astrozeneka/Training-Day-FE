@@ -57,3 +57,29 @@ swiper-container{
         }
     }
 }
+
+/**
+ * The loader
+ */
+.loader-placeholder{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    background: rgba(var(--ion-background-color-rgb), 0.5);
+    backdrop-filter: blur(10px);
+    z-index: 999;
+
+    // The animation
+    opacity: 1;
+    transition: opacity 0.3s;
+    &.hidden{
+        z-index: -1;
+        opacity: 0;
+    }
+}

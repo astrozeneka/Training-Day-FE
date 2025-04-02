@@ -47,6 +47,8 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implemen
     super(platform, router, dms, feedbackService)
   }
 
+  product: Product = null
+
   ngOnInit() {
 
     // 1. Load products to be used (similar but a little bit simplified than the Android version)
@@ -64,12 +66,14 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implemen
             }))
         }),
         switchMap((data:{products:Product[]}) => {
+          // console.log("Product fetched by using purchaseService.getProducts() : " + JSON.stringify(data))
           this.productList = data.products.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
           this.offersAreLoading = false
           this.cdr.detectChanges()
 
           // 2. Load offer token for each of the loaded promotional offer
           let product = this.productList[this.productId]
+          this.product = product
 
           let observables = product.offers.map((offer) => 
             this.cs.getOne('/generate-offer-signature', { offer_identifier: offer.offerId, product_identifier: offer.productId })
