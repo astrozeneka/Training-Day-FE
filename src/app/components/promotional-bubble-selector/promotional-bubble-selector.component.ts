@@ -37,7 +37,7 @@ export class PromotionalBubbleSelectorComponent  implements ControlValueAccessor
     // recurringMode: 1 (INFINITE_RECURRING), 2 (FINITE_RECURRING), 3 (NON_RECURRING)
     // Listen for event 
     // TODO ...
-    console.log(this.product)
+    console.log("passed product is " + JSON.stringify(this.product))
   }
 
   writeValue(obj: any): void {

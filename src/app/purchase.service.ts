@@ -106,6 +106,16 @@ export class PurchaseService { // This class cannot be used anymore due to andro
                 promotedProduct.displayPrice = `À partir de ${this.patchDisplayPrice(product.displayPrice, Math.min(...monthlyPrices))}/mois`
               }
               totalFired += 1
+              // Compute the percentage reduction
+              data.forEach((offer)=>{
+                if (offer.periodUnit == 'Mois' || offer.periodUnit == 'Month'){
+                  let normalPrice = product.price * offer.periodValue
+                  let discountPrice = offer.price
+                  let percentageReduction = Math.round((normalPrice - discountPrice) / normalPrice * 100)
+                  offer.percentageReduction = percentageReduction
+                }
+              })
+              console.log(`Calculating percentage reduction, raw data is ${JSON.stringify(data)}, product is ${JSON.stringify(product)}`)
               return promotedProduct
             })
           )
@@ -138,7 +148,15 @@ export class PurchaseService { // This class cannot be used anymore due to andro
             throw new Error(`Multiple products found from Android Subscription List (${androidProductList.map(a=>(a as AndroidSubscription).name).join(', ')}), except to only have one`)
           }
           let androidProduct = (androidProductList as AndroidSubscription[])[0];
+
+          // Fetch the base plans
+          let basePlans:{[key: string]:AndroidSubscription} = androidProduct.subscriptionOfferDetails.filter(e=>!(e as any).offerId).reduce((acc, curr) => {
+            acc[curr.basePlanId] = curr
+            return acc
+          }, {})
           
+          // console.log(`purchase.service, calculate percentage reduction, raw data is ${JSON.stringify(androidProduct)}`)
+          // console.log(`purchase.service, base plans are: ${JSON.stringify(basePlans)}`)
           androidProduct.subscriptionOfferDetails.forEach((offerDetail) => {
             // For this feature, the price phasing is not yet supported
             /*if (offerDetail.pricingPhases.length > 1)
@@ -156,6 +174,15 @@ export class PurchaseService { // This class cannot be used anymore due to andro
               androidOfferToken: offerDetail.offerIdToken,
               pricingPhases: pricingPhases
             })
+
+            // Compute the percentage reduction
+            let normalPrice = basePlans[offerDetail.basePlanId].pricingPhases[0].priceAmountMicros / 1000000 * this.billingPeriodToMonth(offerDetail.pricingPhases[0].billingPeriod)
+            let reducedPrice = offerDetail.pricingPhases[0].priceAmountMicros / 1000000
+            let percentageReduction = Math.round((normalPrice - reducedPrice) / normalPrice * 100)
+            offerDetail.pricingPhases[0].percentageReduction = percentageReduction
+
+            // Convert the billing period to a more readable format
+            offerDetail.pricingPhases[0].billingNMonth = this.billingPeriodToMonth(offerDetail.pricingPhases[0].billingPeriod)
           })
         }
         if (this.platform.is('android') && type == 'subs'){

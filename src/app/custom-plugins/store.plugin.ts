@@ -626,6 +626,7 @@ export interface AndroidSubscription {
 
   // Experimental for the new subscription data structure
   androidOfferToken?: string | undefined; // Only for Android
+  pricingPhases?: PricingPhase[]; // Only for Android
 }
 export interface SubscriptionOfferDetail {
   offerIdToken: string
@@ -639,6 +640,9 @@ export interface PricingPhase {
   formattedPrice: string
   billingPeriod: string
   recurrenceMode: number
+
+  percentageReduction?: number
+  billingNMonth?: number
 }
 
 export interface IOSPromoOfferSignatureInfo {
@@ -659,6 +663,9 @@ export interface PromoOfferIOS {
   offerId: string
   productId: string
   signatureInfo: IOSPromoOfferSignatureInfo
+
+  // computed value
+  percentageReduction: number
 }
 
 let Store: StorePlugin;

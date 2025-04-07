@@ -273,7 +273,7 @@ export class LoginPage extends FormComponent implements OnInit {
 
         // IF the extra_data is already set, then redirect to the home page, otherwise, let him fill the form
         let user = await this.contentService.storage.get('user')
-        if (!user.extra_data){
+        if (!user.extra_data && user.function == 'customer'){
           this.os.clearOnboardingData()
           this.router.navigate(['/s2-more-info'])
         } else {

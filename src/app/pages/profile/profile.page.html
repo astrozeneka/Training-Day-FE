@@ -249,9 +249,11 @@
     <div *ngIf="entity">
         <h3 class="display-1 ion-padding">Abonnement</h3>
         <div *ngIf="entity && !entity?.renewable_id && !active_entitled_subscription">
-            <p class="ion-padding helper">
-                Vous n'avez pas d'abonnement actif.
-            </p>
+            <div class="span-button ion-padding-horizontal">
+                <span>
+                    Vous n'avez pas d'abonnement actif.
+                </span>
+            </div>
         </div>
         <div *ngIf="entity?.renewable_id && active_entitled_subscription">
             <div class="span-button ion-padding-horizontal">
@@ -454,9 +456,11 @@
 
     <div class="ion-padding">
         <h3 class="display-1">Suppression du compte</h3>
-        <p>
-            Vous pouvez supprimer votre compte à tout moment. Cette action est irréversible.
-        </p>
+        <div class="span-button ion-padding-bottom">
+            <span>
+                Vous pouvez supprimer votre compte à tout moment. Cette action est irréversible.
+            </span>
+        </div>
         <div class="ion-text-center">
             <ion-button (click)="deleteAccount()" color="danger">Supprimer mon compte</ion-button>
         </div>

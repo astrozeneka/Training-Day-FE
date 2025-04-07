@@ -26,10 +26,13 @@
               <ion-item [button]="true" (click)="filterBy(undefined)">Tous</ion-item>
               <ion-item [button]="true" (click)="filterBy('hoylt')">Pack Hoylt</ion-item>
               <ion-item [button]="true" (click)="filterBy('moreno')">Pack Moreno</ion-item>
+              <ion-item [button]="true" (click)="filterBy('gursky')">Pack Moreno</ion-item>
+              <ion-item [button]="true" (click)="filterBy('smiley')">Pack Moreno</ion-item>
               <ion-item [button]="true" (click)="filterBy('alonzo')">Pack Alonzo</ion-item>
+              <!--
               <ion-item [button]="true" (click)="filterBy('food-coach')">Programme alimentaire</ion-item>
               <ion-item [button]="true" (click)="filterBy('sport-coach')">Programme sportif</ion-item>
-              <ion-item [button]="true" (click)="filterBy('personal-trainer')">Personal Trainer</ion-item>
+              <ion-item [button]="true" (click)="filterBy('personal-trainer')">Personal Trainer</ion-item>-->
             </ion-list>
           </ion-content>
         </ng-template>
@@ -50,6 +53,13 @@
                   placeholder="Rechercher"
                   (keydown.enter)="loadData()"></ion-searchbar>
   <div class="infinite-container">
+    <div class="loading-placeholder" *ngIf="loading">
+      <ion-spinner
+        name="crescent"
+        color="dark"
+        class="ion-padding"
+      ></ion-spinner>
+    </div>
     <app-infinite-list
       [httpHeaders]="{ 'Authorization': 'Bearer ' + jwtToken }"
       [httpUrl]="contentService.apiEndpoint + '/users'"

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A19C4B52D9D5BC9009DEBB6 /* File.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2A19C4B42D9D5BC9009DEBB6 /* File.txt */; };
 		2A3F21992C31107B000B0D4A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A3F21982C31107B000B0D4A /* StoreKit.framework */; };
 		2A3F219B2C31109E000B0D4A /* StorePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3F219A2C31109E000B0D4A /* StorePlugin.swift */; };
 		2A3F219D2C3110ED000B0D4A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3F219C2C3110ED000B0D4A /* Store.swift */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2A19C4B42D9D5BC9009DEBB6 /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
 		2A390E2D2D706ACD00A9712A /* SyncedProduct2.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = SyncedProduct2.storekit; sourceTree = "<group>"; };
 		2A3F21982C31107B000B0D4A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		2A3F219A2C31109E000B0D4A /* StorePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePlugin.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 				2A4BB2652C3ADA6A0077D0B7 /* StoreKitTestCertificate.cer */,
 				2A5B7E6E2AE6DADB00B23720 /* GoogleService-Info.plist */,
 				2A390E2D2D706ACD00A9712A /* SyncedProduct2.storekit */,
+				2A19C4B42D9D5BC9009DEBB6 /* File.txt */,
 				2A5B7E6C2AE6D0C300B23720 /* App.entitlements */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				2A3F219A2C31109E000B0D4A /* StorePlugin.swift */,
@@ -188,6 +191,7 @@
 				504EC30F1FED79650016851F /* Assets.xcassets in Resources */,
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
 				2A4BB2662C3ADA6A0077D0B7 /* StoreKitTestCertificate.cer in Resources */,
+				2A19C4B52D9D5BC9009DEBB6 /* File.txt in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
 				2A5B7E6F2AE6DADB00B23720 /* GoogleService-Info.plist in Resources */,
@@ -396,7 +400,7 @@
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = K8FHK5UWGD;
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Training Day";
@@ -427,7 +431,7 @@
 				CODE_SIGN_ENTITLEMENTS = App/AppRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = FPUNC48548;
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Training Day";

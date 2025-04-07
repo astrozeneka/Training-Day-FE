@@ -28,6 +28,9 @@ export class ManageUsersViewPage implements OnInit {
   f_privilege = undefined
   f_search = undefined
 
+  // The loading
+  loading: boolean = false
+
 
   searchControl:FormControl = new FormControl("")
 
@@ -61,6 +64,9 @@ export class ManageUsersViewPage implements OnInit {
         'f_privilege': this.f_privilege ?? ''
       })
     })
+
+    // The loading predicate
+    this.loading = true
   }
 
   updatePage(page:number){
@@ -142,6 +148,7 @@ export class ManageUsersViewPage implements OnInit {
   }
 
   onAfterLoad({data, metainfo}){
+    this.loading = false
     console.log("Load data", data, metainfo)
   }
 
