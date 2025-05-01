@@ -61,6 +61,7 @@ export class CoachChatMasterService {
     // aster-updated doesn't work actually, but we need to bind_global, then listen
     let channel = this.bs.pusher.subscribe(this._channelId(userId))
     channel.bind(this._eventId(), ({data, metainfo})=>{
+      console.log("Receive data from pusher", data)
       // ======
       // Data preparation can be done here (see chat-v4)
       // ======
@@ -83,7 +84,10 @@ export class CoachChatMasterService {
     })
 
     // (experimental) For real time notification
-    channel.bind_global((event:string, {data, metainfo})=>{
+    channel.bind_global((event:string, c)=>{
+      // The code below is not used to update data for coach interface
+      console.log("Receive data from pusher", event, c)
+      let data = c.data
       // If the pattern message.33 is followed
       if (event.startsWith('message.') && !Number.isNaN(parseInt(event.split('.')[1]))){
         let messages:IMessage[] = data
@@ -128,8 +132,12 @@ export class CoachChatMasterService {
   }
 
   private _requestUpdate(userId:number){
-    this.cs.post(`/chat/request-update/${userId}`, {})
-      .subscribe(data => null)
+    // This bunch of code is not called by the coach master
+    setTimeout(()=>{
+      console.log("Requesting for update")
+      this.cs.post(`/chat/request-update/${userId}`, {})
+        .subscribe(data => null)
+    }, 2000) // Wait for 1 second
   }
 
   private _channelId(userId){

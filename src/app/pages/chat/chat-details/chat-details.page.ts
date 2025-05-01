@@ -21,6 +21,7 @@ import IMessage from 'src/app/models/IMessages';
 import MessageSubject from 'src/app/utils/MessageSubject';
 import { FormComponent } from 'src/app/components/form.component';
 import { HttpEventType } from '@angular/common/http';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-chat-details',
@@ -84,6 +85,7 @@ export class ChatDetailsPage extends FormComponent implements OnInit, ViewWillEn
     private cdr: ChangeDetectorRef,
 
     private chatV3Service: ChatV3Service,
+    public location: Location
   ) {
     super()
     this.route.params.subscribe(async params=>{

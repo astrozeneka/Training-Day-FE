@@ -3,6 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { ro } from "date-fns/locale";
+import { push } from "ionicons/icons";
 
 enum paymentMethod {
   stripe = 'stripe',
@@ -24,10 +25,10 @@ export const environment = {
 
   // Pusher configuration
   pusher_app_key: 'app-key',
-  // pusher_host: '192.168.1.187',
-  // pusher_host: '192.168.88.188',
-  pusher_host : '192.168.1.231',
-  pusher_port: 6001,
+  /*pusher_host : '192.168.1.231',
+  pusher_port: 6001,*/
+  pusher_host: 'soketi.codecrane.me',
+  pusher_port: 443,
   pusher_cluster: 'eu',
 
   // CREDENTIALS

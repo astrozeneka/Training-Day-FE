@@ -316,6 +316,10 @@ const routes: Routes = [
     path: 'video-submenu/:group',
     loadChildren: () => import('./pages/video-submenu/video-submenu.module').then( m => m.VideoSubmenuPageModule)
   },
+  {
+    path: 'pusher-test',
+    loadChildren: () => import('./pages/pusher-test/pusher-test.module').then( m => m.PusherTestPageModule)
+  },
 ];
 
 @NgModule({

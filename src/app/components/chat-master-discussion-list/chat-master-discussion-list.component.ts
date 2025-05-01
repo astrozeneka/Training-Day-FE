@@ -48,8 +48,12 @@ export class ChatMasterDiscussionListComponent  implements OnInit, OnChanges {
 
     let discussionsLoaded$ = userLoaded$.pipe(distinctUntilChanged((a, b)=>a.id === b.id))
       .pipe(switchMap((user)=>{
+        console.log("Listening 'onDiscussions' for user", user.id)
         return this.ccms.onDiscussions(user.id, true, true)
           .pipe(filter(e=>e.length > 0))
+          .pipe(tap((discussions)=>{
+            console.log("Discussions loaded", discussions) // Cannot pass through here
+          }))
       }))
       /*.subscribe((event)=>{
         this.ccms.onDiscussions(this.user.id, true, true)

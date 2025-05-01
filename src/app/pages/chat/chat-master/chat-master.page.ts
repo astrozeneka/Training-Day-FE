@@ -164,9 +164,11 @@ export class ChatMasterPage implements OnInit {
     await new Promise((resolve)=>setTimeout(resolve, 500)) // Not optimized
     
     // The old way to load the data (Generaly, this throw 429 too many requests error)
-    console.log("Requesting update")
-    this.contentService.post('/chat/request-update/'+this.user.id, {})
+    setTimeout(()=>{
+      console.log("Requesting update (lagged)")
+      this.contentService.post('/chat/request-update/'+this.user.id, {})
       .subscribe(data => null)
+    }, 3000)
   }
 
   async ngOnInit() {
@@ -362,15 +364,41 @@ export class ChatMasterPage implements OnInit {
       // Reinitialize the pusher to allow loading
       // The code below is redundant, should refactorized
       this.broadcastingService.pusher.unsubscribe(`messages.${userIdToLoad}`)
-      this.broadcastingService.pusher.subscribe(`messages.${userIdToLoad}`)
+      console.log("Subscribe to pusher", `messages.${userIdToLoad}`)
+      let a = this.broadcastingService.pusher.subscribe(`messages.${userIdToLoad}`)
         .bind('master-updated',
           ({data, metainfo}) => {
-            console.log("discussion data updated")
+            console.log("discussion data updated") // The production doesn't call this
             this.discussionStorageObservable.updateStorage({data, metainfo})
           }
         )
+      // LIsten all from `messages.${userIdToLoad}`
+      this.broadcastingService.pusher.bind_global((event, {data, metainfo})=>{
+        console.log("bind_global", event) // e.g., message.11
+      })
+      // Listen to onsubscribe
+      this.broadcastingService.pusher.bind('pusher:subscription_succeeded', (a)=>{
+        console.log("Subscription succeeded", a)
+      })
+      // Listen to onerror
+      this.broadcastingService.pusher.bind('pusher:error', (a)=>{
+        console.log("Subscription error", a)
+      })
+      // Listen to onsubscription
+      this.broadcastingService.pusher.bind('pusher:subscription_succeeded', (a)=>{
+        console.log("Subscription succeeded", a)
+      })
+      // Listen to onsubscription
+      this.broadcastingService.pusher.bind('pusher:subscription_error', (a)=>{
+        console.log("Subscription error", a)
+      })
+      
+      
+      console.log("Subscription result", a)
       this.contentService.post('/chat/request-update/'+userIdToLoad, {})
-        .subscribe(data => null)
+        .subscribe(data => {
+          console.log("Request update result", data)
+        })
 
     })
   }
