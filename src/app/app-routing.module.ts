@@ -316,6 +316,14 @@ const routes: Routes = [
     path: 'video-submenu/:group',
     loadChildren: () => import('./pages/video-submenu/video-submenu.module').then( m => m.VideoSubmenuPageModule)
   },
+  {
+    path: 'messenger-master',
+    loadChildren: () => import('./messenger-master/messenger-master.module').then( m => m.MessengerMasterPageModule)
+  },
+  {
+    path: 'messenger-detail/:partnerId',
+    loadChildren: () => import('./messenger-detail/messenger-detail.module').then( m => m.MessengerDetailPageModule)
+  },
 ];
 
 @NgModule({

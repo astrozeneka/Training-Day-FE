@@ -49,7 +49,7 @@ export class ChatDetailsPage extends FormComponent implements OnInit, ViewWillEn
     'content': undefined
   }
 
-  echo: Echo = undefined;
+  echo: Echo<any> = undefined;
   environment: any;
   recipient_id: any;
 
