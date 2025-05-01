@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
-import { catchError, from, of, switchMap, throwError } from 'rxjs';
+import { catchError, from, map, Observable, of, shareReplay, switchMap, tap, throwError } from 'rxjs';
 import { ContentService } from '../content.service';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -77,6 +77,12 @@ export class MessengerDetailPage implements OnInit {
   // To remove later
   lastMessage: string = ""
 
+  // Pusher client and Echo instance
+  // bearer token is required for registering the pusher client
+  private bearerToken$: Observable<string>;
+  pusherClient: Pusher | undefined;
+  echo: Echo<any> | undefined;
+
   constructor(
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -88,22 +94,59 @@ export class MessengerDetailPage implements OnInit {
     this.messageForm = this.formBuilder.group({
       message: ['', []]
     });
+
+    // The token$ is used to get the token from the content service
+    this.bearerToken$ = from(this.contentService.storage.get('token')).pipe(
+      shareReplay(1) // cache and share the latest emitted value of an observable with multiple subscribers.
+    );
   }
 
   ngOnInit() {
+    // Set up a chain of dependent operations
 
     // Get the chat ID from route params
-    this.route.params.subscribe(params => {
-      console.log("Partner id", params['partnerId'])
-      this.partnerId = params['partnerId'];
-      this.loadChatData();
-    });
+    this.route.params.pipe(
+      // 1. Get the partner ID
+      tap(params => {
+        console.log("Partner id", params['partnerId'])
+        this.partnerId = params['partnerId'];
+      }),
+      // 2. Call /sanctum/csrf-cookie to get the CSRF token
+      switchMap(() => this.fetchCsrfToken()),
+      // 3. Initialize the pusher client
+      switchMap(() => this.initializePusherClient()),
+      // 4. Open or fetch the conversation
+      switchMap(() => this.createOrFetchConversation()),
+      // 5. Set up echo listeners for incoming messages
+      tap(() => this.setupEchoListeners())
+    )
+      .subscribe(()=>{
+        console.log("OK")
+      })
+  }
 
-    // Initialize the pusher client (require the token from the content service)
-    // This portion of the code should be moved to a service (ask Claude)
-    this.contentService.storage.get('token').then((token) => {
-      console.log("Tokens", token)
-      setTimeout(() => { // TODO, the below code should wait for the csrf-token to be set first (the related code is below)
+  // Call /sanctum/csrf-cookie to get the CSRF token
+  private fetchCsrfToken(): Observable<any> {
+    return this.bearerToken$.pipe(
+      switchMap(token => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+        return this.http.get(`${environment.rootEndpoint}/sanctum/csrf-cookie`, { headers, observe: 'response' })
+      }),
+      tap(res => {console.log('CSRF token fetched:', res) }),
+      catchError(err => {
+        console.error("Error fetching CSRF token:", err);
+        return of(null);
+      })
+    );
+  }
+
+  // Initialize the pusher client
+  private initializePusherClient(): Observable<any> {
+    return this.bearerToken$.pipe(
+      map(token => {
+        console.log("Initializing Pusher client with token");
         this.pusherClient = new Pusher('app-key', {
           cluster: 'eu',
           forceTLS: true,
@@ -112,43 +155,74 @@ export class MessengerDetailPage implements OnInit {
           wsPort: 443,
           enabledTransports: ['ws', 'wss'],
           // Add authorization for private channels
-          authorizer: (channel: any, options: any) => {
-            return {
-              authorize: (socketId: string, callback: Function) => {
-                console.log("CSRF-TOKEN", this.tokenExtractor.getToken())
-                this.http.post(`${environment.rootEndpoint}/broadcasting/auth`, {
-                  socket_id: socketId,
-                  channel_name: channel.name
-                }, {
-                  headers: new HttpHeaders({
-                    'Authorization': `Bearer ${token}`,
-                    'X-CSRF-TOKEN': this.tokenExtractor.getToken() || ''
-                  })
-                }).subscribe({
-                  next: (response: any) => callback(false, response),
-                  error: (error: any) => callback(true, error)
-                });
-              }
-            };
-          }
+            authorizer: (channel: any, options: any) => {
+              return {
+                authorize: (socketId: string, callback: Function) => {
+                  console.log("CSRF-TOKEN", this.tokenExtractor.getToken())
+                  this.http.post(`${environment.rootEndpoint}/broadcasting/auth`, {
+                    socket_id: socketId,
+                    channel_name: channel.name
+                  }, {
+                    headers: new HttpHeaders({
+                      'Authorization': `Bearer ${token}`,
+                      'X-CSRF-TOKEN': this.tokenExtractor.getToken() || ''
+                    })
+                  }).subscribe({
+                    next: (response: any) => callback(false, response),
+                    error: (error: any) => callback(true, error)
+                  });
+                }
+              };
+            }
         });
-        console.log("Initializing pusher client")
         this.echo = new Echo({
           broadcaster: 'pusher',
           client: this.pusherClient
         });
-      }, 3000)
-    })
+      })
+    )
+  }
 
-    // Get the csrf token from the server
-    this.contentService.storage.get('token').then((token) => {
-      let headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`
+  // Open or fetch the conversation by using /api/conversations
+  private createOrFetchConversation(): Observable<any> {
+    this.isLoading = true;
+    return this.bearerToken$.pipe(
+      switchMap((token) => {
+        const header = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        })
+        return this.http.post(`${environment.apiEndpoint}/conversations`, {
+          'recipient_id': this.partnerId,
+          'role': 'coach'
+        }, {
+          headers: header
+        }).pipe(
+          tap((res: any) => {
+            this.conversationId = res.conversation?.id
+            this.isLoading = false;
+          }),
+          catchError(err => {
+            console.error('Error fetching chat data:', err);
+            this.isLoading = false;
+            return of([]);
+          })
+        )
       })
-      this.http.get(`${environment.rootEndpoint}/sanctum/csrf-cookie`, { withCredentials: true, headers, observe: 'response' }).subscribe((res: HttpResponse<any>) => {
-        console.log(res)
+    )
+  }
+
+  // Set up echo listeners for incoming messages
+  private setupEchoListeners() {
+    if (!this.echo || !this.conversationId) {
+      console.error("Cannot setup listener: Echo or conversationId not available");
+      return;
+    }
+
+    let channel = this.echo?.private(`conversation.${this.conversationId}`)
+      .listen('MessageSent', (e: Msg) => {
+        this.lastMessage = e.content
+        console.log("Message received", e)
       })
-    })
   }
 
   sendMessage() {
@@ -178,55 +252,4 @@ export class MessengerDetailPage implements OnInit {
 
   // To be merged with the UI
   isLoading: boolean = false; // USed with the shimmering loader
-
-  // DATA HANDLING
-  // For later, move this to a service (ask claude)
-  pusherClient: Pusher | undefined;
-  echo: Echo<any> | undefined;
-
-  // Load chat data
-  private loadChatData() {
-
-    // THe two code below should be correctly merged (consult with Claude)
-
-    // The contentService is quite 'badly' managed, so independently fetching the token is better
-    this.contentService.storage.get('token').then((token) => {
-      let header = new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      })
-      // For a real app, you would fetch this data from a service
-      this.isLoading = true;
-      from(of([])) // It should be replaced by a real API call to fetch the chat data
-        .pipe(switchMap(() => {
-          this.isLoading = false;
-          return this.http.post(`${environment.apiEndpoint}/conversations`, {
-            'recipient_id': this.partnerId,
-            'role': 'coach'
-          }, {
-            headers: header
-          }).pipe(
-            catchError(err => {
-              console.error('Error fetching chat data:', err);
-              this.isLoading = false;
-              return of([]);
-            })
-          )
-        }))
-        .subscribe((res: any) => {
-          console.log("Conversation opened", res)
-          this.conversationId = res.conversation?.id
-          this.isLoading = false;
-        });
-    })
-
-
-    // Managing the realtime communication with the server
-    setTimeout(() => { // Normally, should use observable to manage readyness (Ask Claude) // Also wait for conversationId
-      let channel = this.echo?.private(`conversation.${this.conversationId}`)
-        .listen('MessageSent', (e: Msg) => {
-          this.lastMessage = e.content
-          console.log("Message received", e)
-        })
-    }, 5000)
-  }
 }
