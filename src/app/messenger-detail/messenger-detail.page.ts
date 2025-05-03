@@ -15,18 +15,9 @@ import { User } from '../models/Interfaces';
 import { MessengerService } from '../messenger.service';
 import PrivateChannel from 'pusher-js/types/src/core/channels/private_channel';
 import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
+import { Msg } from '../messenger-interfaces';
 
 
-interface Msg {
-  id: number
-  conversation_id: number
-  sender_id: number
-  sender_name: string
-  content: string
-  type: string
-  status: 'sent' | 'delivered' | 'read' | 'sending'  // sent, delivered, read but in the frontend, it will have 'sending'
-  created_at: string
-}
 
 interface Conversation {
   id: number
