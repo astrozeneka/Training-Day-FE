@@ -12,6 +12,9 @@ import { environment } from 'src/environments/environment';
 import { Location } from '@angular/common';
 import { ActionSheetController, IonContent } from '@ionic/angular';
 import { User } from '../models/Interfaces';
+import { MessengerService } from '../messenger.service';
+import PrivateChannel from 'pusher-js/types/src/core/channels/private_channel';
+import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
 
 
 interface Msg {
@@ -21,7 +24,7 @@ interface Msg {
   sender_name: string
   content: string
   type: string
-  status: string
+  status: 'sent' | 'delivered' | 'read' | 'sending'  // sent, delivered, read but in the frontend, it will have 'sending'
   created_at: string
 }
 
@@ -131,6 +134,12 @@ interface Conversation {
                   <div class="message-info" [ngClass]="message.sender_id === currentUserId ? 'align-right' : 'align-left'">
                     <span class="message-time"><!--{{message.timestamp | date:'shortTime'}}--></span>
                     <div *ngIf="message.sender_id === currentUserId" class="message-status">
+                      <div *ngIf="message.status === 'sending'" class="sending-indicator">
+                        <div class="sending-container">
+                          <div class="sending-text">Envoi en cours</div>
+                          <div class="sending-dots">...</div>
+                        </div>
+                      </div>
                       <ion-icon *ngIf="message.status === 'sent'" name="checkmark-outline" class="status-icon sent"></ion-icon>
                       <ion-icon *ngIf="message.status === 'delivered'" name="checkmark-done-outline" class="status-icon delivered"></ion-icon>
                       <ion-icon *ngIf="message.status === 'read'" name="checkmark-done-outline" class="status-icon read"></ion-icon>
@@ -155,6 +164,9 @@ interface Conversation {
             <p class="empty-subtitle">Send a message to start the conversation</p>
           </div>
         </div>
+      </div>
+    </ion-content>
+    <ion-footer>
 
         <!-- Message input area -->
         <div class="form">
@@ -192,8 +204,8 @@ interface Conversation {
             </form>
           </div>
         </div>
-      </div>
-    </ion-content>`
+    </ion-footer>
+    `
 })
 export class MessengerDetailPage implements OnInit {
   @ViewChild('content') content: IonContent | undefined;
@@ -222,8 +234,6 @@ export class MessengerDetailPage implements OnInit {
   // Pusher client and Echo instance
   // bearer token is required for registering the pusher client
   private bearerToken$: Observable<string>;
-  pusherClient: Pusher | undefined;
-  echo: Echo<any> | undefined;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -234,6 +244,7 @@ export class MessengerDetailPage implements OnInit {
     private location: Location,
     private actionSheetCtrl: ActionSheetController,
     private cdr: ChangeDetectorRef,
+    private messengerService: MessengerService
   ) {
     // Initialize the message form
     this.messageForm = this.formBuilder.group({
@@ -298,18 +309,15 @@ export class MessengerDetailPage implements OnInit {
         this.cdr.detectChanges();
       })
 
-    // Set up a chain of dependent operations
-    this.route.params.pipe(
-      // 2. Call /sanctum/csrf-cookie to get the CSRF token
-      switchMap(() => this.fetchCsrfToken()),
-      // 3. Initialize the pusher client
-      switchMap(() => this.initializePusherClient()),
-      // 5. Set up echo listeners for incoming messages
-      tap(() => this.setupEchoListeners())
-    )
-      .subscribe(() => {
-        console.log("OK")
-      })
+    
+    combineLatest({
+      convo: this.conversation$,
+      echo: this.messengerService.echo$
+    })
+      .pipe(map(({ convo, echo }) => {
+        return this.setupEchoListenersForConversation(echo, convo);
+      }))
+      .subscribe(channel => null);
   }
 
   // Check if we should show date separator between messages
@@ -342,68 +350,10 @@ export class MessengerDetailPage implements OnInit {
   scrollToBottom(animate: boolean = true) {
     // This doesn't work since only the ion-content is scrollable
     // Should develop some code to allow a normal component to be programmatically scrollable
-    console.log("Scrolling to bottom", (this.content as any).nativeElement.scrollToBottom);
     setTimeout(() => {
+      console.log("Scrolling to bottom", this.content)
       this.content?.scrollToBottom(animate ? 300 : 0);
     }, 100);
-  }
-
-  // Call /sanctum/csrf-cookie to get the CSRF token
-  private fetchCsrfToken(): Observable<any> {
-    return this.bearerToken$.pipe(
-      switchMap(token => {
-        const headers = new HttpHeaders({
-          'Authorization': `Bearer ${token}`
-        });
-        return this.http.get(`${environment.rootEndpoint}/sanctum/csrf-cookie`, { headers, observe: 'response' })
-      }),
-      tap(res => { console.log('CSRF token fetched:', res) }),
-      catchError(err => {
-        console.error("Error fetching CSRF token:", err);
-        return of(null);
-      })
-    );
-  }
-
-  // Initialize the pusher client
-  private initializePusherClient(): Observable<any> {
-    return this.bearerToken$.pipe(
-      map(token => {
-        console.log("Initializing Pusher client with token");
-        this.pusherClient = new Pusher('app-key', {
-          cluster: 'eu',
-          forceTLS: true,
-          disableStats: true,
-          wsHost: 'soketi.codecrane.me',
-          wsPort: 443,
-          enabledTransports: ['ws', 'wss'],
-          // Add authorization for private channels
-          authorizer: (channel: any, options: any) => {
-            return {
-              authorize: (socketId: string, callback: Function) => {
-                console.log("CSRF-TOKEN", this.tokenExtractor.getToken())
-                this.http.post(`${environment.rootEndpoint}/broadcasting/auth`, {
-                  socket_id: socketId,
-                  channel_name: channel.name
-                }, {
-                  headers: new HttpHeaders({
-                    'Authorization': `Bearer ${token}`,
-                    'X-CSRF-TOKEN': this.tokenExtractor.getToken() || ''
-                  })
-                }).subscribe({
-                  next: (response: any) => callback(false, response),
-                  error: (error: any) => callback(true, error)
-                });
-              }
-            };
-          }
-        });
-        this.echo = new Echo({
-          broadcaster: 'pusher',
-          client: this.pusherClient
-        });
-      })
-    )
   }
 
   // Open or fetch the conversation by using /api/conversations
@@ -433,21 +383,32 @@ export class MessengerDetailPage implements OnInit {
   }
 
   // Set up echo listeners for incoming messages
-  private setupEchoListeners() {
-    if (!this.echo) {
-      console.error("Cannot setup listener: Echo not available");
-      return;
-    }
+  private setupEchoListenersForConversation(echo: Echo<any>, conversation: Conversation):PusherPrivateChannel<any> {
+    let channel = echo.private(`conversation.${conversation.id}`);
+    channel.listen('MessageSent', (e: Msg) => {
+      this.lastMessage = e.content
+      console.log("Message received", e)
 
-    this.conversation$!.pipe(
-      tap(conversation => {
-        this.echo?.private(`conversation.${conversation.id}`)
-        .listen('MessageSent', (e: Msg) => {
-          this.lastMessage = e.content
-          console.log("Message received", e)
-        })
-      }))
-      .subscribe()
+      // Check if the message is already added as a 'sending' message
+      const tempIndex = this.messages.findIndex(m => 
+        m.sender_id === e.sender_id &&
+        m.status === 'sending' &&
+        m.content === e.content);
+      // If yes, replace
+      if (tempIndex !== -1) {
+        this.messages[tempIndex] = e;
+      } else { // Otherwise, add the message
+        this.messages.push(e);
+      }
+
+      // Play sound here (TODO)
+      this.messages.sort((a: Msg, b: Msg) => a.id - b.id);
+      this.cdr.detectChanges();
+
+      // Scroll to the bottom
+      this.scrollToBottom();
+    })
+    return channel
   }
 
   // Send a message
@@ -455,6 +416,23 @@ export class MessengerDetailPage implements OnInit {
     const messageText = this.messageForm.get('message')?.value;
     if (!messageText || messageText.trim() === '') return;
 
+    // Clear the input field
+    this.messageForm.get('message')?.setValue('');
+
+    // Temporary message with 'sending' status
+    const tempMessage: Msg = {
+      id: Date.now(), // Temporary ID
+      conversation_id: this.partnerId!,
+      sender_id: this.currentUserId!,
+      sender_name: 'Vous',
+      content: messageText,
+      type: 'text',
+      status: 'sending', // Temporary status
+      created_at: new Date().toISOString()
+    };
+    this.messages.push(tempMessage);
+    // Scroll to the bottom
+    this.scrollToBottom();
 
     this.conversation$!.pipe(
       switchMap((conversation) => {
@@ -471,7 +449,6 @@ export class MessengerDetailPage implements OnInit {
       })
     )
       .subscribe((res) => {
-        console.log("ok", res)  
       })
   }
 

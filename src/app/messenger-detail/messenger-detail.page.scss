@@ -7,7 +7,7 @@
 }
 
 ion-content {
-    flex: 1 1 auto;
+    // flex: 1 1 auto;
 }
 
 .main {
@@ -20,7 +20,8 @@ ion-content>* {
     background: 2px solid green;
 }
 
-ion-header {
+ion-header,
+ion-footer {
     box-shadow: none;
 }
 
@@ -28,8 +29,7 @@ ion-header {
     flex: 1 1 auto !important;
 }
 
-.form {
-}
+.form {}
 
 
 // Header styles
@@ -128,7 +128,7 @@ ion-header {
 
     .discussion {
         flex: 1;
-        overflow-y: auto;
+        // overflow-y: auto; // Never add this
     }
 
     // Loading shimmer
@@ -357,6 +357,50 @@ ion-header {
                             color: #3b82f6; // text-blue-500
                         }
                     }
+
+                    .sending-indicator {
+                        .sending-container {
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        .sending-text {
+                            font-size: 0.75rem; // equivalent to text-xs
+                            opacity: 0.7;
+                            margin-right: 0.25rem;
+                            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+                        }
+
+                        .sending-dots {
+                            display: none;
+                            opacity: 0.7;
+                            animation: pulse 1s infinite;
+                        }
+                    }
+
+                    @keyframes pulse {
+
+                        0%,
+                        100% {
+                            opacity: 0.7;
+                        }
+
+                        50% {
+                            opacity: 0.4;
+                        }
+                    }
+
+                    @keyframes bounce {
+
+                        0%,
+                        100% {
+                            transform: translateY(0);
+                        }
+
+                        50% {
+                            transform: translateY(-25%);
+                        }
+                    }
                 }
             }
         }
@@ -398,73 +442,75 @@ ion-header {
             margin: 8px 0 0 0;
         }
     }
+}
 
-    // Input area
-    .form {
-        .input-container {
-            border-top: 1px solid #e5e7eb; // border-t border-gray-200
 
-            .message-form {
-                padding: 8px;
 
-                .form-content {
+// Input area
+.form {
+    .input-container {
+        border-top: 1px solid #e5e7eb; // border-t border-gray-200
+
+        .message-form {
+            padding: 8px;
+
+            .form-content {
+                display: flex;
+                align-items: center;
+
+                .attachment-button {
+                    height: 40px; // h-10
+                    color: #6b7280; // text-gray-500
+
+                    ion-icon {
+                        font-size: 1.25rem; // text-xl
+                    }
+                }
+
+                .input-field {
+                    flex: 1;
+                    margin: 0 8px;
+                    background-color: #f3f4f6; // bg-gray-100
+                    border-radius: 9999px; // rounded-full
+                    padding: 4px 16px 4px 16px;
                     display: flex;
                     align-items: center;
 
-                    .attachment-button {
-                        height: 40px; // h-10
-                        color: #6b7280; // text-gray-500
-
-                        ion-icon {
-                            font-size: 1.25rem; // text-xl
-                        }
-                    }
-
-                    .input-field {
+                    .message-input {
                         flex: 1;
-                        margin: 0 8px;
-                        background-color: #f3f4f6; // bg-gray-100
-                        border-radius: 9999px; // rounded-full
-                        padding: 4px 16px 4px 16px;
-                        display: flex;
-                        align-items: center;
-
-                        .message-input {
-                            flex: 1;
-                            background-color: transparent;
-                            color: #1f2937; // text-gray-800
-                            font-size: 0.875rem; // text-sm
-                            border: none;
-                            outline: none;
-                        }
-
-                        .emoji-button {
-                            height: 32px; // h-8
-                            width: 32px; // w-8
-                            color: #6b7280; // text-gray-500
-
-                            ion-icon {
-                                font-size: 1.25rem; // text-xl
-                            }
-                        }
+                        background-color: transparent;
+                        color: #1f2937; // text-gray-800
+                        font-size: 0.875rem; // text-sm
+                        border: none;
+                        outline: none;
                     }
 
-                    .send-button {
-                        height: 40px; // h-10
-                        color: #3b82f6; // text-blue-500
-
-                        ion-icon {
-                            font-size: 1.25rem; // text-xl
-                        }
-                    }
-
-                    .mic-button {
-                        height: 40px; // h-10
+                    .emoji-button {
+                        height: 32px; // h-8
+                        width: 32px; // w-8
                         color: #6b7280; // text-gray-500
 
                         ion-icon {
                             font-size: 1.25rem; // text-xl
                         }
+                    }
+                }
+
+                .send-button {
+                    height: 40px; // h-10
+                    color: #3b82f6; // text-blue-500
+
+                    ion-icon {
+                        font-size: 1.25rem; // text-xl
+                    }
+                }
+
+                .mic-button {
+                    height: 40px; // h-10
+                    color: #6b7280; // text-gray-500
+
+                    ion-icon {
+                        font-size: 1.25rem; // text-xl
                     }
                 }
             }
