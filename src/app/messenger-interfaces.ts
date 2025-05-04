@@ -34,3 +34,11 @@ export interface Conversation {
     members: Member[]
     avatar: string | null
 }
+
+export interface PresignedUrlRequestResult {
+  success: boolean
+  upload_url: string
+  file_url: string
+  file_path: string
+  file_type: string
+}

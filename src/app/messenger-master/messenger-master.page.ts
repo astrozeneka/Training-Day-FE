@@ -31,7 +31,7 @@ import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
 <ion-content>
   <div class="container">
     <!-- Status & Availability Section -->
-    <div class="availability-section">
+    <div class="availability-section" *ngIf="staffMenuAvailable">
       <div class="availability-container">
         <div class="status-indicator">
           <ion-badge class="status-badge {{isAvailable ? 'available' : 'unavailable'}}">
@@ -46,7 +46,7 @@ import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
     </div>
 
     <!-- Search Bar -->
-    <div class="search-container">
+    <div class="search-container" *ngIf="staffMenuAvailable">
       <ion-searchbar
         #searchbar
         placeholder="Rechercher une conversation"
@@ -148,6 +148,7 @@ export class MessengerMasterPage implements OnInit {
   filteredChats: Conversation[] = [];
   user$: Observable<User>;
   userTypeSwitchAvailable: boolean = false;
+  staffMenuAvailable: boolean = false;
 
   // Similar to what chat-detail use
   private bearerToken$: Observable<string> | undefined;
@@ -177,6 +178,8 @@ export class MessengerMasterPage implements OnInit {
     this.user$.subscribe(user => {
       if (user.function === 'coach')
         this.userTypeSwitchAvailable = true;
+      if (user.function === 'coach' || user.function === 'nutritionist')
+        this.staffMenuAvailable = true;
     })
   }
 
