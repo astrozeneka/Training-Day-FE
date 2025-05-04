@@ -83,10 +83,10 @@ interface File {
             </div>
           </div>
 
-          <!-- Date separator -->
+          <!-- Date separator at the beginning -->
           <div *ngIf="!isLoading && messages.length > 0" class="date-separator">
             <div class="date-pill">
-              <!--{{messages[0].timestamp | date:'MMM d, yyyy'}}-->1 Jan 1970
+              {{messages[0].created_at | date:'MMM d, yyyy'}}
             </div>
           </div>
 
@@ -99,10 +99,10 @@ interface File {
           <!-- Messages -->
           <div *ngIf="!isLoading" class="messages-container">
             <div *ngFor="let message of messages; let i = index" class="message-wrapper">
-              <!-- New date separator -->
+              <!-- New date separator within message list -->
               <div *ngIf="i > 0 && shouldShowDateSeparator(message, messages[i-1])" class="date-separator">
                 <div class="date-pill">
-                  <!--{{message.timestamp | date:'MMM d, yyyy'}}-->1 Jan 1970
+                  {{message.created_at | date:'MMM d, yyyy'}}
                 </div>
               </div>
 
@@ -114,6 +114,7 @@ interface File {
                     <img [src]="chatPartner?.avatar" alt="Avatar" *ngIf="chatPartner?.avatar">
                     <img src="../../../assets/samples/profile-sample-1.jpg" alt="Avatar" *ngIf="!chatPartner?.avatar">
                   </ion-avatar>
+                  <div *ngIf="!shouldShowAvatar(message, messages[i-1])" class="placeholder"></div>
                 </div>
 
                 <!-- Message content -->
@@ -370,11 +371,10 @@ export class MessengerDetailPage implements OnInit {
   shouldShowDateSeparator(current: Msg, previous: Msg): boolean {
     if (!previous) return false;
 
-    /*const currentDate = new Date(current.timestamp).setHours(0, 0, 0, 0);
-    const previousDate = new Date(previous.timestamp).setHours(0, 0, 0, 0);
+    const currentDate = new Date(current.created_at).setHours(0, 0, 0, 0);
+    const previousDate = new Date(previous.created_at).setHours(0, 0, 0, 0);
 
-    return currentDate !== previousDate;*/
-    return false; // TODO be updated later
+    return currentDate !== previousDate;
   }
 
   // Determine if we should show the avatar for a message
