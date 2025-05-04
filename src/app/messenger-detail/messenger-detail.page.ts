@@ -90,6 +90,12 @@ interface File {
             </div>
           </div>
 
+          <!-- Add this after the date separator and before the messages container -->
+          <div *ngIf="isLoadingMore" class="loading-more">
+            <ion-spinner name="dots"></ion-spinner>
+            <span>Loading more messages...</span>
+          </div>
+
           <!-- Messages -->
           <div *ngIf="!isLoading" class="messages-container">
             <div *ngFor="let message of messages; let i = index" class="message-wrapper">
@@ -254,6 +260,13 @@ export class MessengerDetailPage implements OnInit {
   isUploading: boolean = false;
   uploadingFileName: string = '';
 
+  // Required for the scroll loading
+  hasMore: boolean = true;
+  oldestMessageId: number | null = null;
+  isLoadingMore: boolean = false;
+
+
+
   constructor(
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -331,8 +344,12 @@ export class MessengerDetailPage implements OnInit {
         this.messages = res.msgs; // Not a good practice, must be updated later
         // Sort messages by id asc
         this.messages.sort((a: Msg, b: Msg) => a.id - b.id);
+
+        // The pagination properties
+        this.oldestMessageId = res.oldest_message_id;
+        this.hasMore = res.has_more;
         
-        this.scrollToBottom(true) // <- don't work
+        this.scrollToBottom(true)
         this.cdr.detectChanges();
       })
 
@@ -811,5 +828,59 @@ export class MessengerDetailPage implements OnInit {
       // Open the URL in a new tab for web
       window.open(url, '_blank');
     }
+  }
+
+  loadMoreMessages() {
+    if (!this.hasMore || this.isLoadingMore || !this.oldestMessageId) return;
+    this.isLoadingMore = true;
+
+    combineLatest({
+      token: this.bearerToken$!,
+      convo: this.conversation$
+    }).pipe(
+      switchMap(({ token, convo }) => {
+        let headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+        return this.http.get(`${environment.apiEndpoint}/msgs?conversation_id=${convo.id}&before_id=${this.oldestMessageId}&limit=20`, {
+          headers: headers}); 
+      }),
+      catchError(err => {
+        console.error('Error fetching more messages:', err);
+        this.isLoadingMore = false;
+        return of({success: false, msgs: []});
+      })
+    ).subscribe((res:any)=>{
+      this.isLoadingMore = false;
+
+      if (res.success && res.msgs && res.msgs.length > 0) {
+        // Sort messages in ascending order by ID since we're prepending
+        res.msgs.sort((a: Msg, b: Msg) => a.id - b.id);
+        this.messages = [...res.msgs, ...this.messages]; // Prepend new messages
+        this.oldestMessageId = res.oldest_message_id;
+        this.hasMore = res.has_more === true;
+      } else {
+        this.hasMore = false;
+      }
+      this.cdr.detectChanges();
+    })
+      
+  }
+
+  private scrollElement: HTMLElement | null = null;
+  ngAfterViewInit() {
+    // Get the scroll element after view is initialized
+    this.content?.getScrollElement().then((element) => {
+      this.scrollElement = element;
+      // Add the scroll event listener manually
+      this.scrollElement.addEventListener('scroll', (event) => {
+        const scrollTop = this.scrollElement?.scrollTop || 0;
+        // Only load more if we're near the top, have more messages, and aren't loading
+        if (scrollTop < 200 && this.hasMore && !this.isLoadingMore && this.oldestMessageId) {
+          console.log('Loading more messages...');
+          this.loadMoreMessages();
+        }
+      });
+    })
   }
 }

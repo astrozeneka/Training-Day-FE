@@ -582,3 +582,20 @@ ion-footer {
         }
     }
 }
+
+// Loading more messages
+.loading-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+
+    ion-spinner {
+        margin-right: 8px;
+    }
+
+    span {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+}
