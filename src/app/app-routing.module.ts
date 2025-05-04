@@ -321,7 +321,7 @@ const routes: Routes = [
     loadChildren: () => import('./messenger-master/messenger-master.module').then( m => m.MessengerMasterPageModule)
   },
   {
-    path: 'messenger-detail/:partnerId',
+    path: 'messenger-detail/:conversationId',
     loadChildren: () => import('./messenger-detail/messenger-detail.module').then( m => m.MessengerDetailPageModule)
   },
 ];

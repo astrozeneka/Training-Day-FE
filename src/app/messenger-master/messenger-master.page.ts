@@ -57,7 +57,7 @@ import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
     </div>
 
     <!-- User Type Selection -->
-    <div class="user-type-tabs">
+    <div class="user-type-tabs" *ngIf="userTypeSwitchAvailable">
       <div 
         class="tab-item {{userType === 'coach' ? 'active' : ''}}"
         (click)="setUserType('coach')"
@@ -65,8 +65,8 @@ import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
         Coach
       </div>
       <div 
-        class="tab-item {{userType === 'nutritionnist' ? 'active' : ''}}"
-        (click)="setUserType('nutritionnist')"
+        class="tab-item {{userType === 'nutritionist' ? 'active' : ''}}"
+        (click)="setUserType('nutritionist')"
       >
         Nutritionniste
       </div>
@@ -92,6 +92,7 @@ import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
     <!-- Chat List -->
     <div class="chat-list" *ngIf="!isLoading">
       <ng-container *ngIf="filteredChats.length > 0; else emptyState">
+        {{ filteredChats.length }} 
         <div 
           *ngFor="let chat of filteredChats" 
           class="chat-item"
@@ -138,7 +139,7 @@ export class MessengerMasterPage implements OnInit {
   @ViewChild(IonSearchbar) searchbar: IonSearchbar | undefined = undefined;
 
   isAvailable: boolean = false;
-  userType: 'coach' | 'nutritionnist' = 'coach';
+  userType: 'coach' | 'nutritionist' = 'coach';
   isLoading: boolean = true;
   searchQuery: string = '';
 
@@ -146,6 +147,7 @@ export class MessengerMasterPage implements OnInit {
   chats: Conversation[] = [];
   filteredChats: Conversation[] = [];
   user$: Observable<User>;
+  userTypeSwitchAvailable: boolean = false;
 
   // Similar to what chat-detail use
   private bearerToken$: Observable<string> | undefined;
@@ -170,6 +172,12 @@ export class MessengerMasterPage implements OnInit {
     this.user$ = this.contentService.userStorageObservable.gso$().pipe(
       shareReplay(1) // cache and share the latest emitted value of an observable with multiple subscribers.
     )
+
+    // Set the userTypeSwitchAvailable
+    this.user$.subscribe(user => {
+      if (user.function === 'coach')
+        this.userTypeSwitchAvailable = true;
+    })
   }
 
   ngOnInit() {
@@ -197,8 +205,7 @@ export class MessengerMasterPage implements OnInit {
           let success = res.success as boolean;
           let conversations = res.conversations as Conversation[];
           this.chats = conversations;
-          console.log(this.chats)
-          this.filteredChats = [...this.chats];
+          this.applySearchFilter();
           this.isLoading = false;
           this.cdr.detectChanges();
           console.log("Conversation loaded, data: ", res);
@@ -246,7 +253,7 @@ export class MessengerMasterPage implements OnInit {
       // Add more sample data as needed
     ];
 
-    this.filteredChats = [...this.chats];
+    // this.filteredChats = [...this.chats];
   }
 
   toggleAvailability(event: CustomEvent|any) {
@@ -259,7 +266,7 @@ export class MessengerMasterPage implements OnInit {
     this.showToast(`Vous êtes maintenant ${this.isAvailable ? 'disponible' : 'non disponible'}`);
   }
 
-  setUserType(type: 'coach' | 'nutritionnist') {
+  setUserType(type: 'coach' | 'nutritionist') {
     this.userType = type;
 
     // In a real app, you would fetch different chats based on the selected type
@@ -269,7 +276,7 @@ export class MessengerMasterPage implements OnInit {
     this.isLoading = true;
     setTimeout(() => {
       // Simulate different data for different user types
-      if (this.userType === 'nutritionnist') {
+      if (this.userType === 'nutritionist') {
         // Modify the chat data to simulate nutritionist-specific chats
         /*this.chats.forEach(chat => {
           chat.lastMessage = chat.lastMessage?.includes('entraînement')
@@ -280,7 +287,7 @@ export class MessengerMasterPage implements OnInit {
 
       this.applySearchFilter();
       this.isLoading = false;
-    }, 800);
+    }, 500);
   }
 
   searchChats(event: any) {
@@ -289,25 +296,36 @@ export class MessengerMasterPage implements OnInit {
   }
 
   applySearchFilter() {
-    if (!this.searchQuery) {
-      this.filteredChats = [...this.chats];
-    } else {
-      this.filteredChats = this.chats.filter(chat =>
-        chat.name.toLowerCase().includes(this.searchQuery)/* ||
-        (chat.lastMessage && chat.lastMessage.toLowerCase().includes(this.searchQuery))*/
-      );
-    }
+    this.user$.subscribe(user => {
+      let filtered = [];
+
+      // 1. Filter by userType in case of the messenger of the coach/nutritionist
+      if (user.function === 'customer') {
+        filtered = this.chats
+      } else if (user.function === 'coach' || user.function === 'nutritionist') {
+        if (this.userType === 'coach') {
+          filtered = this.chats.filter(chat => chat.members.some(member => member.user.id === user.id));
+        } else if (this.userType === 'nutritionist') {
+          filtered = this.chats.filter(chat => chat.members.some(member => member.user.function === 'nutritionist'));
+        }
+      }
+
+      // 2. Filter by search query
+      if (!this.searchQuery) {
+        this.filteredChats = [...filtered];
+      } else {
+        this.filteredChats = filtered.filter(chat =>
+          chat.name.toLowerCase().includes(this.searchQuery)/* ||
+          (chat.lastMessage && chat.lastMessage.toLowerCase().includes(this.searchQuery))*/
+        );
+      }
+    })
   }
 
   navigateToChat(chatId: number) {
     // In our app, partnerId is used instead of chatId since only 1:1 chat is available
-    let chat = this.chats.find(c => c.id === chatId);
-    this.user$.subscribe(user => {
-      let partners = chat?.members.filter(m => m.user_id !== user.id);
-      let partnerId = partners?.[0]?.user_id;
-      // Navigate to individual chat page
-      this.router.navigate([`/messenger-detail/${partnerId}`]);
-    })
+    this.router.navigate([`/messenger-detail/${chatId}`]);
+
     // Navigate to individual chat page
     // this.navCtrl.navigateRoot(`/chat-detail/${chatId}`);
 
@@ -360,7 +378,7 @@ export class MessengerMasterPage implements OnInit {
       this.chats.sort((a, b) => {
         return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
       });
-      this.filteredChats = [...this.chats];
+      this.applySearchFilter();
       this.cdr.detectChanges();
     })
     return channel;

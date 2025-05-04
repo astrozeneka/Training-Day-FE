@@ -39,7 +39,7 @@ interface Conversation {
 
         <!-- User info -->
         <div class="user-info-container">
-          {{partnerId}}
+          C{{conversationId}}
         </div>
         <!--<div class="user-info-container user-details" *ngIf="chatPartner">
           <div class="avatar-container">
@@ -151,8 +151,8 @@ interface Conversation {
           <!-- Empty chat state -->
           <div *ngIf="!isLoading && messages.length === 0" class="empty-chat">
             <ion-icon name="chatbubble-outline" class="empty-icon"></ion-icon>
-            <p class="empty-title">No messages yet</p>
-            <p class="empty-subtitle">Send a message to start the conversation</p>
+            <p class="empty-title">Pas de messages pour l'instant</p>
+            <p class="empty-subtitle">Envoyez un message pour commencer à discuter</p>
           </div>
         </div>
       </div>
@@ -208,7 +208,8 @@ export class MessengerDetailPage implements OnInit {
 
   // The partner ID for the chat
   csrfCookie: any
-  partnerId: number | undefined // <- This should be changed to a partner$ (for later)
+  // partnerId: number | undefined // <- This should be changed to a partner$ (for later)
+  conversationId: number
   currentUserId: number | undefined = undefined;
   conversation$: Observable<Conversation> | undefined 
 
@@ -258,7 +259,7 @@ export class MessengerDetailPage implements OnInit {
     this.conversation$ = this.route.params.pipe(
       // 1. Get the partner ID
       tap(params => {
-        this.partnerId = params['partnerId'];
+        this.conversationId = params['conversationId'];
       }),
       // 4. Open or fetch the conversation
       switchMap(() => this.createOrFetchConversation()),
@@ -356,8 +357,7 @@ export class MessengerDetailPage implements OnInit {
           'Authorization': `Bearer ${token}`
         })
         return this.http.post(`${environment.apiEndpoint}/conversations`, {
-          'recipient_id': this.partnerId,
-          'role': 'coach'
+          'conversation_id': this.conversationId
         }, {
           headers: header
         }).pipe(
@@ -413,7 +413,7 @@ export class MessengerDetailPage implements OnInit {
     // Temporary message with 'sending' status
     const tempMessage: Msg = {
       id: Date.now(), // Temporary ID
-      conversation_id: this.partnerId!,
+      conversation_id: this.conversationId,
       sender_id: this.currentUserId!,
       sender_name: 'Vous',
       content: messageText,
