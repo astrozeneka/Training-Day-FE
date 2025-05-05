@@ -15,18 +15,11 @@ import { User } from '../models/Interfaces';
 import { MessengerService } from '../messenger.service';
 import PrivateChannel from 'pusher-js/types/src/core/channels/private_channel';
 import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
-import { Msg, PresignedUrlRequestResult } from '../messenger-interfaces';
+import { Conversation, Member, Msg, PresignedUrlRequestResult } from '../messenger-interfaces';
 import { MsgAttachmentService } from '../msg-attachment.service';
 import { FilePicker } from '@capawesome/capacitor-file-picker';
 import { FeedbackService } from '../feedback.service';
 import { Browser } from '@capacitor/browser';
-
-
-
-interface Conversation {
-  id: number,
-  name: string
-}
 
 interface File {
   name: any,
@@ -51,7 +44,24 @@ interface File {
         <!-- User info -->
         <div class="user-info-container">
           {{ conversationTitle }}
+          <span class="disabled-badge" *ngIf="isMessagingDisabled['disable_coach_messages']">Coach desact.</span>
+          
+          <span class="disabled-badge" *ngIf="isMessagingDisabled['disable_nutritionist_messages']">Nutritionniste desact.</span>
+          
+          <!-- Status updating loader -->
+          <div class="status-updating-loader" *ngIf="isUpdatingStatus">
+            <div class="dot-pulse"></div>
+          </div>
         </div>
+
+        <!-- Three dots menu button -->
+        <ion-buttons slot="end">
+          <ion-button (click)="openMessagingOptions($event)" *ngIf="staffMenuAvailable">
+            <ion-icon name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        
+
         <!--<div class="user-info-container user-details" *ngIf="chatPartner">
           <div class="avatar-container">
             <ion-avatar>
@@ -262,7 +272,13 @@ export class MessengerDetailPage implements OnInit {
   oldestMessageId: number | null = null;
   isLoadingMore: boolean = false;
 
-
+  // Required for managing "User disabled" (for Coach only)
+  isMessagingDisabled: {[key:string]:boolean} = {
+    'disable_coach_messages': false,
+    'disable_nutritionist_messages': false
+  };
+  isUpdatingStatus: boolean = false;
+  staffMenuAvailable: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -291,13 +307,15 @@ export class MessengerDetailPage implements OnInit {
     // The user id is from the content service
     this.contentService.userStorageObservable.gso$().subscribe((user: any) => {
       this.currentUserId = user.id;
+      // Check if the connected user is a staff or a customer
+      this.staffMenuAvailable = ['coach', 'nutritionist', 'admin'].includes(user.function);
     })
   }
 
   ngOnInit() {
     this.isLoading = true;
     this.conversation$ = this.route.params.pipe(
-      // 1. Get the partner ID
+      // 1. Get the conversation Id
       tap(params => {
         this.conversationId = params['conversationId'];
       }),
@@ -306,11 +324,29 @@ export class MessengerDetailPage implements OnInit {
       // 4. Tap the conversation name
       tap((convo: Conversation) => {
         this.conversationTitle = convo.name || 'Sans titre';
-        console.log(this.conversationTitle)
       }),
       // 5. Cache the conversation
       shareReplay({ bufferSize: 1, refCount: true }) // Cache the latest emitted value
     );
+
+    // Loading the chatPartner user_settings
+    combineLatest({
+      token: this.bearerToken$!,
+      convo: this.conversation$
+    }).pipe(
+      switchMap(({token, convo}) => {
+        // The other member where the id is not the current user id
+        this.chatPartner = convo.members.find((m: Member) => m.user_id !== this.currentUserId).user;
+
+        // Fetch the suer settings
+        let headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+        return this.http.get(`${environment.apiEndpoint}/customer-settings?user_id=${this.chatPartner.id}`, { headers })
+      }),
+      tap(res => this.applyCustomerSettings(res)),
+    )
+      .subscribe()
 
     // Load the conversation from the backend
     combineLatest({
@@ -879,4 +915,79 @@ export class MessengerDetailPage implements OnInit {
       });
     })
   }
+
+  // Open messaging options
+  // Add this method to handle the three-dots menu
+  async openMessagingOptions(event: any) {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Options',
+      buttons: [
+        {
+          text: !this.isMessagingDisabled['disable_coach_messages'] ? 'Désactiver la messagerie du coach' : 'Activer la messagerie du coach',
+          handler: () => {
+            this.toggleMessaging('disable_coach_messages');
+          }
+        },
+        {
+          text: !this.isMessagingDisabled['disable_nutritionist_messages'] ? 'Désactiver la messagerie du nutritionniste' : 'Activer la messagerie du nutritionniste',
+          handler: () => {
+            this.toggleMessaging('disable_nutritionist_messages');
+          }
+        },
+        {
+          text: 'Annuler',
+          icon: 'close-outline',
+          role: 'cancel'
+        }
+      ]
+    });
+
+    await actionSheet.present();
+  }
+
+  // Required the the message disabling (by the coach only)
+  async toggleMessaging(key:'disable_coach_messages'|'disable_nutritionist_messages') {
+
+    let actualVal = this.isMessagingDisabled[key];
+    console.log("Actual value", actualVal);
+    console.log(!actualVal ? 1 : 0)
+    this.isUpdatingStatus = true;
+    this.bearerToken$.pipe(
+      switchMap((token) => {
+        let header = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        })
+        return this.http.put(`${environment.apiEndpoint}/customer-settings`, {
+          user_id: this.chatPartner?.id,
+          key: key,
+          value: (!actualVal ? 1 : 0)
+        }, {headers: header})
+      }),
+      catchError(err => {
+        this.isUpdatingStatus = false;
+        return of({success: false});
+      }),
+      tap(res => this.applyCustomerSettings(res)),
+      tap((res)=>{
+        console.log("Response", res);
+        // Check if the response is successful
+        const actionText = this.isMessagingDisabled ? 'activé' : 'désactivé';
+        this.feedbackService.registerNow(`Messagerie ${actionText}`, 'success');
+
+        // Update state
+        // this.isMessagingDisabled[key] = !actualVal;
+        this.isUpdatingStatus = false;
+      })
+    )
+      .subscribe();
+  }
+
+  private applyCustomerSettings(settings: any){
+    ['disable_coach_messages', 'disable_nutritionist_messages']
+    .forEach((key: 'disable_coach_messages'|'disable_nutritionist_messages') => {
+      if (settings[key] !== undefined) {
+        this.isMessagingDisabled[key] = settings[key] !== "0";
+      }
+    });
+    }
 }
