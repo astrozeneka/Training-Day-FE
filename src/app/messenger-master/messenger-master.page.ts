@@ -30,20 +30,8 @@ import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
 
 <ion-content>
   <div class="container">
-    <!-- Status & Availability Section -->
-    <div class="availability-section" *ngIf="staffMenuAvailable">
-      <div class="availability-container">
-        <div class="status-indicator">
-          <ion-badge class="status-badge {{isAvailable ? 'available' : 'unavailable'}}">
-            {{isAvailable ? 'Disponible' : 'Non disponible'}}
-          </ion-badge>
-        </div>
-        <div class="toggle-container">
-          <span class="toggle-label">Je suis disponible</span>
-          <ion-toggle [checked]="isAvailable" (ionChange)="toggleAvailability($event)" color="success"></ion-toggle>
-        </div>
-      </div>
-    </div>
+    <!-- Availability Toggle -->
+    <app-coach-messenger-settings *ngIf="staffMenuAvailable"></app-coach-messenger-settings>
 
     <!-- Search Bar -->
     <div class="search-container" *ngIf="staffMenuAvailable">
@@ -92,7 +80,7 @@ import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
     <!-- Chat List -->
     <div class="chat-list" *ngIf="!isLoading">
       <ng-container *ngIf="filteredChats.length > 0; else emptyState">
-        {{ filteredChats.length }} 
+        <!--{{ filteredChats.length }}-->
         <div 
           *ngFor="let chat of filteredChats" 
           class="chat-item"

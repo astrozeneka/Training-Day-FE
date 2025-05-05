@@ -603,3 +603,180 @@ ion-footer {
         color: #6b7280;
     }
 }
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+
+    // Header styles
+    .chat-header {
+        background-color: #1f2937;
+        border-color: #374151;
+
+        .back-button {
+            color: #f9fafb;
+        }
+
+        .user-name {
+            color: #f9fafb;
+        }
+
+        .user-status {
+            color: #9ca3af;
+        }
+
+        .options-button {
+            color: #f9fafb;
+        }
+    }
+
+    // Content area styles
+    .chat-content {
+        background-color: #111827;
+
+        // Loading shimmer
+        .loading-container {
+
+            .loading-avatar,
+            .loading-header,
+            .loading-body,
+            .loading-footer {
+                background-color: #374151;
+            }
+        }
+
+        // Date separator
+        .date-separator {
+            .date-pill {
+                background-color: #374151;
+                color: #d1d5db;
+            }
+        }
+
+        // Messages
+        .messages-container {
+            .message {
+                .message-bubble {
+                    &.sent-bubble {
+                        background-color: #3b82f6;
+                        color: white;
+                    }
+
+                    &.received-bubble {
+                        background-color: #1f2937;
+                        color: #f9fafb;
+                        border-color: #374151;
+                    }
+                }
+
+                .message-time {
+                    color: #9ca3af;
+                }
+
+                .message-status {
+                    .status-icon {
+
+                        &.sent,
+                        &.delivered {
+                            color: #9ca3af;
+                        }
+
+                        &.read {
+                            color: #60a5fa;
+                        }
+                    }
+                }
+            }
+
+            // Attachment styles
+            .attachment-container {
+                background-color: #1f2937;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+                .file-attachment,
+                .audio-attachment {
+                    background-color: #1f2937;
+
+                    .file-name,
+                    .audio-label {
+                        color: #d1d5db;
+                    }
+                }
+            }
+        }
+
+        // Scroll to bottom button
+        ion-fab {
+            .scroll-button {
+                --background: #374151;
+                --color: #f9fafb;
+            }
+        }
+
+        // Empty chat state
+        .empty-chat {
+            .empty-icon {
+                color: #4b5563;
+            }
+
+            .empty-title {
+                color: #9ca3af;
+            }
+
+            .empty-subtitle {
+                color: #6b7280;
+            }
+        }
+    }
+
+    // Upload progress indicator
+    .upload-progress-container {
+        background-color: #1f2937;
+        border-color: #374151;
+
+        .upload-text {
+            .file-name {
+                color: #f9fafb;
+            }
+
+            .progress-text {
+                color: #9ca3af;
+            }
+        }
+
+        .progress-bar-container {
+            background-color: #374151;
+        }
+    }
+
+    // Input area
+    .form {
+        .input-container {
+            border-color: #374151;
+            background-color: #1f2937;
+
+            .message-form {
+
+                .attachment-button,
+                .emoji-button,
+                .mic-button {
+                    color: #9ca3af;
+                }
+
+                .input-field {
+                    background-color: #111827!important;
+
+                    .message-input {
+                        color: #f9fafb!important;
+                    }
+                }
+            }
+        }
+    }
+
+    // Loading more messages
+    .loading-more {
+        span {
+            color: #9ca3af;
+        }
+    }
+}

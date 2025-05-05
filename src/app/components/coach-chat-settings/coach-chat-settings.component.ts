@@ -4,6 +4,9 @@ import { catchError, debounceTime, merge, throwError } from 'rxjs';
 import { ContentService } from 'src/app/content.service';
 import { User, UserSettings } from 'src/app/models/Interfaces';
 
+/**
+ * @deprecated
+ */
 @Component({
   selector: 'app-coach-chat-settings',
   templateUrl: './coach-chat-settings.component.html',

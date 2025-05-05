@@ -7,14 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { MessengerMasterPageRoutingModule } from './messenger-master-routing.module';
 
 import { MessengerMasterPage } from './messenger-master.page';
+import { UtilitiesModule } from "../components/utilities.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    MessengerMasterPageRoutingModule
-  ],
+    MessengerMasterPageRoutingModule,
+    UtilitiesModule
+],
   declarations: [MessengerMasterPage]
 })
 export class MessengerMasterPageModule {}

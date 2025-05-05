@@ -1,3 +1,7 @@
+
+// Import mixins
+@import "../../mixins.scss";
+
 // Variables
 $primary-color: #3880ff;
 $secondary-color: #3dc2ff;
@@ -15,13 +19,6 @@ $text-light: #9ca3af;
 $border-color: #e5e7eb;
 $background-light: #f9fafb;
 
-// Mixins
-@mixin flex($direction: row, $justify: flex-start, $align: center) {
-  display: flex;
-  flex-direction: $direction;
-  justify-content: $justify;
-  align-items: $align;
-}
 
 @mixin transition($property: all, $duration: 0.2s) {
   transition: $property $duration ease;
@@ -56,46 +53,6 @@ $background-light: #f9fafb;
   max-width: 48rem;
   margin: 0 auto;
   padding-bottom: 5rem;
-}
-
-// Availability section
-.availability-section {
-  padding: 0.75rem 1rem;
-  background-color: white;
-  border-bottom: 1px solid $border-color;
-}
-
-.availability-container {
-  @include flex(row, space-between);
-}
-
-.status-indicator {
-  @include flex;
-  gap: 0.5rem;
-}
-
-.status-badge {
-  border-radius: 9999px;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  
-  &.available {
-    background-color: $success-color;
-  }
-  
-  &.unavailable {
-    background-color: $medium-color;
-  }
-}
-
-.toggle-container {
-  @include flex;
-}
-
-.toggle-label {
-  color: $text-secondary;
-  margin-right: 0.5rem;
-  font-size: 0.875rem;
 }
 
 // Search section
@@ -312,4 +269,103 @@ $background-light: #f9fafb;
   font-size: 0.875rem;
   color: $text-light;
   margin: 0;
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  // Colors for dark theme
+  .header, .toolbar {
+    --background: #1f2937;
+    --color: #f9fafb;
+  }
+  
+  .back-button, .back-icon {
+    color: #f9fafb;
+  }
+  
+  .title {
+    color: #f9fafb;
+  }
+  
+  .container {
+    background-color: #111827;
+  }
+  
+  .search-container {
+    background-color: #1f2937;
+  }
+  
+  .user-type-tabs {
+    border-color: #374151;
+    background-color: #1f2937;
+  }
+  
+  .tab-item {
+    color: #9ca3af;
+    
+    &.active {
+      color: #60a5fa;
+      border-color: #60a5fa;
+    }
+  }
+  
+  // Shimmer effects
+  .shimmer-item {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+  
+  .shimmer-avatar, .shimmer-title, .shimmer-time, .shimmer-badge {
+    background-color: #374151;
+  }
+  
+  .shimmer-subtitle {
+    background-color: #4b5563;
+  }
+  
+  // Chat list
+  .chat-list {
+    border-color: #374151;
+  }
+  
+  .chat-item {
+    border-color: #374151;
+    
+    &:hover {
+      background-color: #1f2937;
+    }
+    
+    &:active {
+      background-color: #111827;
+    }
+  }
+  
+  .chat-name {
+    color: #f9fafb;
+  }
+  
+  .chat-time {
+    color: #9ca3af;
+  }
+  
+  .chat-message {
+    color: #d1d5db;
+  }
+  
+  // Empty state
+  .empty-state {
+    background-color: #1f2937;
+  }
+  
+  .empty-icon {
+    color: #6b7280;
+  }
+  
+  .empty-title {
+    color: #9ca3af;
+  }
+  
+  .empty-subtitle {
+    color: #6b7280;
+  }
 }
