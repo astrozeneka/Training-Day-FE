@@ -30,8 +30,8 @@ ion-footer {
     flex: 1 1 auto !important;
 }
 
-.form {
-    padding-bottom: env(--safe-area-inset-bottom);
+.message-form {
+    padding-bottom: env(--safe-area-inset-bottom, 20px)!important;
 }
 
 
@@ -552,6 +552,8 @@ ion-footer {
                         font-size: 0.875rem; // text-sm
                         border: none;
                         outline: none;
+                        height: 42px;
+                        line-height: 42px;
                     }
 
                     .emoji-button {

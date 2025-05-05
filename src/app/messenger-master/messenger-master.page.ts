@@ -114,10 +114,43 @@ import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
           <ion-icon name="chatbubbles-outline" class="empty-icon"></ion-icon>
           <h3 class="empty-title">Aucune conversation</h3>
           <p class="empty-subtitle">
-            {{searchQuery ? 'Aucun résultat trouvé pour "' + searchQuery + '"' : 'Vous n\'avez pas encore de conversations'}}
+            Aucune conversation trouvée.
           </p>
         </div>
       </ng-template>
+    </div>
+
+    <!-- Chat Permissions Section (for customers only) -->
+    <div class="permissions-section" *ngIf="isCustomer && chatPermissions">
+      <!-- Coach Permission Message -->
+      <div class="permission-message" *ngIf="chatPermissions.message?.coach">
+        <h3 class="permission-title">Coach</h3>
+        <p class="permission-text">{{chatPermissions.message.coach}}</p>
+        <div class="access-badge" *ngIf="chatPermissions.canChatWithCoach !== 'noaccess'">
+          <span class="{{chatPermissions.canChatWithCoach === 'fullaccess' ? 'full-access' : 'limited-access'}}">
+            {{chatPermissions.canChatWithCoach === 'fullaccess' ? 'Accès complet' : 'Accès limité'}}
+          </span>
+        </div>
+      </div>
+
+      <!-- Nutritionist Permission Message -->
+      <div class="permission-message" *ngIf="chatPermissions.message?.nutritionist">
+        <h3 class="permission-title">Nutritionniste</h3>
+        <p class="permission-text">{{chatPermissions.message.nutritionist}}</p>
+        <div class="access-badge" *ngIf="chatPermissions.canChatWithNutritionist !== 'noaccess'">
+          <span class="{{chatPermissions.canChatWithNutritionist === 'fullaccess' ? 'full-access' : 'limited-access'}}">
+            {{chatPermissions.canChatWithNutritionist === 'fullaccess' ? 'Accès complet' : 'Accès limité'}}
+          </span>
+        </div>
+      </div>
+      
+      <!-- CTA Button for subscription -->
+      <div class="cta-container" *ngIf="chatPermissions.canChatWithCoach === 'noaccess' && chatPermissions.canChatWithNutritionist === 'noaccess'">
+        <p class="cta-text">Accédez à nos services de coaching personnalisé</p>
+        <ion-button class="cta-button" expand="block" [routerLink]="['/swipeable-store']">
+          Découvrir nos abonnements
+        </ion-button>
+      </div>
     </div>
   </div>
 </ion-content>`
@@ -141,6 +174,10 @@ export class MessengerMasterPage implements OnInit {
   // Similar to what chat-detail use
   private bearerToken$: Observable<string> | undefined;
 
+  // Used to manage the messages to displayed to the user in case some feature is not available
+  isCustomer: boolean = false;
+  chatPermissions: any = null;
+
   constructor(
     private navCtrl: NavController,
     private loadingCtrl: LoadingController,
@@ -151,7 +188,7 @@ export class MessengerMasterPage implements OnInit {
     private cdr: ChangeDetectorRef,
     private messengerService: MessengerService,
     private router: Router
-  ) { 
+  ) {
     // The token$ is used to get the token from the content service
     this.bearerToken$ = from(this.contentService.storage.get('token')).pipe(
       shareReplay(1) // cache and share the latest emitted value of an observable with multiple subscribers.
@@ -164,6 +201,9 @@ export class MessengerMasterPage implements OnInit {
 
     // Set the userTypeSwitchAvailable
     this.user$.subscribe(user => {
+      // Check if the user is a customer
+      this.isCustomer = user.function === 'customer';
+      // In case of a coach
       if (user.function === 'coach')
         this.userTypeSwitchAvailable = true;
       if (user.function === 'coach' || user.function === 'nutritionist')
@@ -187,15 +227,18 @@ export class MessengerMasterPage implements OnInit {
           // Handle errors
           catchError(err => {
             console.error('Error fetching chat data:', err);
-            // this.isLoading = false;
-            // return of([]);
-            return throwError(()=>err);
+            this.isLoading = false;
+            return throwError(() => err);
           })
         )
         .subscribe((res: any) => {
           let success = res.success as boolean;
           let conversations = res.conversations as Conversation[];
           this.chats = conversations;
+          // Handle chat permissions and chat cta messages
+          if (res.chat_permissions) {
+            this.chatPermissions = res.chat_permissions;
+          }
           this.applySearchFilter();
           this.isLoading = false;
           this.cdr.detectChanges();
@@ -208,7 +251,7 @@ export class MessengerMasterPage implements OnInit {
       user: this.user$,
       echo: this.messengerService.echo$
     }).pipe(
-      map(({user, echo}) => this.setupEchoListenersForUser(echo, user))
+      map(({ user, echo }) => this.setupEchoListenersForUser(echo, user))
     )
       .subscribe()
   }
@@ -247,7 +290,7 @@ export class MessengerMasterPage implements OnInit {
     // this.filteredChats = [...this.chats];
   }
 
-  toggleAvailability(event: CustomEvent|any) {
+  toggleAvailability(event: CustomEvent | any) {
     this.isAvailable = event.detail.checked;
 
     // Here you would call your API to update availability status
@@ -348,7 +391,7 @@ export class MessengerMasterPage implements OnInit {
   // - Method to archive/unarchive conversations
 
   // Set up echo listeners for incoming messages
-  private setupEchoListenersForUser(echo: Echo<any>, user: User):PusherPrivateChannel<any> {
+  private setupEchoListenersForUser(echo: Echo<any>, user: User): PusherPrivateChannel<any> {
     if (!echo) {
       console.error("Cannot setup listener: Echo is not available");
       return {} as PusherPrivateChannel<any>;

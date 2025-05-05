@@ -208,10 +208,6 @@ interface File {
                     placeholder="Type a message"
                     #messageInput
                   >
-                  <!-- Emoji button -->
-                  <ion-button fill="clear" class="emoji-button">
-                    <ion-icon name="happy-outline"></ion-icon>
-                  </ion-button>
                 </div>
                 
                 <!-- Send button / Audio button -->
