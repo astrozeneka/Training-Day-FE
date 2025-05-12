@@ -46,12 +46,12 @@
     </ion-button>
     <ion-button
       fill="clear"
-      (click)="goToTab('profile')"
+      (click)="goToTab(profileButtonDestination)"
       [class]="tabName === 'profile' ? 'active' : ''"
     >
       <div class="inner">
         <ion-icon src="/assets/icon/menu/profile.svg" class="profile-icon"></ion-icon>
-        <div class="label">Profil</div>
+        <div class="label">{{ profileButtonText }}</div>
       </div>
     </ion-button>
   </div>
