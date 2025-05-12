@@ -324,6 +324,14 @@ const routes: Routes = [
     path: 'messenger-detail/:conversationId',
     loadChildren: () => import('./messenger-detail/messenger-detail.module').then( m => m.MessengerDetailPageModule)
   },
+  {
+    path: 'exercise-categories',
+    loadChildren: () => import('./exercise-categories/exercise-categories.module').then( m => m.ExerciseCategoriesPageModule)
+  },
+  {
+    path: 'exercise-list',
+    loadChildren: () => import('./exercise-list/exercise-list.module').then( m => m.ExerciseListPageModule)
+  },
 ];
 
 @NgModule({

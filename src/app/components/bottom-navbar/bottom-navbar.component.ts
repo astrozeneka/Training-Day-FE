@@ -37,10 +37,12 @@ export class BottomNavbarComponent  implements OnInit {
     console.log(this.bnus.tabSequences.indexOf(target), this.bnus.tabSequences.indexOf(this.tabName!))
     if (this.bnus.tabSequences.indexOf(target) < this.bnus.tabSequences.indexOf(this.tabName || 'dashboard')) {
       console.log("back")
-      this.navController.navigateBack(['/' + target], { animated: true, animationDirection: 'back' });
+      this.navController.navigateRoot(['/' + target], { animated: false });
+      // this.navController.navigateBack(['/' + target], { animated: false, animationDirection: 'back' });
     } else {
       console.log("forward")
-      this.navController.navigateForward(['/' + target], { animated: true, animationDirection: 'forward' });
+      this.navController.navigateRoot(['/' + target], { animated: false });
+      // this.navController.navigateForward(['/' + target], { animated: false, animationDirection: 'forward' });
     }
 
   }
