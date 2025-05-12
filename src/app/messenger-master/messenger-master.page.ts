@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActionSheetController, IonContent, IonSearchbar, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { User } from '../models/Interfaces';
 import { Conversation, Msg } from '../messenger-interfaces';
-import { BehaviorSubject, catchError, combineLatest, from, map, Observable, shareReplay, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, filter, from, map, Observable, shareReplay, switchMap, tap, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentService } from '../content.service';
 import { HttpClient } from '@angular/common/http';
@@ -110,7 +110,7 @@ import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
       
       <!-- Empty State -->
       <ng-template #emptyState>
-        <div class="empty-state">
+        <div class="empty-state" *ngIf="!isGuest">
           <ion-icon name="chatbubbles-outline" class="empty-icon"></ion-icon>
           <h3 class="empty-title">Aucune conversation</h3>
           <p class="empty-subtitle">
@@ -121,7 +121,7 @@ import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
     </div>
 
     <!-- Chat Permissions Section (for customers only) -->
-    <div class="permissions-section" *ngIf="isCustomer && chatPermissions">
+    <div class="permissions-section" *ngIf="(isCustomer && chatPermissions) || isGuest">
       <!-- Coach Permission Message -->
       <div class="permission-message" *ngIf="chatPermissions.message?.coach">
         <h3 class="permission-title">Coach</h3>
@@ -178,6 +178,9 @@ export class MessengerMasterPage implements OnInit {
   isCustomer: boolean = false;
   chatPermissions: any = null;
 
+  // In case the user is not connected
+  isGuest: boolean = false;
+
   constructor(
     private navCtrl: NavController,
     private loadingCtrl: LoadingController,
@@ -218,6 +221,7 @@ export class MessengerMasterPage implements OnInit {
       this.isLoading = false;
     }, 1500);*/
 
+    // If the user is connected, load the permissions
     this.bearerToken$?.subscribe(token => {
       let headers = {
         'Authorization': `Bearer ${token}`
@@ -225,7 +229,7 @@ export class MessengerMasterPage implements OnInit {
       this.http.get(`${environment.apiEndpoint}/conversations`, { headers })
         .pipe(
           // Handle errors
-          catchError(err => {
+          catchError(err => { 
             console.error('Error fetching chat data:', err);
             this.isLoading = false;
             return throwError(() => err);
@@ -235,6 +239,7 @@ export class MessengerMasterPage implements OnInit {
           let success = res.success as boolean;
           let conversations = res.conversations as Conversation[];
           this.chats = conversations;
+          console.log("res", res);
           // Handle chat permissions and chat cta messages
           if (res.chat_permissions) {
             this.chatPermissions = res.chat_permissions;
@@ -245,6 +250,25 @@ export class MessengerMasterPage implements OnInit {
           console.log("Conversation loaded, data: ", res);
         })
     })
+
+    // In case the user is not connected, display a 'noaccess' message
+    this.contentService.userStorageObservable.gso$()
+      .pipe(
+        filter(user => !user),
+        switchMap(() => {
+          // Simulate a loading state
+          this.isLoading = true;
+          return this.http.get(`${environment.apiEndpoint}/guest-chat-permissions`);
+        })
+      )
+      .subscribe((res: any) => {
+        if (res.chat_permissions) {
+          this.chatPermissions = res.chat_permissions;
+        }
+        this.isGuest = true;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      })
 
     // Setup the listener
     combineLatest({

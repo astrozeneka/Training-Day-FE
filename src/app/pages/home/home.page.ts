@@ -162,7 +162,7 @@ import { SwiperOptions } from 'swiper/types';
             Rendez-vous à la page abonnement afin de trouver la solution qui vous convient.
         </p>
         <div>
-            <ion-button (click)="navigateTo('/swipeable-store')">Découvrir</ion-button>
+            <ion-button (click)="navigateTo('/swipeable-store')">Découvrir les offres</ion-button>
         </div>
     </div>
 
