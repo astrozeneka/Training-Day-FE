@@ -142,6 +142,28 @@ import { Recipe, RecipesService } from 'src/app/recipes.service';
       </div>
     </div>
 
+    <div class="input-row">
+      <div class="input-wrapper half-width">
+        <app-outline-input label="Protéines" formControlName="extra_protein"
+          [errorText]="displayedError.extra_protein"></app-outline-input>
+      </div>
+      <div class="input-wrapper half-width">
+        <app-outline-input label="Lipides" formControlName="extra_lipids"
+          [errorText]="displayedError.extra_lipids"></app-outline-input>
+      </div>
+    </div>
+    
+    <div class="input-row">
+      <div class="input-wrapper half-width">
+        <app-outline-input label="Glucides" formControlName="extra_glucids"
+          [errorText]="displayedError.extra_glucids"></app-outline-input>
+      </div>
+      <div class="input-wrapper half-width">
+        <!-- Empty cell for layout consistency -->
+        <div></div>
+      </div>
+    </div>
+
     <!-- The code below have a lot of bug -->
     <!--
     <div class="input-wrapper">
@@ -293,8 +315,11 @@ export class AddRecipePage implements OnInit {
     'extra_servings': new FormControl(''),
     'extra_preparationTime': new FormControl(''),
     'extra_cookingTime': new FormControl(''),
-    'extra_ingredients': new FormControl([]), // Array of ingredients
-    'extra_instructions': new FormControl([]), // Array of instructions
+    'extra_protein': new FormControl(''),
+    'extra_lipids': new FormControl(''),
+    'extra_glucids': new FormControl(''),
+    'extra_ingredients': new FormControl([]), // UNUSED
+    'extra_instructions': new FormControl([]), // UNUSED
   })
   displayedError = {
     'title': undefined,
@@ -312,9 +337,12 @@ export class AddRecipePage implements OnInit {
     'extra_difficulty': undefined,
     'extra_servings': undefined,
     'extra_preparationTime': undefined,
+    'extra_protein': undefined,
+    'extra_lipids': undefined,
+    'extra_glucids': undefined,
     'extra_cookingTime': undefined,
-    'extra_ingredients': undefined,
-    'extra_instructions': undefined,
+    'extra_ingredients': undefined, // UNUSED
+    'extra_instructions': undefined, // UNUSED
   }
   valid: boolean = false;
   isFormLoading: boolean = false
@@ -389,8 +417,11 @@ export class AddRecipePage implements OnInit {
             extra_servings: res.extra.servings || '',
             extra_preparationTime: res.extra.preparationTime || '',
             extra_cookingTime: res.extra.cookingTime || '',
-            extra_ingredients: res.extra.ingredients || [],
-            extra_instructions: res.extra.instructions || []
+            extra_protein: res.extra.protein || '',    
+            extra_lipids: res.extra.lipids || '',   
+            extra_glucids: res.extra.glucids || '',  
+            extra_ingredients: res.extra.ingredients || [], // UNUSED
+            extra_instructions: res.extra.instructions || [] // UNUSED
           };
           
           // Populate the lists for UI
@@ -464,6 +495,9 @@ export class AddRecipePage implements OnInit {
     this.form.get('docTablet')?.setValue(null)
 
     // Reset extra fields
+    this.form.get('extra_protein')?.setValue('');
+    this.form.get('extra_lipids')?.setValue('');
+    this.form.get('extra_glucids')?.setValue('');
     this.form.get('extra_ingredients')?.setValue([]);
     this.form.get('extra_instructions')?.setValue([]);
     this.ingredientsList = [];
@@ -554,8 +588,11 @@ export class AddRecipePage implements OnInit {
               servings: this.form.value.extra_servings || undefined,
               preparationTime: this.form.value.extra_preparationTime || undefined,
               cookingTime: this.form.value.extra_cookingTime || undefined,
-              ingredients: this.form.value.extra_ingredients?.filter(item => item) || undefined,
-              instructions: this.form.value.extra_instructions?.filter(item => item) || undefined
+              protein: this.form.value.extra_protein || undefined,
+              lipids: this.form.value.extra_lipids || undefined,  
+              glucids: this.form.value.extra_glucids || undefined,
+              ingredients: this.form.value.extra_ingredients?.filter(item => item) || undefined, // UNUSED
+              instructions: this.form.value.extra_instructions?.filter(item => item) || undefined // UNUSED
             }
           }
           data.extra = Object.entries(data.extra)

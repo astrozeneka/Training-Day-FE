@@ -32,6 +32,10 @@ export interface Recipe {
     cookingTime?: string
     ingredients?: string[]
     instructions?: string[]
+    // ======
+    protein?: string;
+    lipids?: string;
+    glucids?: string;
   }
 }
 

@@ -51,22 +51,41 @@ import { Recipe, RecipesService } from 'src/app/recipes.service';
 
   <!-- Metadata -->
   <div class="detail-content" id="detail-section" *ngIf="recipe?.extra">
-    <div class="recipe-metadata" *ngIf="recipe.extra.time || recipe.extra.difficulty || recipe.extra.calories || recipe.extra.servings">
+    <div class="recipe-metadata" *ngIf="recipe.extra.time || recipe.extra.difficulty || recipe.extra.calories || recipe.extra.servings || recipe.extra.protein || recipe.extra.lipids || recipe.extra.glucids">
       <div class="metadata-item" *ngIf="recipe.extra.time">
         <ion-icon name="time-outline"></ion-icon>
-        <span>{{ recipe.extra.time }}</span>
+        <span class="metadata-label">Temps</span>
+        <span class="metadata-value">{{ recipe.extra.time }}</span>
       </div>
       <div class="metadata-item" *ngIf="recipe.extra.difficulty">
         <ion-icon name="fitness-outline"></ion-icon>
-        <span>{{ recipe.extra.difficulty }}</span>
+        <span class="metadata-label">Difficulté</span>
+        <span class="metadata-value">{{ recipe.extra.difficulty }}</span>
       </div>
       <div class="metadata-item" *ngIf="recipe.extra.calories">
         <ion-icon name="flame-outline"></ion-icon>
-        <span>{{ recipe.extra.calories }}</span>
+        <span class="metadata-label">Calories</span>
+        <span class="metadata-value">{{ recipe.extra.calories }}</span>
       </div>
       <div class="metadata-item" *ngIf="recipe.extra.servings">
         <ion-icon name="people-outline"></ion-icon>
-        <span>{{ recipe.extra.servings }}</span>
+        <span class="metadata-label">Portions</span>
+        <span class="metadata-value">{{ recipe.extra.servings }}</span>
+      </div>
+      <div class="metadata-item" *ngIf="recipe.extra.protein">
+        <ion-icon name="nutrition-outline"></ion-icon>
+        <span class="metadata-label">Protéines</span>
+        <span class="metadata-value">{{ recipe.extra.protein }}</span>
+      </div>
+      <div class="metadata-item" *ngIf="recipe.extra.lipids">
+        <ion-icon name="water-outline"></ion-icon>
+        <span class="metadata-label">Lipides</span>
+        <span class="metadata-value">{{ recipe.extra.lipids }}</span>
+      </div>
+      <div class="metadata-item" *ngIf="recipe.extra.glucids">
+        <ion-icon name="leaf-outline"></ion-icon>
+        <span class="metadata-label">Glucides</span>
+        <span class="metadata-value">{{ recipe.extra.glucids }}</span>
       </div>
     </div>
     
@@ -132,28 +151,41 @@ import { Recipe, RecipesService } from 'src/app/recipes.service';
       .recipe-metadata {
         display: flex;
         justify-content: space-between;
-        padding: 16px;
-        background-color: var(--ion-color-light);;
+        flex-wrap: wrap; 
+        padding: 16px 12px;
+        background-color: var(--ion-color-light);
         border-radius: 10px;
         margin-bottom: 20px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        
+        gap: 12px;
+       
         .metadata-item {
           display: flex;
           flex-direction: column;
           align-items: center;
           flex: 1;
+          min-width: 80px;
+          padding: 8px 4px;
           
           ion-icon {
             font-size: 24px;
             color: var(--ion-color-primary);
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+          }
+
+          .metadata-label {
+            font-size: 11px;
+            color: var(--ion-color-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
           }
           
-          span {
+          .metadata-value {
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             text-align: center;
+            color: var(--ion-color-dark);
           }
         }
       }
