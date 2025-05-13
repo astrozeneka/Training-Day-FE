@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IonContent } from '@ionic/angular';
 import { catchError, distinctUntilChanged, tap, throwError } from 'rxjs';
 import { ContentService } from 'src/app/content.service';
 import { User } from 'src/app/models/Interfaces';
@@ -24,15 +25,32 @@ import { Recipe, RecipesService } from 'src/app/recipes.service';
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen="true">
+<ion-content fullscreen="true" [scrollEvents]="true" (ionScroll)="onScroll($event)">
+  <!-- The media container -->
   <div class="pdf-container" *ngIf="docUrl">
     <img [src]="docUrl" class="doc-image">
   </div>
+
+  <!-- Floating action button to scroll to details -->
+  <div class="floating-info-button-container" [class.hidden]="!showInfoButton">
+    <ion-button 
+      class="floating-info-button" 
+      (click)="scrollToDetails()" 
+      size="small"
+      expand="block"
+      *ngIf="docUrl && recipe?.extra">
+      <span>Voir les informations</span>
+      <ion-icon name="arrow-down" slot="end"></ion-icon>
+    </ion-button>
+  </div>
+
+  <!-- Loading spinner while the document is being fetched -->
   <div class="spinner" *ngIf="!docUrl">
     <ion-spinner></ion-spinner>
   </div>
-  <!-- Add metadata and detail sections -->
-  <div class="detail-content" *ngIf="recipe?.extra">
+
+  <!-- Metadata -->
+  <div class="detail-content" id="detail-section" *ngIf="recipe?.extra">
     <div class="recipe-metadata" *ngIf="recipe.extra.time || recipe.extra.difficulty || recipe.extra.calories || recipe.extra.servings">
       <div class="metadata-item" *ngIf="recipe.extra.time">
         <ion-icon name="time-outline"></ion-icon>
@@ -189,6 +207,57 @@ import { Recipe, RecipesService } from 'src/app/recipes.service';
         }
       }
     }
+
+    // About the floating action button
+    .floating-info-button-container {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      transition: all 0.3s ease-in-out;
+      opacity: 1;
+      
+      &.hidden {
+        opacity: 0;
+        transform: translateX(-50%) translateY(100px);
+        pointer-events: none;
+      }
+    }
+
+    .floating-info-button {
+      --background: var(--ion-color-primary);
+      --background-activated: var(--ion-color-primary-shade);
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      --border-radius: 24px;
+      --padding-start: 20px;
+      --padding-end: 16px;
+      --padding-top: 12px;
+      --padding-bottom: 12px;
+      font-weight: 500;
+      min-width: 180px;
+      
+      span {
+        margin-right: 8px;
+      }
+      
+      ion-icon {
+        font-size: 18px;
+        animation: bounce 2s infinite;
+      }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-5px);
+      }
+      60% {
+        transform: translateY(-3px);
+      }
+    }
   `]
 })
 
@@ -201,6 +270,11 @@ export class RecipeDetailPage implements OnInit {
 
   // User data
   user: User = null
+
+  // Properties required by the dynamic "Voir les informations" button
+  @ViewChild(IonContent, { static: false }) content: IonContent;
+  showInfoButton = true;
+  private scrollThreshold = 100;
 
   constructor(
     public router: Router,
@@ -275,5 +349,31 @@ export class RecipeDetailPage implements OnInit {
 
   editRecipe() {
     this.router.navigate(['/edit-recipe/', this.recipeId])
+  }
+
+  // Required by  Scroll to the details section
+  ionViewWillEnter() {
+    this.showInfoButton = true;
+  }
+
+  // Add the scroll handler method:
+  onScroll(event: any) {
+    const scrollTop = event.detail.scrollTop;
+    const shouldShow = scrollTop < this.scrollThreshold;
+    
+    if (this.showInfoButton !== shouldShow) {
+      this.showInfoButton = shouldShow;
+      this.cdr.detectChanges();
+    }
+  }
+
+  // Scroll to the details section
+  scrollToDetails() {
+    if (this.content) {
+      const detailSection = document.getElementById('detail-section');
+      if (detailSection) {
+        this.content.scrollToPoint(0, detailSection.offsetTop, 500);
+      }
+    }
   }
 }
