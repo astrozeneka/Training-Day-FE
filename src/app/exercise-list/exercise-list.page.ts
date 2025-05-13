@@ -498,7 +498,7 @@ export class ExerciseListPage implements OnInit {
   selectedProgram: Program | null = null;
 
   exercises: Exercise[] = [
-    { 
+    {
       id: 1,
       name: 'Crunch',
       icon: 'fitness-outline',
@@ -514,7 +514,7 @@ export class ExerciseListPage implements OnInit {
         'Maintenez la tension abdominale pendant tout l\'exercice.'
       ]
     },
-    { 
+    {
       id: 2,
       name: 'Planche',
       icon: 'body-outline',
@@ -530,7 +530,7 @@ export class ExerciseListPage implements OnInit {
         'Respirez normalement et tenez la position.'
       ]
     },
-    { 
+    {
       id: 3,
       name: 'Squat',
       icon: 'barbell-outline',
@@ -546,7 +546,7 @@ export class ExerciseListPage implements OnInit {
         'Poussez à travers vos talons pour remonter.'
       ]
     },
-    { 
+    {
       id: 4,
       name: 'Fentes',
       icon: 'walk-outline',
@@ -562,7 +562,7 @@ export class ExerciseListPage implements OnInit {
         'Poussez sur le talon avant pour revenir en position initiale.'
       ]
     },
-    { 
+    {
       id: 5,
       name: 'Relevé de bassin',
       icon: 'body-outline',
@@ -578,7 +578,7 @@ export class ExerciseListPage implements OnInit {
         'Abaissez lentement le bassin et répétez.'
       ]
     },
-    { 
+    {
       id: 6,
       name: 'Mountain Climber',
       icon: 'speedometer-outline',
@@ -597,7 +597,7 @@ export class ExerciseListPage implements OnInit {
   ];
 
   programs: Program[] = [
-    { 
+    {
       id: 1,
       title: 'Programme 1: Abdos de fer',
       duration: '30 min',
@@ -608,7 +608,7 @@ export class ExerciseListPage implements OnInit {
       instructor: 'Marie Dupont',
       calories: '250 kcal'
     },
-    { 
+    {
       id: 2,
       title: 'Programme 2: Fessiers toniques',
       duration: '25 min',
@@ -619,7 +619,7 @@ export class ExerciseListPage implements OnInit {
       instructor: 'Thomas Martin',
       calories: '280 kcal'
     },
-    { 
+    {
       id: 3,
       title: 'Programme 3: Challenge 7 jours',
       duration: '20 min/jour',
@@ -630,7 +630,7 @@ export class ExerciseListPage implements OnInit {
       instructor: 'Sophie Legrand',
       calories: '200-300 kcal/jour'
     },
-    { 
+    {
       id: 4,
       title: 'Programme 4: Intensif HIIT',
       duration: '15 min',

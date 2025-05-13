@@ -9,9 +9,189 @@ import { Recipe, RecipesService } from 'src/app/recipes.service';
 
 @Component({
   selector: 'app-recipe-detail',
-  templateUrl: './recipe-detail.page.html',
-  styleUrls: ['./recipe-detail.page.scss'],
+  template: `<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <app-back-button></app-back-button>
+          <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>{{ recipe ? recipe.title : "Recette"}}</ion-title>
+      <ion-buttons slot="end" *ngIf="user?.function === 'admin' || user?.function === 'coach' || user?.function === 'nutritionist'">
+        <ion-button (click)="editRecipe()">
+          Modifier
+        </ion-button>
+      </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <div class="pdf-container" *ngIf="docUrl">
+    <img [src]="docUrl" class="doc-image">
+  </div>
+  <div class="spinner" *ngIf="!docUrl">
+    <ion-spinner></ion-spinner>
+  </div>
+  <!-- Add metadata and detail sections -->
+  <div class="detail-content" *ngIf="recipe?.extra">
+    <div class="recipe-metadata" *ngIf="recipe.extra.time || recipe.extra.difficulty || recipe.extra.calories || recipe.extra.servings">
+      <div class="metadata-item" *ngIf="recipe.extra.time">
+        <ion-icon name="time-outline"></ion-icon>
+        <span>{{ recipe.extra.time }}</span>
+      </div>
+      <div class="metadata-item" *ngIf="recipe.extra.difficulty">
+        <ion-icon name="fitness-outline"></ion-icon>
+        <span>{{ recipe.extra.difficulty }}</span>
+      </div>
+      <div class="metadata-item" *ngIf="recipe.extra.calories">
+        <ion-icon name="flame-outline"></ion-icon>
+        <span>{{ recipe.extra.calories }}</span>
+      </div>
+      <div class="metadata-item" *ngIf="recipe.extra.servings">
+        <ion-icon name="people-outline"></ion-icon>
+        <span>{{ recipe.extra.servings }}</span>
+      </div>
+    </div>
+    
+    <div class="detail-section" *ngIf="recipe.extra.description">
+      <h3>Description</h3>
+      <p>{{ recipe.extra.description }}</p>
+    </div>
+    
+    <div class="detail-section" *ngIf="recipe.extra.ingredients && recipe.extra.ingredients.length > 0">
+      <h3>Ingrédients</h3>
+      <ul class="ingredients-list">
+        <li *ngFor="let ingredient of recipe.extra.ingredients">{{ ingredient }}</li>
+      </ul>
+    </div>
+    
+    <div class="detail-section" *ngIf="recipe.extra.instructions && recipe.extra.instructions.length > 0">
+      <h3>Instructions</h3>
+      <ol>
+        <li *ngFor="let instruction of recipe.extra.instructions">{{ instruction }}</li>
+      </ol>
+    </div>
+    
+    <div class="detail-section" *ngIf="recipe.extra.preparationTime || recipe.extra.cookingTime">
+      <h3>Temps de préparation</h3>
+      <p *ngIf="recipe.extra.preparationTime">Préparation: {{ recipe.extra.preparationTime }}</p>
+      <p *ngIf="recipe.extra.cookingTime">Cuisson: {{ recipe.extra.cookingTime }}</p>
+    </div>
+  </div>
+</ion-content>
+`,
+  styles: [`
+    html, body, ion-app, ion-content {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .pdf-container{
+        height: 100% !important;
+        background: rgba(128, 128, 128, 0.136); // to remove
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        & .doc-image{
+            width: 100%;
+            max-width: 600px;
+        }
+    }
+
+    .spinner{
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .detail-content {
+      padding: 22px;
+      background-color: var(--ion-color-light);
+      
+      .recipe-metadata {
+        display: flex;
+        justify-content: space-between;
+        padding: 16px;
+        background-color: var(--ion-color-light);;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        
+        .metadata-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          flex: 1;
+          
+          ion-icon {
+            font-size: 24px;
+            color: var(--ion-color-primary);
+            margin-bottom: 8px;
+          }
+          
+          span {
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+          }
+        }
+      }
+      
+      .detail-section {
+        margin-bottom: 24px;
+        
+        h3 {
+          font-size: 18px;
+          font-weight: 500;
+          margin-bottom: 12px;
+          color: var(--ion-color-dark);
+        }
+        
+        p {
+          margin: 0;
+          color: var(--ion-color-medium);
+          line-height: 1.5;
+          margin-bottom: 8px;
+        }
+        
+        ul.ingredients-list {
+          list-style: none;
+          padding-left: 0;
+          margin: 0;
+          
+          li {
+            color: var(--ion-color-medium);
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            
+            &:before {
+              content: "•";
+              position: absolute;
+              left: 0;
+              color: var(--ion-color-primary);
+            }
+          }
+        }
+        
+        ol {
+          padding-left: 20px;
+          margin: 0;
+          
+          li {
+            color: var(--ion-color-medium);
+            margin-bottom: 12px;
+            line-height: 1.5;
+          }
+        }
+      }
+    }
+  `]
 })
+
 export class RecipeDetailPage implements OnInit {
 
   // Recipe information
@@ -20,28 +200,28 @@ export class RecipeDetailPage implements OnInit {
   docUrl: SafeResourceUrl
 
   // User data
-  user:User = null
+  user: User = null
 
   constructor(
-      public router: Router,
-      public cs: ContentService,
-      public route: ActivatedRoute,
-      private cdr: ChangeDetectorRef,
-      private sanitizer: DomSanitizer,
-      private rs: RecipesService,
-      private http: HttpClient
-    ) { 
-      this.recipeId = parseInt(this.route.snapshot.paramMap.get('id'))
-      this.rs.onRecipeDetail(this.recipeId)
+    public router: Router,
+    public cs: ContentService,
+    public route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
+    private sanitizer: DomSanitizer,
+    private rs: RecipesService,
+    private http: HttpClient
+  ) {
+    this.recipeId = parseInt(this.route.snapshot.paramMap.get('id'))
+    this.rs.onRecipeDetail(this.recipeId)
       .pipe(
-        tap((data:Recipe)=>{
+        tap((data: Recipe) => {
           this.recipe = data
         }),
-        distinctUntilChanged((a,b)=>a.docSmallPhoneUrl === b.docSmallPhoneUrl && a.docLargePhoneUrl === b.docLargePhoneUrl && a.docTabletUrl === b.docTabletUrl)      
+        distinctUntilChanged((a, b) => a.docSmallPhoneUrl === b.docSmallPhoneUrl && a.docLargePhoneUrl === b.docLargePhoneUrl && a.docTabletUrl === b.docTabletUrl)
       )
-      .subscribe((data:Recipe)=>{
+      .subscribe((data: Recipe) => {
         console.log(data)
-        if (data.docLargePhoneUrl){
+        if (data.docLargePhoneUrl) {
           if (data.docLargePhoneBase64)
             this.docUrl = this.sanitizer.bypassSecurityTrustResourceUrl(data.docLargePhoneBase64)
           else
@@ -87,13 +267,13 @@ export class RecipeDetailPage implements OnInit {
 
   ngOnInit() {
     // Load the user information
-    this.cs.userStorageObservable.getStorageObservable().subscribe((res)=>{
+    this.cs.userStorageObservable.getStorageObservable().subscribe((res) => {
       this.user = res
     })
 
   }
 
-  editRecipe(){
+  editRecipe() {
     this.router.navigate(['/edit-recipe/', this.recipeId])
   }
 }
