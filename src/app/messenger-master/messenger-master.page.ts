@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActionSheetController, IonContent, IonSearchbar, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { ActionSheetController, IonContent, IonSearchbar, LoadingController, ModalController, NavController, Platform, ToastController } from '@ionic/angular';
 import { User } from '../models/Interfaces';
 import { Conversation, Msg } from '../messenger-interfaces';
 import { BehaviorSubject, catchError, combineLatest, filter, from, map, Observable, shareReplay, switchMap, tap, throwError } from 'rxjs';
@@ -11,6 +11,8 @@ import { MessengerService } from '../messenger.service';
 import { environment } from 'src/environments/environment';
 import Echo from 'laravel-echo';
 import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
+import { NativeAudio } from '@capgo/native-audio';
+import { Haptics } from '@capacitor/haptics';
 
 @Component({
   selector: 'app-messenger-master',
@@ -181,6 +183,9 @@ export class MessengerMasterPage implements OnInit {
   // In case the user is not connected
   isGuest: boolean = false;
 
+  // The audio notification
+  audio_incoming: any = undefined
+
   constructor(
     private navCtrl: NavController,
     private loadingCtrl: LoadingController,
@@ -190,7 +195,8 @@ export class MessengerMasterPage implements OnInit {
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
     private messengerService: MessengerService,
-    private router: Router
+    private router: Router,
+    private platform: Platform,
   ) {
     // The token$ is used to get the token from the content service
     this.bearerToken$ = from(this.contentService.storage.get('token')).pipe(
@@ -278,6 +284,23 @@ export class MessengerMasterPage implements OnInit {
       map(({ user, echo }) => this.setupEchoListenersForUser(echo, user))
     )
       .subscribe()
+    
+    // Load the sounds
+    if (this.platform.is('capacitor')){ // mobile
+      try{
+        NativeAudio.preload({
+          assetId: 'incoming-message.mp3',
+          assetPath: 'public/assets/audio/incoming-message.mp3',
+          audioChannelNum: 2,
+          isUrl: false
+        })
+      }catch(e){
+        throwError(e)
+      }
+    } else { // web for testing
+      this.audio_incoming = new Audio()
+      this.audio_incoming.src = "../../assets/audio/incoming-message.mp3"
+    }
   }
 
   // Load chat data - in a real app, this would be a service call
@@ -425,6 +448,7 @@ export class MessengerMasterPage implements OnInit {
     let channel = echo.private(`user.${user.id}.conversations`)
     channel.listen('ConversationUpdated', (e: Conversation) => {
       console.log("Received ConversationUpdated event", e)
+
       // update the conversation in the list
       let index = this.chats.findIndex(c => c.id === e.id);
       if (index !== -1) {
@@ -432,12 +456,19 @@ export class MessengerMasterPage implements OnInit {
       } else {
         this.chats.unshift(e);
       }
+
       // Sort the conversations by updated_at
       this.chats.sort((a, b) => {
         return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
       });
       this.applySearchFilter();
       this.cdr.detectChanges();
+
+      // Only play sound if the only a new message
+      // if (latestMessage && latestMessage.sender_id !== user.id) {
+      if (this.chats[0]?.unread_count > 0) {
+        this.playIncomingMessageAudio();
+      }
     })
     return channel;
 
@@ -449,5 +480,15 @@ export class MessengerMasterPage implements OnInit {
         return channel;
       })
     )*/
+  }
+
+  // Playing the sounds and vibrating the device
+  playIncomingMessageAudio(){
+    if (this.platform.is('capacitor')){
+      NativeAudio.play({assetId: 'incoming-message.mp3'})
+      Haptics.vibrate()
+    } else {
+      this.audio_incoming.play()
+    }
   }
 }

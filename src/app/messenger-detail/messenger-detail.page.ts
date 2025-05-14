@@ -482,6 +482,10 @@ export class MessengerDetailPage implements OnInit {
 
       // Scroll to the bottom
       this.scrollToBottom();
+
+      // Mark the conversation as read
+      this.contentService.post('/conversations/mark-as-read', {'conversation_id': conversation.id})
+        .subscribe()
     })
     return channel
   }
