@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {FormComponent} from "../../components/form.component";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
-import {ContentService} from "../../content.service";
-import {FeedbackService} from "../../feedback.service";
-import {catchError, finalize, throwError} from "rxjs";
+import { FormComponent } from "../../components/form.component";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import { ContentService } from "../../content.service";
+import { FeedbackService } from "../../feedback.service";
+import { catchError, finalize, throwError } from "rxjs";
 import { HttpClient, HttpEventType, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { th } from 'date-fns/locale';
 
 type VideoDestination = 's3' | 'server'
-interface File{
+interface File {
   name: string
   size: number
   type: string
@@ -29,10 +29,112 @@ interface VideoFormData {
 
 @Component({
   selector: 'app-video-upload',
-  templateUrl: './video-upload.page.html',
-  styleUrls: ['./video-upload.page.scss'],
+  template: `<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <app-back-button></app-back-button>
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Uploader une vidéo</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <h1 class="display-1 ion-padding">Uploader une vidéo</h1>
+    <form [formGroup]="form" (submit)="submit()">
+        <ion-item>
+            <ion-input
+                label="Titre"
+                label-placement="floating"
+                formControlName="title"
+                [errorText]="displayedError.title"
+            ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-input
+                label="Titre secondaire (facultatif)"
+                label-placement="floating"
+                formControlName="sort_field"
+                [errorText]="displayedError.sort_field"
+            ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-textarea
+                    label="Description"
+                    label-placement="floating"
+                    formControlName="description"
+                    [rows]="5"
+                    [errorText]="displayedError.description"
+            ></ion-textarea>
+        </ion-item>
+        <ion-item>
+            <ion-input
+                label="Tags"
+                label-placement="floating"
+                formControlName="tags"
+                [errorText]="displayedError.tags"
+            ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-select
+                    formControlName="category"
+                    label="Catégorie"
+                    label-placement="floating"
+            >
+                <ion-select-option value="undefined">Non défini</ion-select-option>
+                <ion-select-option value="training">Training</ion-select-option>
+                <ion-select-option value="training/corps-entier">Training > Corps entier</ion-select-option>
+                <ion-select-option value="training/bras">Training > Bras et épaules</ion-select-option>
+                <ion-select-option value="training/abdos">Training > Abdos</ion-select-option>
+                <ion-select-option value="training/jambes">Training > Jambes</ion-select-option>
+                <ion-select-option value="training/fessiers">Training > Fessiers</ion-select-option>
+                <ion-select-option value="training/pectoraux">Training > Pectoraux</ion-select-option>
+                <ion-select-option value="training/dos">Training > Dos</ion-select-option>
+
+                <ion-select-option value="boxing">Boxing</ion-select-option>
+                <ion-select-option value="boxing/base">Boxing > Base</ion-select-option>
+                <ion-select-option value="boxing/poings">Boxing > Poings</ion-select-option>
+                <ion-select-option value="boxing/pieds-genoux">Boxing > Pieds et genoux</ion-select-option>
+                <ion-select-option value="boxing/pieds-poings-genoux">Boxing > Pieds, poings et genoux</ion-select-option>
+            </ion-select>
+        </ion-item>
+        <ion-item>
+            <ion-select
+                formControlName="privilege"
+                label="Privilège requis"
+                label-placement="floating"
+            >
+            <ion-select-option value='public,hoylt,moreno,alonzo'>Tout le monde</ion-select-option>
+            <ion-select-option value='hoylt,moreno,alonzo'>Hoylt ou supérieur</ion-select-option>
+            <ion-select-option value="moreno,alonzo">Moreno ou supérieur</ion-select-option>
+            <ion-select-option value="alonzo">Alonzo</ion-select-option>
+            </ion-select>
+        </ion-item>
+        <ion-item>
+            <ion-select
+                formControlName="destination"
+                label="Destination"
+                label-placement="floating"
+            >
+                <ion-select-option value="s3">Amazon S3</ion-select-option>
+                <ion-select-option value="server">Serveur back-end (obsolète)</ion-select-option>
+            </ion-select>
+        </ion-item>
+        <br/>
+        <app-upload-video [formControl]="fileControl" [autoload]="false" [progress]="fileProgress"></app-upload-video>
+        <br/>
+        <app-ux-button 
+            expand="block" 
+            [disabled]="!valid" 
+            shape="round" 
+            [loading]="isFormLoading"
+            type="submit"
+        >Envoyer</app-ux-button>
+    </form>
+</ion-content>`,
+  styles: [``]
 })
-export class VideoUploadPage extends FormComponent{
+export class VideoUploadPage extends FormComponent {
 
   fileControl = new FormControl<File>(null, [Validators.required]);
   override form = new FormGroup({
@@ -62,14 +164,14 @@ export class VideoUploadPage extends FormComponent{
   fileProgress: number = 0;
 
   constructor(
-    private router:Router,
+    private router: Router,
     private contentService: ContentService,
     private feedbackService: FeedbackService,
     private cs: ContentService,
     private http: HttpClient
   ) {
     super();
-    this.form.valueChanges.subscribe((value)=>{
+    this.form.valueChanges.subscribe((value) => {
       this.valid = this.form.valid
     })
   }
@@ -77,37 +179,37 @@ export class VideoUploadPage extends FormComponent{
   ngOnInit() {
   }
 
-  submit(){
+  submit() {
     this.isFormLoading = true
-    let data:any = this.form.value
-    if (data.category){
+    let data: any = this.form.value
+    if (data.category) {
       data.tags = data.category + ',' + data.tags
     }
     data.file_id = data.file.id
     data.privilege = data.privilege.split(',')
-    
-    if (data.destination == 'server'){
+
+    if (data.destination == 'server') {
       this.contentService.post('/video', data)
-        .pipe(finalize(()=>{ // WARNING, no validation is present here
+        .pipe(finalize(() => { // WARNING, no validation is present here
           this.isFormLoading = false
           console.log("patch null value to fileControl")
           this.fileControl.patchValue(null) // The fileControl isn't under the form
           this.form.reset()
         }))
-        .subscribe((response:any)=>{
+        .subscribe((response: any) => {
           // Destroy all properties
           this.form.reset()
           this.fileControl.reset()
-          if(response.id){
+          if (response.id) {
             this.feedbackService.register('Votre vidéo a été ajoutée avec succès', 'success')
             this.router.navigate(['/home'])
-          }else{
+          } else {
             this.feedbackService.registerNow('Erreur lors de l\'ajout de la vidéo', 'danger')
           }
         })
-    } else if (data.destination == 's3'){
+    } else if (data.destination == 's3') {
       let fileData = (this.fileControl.value as any).blob ? (this.fileControl.value as any).blob : this.fileControl.value
-      if (!fileData){
+      if (!fileData) {
         this.feedbackService.registerNow('Veuillez sélectionner un fichier', 'danger')
         this.isFormLoading = false
         return
@@ -115,14 +217,14 @@ export class VideoUploadPage extends FormComponent{
       // console.log(fileData)
       // console.log('/video-upload/get-presigned-url?file_name=' + fileData.name + '&file_type=' + fileData.type)
       // Step 1. request for presigned-url from back-end server
-      
+
       this.isFormLoading = true
       this.cs.get('/video-upload/get-presigned-url?file_name=' + this.fileControl.value.name + '&file_type=' + this.fileControl.value.type)
         .pipe(
-          finalize(()=>{}),
-          catchError((error)=>{
+          finalize(() => { }),
+          catchError((error) => {
             this.isFormLoading = false
-            return throwError(()=>error)
+            return throwError(() => error)
           })
         )
         .subscribe((response: { url: string }[]) => {
@@ -142,7 +244,7 @@ export class VideoUploadPage extends FormComponent{
             .pipe(catchError((error) => {
               console.error('Error uploading file:', error);
               this.isFormLoading = false
-              return throwError(()=>error);
+              return throwError(() => error);
             }))
             .subscribe((event: any) => {
               if (event.type === HttpEventType.UploadProgress) {
@@ -160,15 +262,15 @@ export class VideoUploadPage extends FormComponent{
                   awsUrl
                 }
                 this.cs.post('/video', videoData)
-                  .pipe(finalize(()=>{ // WARNING, no validation is present here
+                  .pipe(finalize(() => { // WARNING, no validation is present here
                     this.isFormLoading = false
                     this.fileControl.patchValue(null)
                     this.form.reset()
                   }))
-                  .subscribe((response:any)=>{
+                  .subscribe((response: any) => {
                     this.form.reset()
                     this.fileControl.reset()
-                    if(response.id){
+                    if (response.id) {
                       this.feedbackService.register('Votre vidéo a été ajoutée avec succès', 'success')
                       this.router.navigate(['/home'])
                     } else {
