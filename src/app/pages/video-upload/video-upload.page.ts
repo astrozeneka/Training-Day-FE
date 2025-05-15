@@ -36,6 +36,7 @@ interface VideoFormData {
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Uploader une vidéo</ion-title>
+        <ion-progress-bar [value]="fileProgress" *ngIf="fileProgress != 0"></ion-progress-bar>
     </ion-toolbar>
 </ion-header>
 
@@ -120,6 +121,37 @@ interface VideoFormData {
                 <ion-select-option value="server">Serveur back-end (obsolète)</ion-select-option>
             </ion-select>
         </ion-item>
+
+        <!-- IsExercise checkbox -->
+        <ion-item>
+          <ion-checkbox formControlName="isExercise">Afficher comme exercice</ion-checkbox>
+        </ion-item>
+
+        <!-- Program selection -->
+        <ion-item>
+          <ion-select
+            formControlName="program"
+            label="Programme"
+            label-placement="floating"
+            (ionChange)="onProgramChange($event)"
+          >
+            <ion-select-option value="none">Pas inclus dans un programme</ion-select-option>
+            <ion-select-option value="programme-quotidien">Programme Quotidien</ion-select-option>
+            <!-- Add more predefined programs as needed -->
+            <ion-select-option value="other">Autres</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <!-- Custom program input (shown only when "Autres" is selected) -->
+        <ion-item *ngIf="showCustomProgram">
+          <ion-input
+            label="Nom du programme"
+            label-placement="floating"
+            formControlName="customProgram"
+            placeholder="Entrez le nom du programme"
+          ></ion-input>
+        </ion-item>
+
         <br/>
         <app-upload-video [formControl]="fileControl" [autoload]="false" [progress]="fileProgress"></app-upload-video>
         <br/>
@@ -145,7 +177,11 @@ export class VideoUploadPage extends FormComponent {
     'privilege': new FormControl('public,hoylt,moreno,alonzo', []),
     'sort_field': new FormControl('', []),
     'destination': new FormControl<VideoDestination>('s3', [Validators.required]),
-    'file': this.fileControl
+    'file': this.fileControl,
+    // Required for the 'exercise'/'program' features
+    'isExercise': new FormControl(false),
+    'program': new FormControl('none'),
+    'customProgram': new FormControl('')
   });
   isFormLoading = false;
   valid = false;
@@ -162,6 +198,9 @@ export class VideoUploadPage extends FormComponent {
 
   // The file upload (from aws s3)
   fileProgress: number = 0;
+
+  // TO keep track if the custom program text is displayed
+  showCustomProgram:boolean = false;
 
   constructor(
     private router: Router,
@@ -187,6 +226,22 @@ export class VideoUploadPage extends FormComponent {
     }
     data.file_id = data.file.id
     data.privilege = data.privilege.split(',')
+
+    // Prepare extra_data informations
+    let program = data.program;
+    if (data.program === 'other' && data.customProgram) {
+      program = data.customProgram;
+    } else if (data.program === 'none') {
+      program = null;
+    }
+    data.extra = {
+      isExercise: data.isExercise || false,
+      program: program,
+      niveau: null,
+      duree: null,
+      calorie: null,
+      materiel: null
+    };
 
     if (data.destination == 'server') {
       this.contentService.post('/video', data)
@@ -259,7 +314,8 @@ export class VideoUploadPage extends FormComponent {
                 let awsUrl = event.url.split('?')[0]
                 let videoData = {
                   ...this.form.value,
-                  awsUrl
+                  awsUrl,
+                  extra_data: data.extra_data
                 }
                 this.cs.post('/video', videoData)
                   .pipe(finalize(() => { // WARNING, no validation is present here
@@ -281,6 +337,14 @@ export class VideoUploadPage extends FormComponent {
               }
             });
         });
+    }
+  }
+
+  // To manage the program selection
+  onProgramChange(event: any) {
+    this.showCustomProgram = event.detail.value === 'other';
+    if (!this.showCustomProgram) {
+      this.form.get('customProgram')?.reset();
     }
   }
 
