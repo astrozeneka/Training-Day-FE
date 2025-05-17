@@ -64,7 +64,7 @@ interface Exercise {
           <app-back-button></app-back-button>
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>{{ categoryName }}</ion-title>
+        <ion-title>{{ pageTitle }}</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -72,8 +72,11 @@ interface Exercise {
       <!-- List View -->
       <div class="exercise-list-page" *ngIf="!selectedExercise && !selectedProgram">
         <div class="ion-padding-horizontal">
-          <div class="title">
-            {{ categoryName }}
+          <div class="title" *ngIf="pageTitle">
+            {{ pageTitle }}
+          </div>
+          <div class="title" *ngIf="!pageTitle">
+            <ion-spinner></ion-spinner>
           </div>
           <div class="subtitle">
             Choisissez un exercice ou un programme
@@ -304,7 +307,7 @@ interface Exercise {
           --background: transparent;
           
           ion-segment-button {
-            --indicator-color: var(--ion-color-primary);
+            --indicator-color: transparent;
             --color-checked: var(--ion-color-primary);
             --color: var(--ion-color-dark);
             text-transform: none;
@@ -614,7 +617,6 @@ interface Exercise {
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background-color: #e0e0e0;
         margin-right: 16px;
         position: relative;
         overflow: hidden;
@@ -626,7 +628,6 @@ interface Exercise {
         .shimmer-exercise-name {
           height: 16px;
           width: 60%;
-          background: #e0e0e0;
           border-radius: 4px;
           margin-bottom: 8px;
           position: relative;
@@ -636,7 +637,6 @@ interface Exercise {
         .shimmer-exercise-description {
           height: 12px;
           width: 80%;
-          background: #e0e0e0;
           border-radius: 4px;
           position: relative;
           overflow: hidden;
@@ -663,7 +663,6 @@ interface Exercise {
         .shimmer-program-title {
           height: 16px;
           width: 70%;
-          background: #e0e0e0;
           border-radius: 4px;
           position: relative;
           overflow: hidden;
@@ -677,12 +676,19 @@ interface Exercise {
         .shimmer-info-item {
           height: 14px;
           width: 80px;
-          background: #e0e0e0;
           border-radius: 4px;
           position: relative;
           overflow: hidden;
         }
       }
+    }
+
+    .shimmer-exercise-icon,
+    .shimmer-exercise-name,
+    .shimmer-exercise-description,
+    .shimmer-program-title,
+    .shimmer-info-item {
+      background: var(--ion-color-step-200, #e0e0e0);
     }
 
     /* Common shimmer animation for all shimmer elements */
@@ -699,9 +705,9 @@ interface Exercise {
       height: 100%;
       background: linear-gradient(
         90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.6) 50%,
-        rgba(255, 255, 255, 0) 100%
+        rgba(var(--ion-background-color-rgb), 0) 0%,
+        rgba(var(--ion-background-color-rgb), 0.4) 50%,
+        rgba(var(--ion-background-color-rgb), 0) 100%
       );
       animation: shimmerAnimation 1.5s infinite;
     }
@@ -720,6 +726,9 @@ export class ExerciseListPage implements OnInit {
   selectedProgram: Program | null = null;
   exercises: Video[] = [];
   programs: Program[] = [];
+
+  // the page title (retrieved from the metainfo)
+  pageTitle: string = '';
 
   // To improve UX
   isLoading = false;
@@ -752,6 +761,7 @@ export class ExerciseListPage implements OnInit {
         next: (response: any) => {
           this.exercises = response.data || [];
           this.isLoading = false;
+          this.pageTitle = response.metainfo.title;
         },
         error: (error) => {
           this.hasError = true;

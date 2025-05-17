@@ -406,7 +406,6 @@ ion-item {
 .shimmer-video-placeholder {
     width: 100%;
     height: 250px;
-    background: #e0e0e0;
     margin-bottom: 0;
     position: relative;
     overflow: hidden;
@@ -421,7 +420,6 @@ ion-item {
     height: 24px;
     width: 70%;
     margin-bottom: 20px;
-    background: #e0e0e0;
     border-radius: 4px;
     position: relative;
     overflow: hidden;
@@ -443,7 +441,6 @@ ion-item {
     height: 60px;
     flex: 1;
     margin: 0 8px;
-    background: #e0e0e0;
     border-radius: 4px;
     position: relative;
     overflow: hidden;
@@ -453,7 +450,6 @@ ion-item {
     height: 16px;
     width: 100%;
     margin-bottom: 12px;
-    background: #e0e0e0;
     border-radius: 4px;
     position: relative;
     overflow: hidden;
@@ -461,6 +457,13 @@ ion-item {
 
 .shimmer-text-short {
     width: 60%;
+}
+
+.shimmer-video-placeholder,
+.shimmer-title,
+.shimmer-metadata-item,
+.shimmer-text {
+  background: var(--ion-color-step-200, #e0e0e0);
 }
 
 /* Common shimmer animation for all shimmer elements */
@@ -475,11 +478,11 @@ ion-item {
     width: 200%;
     height: 100%;
     background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.6) 50%,
-        rgba(255, 255, 255, 0) 100%
-    );
+    90deg,
+    rgba(var(--ion-background-color-rgb), 0) 0%,
+    rgba(var(--ion-background-color-rgb), 0.4) 50%,
+    rgba(var(--ion-background-color-rgb), 0) 100%
+  );
     animation: shimmerAnimation 1.5s infinite;
 }
 

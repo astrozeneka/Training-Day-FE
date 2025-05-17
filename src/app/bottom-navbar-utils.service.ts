@@ -16,7 +16,7 @@ export class BottomNavbarUtilsService {
     'video-home': ['video-home', 'video-submenu', 'videos'], 
     'recipe-home': ['recipe-home', 'recipe-by-category', 'recipe-details'], 
     'profile': ['profile'],
-    '': ['messenger-master']
+    '': ['messenger-master', 'exercise-categories', 'exercise-list']
   }
   
   constructor(
@@ -31,7 +31,8 @@ export class BottomNavbarUtilsService {
     )
       .subscribe((e:any)=>{
         e = (e as any).url
-        if (flattenedMatches.includes(e.split('/')[1])){
+        console.log("e", e)
+        if (flattenedMatches.includes(e.split('/')[1].split("?")[0])) {
           this.bottomNavbarAvailable = true
         } else {
           this.bottomNavbarAvailable = false
