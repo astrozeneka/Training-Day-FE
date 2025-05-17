@@ -7,7 +7,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import {QuillModule} from "ngx-quill";
-import {HttpClientModule} from "@angular/common/http";
+import {HttpClientModule, HttpClientXsrfModule, provideHttpClient, withInterceptorsFromDi, withXsrfConfiguration} from "@angular/common/http";
 import {IonicStorageModule} from "@ionic/storage-angular";
 import {UtilitiesModule} from "./components/utilities.module";
 import { InAppPurchase2 } from "@ionic-native/in-app-purchase-2/ngx";
@@ -30,7 +30,11 @@ import { DisplayPricePipe } from './pipes/display-price.pipe';
           innerHTMLTemplatesEnabled: true
         }),
         AppRoutingModule,
-        HttpClientModule,
+        /*HttpClientModule,
+        HttpClientXsrfModule.withOptions({
+          cookieName: 'XSRF-TOKEN',
+          headerName: 'X-XSRF-TOKEN'
+        }),*/
         IonicStorageModule.forRoot(),
         UtilitiesModule,
       ...(!environment.production ? [DevComponentsModule] : [ProdComponentsModule])
@@ -38,7 +42,15 @@ import { DisplayPricePipe } from './pipes/display-price.pipe';
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     InAppPurchase2,
-    ThemeDetection
+    ThemeDetection,
+    provideHttpClient(
+      withInterceptorsFromDi(),
+      // Enable XSRF protection (defaults to cookie 'XSRF-TOKEN' and header 'X-XSRF-TOKEN'):
+      withXsrfConfiguration({
+        cookieName: 'XSRF-TOKEN',
+        headerName: 'X-XSRF-TOKEN'
+      })
+    )
   ],
   bootstrap: [AppComponent],
 })

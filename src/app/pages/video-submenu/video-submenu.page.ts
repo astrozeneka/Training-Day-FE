@@ -29,7 +29,7 @@ export class VideoSubmenuPage implements OnInit {
 };
 
   descriptions: any = {
-    'training': "Découvrez notre sélection de vidéos d'entrainement",
+    'training': "Identifie et travaille le groupe musculaire de ton choix pour progresser efficacement.",
     'boxing': "Découvrez notre sélection de vidéos de boxe",
   }
 

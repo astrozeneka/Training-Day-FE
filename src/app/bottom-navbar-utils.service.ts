@@ -16,6 +16,7 @@ export class BottomNavbarUtilsService {
     'video-home': ['video-home', 'video-submenu', 'videos'], 
     'recipe-home': ['recipe-home', 'recipe-by-category', 'recipe-details'], 
     'profile': ['profile'],
+    '': ['messenger-master']
   }
   
   constructor(

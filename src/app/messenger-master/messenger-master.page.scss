@@ -1,0 +1,465 @@
+// Import mixins
+@import "../../mixins.scss";
+
+// Variables
+$primary-color: #3880ff;
+$secondary-color: #3dc2ff;
+$success-color: #2dd36f;
+$medium-color: #92949c;
+$danger-color: #eb445a;
+$light-color: #f4f5f8;
+$dark-color: #222428;
+
+$text-primary: #1f2937;
+$text-secondary: #4b5563;
+$text-muted: #6b7280;
+$text-light: #9ca3af;
+
+$border-color: #e5e7eb;
+$background-light: #f9fafb;
+
+
+@mixin transition($property: all, $duration: 0.2s) {
+  transition: $property $duration ease;
+}
+
+// Header styles
+.header {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.toolbar {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.back-button {
+  color: $text-primary;
+}
+
+.back-icon {
+  font-size: 1.25rem;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: $text-primary;
+}
+
+// Container
+.container {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding-bottom: 5rem;
+}
+
+// Search section
+.search-container {
+  padding: 0.5rem;
+  background-color: $background-light;
+}
+
+.search-bar {
+  border-radius: 9999px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+// User type tabs
+.user-type-tabs {
+  @include flex;
+  border-bottom: 1px solid $border-color;
+}
+
+.tab-item {
+  flex: 1;
+  padding: 0.75rem;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: $text-muted;
+  @include transition();
+
+  &.active {
+    border-bottom: 2px solid $primary-color;
+    color: $primary-color;
+  }
+}
+
+// Shimmer loading effect
+.shimmer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.shimmer-item {
+  padding: 1rem;
+  border-bottom: 1px solid $border-color;
+  animation: pulse 1.5s infinite;
+}
+
+.shimmer-content {
+  @include flex(row, flex-start);
+  gap: 1rem;
+}
+
+.shimmer-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  flex-shrink: 0;
+}
+
+.shimmer-text {
+  flex: 1;
+}
+
+.shimmer-title {
+  height: 1rem;
+  background-color: #e5e7eb;
+  border-radius: 0.25rem;
+  width: 75%;
+  margin-bottom: 0.5rem;
+}
+
+.shimmer-subtitle {
+  height: 0.75rem;
+  background-color: #f3f4f6;
+  border-radius: 0.25rem;
+  width: 50%;
+}
+
+.shimmer-meta {
+  @include flex(column, flex-start, flex-end);
+  gap: 0.25rem;
+}
+
+.shimmer-time {
+  height: 0.75rem;
+  width: 3rem;
+  background-color: #e5e7eb;
+  border-radius: 0.25rem;
+}
+
+.shimmer-badge {
+  height: 1.25rem;
+  width: 1.25rem;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Chat list
+.chat-list {
+  border-top: 1px solid $border-color;
+}
+
+.chat-item {
+  padding: 1rem;
+  border-bottom: 1px solid $border-color;
+  cursor: pointer;
+  @include transition(background-color);
+
+  &:hover {
+    background-color: $background-light;
+  }
+
+  &:active {
+    background-color: $light-color;
+  }
+}
+
+.chat-content {
+  @include flex;
+}
+
+.chat-avatar {
+  height: 3rem;
+  width: 3rem;
+  flex-shrink: 0;
+}
+
+.chat-details {
+  margin-left: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-header {
+  @include flex(row, space-between, flex-start);
+}
+
+.chat-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.chat-time {
+  font-size: 0.75rem;
+  color: $text-muted;
+}
+
+.chat-footer {
+  @include flex(row, space-between);
+  height: 1.25rem;
+}
+
+.chat-message {
+  font-size: 0.875rem;
+  color: $text-muted;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.unread-badge {
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.25rem;
+    width: 1.25rem;
+    border-radius: 50%;
+    background-color: $danger-color;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+}
+
+// Empty state
+.empty-state {
+  padding: 2.5rem 1rem;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  color: $text-light;
+  margin-bottom: 0.5rem;
+}
+
+.empty-title {
+  color: $text-muted;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.empty-subtitle {
+  font-size: 0.875rem;
+  color: $text-light;
+  margin: 0;
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+
+  // Colors for dark theme
+  .header,
+  .toolbar {
+    --background: #1f2937;
+    --color: #f9fafb;
+  }
+
+  .back-button,
+  .back-icon {
+    color: #f9fafb;
+  }
+
+  .title {
+    color: #f9fafb;
+  }
+
+  .container {
+    // background-color: #111827;
+  }
+
+  .search-container {
+    background-color: #1f2937;
+  }
+
+  .user-type-tabs {
+    border-color: #374151;
+    background-color: #1f2937;
+  }
+
+  .tab-item {
+    color: #9ca3af;
+
+    &.active {
+      color: #60a5fa;
+      border-color: #60a5fa;
+    }
+  }
+
+  // Shimmer effects
+  .shimmer-item {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+
+  .shimmer-avatar,
+  .shimmer-title,
+  .shimmer-time,
+  .shimmer-badge {
+    background-color: #374151;
+  }
+
+  .shimmer-subtitle {
+    background-color: #4b5563;
+  }
+
+  // Chat list
+  .chat-list {
+    border-color: #374151;
+  }
+
+  .chat-item {
+    border-color: #374151;
+
+    &:hover {
+      background-color: #1f2937;
+    }
+
+    &:active {
+      background-color: #111827;
+    }
+  }
+
+  .chat-name {
+    color: #f9fafb;
+  }
+
+  .chat-time {
+    color: #9ca3af;
+  }
+
+  .chat-message {
+    color: #d1d5db;
+  }
+
+  // Empty state
+  .empty-state {
+    // background-color: #1f2937;
+  }
+
+  .empty-icon {
+    color: #6b7280;
+  }
+
+  .empty-title {
+    color: #9ca3af;
+  }
+
+  .empty-subtitle {
+    color: #6b7280;
+  }
+}
+
+// Messages and cta
+.permissions-section {
+  margin-top: 24px;
+  padding: 16px;
+  // background-color: var(--ion-color-light);
+
+  .permission-message {
+    margin-bottom: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: rgba(var(--ion-color-medium-rgb), 0.1);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .permission-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      color: var(--ion-color-dark);
+    }
+
+    .permission-text {
+      font-size: 14px;
+      color: var(--ion-color-medium-shade);
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+
+  .cta-container {
+    margin-top: 24px;
+    text-align: center;
+
+    .cta-text {
+      margin-bottom: 16px;
+      font-size: 15px;
+      color: var(--ion-color-medium-shade);
+    }
+
+    .cta-button {
+      --background: var(--ion-color-primary);
+      --color: var(--ion-color-primary-contrast);
+      margin: 0 auto;
+      font-weight: 500;
+      max-width: 280px;
+      height: 48px;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.25);
+
+      &:hover {
+        --background: var(--ion-color-primary-shade);
+      }
+    }
+  }
+}
+
+// Added styles for empty state with permissions messages
+.empty-state+.permissions-section {
+  margin-top: 0;
+}
+
+// For the limited/fullaccess/noaccess messages
+.access-badge {
+  margin-top: 5px;
+
+  span {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .full-access {
+    background-color: #34c759;
+    color: white;
+  }
+
+  .limited-access {
+    background-color: #ff9500;
+    color: white;
+  }
+}

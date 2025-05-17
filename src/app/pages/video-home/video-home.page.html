@@ -4,7 +4,7 @@
           <app-back-button></app-back-button>
           <ion-menu-button></ion-menu-button>
       </ion-buttons>
-      <ion-title>Nos vidéos</ion-title>
+      <ion-title>Training</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -14,7 +14,7 @@
 
     <div class="ion-padding-horizontal">
       <div class="title">
-        Découvez nos vidéos
+        Choisi ton Training
       </div>
       <div class="subtitle">
         Ces contenus ont été sélectionnés pour vous aider à progresser dans votre entraînement.
@@ -25,6 +25,7 @@
       <!-- Training everyday -->
       <app-rounded-card
         [routerLink]="'/video-submenu/training'"
+        [routerLink]="'/exercise-categories'"
       >
         <div slot="image">
           <img title="Training of the day" src="../../../assets/medias/rounded-cards/sample-image-training-of-the-day.jpg"/>
@@ -33,13 +34,14 @@
           Training of the day
         </div>
         <div slot="description">
-          Découvrez notre sélection de vidéos pour vous entraîner tous les jours.
+          Explore des programmes sportifs adaptés à ton niveau et construits autour de tes objectifs personnels. 
         </div>
       </app-rounded-card>
 
       <!-- Boxing everyday -->
       <app-rounded-card
-      [routerLink]="'/video-submenu/boxing'"
+        [routerLink]="'/video-submenu/boxing'"
+        [routerLink]="'/exercise-categories'"
       >
         <div slot="image">
           <img title="Training of the day" src="../../../assets/medias/rounded-cards/sample-image-boxing-of-the-day.jpg"/>
@@ -48,7 +50,7 @@
           Boxing of the day
         </div>
         <div slot="description">
-          Découvrez notre sélection de vidéos pour vous entraîner tous les jours.
+          De l’initiation aux entraînements avancés, progresse en boxe selon tes objectifs personnels.
         </div>
       </app-rounded-card>
     </div>

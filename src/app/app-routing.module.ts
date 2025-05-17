@@ -320,6 +320,22 @@ const routes: Routes = [
     path: 'pusher-test',
     loadChildren: () => import('./pages/pusher-test/pusher-test.module').then( m => m.PusherTestPageModule)
   },
+  {
+    path: 'messenger-master',
+    loadChildren: () => import('./messenger-master/messenger-master.module').then( m => m.MessengerMasterPageModule)
+  },
+  {
+    path: 'messenger-detail/:conversationId',
+    loadChildren: () => import('./messenger-detail/messenger-detail.module').then( m => m.MessengerDetailPageModule)
+  },
+  {
+    path: 'exercise-categories',
+    loadChildren: () => import('./exercise-categories/exercise-categories.module').then( m => m.ExerciseCategoriesPageModule)
+  },
+  {
+    path: 'exercise-list',
+    loadChildren: () => import('./exercise-list/exercise-list.module').then( m => m.ExerciseListPageModule)
+  },
 ];
 
 @NgModule({

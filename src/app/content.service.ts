@@ -315,6 +315,7 @@ export class ContentService {
   async logout(){
     this.userStorageObservable.updateStorage(null)
     this.storage.remove('token')
+    this.storage.remove('refresh_token')
     this.storage.remove('user')
     this.menuController.close();
     this.router.navigate(['/login'])

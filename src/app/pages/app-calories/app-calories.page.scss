@@ -1,26 +1,27 @@
 @import '../../../mixins';
 
-h1{
+h1 {
   @include display-1;
   opacity: .8;
   padding-bottom: .5em;
 }
 
-.display-1{
+.display-1 {
   @include display-1;
   font-size: 2.2em;
 }
 
-.helper{
+.helper {
   color: var(--ion-color-medium);
 }
 
-.calories-container{
+.calories-container {
 
-  & > *{
+  &>* {
     position: relative;
   }
-  & > .placeholder{
+
+  &>.placeholder {
     z-index: 99;
     position: absolute;
     top: 50%;
@@ -30,7 +31,8 @@ h1{
     height: 100%;
     backdrop-filter: blur(10px);
     background-color: var(--ion-color-light)cc;
-    & > *{
+
+    &>* {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -39,8 +41,8 @@ h1{
   }
 }
 
-.calories-output{
-  table{
+.calories-output {
+  table {
     margin-top: 1em;
     margin: auto;
     width: 100%;
@@ -48,26 +50,48 @@ h1{
     line-height: 1.8em;
   }
 
-  th{
+  th {
     @include display-1;
     letter-spacing: 2px;
     background: var(--ion-color-primary);
     font-size: 0.85em;
   }
 
-  td{
+  td {
     @include display-1;
     font-size: 1.1em;
     text-align: center
   }
 
-  td, th{
+  td,
+  th {
     border: 1px solid var(--ion-background-color);
   }
 }
 
-.long-button{
-  white-space: normal; /* Allow the text to wrap to a new line */
+.long-button {
+  white-space: normal;
+  /* Allow the text to wrap to a new line */
   word-wrap: break-word;
   font-size: 80%;
+}
+
+.cta {
+  z-index: 101;
+  color: var(--ion-color-dark);
+  margin: 0 !important;
+
+  /* Put it centered */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 80%;
+
+  & h1.display-1{
+    font-size: 1.5rem;
+    color: var(--ion-color-dark);
+    padding-bottom: 0;
+  }
 }

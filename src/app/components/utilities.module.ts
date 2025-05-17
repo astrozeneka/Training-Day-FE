@@ -60,6 +60,7 @@ import { LoaderV2Component } from './loader-v2/loader-v2.component';
 import { ContinueWithGoogleButtonComponent } from './continue-with-google-button/continue-with-google-button.component';
 import { ButtonToChatComponent } from './button-to-chat/button-to-chat.component';
 import { PromotionalBubbleSelectorIosComponent } from './promotional-bubble-selector-ios/promotional-bubble-selector-ios.component';
+import { CoachMessengerSettingsComponent } from './coach-messenger-settings/coach-messenger-settings.component';
 
 
 @NgModule({
@@ -99,6 +100,8 @@ import { PromotionalBubbleSelectorIosComponent } from './promotional-bubble-sele
     ChatMasterTabsComponent,
     ChatMasterDiscussionListComponent,
     CoachChatSettingsComponent,
+    CoachMessengerSettingsComponent,
+
     ImagePickerComponent,
     OutlineInputComponent,
     SubscriptionBubblesComponent,
@@ -172,6 +175,7 @@ import { PromotionalBubbleSelectorIosComponent } from './promotional-bubble-sele
     DisplayListPipe,
     ChatMasterDiscussionListComponent,
     CoachChatSettingsComponent,
+    CoachMessengerSettingsComponent,
 
 
     // External projects

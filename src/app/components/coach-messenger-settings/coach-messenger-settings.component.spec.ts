@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { RoundedCardComponent } from './rounded-card.component';
+import { CoachMessengerSettingsComponent } from './coach-messenger-settings.component';
 
-describe('RoundedCardComponent', () => {
-  let component: RoundedCardComponent;
-  let fixture: ComponentFixture<RoundedCardComponent>;
+describe('CoachMessengerSettingsComponent', () => {
+  let component: CoachMessengerSettingsComponent;
+  let fixture: ComponentFixture<CoachMessengerSettingsComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ RoundedCardComponent ],
+      declarations: [ CoachMessengerSettingsComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RoundedCardComponent);
+    fixture = TestBed.createComponent(CoachMessengerSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

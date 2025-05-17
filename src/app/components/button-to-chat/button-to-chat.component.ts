@@ -15,7 +15,7 @@ export class ButtonToChatComponent  implements OnInit {
   ngOnInit() {}
 
   action() {
-    this.router.navigate(['chat']);
+    this.router.navigate(['messenger-master']);
   }
  
 }
