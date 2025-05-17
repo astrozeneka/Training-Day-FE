@@ -81,7 +81,10 @@ import { Router } from '@angular/router';
 export class RoundedCardComponent implements OnInit {
   @Input() color: string = "primary"
   @Input() actionText: string = "Voir Plus"
-  @Input() routerLink: string | undefined = undefined
+
+  // routerLink and query params
+  @Input() routerLink!: string[] | any[];
+  @Input() queryParams?: Record<string, any>;
 
   constructor(
     private router: Router,
@@ -91,7 +94,7 @@ export class RoundedCardComponent implements OnInit {
 
   triggerAction() {
     if (this.routerLink) {
-      this.router.navigate([this.routerLink])
+      this.router.navigate(this.routerLink, { queryParams: this.queryParams });
     }
   }
 

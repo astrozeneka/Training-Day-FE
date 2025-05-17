@@ -24,8 +24,8 @@
     <div class="card-list">
       <!-- Training everyday -->
       <app-rounded-card
-        [routerLink]="'/video-submenu/training'"
-        [routerLink]="'/exercise-categories'"
+        [routerLink]="['/exercise-categories']"
+        [queryParams]="{ category: 'training' }"
       >
         <div slot="image">
           <img title="Training of the day" src="../../../assets/medias/rounded-cards/sample-image-training-of-the-day.jpg"/>
@@ -40,8 +40,8 @@
 
       <!-- Boxing everyday -->
       <app-rounded-card
-        [routerLink]="'/video-submenu/boxing'"
-        [routerLink]="'/exercise-categories'"
+        [routerLink]="['/exercise-categories']"
+        [queryParams]="{ category: 'boxing' }"
       >
         <div slot="image">
           <img title="Training of the day" src="../../../assets/medias/rounded-cards/sample-image-boxing-of-the-day.jpg"/>

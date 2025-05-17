@@ -94,37 +94,51 @@ interface Exercise {
         <div class="content-container">
           <!-- Exercises Tab -->
           <div class="exercises-content" *ngIf="selectedSegment === 'exercises'">
-            <div *ngIf="isLoading" class="loading-container">
-            <ion-spinner></ion-spinner>
-            <p>Chargement des exercices...</p>
-          </div>
-          
-          <div *ngIf="!isLoading && exercises.length === 0" class="empty-state">
-            <ion-icon name="fitness-outline" class="empty-icon"></ion-icon>
-            <p>Aucun exercice disponible dans cette catégorie</p>
-          </div>
-          
-          <div class="exercises-list" *ngIf="!isLoading && exercises.length > 0">
-            <div class="exercise-item" *ngFor="let exercise of exercises" (click)="openExerciseDetail(exercise)">
-              <div class="exercise-icon">
-                <ion-icon name="fitness-outline"></ion-icon>
-              </div>
-              <div class="exercise-info">
-                <div class="exercise-name">{{ exercise.title }}</div>
-                <div class="exercise-description">
-                  {{ exercise.description }}
+
+            <!-- Shimering Loading State -->
+            <div *ngIf="isLoading" class="shimmer-container exercises-shimmer">
+              <div class="shimmer-exercise-item" *ngFor="let i of [1,2,3,4]">
+                <div class="shimmer-exercise-icon"></div>
+                <div class="shimmer-exercise-info">
+                  <div class="shimmer-exercise-name"></div>
+                  <div class="shimmer-exercise-description"></div>
                 </div>
               </div>
-              <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
             </div>
-          </div>
+          
+            <div *ngIf="!isLoading && exercises.length === 0" class="empty-state">
+              <ion-icon name="fitness-outline" class="empty-icon"></ion-icon>
+              <p>Aucun exercice disponible dans cette catégorie</p>
+            </div>
+            
+            <div class="exercises-list" *ngIf="!isLoading && exercises.length > 0">
+              <div class="exercise-item" *ngFor="let exercise of exercises" (click)="openExerciseDetail(exercise)">
+                <div class="exercise-icon">
+                  <ion-icon name="fitness-outline"></ion-icon>
+                </div>
+                <div class="exercise-info">
+                  <div class="exercise-name">{{ exercise.title }}</div>
+                  <div class="exercise-description">
+                    {{ exercise.description }}
+                  </div>
+                </div>
+                <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
+              </div>
+            </div>
           </div>
 
           <!-- Programs Tab -->
           <div class="programs-content" *ngIf="selectedSegment === 'programs'">
-            <div *ngIf="isLoading" class="loading-container">
-              <ion-spinner></ion-spinner>
-              <p>Chargement des programmes...</p>
+            <div *ngIf="isLoading" class="shimmer-container programs-shimmer">
+              <div class="shimmer-program-card" *ngFor="let i of [1,2,3]">
+                <div class="shimmer-program-header">
+                  <div class="shimmer-program-title"></div>
+                </div>
+                <div class="shimmer-program-info">
+                  <div class="shimmer-info-item"></div>
+                  <div class="shimmer-info-item"></div>
+                </div>
+              </div>
             </div>
             
             <div *ngIf="!isLoading && programs.length === 0" class="empty-state">
@@ -291,8 +305,8 @@ interface Exercise {
           
           ion-segment-button {
             --indicator-color: var(--ion-color-primary);
-            --color-checked: var(--ion-color-light);
-            --color: var(--ion-color-medium);
+            --color-checked: var(--ion-color-primary);
+            --color: var(--ion-color-dark);
             text-transform: none;
             font-size: 16px;
           }
@@ -569,6 +583,132 @@ interface Exercise {
       p {
         color: var(--ion-color-medium);
         font-size: 16px;
+      }
+    }
+
+    /* Shimmer loading styles */
+    .shimmer-container {
+      width: 100%;
+    }
+
+    /* Exercise shimmer styles */
+    .exercises-shimmer {
+      background-color: var(--ion-color-light);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .shimmer-exercise-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      .shimmer-exercise-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e0e0e0;
+        margin-right: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .shimmer-exercise-info {
+        flex: 1;
+        
+        .shimmer-exercise-name {
+          height: 16px;
+          width: 60%;
+          background: #e0e0e0;
+          border-radius: 4px;
+          margin-bottom: 8px;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .shimmer-exercise-description {
+          height: 12px;
+          width: 80%;
+          background: #e0e0e0;
+          border-radius: 4px;
+          position: relative;
+          overflow: hidden;
+        }
+      }
+    }
+
+    /* Program shimmer styles */
+    .programs-shimmer {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .shimmer-program-card {
+      background-color: var(--ion-color-light);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      
+      .shimmer-program-header {
+        margin-bottom: 12px;
+        
+        .shimmer-program-title {
+          height: 16px;
+          width: 70%;
+          background: #e0e0e0;
+          border-radius: 4px;
+          position: relative;
+          overflow: hidden;
+        }
+      }
+      
+      .shimmer-program-info {
+        display: flex;
+        gap: 12px;
+        
+        .shimmer-info-item {
+          height: 14px;
+          width: 80px;
+          background: #e0e0e0;
+          border-radius: 4px;
+          position: relative;
+          overflow: hidden;
+        }
+      }
+    }
+
+    /* Common shimmer animation for all shimmer elements */
+    .shimmer-exercise-icon::after,
+    .shimmer-exercise-name::after,
+    .shimmer-exercise-description::after,
+    .shimmer-program-title::after,
+    .shimmer-info-item::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      animation: shimmerAnimation 1.5s infinite;
+    }
+
+    @keyframes shimmerAnimation {
+      to {
+        transform: translateX(100%);
       }
     }
   `]

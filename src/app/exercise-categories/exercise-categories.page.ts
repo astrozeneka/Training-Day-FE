@@ -1,5 +1,12 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
+
+interface CategoryItem {
+  slug: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-exercise-categories',
@@ -15,7 +22,7 @@ import { Router } from '@angular/router';
     </ion-header>
 
     <ion-content>
-      <div class="categories-page">
+      <div class="categories-page" *ngIf="categories.length > 0">
         <div class="ion-padding-horizontal">
           <div class="title">
             Catégories d'exercices
@@ -25,6 +32,7 @@ import { Router } from '@angular/router';
           </div>
         </div>
 
+        <!-- The Content -->
         <div class="categories-list">
           <ion-button 
             *ngFor="let category of categories" 
@@ -33,18 +41,20 @@ import { Router } from '@angular/router';
             shape="round"
             (click)="navigateToExerciseList(category)"
           >
-            {{ category }}
+            {{ category.name }}
           </ion-button>
-          
-          <div class="all-exercises">
-            <ion-button 
-              fill="clear" 
-              expand="block"
-              (click)="navigateToExerciseList('all')"
-            >
-              Voir tous les exercices
-              <ion-icon name="arrow-forward" slot="end"></ion-icon>
-            </ion-button>
+        </div>
+      </div>
+
+
+
+      <!-- Shimmer loading effect while categories are being fetched -->
+      <div class="shimmer-container" *ngIf="categories.length === 0">
+        <div class="shimmer-content">
+          <div class="shimmer-title"></div>
+          <div class="shimmer-text shimmer-text-short"></div>
+          <div class="shimmer-categories">
+            <div class="shimmer-category-button" *ngFor="let i of [1,2,3,4,5]"></div>
           </div>
         </div>
       </div>
@@ -107,24 +117,130 @@ import { Router } from '@angular/router';
         }
       }
     }
+
+    /* Shimmer loading styles */
+    .shimmer-container {
+      margin-left: 22px;
+      margin-right: 22px;
+    }
+
+    .shimmer-content {
+      padding: 22px 0;
+    }
+
+    .shimmer-title {
+      height: 24px;
+      width: 70%;
+      margin: 32px auto 20px auto;
+      background: #e0e0e0;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-text {
+      height: 16px;
+      width: 80%;
+      margin: 20px auto 25px auto;
+      background: #e0e0e0;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-text-short {
+      width: 60%;
+    }
+
+    .shimmer-categories {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .shimmer-category-button {
+      height: 50px;
+      width: 100%;
+      max-width: 500px;
+      background: #e0e0e0;
+      border-radius: 25px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Common shimmer animation for all shimmer elements */
+    .shimmer-title::after,
+    .shimmer-text::after,
+    .shimmer-category-button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      animation: shimmerAnimation 1.5s infinite;
+    }
+
+    @keyframes shimmerAnimation {
+      to {
+        transform: translateX(100%);
+      }
+    }
   `]
 })
 export class ExerciseCategoriesPage implements OnInit {
-  categories: string[] = [
-    'Full Body',
-    'Abdos-fessier',
-    'Épaule Dos',
-    'Cuisse Abdos',
-    'Hiit',
-    'Bras, épaules et pectoraux',
-    'Jambes Fessiers'
-  ];
+  categories: CategoryItem[] = [];
+  mainCategory: string = 'training'; // Default value
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private http: HttpClient
+  ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    // Get the category prefix from URL params
+    this.route.queryParams.subscribe(params => {
+      if (params['category']) {
+        this.mainCategory = params['category'];
+      }
+      this.fetchCategories();
+    });
+  }
 
-  navigateToExerciseList(category: string) {
-    this.router.navigate(['/exercise-list'], { queryParams: { category: category } });
+  fetchCategories() {
+    this.http.get<any>(`${environment.apiEndpoint}/videos/category-hierarchy`).subscribe({
+      next: (data) => {
+        if (data && data[this.mainCategory]) {
+          this.categories = data[this.mainCategory].map((item: [string, string]) => {
+            return {
+              slug: item[0],
+              name: item[1]
+            };
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching categories:', err);
+      }
+    });
+  }
+
+  navigateToExerciseList(category: CategoryItem | 'all') {
+    if (category === 'all') {
+      this.router.navigate(['/exercise-list'], { queryParams: { category: 'all' } });
+    } else {
+      this.router.navigate(['/exercise-list'], { 
+        queryParams: { category: `${this.mainCategory}/${category.slug}` } 
+      });
+    }
   }
 }
