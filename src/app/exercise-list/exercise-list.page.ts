@@ -1,7 +1,38 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ContentService } from '../content.service';
+import { FeedbackService } from '../feedback.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+
+
+
+interface Video {
+  id: number;
+  title: string;
+  description: string;
+  tags: string;
+  privilege: string[];
+  awsUrl: string;
+  hlsUrl: string;
+  thumbnailUrl: string;
+  extra: {
+    isExercise: boolean;
+    program: string;
+    niveau: string;
+    duree: string;
+    calorie: string;
+    materiel: string;
+  };
+  available: boolean;
+}
 
 interface Program {
+  name: string;
+  category: string;
+  videoCount: number;
+  videoIds: number[];
+
   id: number;
   title: string;
   duration: string;
@@ -63,42 +94,58 @@ interface Exercise {
         <div class="content-container">
           <!-- Exercises Tab -->
           <div class="exercises-content" *ngIf="selectedSegment === 'exercises'">
-            <div class="exercises-list">
-              <div class="exercise-item" *ngFor="let exercise of exercises" (click)="openExerciseDetail(exercise)">
-                <div class="exercise-icon">
-                  <ion-icon [name]="exercise.icon"></ion-icon>
-                </div>
-                <div class="exercise-info">
-                  <div class="exercise-name">{{ exercise.name }}</div>
-                  <div class="exercise-description">
-                    {{ exercise.description }}
-                  </div>
-                </div>
-                <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
+            <div *ngIf="isLoading" class="loading-container">
+            <ion-spinner></ion-spinner>
+            <p>Chargement des exercices...</p>
+          </div>
+          
+          <div *ngIf="!isLoading && exercises.length === 0" class="empty-state">
+            <ion-icon name="fitness-outline" class="empty-icon"></ion-icon>
+            <p>Aucun exercice disponible dans cette catégorie</p>
+          </div>
+          
+          <div class="exercises-list" *ngIf="!isLoading && exercises.length > 0">
+            <div class="exercise-item" *ngFor="let exercise of exercises" (click)="openExerciseDetail(exercise)">
+              <div class="exercise-icon">
+                <ion-icon name="fitness-outline"></ion-icon>
               </div>
+              <div class="exercise-info">
+                <div class="exercise-name">{{ exercise.title }}</div>
+                <div class="exercise-description">
+                  {{ exercise.description }}
+                </div>
+              </div>
+              <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
             </div>
+          </div>
           </div>
 
           <!-- Programs Tab -->
           <div class="programs-content" *ngIf="selectedSegment === 'programs'">
-            <div class="programs-list">
+            <div *ngIf="isLoading" class="loading-container">
+              <ion-spinner></ion-spinner>
+              <p>Chargement des programmes...</p>
+            </div>
+            
+            <div *ngIf="!isLoading && programs.length === 0" class="empty-state">
+              <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
+              <p>Aucun programme disponible dans cette catégorie</p>
+            </div>
+            
+            <div class="programs-list" *ngIf="!isLoading && programs.length > 0">
               <div class="program-card" *ngFor="let program of programs" (click)="openProgramDetail(program)">
                 <div class="program-header">
-                  <div class="program-title">{{ program.title }}</div>
+                  <div class="program-title">{{ program.name }}</div>
                   <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
                 </div>
                 <div class="program-info">
                   <span class="info-item">
-                    <ion-icon name="time-outline"></ion-icon>
-                    {{ program.duration }}
+                    <ion-icon name="albums-outline"></ion-icon>
+                    {{ program.videoCount }} vidéos
                   </span>
                   <span class="info-item">
-                    <ion-icon name="fitness-outline"></ion-icon>
-                    {{ program.level }}
-                  </span>
-                  <span class="info-item">
-                    <ion-icon name="barbell-outline"></ion-icon>
-                    {{ program.equipment }}
+                    <ion-icon name="pricetag-outline"></ion-icon>
+                    {{ program.category }}
                   </span>
                 </div>
               </div>
@@ -169,7 +216,7 @@ interface Exercise {
         </div>
         
         <div class="detail-content">
-          <div class="program-metadata">
+          <!--<div class="program-metadata">
             <div class="metadata-item">
               <ion-icon name="time-outline"></ion-icon>
               <span>{{ selectedProgram.duration }}</span>
@@ -182,11 +229,11 @@ interface Exercise {
               <ion-icon name="flame-outline"></ion-icon>
               <span>{{ selectedProgram.calories }}</span>
             </div>
-          </div>
+          </div>-->
           
           <div class="detail-section">
             <h3>Description du programme</h3>
-            <p>{{ selectedProgram.description }}</p>
+            <p>{{ selectedProgram | json }}</p>
           </div>
           
           <div class="detail-section">
@@ -195,13 +242,11 @@ interface Exercise {
               <div class="coach-avatar">
                 <ion-icon name="person-circle-outline"></ion-icon>
               </div>
-              <span>{{ selectedProgram.instructor }}</span>
             </div>
           </div>
           
           <div class="detail-section">
             <h3>Équipement nécessaire</h3>
-            <p>{{ selectedProgram.equipment }}</p>
           </div>
           
           <ion-button expand="block" color="primary" class="action-button">
@@ -489,6 +534,43 @@ interface Exercise {
         }
       }
     }
+
+    // Styles for UX
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 0;
+      
+      ion-spinner {
+        margin-bottom: 16px;
+      }
+      
+      p {
+        color: var(--ion-color-medium);
+      }
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+      
+      .empty-icon {
+        font-size: 48px;
+        color: var(--ion-color-medium);
+        margin-bottom: 16px;
+      }
+      
+      p {
+        color: var(--ion-color-medium);
+        font-size: 16px;
+      }
+    }
   `]
 })
 export class ExerciseListPage implements OnInit {
@@ -496,175 +578,126 @@ export class ExerciseListPage implements OnInit {
   selectedSegment: string = 'exercises';
   selectedExercise: Exercise | null = null;
   selectedProgram: Program | null = null;
+  exercises: Video[] = [];
+  programs: Program[] = [];
 
-  exercises: Exercise[] = [
-    {
-      id: 1,
-      name: 'Crunch',
-      icon: 'fitness-outline',
-      description: 'Renforce les abdominaux supérieurs',
-      videoUrl: '/assets/videos/crunch.mp4',
-      targetMuscles: 'Abdominaux supérieurs, rectus abdominis',
-      difficulty: 'Débutant',
-      steps: [
-        'Allongez-vous sur le dos, genoux pliés et pieds à plat sur le sol.',
-        'Placez vos mains derrière la tête ou croisées sur la poitrine.',
-        'Contractez vos abdominaux pour soulever les épaules du sol.',
-        'Expirez en montant et inspirez en descendant lentement.',
-        'Maintenez la tension abdominale pendant tout l\'exercice.'
-      ]
-    },
-    {
-      id: 2,
-      name: 'Planche',
-      icon: 'body-outline',
-      description: 'Stabilisation du corps et gainage',
-      videoUrl: '/assets/videos/plank.mp4',
-      targetMuscles: 'Abdominaux, dos, épaules, fessiers',
-      difficulty: 'Intermédiaire',
-      steps: [
-        'Placez vos avant-bras au sol, coudes sous les épaules.',
-        'Étendez vos jambes derrière vous, soulevez votre corps.',
-        'Maintenez une ligne droite des talons à la tête.',
-        'Gardez les abdominaux engagés et le dos neutre.',
-        'Respirez normalement et tenez la position.'
-      ]
-    },
-    {
-      id: 3,
-      name: 'Squat',
-      icon: 'barbell-outline',
-      description: 'Renforce les jambes et les fessiers',
-      videoUrl: '/assets/videos/squat.mp4',
-      targetMuscles: 'Quadriceps, fessiers, ischio-jambiers',
-      difficulty: 'Débutant',
-      steps: [
-        'Tenez-vous debout, pieds écartés largeur des épaules.',
-        'Poussez vos hanches vers l\'arrière et pliez les genoux.',
-        'Descendez comme pour vous asseoir sur une chaise.',
-        'Gardez la poitrine haute et le dos droit.',
-        'Poussez à travers vos talons pour remonter.'
-      ]
-    },
-    {
-      id: 4,
-      name: 'Fentes',
-      icon: 'walk-outline',
-      description: 'Travail isolé des jambes',
-      videoUrl: '/assets/videos/lunges.mp4',
-      targetMuscles: 'Quadriceps, fessiers, ischio-jambiers',
-      difficulty: 'Intermédiaire',
-      steps: [
-        'Tenez-vous droit, pieds écartés largeur des hanches.',
-        'Faites un grand pas en avant avec une jambe.',
-        'Abaissez le corps jusqu\'à ce que les deux genoux soient pliés à 90°.',
-        'Gardez le torse droit et le genou avant aligné avec la cheville.',
-        'Poussez sur le talon avant pour revenir en position initiale.'
-      ]
-    },
-    {
-      id: 5,
-      name: 'Relevé de bassin',
-      icon: 'body-outline',
-      description: 'Cible les fessiers et le bas du dos',
-      videoUrl: '/assets/videos/hip-thrust.mp4',
-      targetMuscles: 'Fessiers, lombaires, ischio-jambiers',
-      difficulty: 'Débutant',
-      steps: [
-        'Allongez-vous sur le dos, genoux pliés et pieds à plat sur le sol.',
-        'Placez les bras le long du corps, paumes vers le bas.',
-        'Contractez les fessiers et soulevez le bassin vers le haut.',
-        'Formez une ligne droite des genoux aux épaules au sommet.',
-        'Abaissez lentement le bassin et répétez.'
-      ]
-    },
-    {
-      id: 6,
-      name: 'Mountain Climber',
-      icon: 'speedometer-outline',
-      description: 'Cardio et renforcement abdominal',
-      videoUrl: '/assets/videos/mountain-climber.mp4',
-      targetMuscles: 'Abdominaux, épaules, hanches',
-      difficulty: 'Intermédiaire',
-      steps: [
-        'Commencez en position de pompe, bras tendus.',
-        'Ramenez un genou vers la poitrine, tout en gardant l\'autre jambe tendue.',
-        'Alternez rapidement les jambes comme si vous couriez.',
-        'Gardez le dos droit et les abdominaux engagés.',
-        'Maintenez un rythme régulier et contrôlé.'
-      ]
-    }
-  ];
+  // To improve UX
+  isLoading = false;
+  hasError = false;
 
-  programs: Program[] = [
-    {
-      id: 1,
-      title: 'Programme 1: Abdos de fer',
-      duration: '30 min',
-      level: 'Débutant',
-      equipment: 'Sans matériel',
-      videoUrl: '/assets/videos/abs-program.mp4',
-      description: 'Ce programme complet cible tous les groupes musculaires abdominaux pour un renforcement efficace. Idéal pour les débutants souhaitant développer leur force abdominale et améliorer leur posture. Séance complète avec échauffement et retour au calme.',
-      instructor: 'Marie Dupont',
-      calories: '250 kcal'
-    },
-    {
-      id: 2,
-      title: 'Programme 2: Fessiers toniques',
-      duration: '25 min',
-      level: 'Intermédiaire',
-      equipment: 'Avec élastique',
-      videoUrl: '/assets/videos/glutes-program.mp4',
-      description: 'Programme spécifique pour sculpter et tonifier les fessiers. Combinaison d\'exercices ciblés avec et sans élastique pour maximiser l\'activation musculaire. Idéal pour ceux qui cherchent à renforcer cette zone spécifique du corps.',
-      instructor: 'Thomas Martin',
-      calories: '280 kcal'
-    },
-    {
-      id: 3,
-      title: 'Programme 3: Challenge 7 jours',
-      duration: '20 min/jour',
-      level: 'Tous niveaux',
-      equipment: 'Matériel minimal',
-      videoUrl: '/assets/videos/7day-challenge.mp4',
-      description: 'Relevez ce défi de 7 jours pour transformer votre silhouette! Chaque jour propose un entraînement différent mais complémentaire pour des résultats visibles. Programme progressif adapté à tous avec options pour débutants et avancés.',
-      instructor: 'Sophie Legrand',
-      calories: '200-300 kcal/jour'
-    },
-    {
-      id: 4,
-      title: 'Programme 4: Intensif HIIT',
-      duration: '15 min',
-      level: 'Avancé',
-      equipment: 'Sans matériel',
-      videoUrl: '/assets/videos/hiit-abs.mp4',
-      description: 'Séance courte mais intense combinant exercices abdominaux et cardio pour une combustion maximale des graisses. Alternance d\'exercices à haute intensité et de courtes périodes de récupération. Idéal pour ceux qui recherchent l\'efficacité en un minimum de temps.',
-      instructor: 'Alex Bernard',
-      calories: '350 kcal'
-    }
-  ];
-
-  constructor(private route: ActivatedRoute) { }
+  constructor(
+    private route: ActivatedRoute,
+    private contentService: ContentService,
+    private feedbackService: FeedbackService,
+    private http: HttpClient,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       if (params['category']) {
         this.categoryName = params['category'];
+        this.loadData(this.categoryName);
       }
     });
+  }
+
+  loadData(category: string) {
+    this.isLoading = true;
+    this.hasError = false;
+    
+    // Load exercises
+    this.http.get(`${environment.apiEndpoint}/videos/exercises-by-category?category=${category}`)
+      .subscribe({
+        next: (response: any) => {
+          this.exercises = response.data || [];
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.hasError = true;
+          this.isLoading = false;
+          this.feedbackService.registerNow('Erreur lors du chargement des exercices', 'danger');
+        }
+      });
+    
+    // Load programs
+    this.http.get(`${environment.apiEndpoint}/videos/programs-by-category?category=${category}`)
+      .subscribe({
+        next: (response: any) => {
+          this.programs = response.data || [];
+        },
+        error: (error) => {
+          this.feedbackService.registerNow('Erreur lors du chargement des programmes', 'danger');
+        }
+      });
   }
 
   segmentChanged(event: any) {
     this.selectedSegment = event.detail.value;
   }
 
-  openExerciseDetail(exercise: Exercise) {
-    this.selectedExercise = exercise;
-    this.selectedProgram = null;
+  openExerciseDetail(exercise: any) {
+    let videoId = exercise.id;
+    this.router.navigateByUrl(`/video-view/${videoId}?mode=exercise`);
+    /*this.selectedExercise = {
+      id: exercise.id,
+      name: exercise.title,
+      icon: 'fitness-outline',
+      description: exercise.description,
+      videoUrl: exercise.hlsUrl || exercise.awsUrl,
+      targetMuscles: exercise.extra?.niveau || 'Non spécifié',
+      difficulty: exercise.extra?.niveau || 'Non spécifié',
+      steps: [exercise.description]
+    };
+    this.selectedProgram = null;*/
+  }
+
+  loadProgramDetails(program: Program) {
+    // First load all videos for this program
+    this.contentService.get(`/videos/videos-by-program?program=${program.name}`)
+      .subscribe({
+        next: (response: any) => {
+          if (response.data && response.data.length > 0) {
+            const firstVideo = response.data[0];
+            this.selectedProgram = {
+              id: firstVideo.id,
+              title: program.name,
+              duration: firstVideo.extra?.duree || 'Non spécifié',
+              level: firstVideo.extra?.niveau || 'Non spécifié',
+              equipment: firstVideo.extra?.materiel || 'Non spécifié',
+              videoUrl: firstVideo.hlsUrl || firstVideo.awsUrl,
+              description: firstVideo.description,
+              instructor: firstVideo.user?.name || 'Coach',
+              calories: firstVideo.extra?.calorie || 'Non spécifié'
+            } as Program;
+          } else {
+            // Create a placeholder if no videos are found
+            this.selectedProgram = {
+              id: 0,
+              title: program.name,
+              duration: 'Non spécifié',
+              level: 'Non spécifié',
+              equipment: 'Non spécifié',
+              videoUrl: '',
+              description: 'Aucune information disponible pour ce programme.',
+              instructor: 'Coach',
+              calories: 'Non spécifié'
+            } as Program;
+          }
+          this.selectedExercise = null;
+        },
+        error: (error) => {
+          this.feedbackService.registerNow('Erreur lors du chargement des détails du programme', 'danger');
+        }
+      });
   }
 
   openProgramDetail(program: Program) {
-    this.selectedProgram = program;
-    this.selectedExercise = null;
+    /*this.selectedProgram = program;
+    this.selectedExercise = null;*/
+    console.log("Selected program:", program);
+    let firstVideoId = program.videoIds[0];
+    this.router.navigateByUrl(`/video-view/${firstVideoId}?mode=program`);
   }
 
   closeDetail() {

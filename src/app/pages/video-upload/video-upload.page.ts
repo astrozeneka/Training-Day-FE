@@ -76,38 +76,45 @@ interface VideoFormData {
                 [errorText]="displayedError.tags"
             ></ion-input>
         </ion-item>
+        <!-- The category -->
         <ion-item>
-            <ion-select
-                    formControlName="category"
-                    label="Catégorie"
-                    label-placement="floating"
-            >
-                <ion-select-option value="undefined">Non défini</ion-select-option>
-                <ion-select-option value="training">Training</ion-select-option>
-                <ion-select-option value="training/corps-entier">Training > Corps entier</ion-select-option>
-                <ion-select-option value="training/bras">Training > Bras et épaules</ion-select-option>
-                <ion-select-option value="training/abdos">Training > Abdos</ion-select-option>
-                <ion-select-option value="training/jambes">Training > Jambes</ion-select-option>
-                <ion-select-option value="training/fessiers">Training > Fessiers</ion-select-option>
-                <ion-select-option value="training/pectoraux">Training > Pectoraux</ion-select-option>
-                <ion-select-option value="training/dos">Training > Dos</ion-select-option>
-
-                <ion-select-option value="boxing">Boxing</ion-select-option>
-                <ion-select-option value="boxing/base">Boxing > Base</ion-select-option>
-                <ion-select-option value="boxing/poings">Boxing > Poings</ion-select-option>
-                <ion-select-option value="boxing/pieds-genoux">Boxing > Pieds et genoux</ion-select-option>
-                <ion-select-option value="boxing/pieds-poings-genoux">Boxing > Pieds, poings et genoux</ion-select-option>
-            </ion-select>
+          <ion-select
+                   formControlName="mainCategory"
+                   label="Catégorie principale"
+                   label-placement="floating"
+                   (ionChange)="onMainCategoryChange($event)"
+          >
+            <ion-select-option value="">Sélectionner une catégorie</ion-select-option>
+            <ion-select-option *ngFor="let category of availableCategories" [value]="category">
+                {{getCategoryLabel(category)}}
+            </ion-select-option>
+          </ion-select>
         </ion-item>
+        <!-- The subcategory -->
+        <ion-item>
+          <ion-select
+                  formControlName="subCategory"
+                  label="Sous-catégorie"
+                  label-placement="floating"
+                  (ionChange)="onSubCategoryChange($event)"
+                  [disabled]="!form.get('mainCategory').value"
+          >
+              <ion-select-option value="">Sélectionner une sous-catégorie</ion-select-option>
+              <ion-select-option *ngFor="let subCategory of availableSubCategories" [value]="subCategory[0]">
+                  {{subCategory[1]}}
+              </ion-select-option>
+          </ion-select>
+        </ion-item>
+
         <ion-item>
             <ion-select
                 formControlName="privilege"
                 label="Privilège requis"
                 label-placement="floating"
             >
-            <ion-select-option value='public,hoylt,moreno,alonzo'>Tout le monde</ion-select-option>
-            <ion-select-option value='hoylt,moreno,alonzo'>Hoylt ou supérieur</ion-select-option>
-            <ion-select-option value="moreno,alonzo">Moreno ou supérieur</ion-select-option>
+            <ion-select-option value='public,hoylt,gursky,smiley,moreno,alonzo'>Tout le monde</ion-select-option>
+            <ion-select-option value='hoylt,gursky,smiley,moreno,alonzo'>Hoylt ou supérieur</ion-select-option>
+            <ion-select-option value="gursky,smiley,moreno,alonzo">Gursky/Smiley ou supérieur</ion-select-option>
             <ion-select-option value="alonzo">Alonzo</ion-select-option>
             </ion-select>
         </ion-item>
@@ -134,11 +141,11 @@ interface VideoFormData {
             label="Programme"
             label-placement="floating"
             (ionChange)="onProgramChange($event)"
+            [disabled]="!form.get('category').value || form.get('category').value === 'undefined'"
           >
-            <ion-select-option value="none">Pas inclus dans un programme</ion-select-option>
-            <ion-select-option value="programme-quotidien">Programme Quotidien</ion-select-option>
-            <!-- Add more predefined programs as needed -->
-            <ion-select-option value="other">Autres</ion-select-option>
+            <ion-select-option *ngFor="let option of availableProgramOptions" [value]="option.value">
+              {{option.label}}
+            </ion-select-option>
           </ion-select>
         </ion-item>
 
@@ -173,6 +180,8 @@ export class VideoUploadPage extends FormComponent {
     'title': new FormControl('', [Validators.required]),
     'description': new FormControl('', [Validators.required]),
     'tags': new FormControl('', []),
+    'mainCategory': new FormControl('', []),
+    'subCategory': new FormControl('', []),
     'category': new FormControl('', []),
     'privilege': new FormControl('public,hoylt,moreno,alonzo', []),
     'sort_field': new FormControl('', []),
@@ -200,7 +209,21 @@ export class VideoUploadPage extends FormComponent {
   fileProgress: number = 0;
 
   // TO keep track if the custom program text is displayed
-  showCustomProgram:boolean = false;
+  showCustomProgram:boolean = false;// Store all programs by category
+
+  // Store all programs by category
+  programHierarchy: { [category: string]: string[] } = {};
+  // Store available program options for the selected category
+  availableProgramOptions: { value: string, label: string }[] = [
+    { value: 'none', label: 'Pas inclus dans un programme' },
+    { value: 'other', label: 'Autres' }
+  ];
+
+  // To manage the maincategory/subcategory hierarchy
+  categoryHierarchy: { [category: string]: [string, string][] } = {};
+  availableCategories: string[] = [];
+  availableSubCategories: [string, string][] = [];
+
 
   constructor(
     private router: Router,
@@ -216,6 +239,19 @@ export class VideoUploadPage extends FormComponent {
   }
 
   ngOnInit() {
+    this.fetchCategoryHierarchy();
+    this.fetchProgramHierarchy();
+
+    // Listen for category changes
+    this.form.get('category').valueChanges.subscribe(category => {
+      if (category && category.includes('/')) {
+        this.updateProgramOptions(category);
+      }
+    });
+
+    // Disable the program selection by default
+    this.form.get('subCategory').disable();
+    this.form.get('program').disable();
   }
 
   submit() {
@@ -345,6 +381,141 @@ export class VideoUploadPage extends FormComponent {
     this.showCustomProgram = event.detail.value === 'other';
     if (!this.showCustomProgram) {
       this.form.get('customProgram')?.reset();
+    }
+  }
+
+  // Fetch the program hierarchy from the server
+  fetchProgramHierarchy() {
+    this.contentService.getCollection('/videos/programs-hierarchy')
+      .subscribe({
+        next: (response: any) => {
+          this.programHierarchy = response;
+          console.log('Program hierarchy loaded:', this.programHierarchy);
+        },
+        error: (error) => {
+          console.error('Error loading program hierarchy:', error);
+          this.feedbackService.registerNow('Erreur lors du chargement des programmes', 'danger');
+        }
+      });
+  }
+
+  updateProgramOptions(category: string) {
+    // Reset the program selection when category changes
+    this.form.get('program').setValue('none');
+    
+    // Reset available options to defaults
+    this.availableProgramOptions = [
+      { value: 'none', label: 'Pas inclus dans un programme' },
+      { value: 'other', label: 'Autres' }
+    ];
+    
+    // If no category or "undefined" is selected, we're done
+    if (!category || category === 'undefined') {
+      return;
+    }
+    
+    // Get programs for this category
+    if (this.programHierarchy[category]) {
+      // Add programs from this category to the options
+      this.programHierarchy[category].forEach(program => {
+        this.availableProgramOptions.splice(this.availableProgramOptions.length - 1, 0, {
+          value: program.toLowerCase().replace(/\s+/g, '-'),
+          label: program
+        });
+      });
+    }
+    
+    // For parent categories like "training" or "boxing", also include programs from subcategories
+    if (category === 'training' || category === 'boxing') {
+      Object.keys(this.programHierarchy).forEach(key => {
+        if (key.startsWith(category + '/') && this.programHierarchy[key]) {
+          this.programHierarchy[key].forEach(program => {
+            // Check if this program already exists in options
+            const exists = this.availableProgramOptions.some(
+              option => option.value === program.toLowerCase().replace(/\s+/g, '-')
+            );
+            
+            if (!exists) {
+              this.availableProgramOptions.splice(this.availableProgramOptions.length - 1, 0, {
+                value: program.toLowerCase().replace(/\s+/g, '-'),
+                label: program
+              });
+            }
+          });
+        }
+      });
+    }
+  }
+
+  // Fetch the category hierarchy from the server
+  fetchCategoryHierarchy() {
+    this.contentService.getCollection('/videos/category-hierarchy')
+    .subscribe({
+      next: (response: any) => {
+        this.categoryHierarchy = response;
+        this.availableCategories = Object.keys(this.categoryHierarchy);
+        console.log('Category hierarchy loaded:', this.categoryHierarchy);
+      },
+      error: (error) => {
+        console.error('Error loading category hierarchy:', error);
+        this.feedbackService.registerNow('Erreur lors du chargement des catégories', 'danger');
+      }
+    });
+  }
+
+  // Get display label for main category
+  getCategoryLabel(category: string): string {
+    // Capitalize first letter
+    return category.charAt(0).toUpperCase() + category.slice(1);
+  }
+
+  // Handle main category change
+  onMainCategoryChange(event: any) {
+    const selectedCategory = event.detail.value;
+    
+    // Reset subcategory and program
+    this.form.get('subCategory').setValue('');
+    this.form.get('program').setValue('none');
+    
+    // Update available subcategories
+    if (selectedCategory && this.categoryHierarchy[selectedCategory]) {
+      this.availableSubCategories = this.categoryHierarchy[selectedCategory];
+    } else {
+      this.availableSubCategories = [];
+    }
+    
+    // If we only have one subcategory, select it automatically
+    if (this.availableSubCategories.length === 1) {
+      this.form.get('subCategory').setValue(this.availableSubCategories[0][0]);
+      this.updateCategoryValue();
+    }
+  }
+
+  // Handle subcategory change
+  onSubCategoryChange(event: any) {
+    this.updateCategoryValue();
+    
+    // Reset and update program selection
+    this.form.get('program').setValue('none');
+    const mainCategory = this.form.get('mainCategory').value;
+    const subCategory = event.detail.value;
+    
+    if (mainCategory && subCategory) {
+      this.updateProgramOptions(`${mainCategory}/${subCategory}`);
+    }
+  }
+
+  // Update the category value based on main and subcategory
+  updateCategoryValue() {
+    const mainCategory = this.form.get('mainCategory').value;
+    const subCategory = this.form.get('subCategory').value;
+    
+    if (mainCategory && subCategory) {
+      this.form.get('category').setValue(`${mainCategory}/${subCategory}`);
+    } else if (mainCategory) {
+      this.form.get('category').setValue(mainCategory);
+    } else {
+      this.form.get('category').setValue('');
     }
   }
 
