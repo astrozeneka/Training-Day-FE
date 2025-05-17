@@ -35,8 +35,21 @@ import '@videojs/http-streaming';  // Import VHS plugin
         </video>
         
         <!-- Loading spinner while video is being fetched -->
-        <div class="spinner" *ngIf="!video">
+        <div class="spinner" *ngIf="!video && false">
             <ion-spinner></ion-spinner>
+        </div>
+
+        <!-- Shimmer loading effect while video is being fetched -->
+        <div class="shimmer-container" *ngIf="!video">
+            <div class="shimmer-video-placeholder"></div>
+            <div class="shimmer-content">
+                <div class="shimmer-title"></div>
+                <div class="shimmer-metadata">
+                    <div class="shimmer-metadata-item" *ngFor="let i of [1,2,3]"></div>
+                </div>
+                <div class="shimmer-text"></div>
+                <div class="shimmer-text shimmer-text-short"></div>
+            </div>
         </div>
     </div>
 
@@ -225,6 +238,8 @@ import '@videojs/http-streaming';  // Import VHS plugin
     background: rgba(0, 0, 0, 0.8);
 }
 
+
+// unused
 .spinner {
     height: 100%;
     display: flex;
@@ -381,6 +396,97 @@ ion-item {
 /* If the program section exists, remove it since we're showing it in the navigation */
 .program-section {
   display: none;
+}
+
+/* Shimmer loading styles */
+.shimmer-container {
+    width: 100%;
+}
+
+.shimmer-video-placeholder {
+    width: 100%;
+    height: 250px;
+    background: #e0e0e0;
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-content {
+    padding: 22px;
+    background-color: var(--ion-color-light);
+}
+
+.shimmer-title {
+    height: 24px;
+    width: 70%;
+    margin-bottom: 20px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-metadata {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 12px;
+    background-color: var(--ion-color-light);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-metadata-item {
+    height: 60px;
+    flex: 1;
+    margin: 0 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-text {
+    height: 16px;
+    width: 100%;
+    margin-bottom: 12px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-text-short {
+    width: 60%;
+}
+
+/* Common shimmer animation for all shimmer elements */
+.shimmer-video-placeholder::after,
+.shimmer-title::after,
+.shimmer-metadata-item::after,
+.shimmer-text::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: shimmerAnimation 1.5s infinite;
+}
+
+@keyframes shimmerAnimation {
+    to {
+        transform: translateX(100%);
+    }
 }
 
     `],
