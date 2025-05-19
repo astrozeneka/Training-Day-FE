@@ -71,19 +71,19 @@ interface Exercise {
     <ion-content>
       <!-- List View -->
       <div class="exercise-list-page" *ngIf="!selectedExercise && !selectedProgram">
-        <div class="ion-padding-horizontal">
+
+        <!-- The page title and subtitle -->
+        <div class="ion-padding-horizontal" *ngIf="!isLoading">
           <div class="title" *ngIf="pageTitle">
             {{ pageTitle }}
-          </div>
-          <div class="title" *ngIf="!pageTitle">
-            <ion-spinner></ion-spinner>
           </div>
           <div class="subtitle">
             Choisissez un exercice ou un programme
           </div>
         </div>
 
-        <div class="segment-container">
+        <!-- The tab segments -->
+        <div class="segment-container" *ngIf="!isLoading">
           <ion-segment [(ngModel)]="selectedSegment" (ionChange)="segmentChanged($event)">
             <ion-segment-button value="exercises">
               <ion-label>Exercices</ion-label>
@@ -92,6 +92,16 @@ interface Exercise {
               <ion-label>Programmes</ion-label>
             </ion-segment-button>
           </ion-segment>
+        </div>
+
+        <!-- The shimmering loader for both header and tab segments -->
+        <div *ngIf="isLoading" class="shimmer-header">
+          <div class="shimmer-title"></div>
+          <div class="shimmer-subtitle"></div>
+          <div class="shimmer-segment">
+            <div class="shimmer-segment-button"></div>
+            <div class="shimmer-segment-button"></div>
+          </div>
         </div>
 
         <div class="content-container">
@@ -716,6 +726,74 @@ interface Exercise {
       to {
         transform: translateX(100%);
       }
+    }
+
+
+    /* Shimmer Header Styles */
+    .shimmer-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 22px;
+      margin-bottom: 20px;
+      
+      .shimmer-title {
+        height: 24px;
+        width: 60%;
+        border-radius: 4px;
+        margin-top: 32px;
+        background: var(--ion-color-step-200, #e0e0e0);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .shimmer-subtitle {
+        height: 16px;
+        width: 80%;
+        border-radius: 4px;
+        margin-top: 20px;
+        margin-bottom: 25px;
+        background: var(--ion-color-step-200, #e0e0e0);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .shimmer-segment {
+        display: flex;
+        width: 100%;
+        height: 44px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        gap: 8px;
+        
+        .shimmer-segment-button {
+          flex: 1;
+          height: 100%;
+          border-radius: 8px;
+          background: var(--ion-color-step-200, #e0e0e0);
+          position: relative;
+          overflow: hidden;
+        }
+      }
+    }
+
+    /* Add shimmer animation for new elements */
+    .shimmer-title::after,
+    .shimmer-subtitle::after,
+    .shimmer-segment-button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(var(--ion-background-color-rgb), 0) 0%,
+        rgba(var(--ion-background-color-rgb), 0.4) 50%,
+        rgba(var(--ion-background-color-rgb), 0) 100%
+      );
+      animation: shimmerAnimation 1.5s infinite;
     }
   `]
 })
