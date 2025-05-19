@@ -53,6 +53,7 @@ interface Exercise {
   targetMuscles: string;
   difficulty: string;
   steps: string[];
+  available: boolean; // Is available for the user
 }
 
 @Component({
@@ -125,17 +126,23 @@ interface Exercise {
             </div>
             
             <div class="exercises-list" *ngIf="!isLoading && exercises.length > 0">
-              <div class="exercise-item" *ngFor="let exercise of exercises" (click)="openExerciseDetail(exercise)">
+              <div class="exercise-item" *ngFor="let exercise of exercises" (click)="exercise.available ? openExerciseDetail(exercise) : null" [class.unavailable]="!exercise.available">
                 <div class="exercise-icon">
                   <ion-icon name="fitness-outline"></ion-icon>
                 </div>
                 <div class="exercise-info">
                   <div class="exercise-name">{{ exercise.title }}</div>
-                  <div class="exercise-description">
+                    {{ exercise.id }}
+                  <div class="exercise-description" *ngIf="exercise.available">
                     {{ exercise.description }}
                   </div>
+                  <div *ngIf="!exercise.available" class="availability-message">
+                    <ion-icon name="alert-circle-outline"></ion-icon>
+                    <span>Ce vidéo est disponible pour les abonnés {{ getMinimumRequiredLevel(exercise.privilege) }} ou supérieur</span>
+                  </div>
                 </div>
-                <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
+                <ion-icon name="chevron-forward" class="arrow-icon" *ngIf="exercise.available"></ion-icon>
+                <ion-icon name="lock-closed" class="lock-icon" *ngIf="!exercise.available"></ion-icon>
               </div>
             </div>
           </div>
@@ -795,6 +802,58 @@ interface Exercise {
       );
       animation: shimmerAnimation 1.5s infinite;
     }
+  
+/* Styles for unavailable exercise items */
+.exercise-item.unavailable {
+  opacity: 0.8;
+  background-color: rgba(var(--ion-color-light-rgb), 0.7);
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  
+  .exercise-icon {
+    background-color: var(--ion-color-medium-tint);
+    
+    ion-icon {
+      color: var(--ion-color-medium);
+    }
+  }
+  
+  .lock-icon {
+    color: var(--ion-color-medium);
+    font-size: 18px;
+  }
+}
+.availability-message {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background-color: rgba(var(--ion-color-warning-rgb), 0.15);
+  border-radius: 8px;
+  
+  ion-icon {
+    color: var(--ion-color-warning);
+    font-size: 16px;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+  
+  span {
+    font-size: 12px;
+    color: var(--ion-color-dark);
+    font-weight: 500;
+  }
+}
   `]
 })
 export class ExerciseListPage implements OnInit {
@@ -931,5 +990,28 @@ export class ExerciseListPage implements OnInit {
   closeDetail() {
     this.selectedExercise = null;
     this.selectedProgram = null;
+  }
+
+  getMinimumRequiredLevel(privilegeArray: string[]): string {
+    // This is the hierarchy of privilege levels from lowest to highest
+    const privilegeHierarchy = ['public', 'hoylt', 'gursky', 'smiley', 'moreno', 'alonzo'];
+    
+    if (!privilegeArray || privilegeArray.length === 0) {
+      return 'Premium';
+    }
+    
+    // Find the lowest privilege level required
+    let lowestIndex = Infinity;
+    for (const privilege of privilegeArray) {
+      const index = privilegeHierarchy.indexOf(privilege);
+      if (index !== -1 && index < lowestIndex) {
+        lowestIndex = index;
+      }
+    }
+    
+    // Return the privilege name, or default to "Premium" if not found
+    return lowestIndex < privilegeHierarchy.length ? 
+      privilegeHierarchy[lowestIndex].charAt(0).toUpperCase() + privilegeHierarchy[lowestIndex].slice(1) : 
+      'Premium';
   }
 }

@@ -4,7 +4,7 @@ import {environment} from "../../../environments/environment";
 import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {finalize, Subscription} from "rxjs";
+import {catchError, finalize, Subscription} from "rxjs";
 import { AlertController } from '@ionic/angular';
 import videojs from 'video.js';
 import 'videojs-hls-quality-selector';
@@ -530,6 +530,10 @@ export class VideoViewPage implements OnInit, AfterViewInit {
   // The URL get parameter
   mode: 'exercise' | 'program' | null = null;
   private routeParameterSubscription = new Subscription();
+
+  // To handle restricted video (to manage later)
+  //isVideoUnavailable = false;
+  //requiredSubscription = '';
 
   constructor(
     public router: Router,

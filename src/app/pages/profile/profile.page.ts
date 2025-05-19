@@ -123,12 +123,12 @@ export class ProfilePage extends FormComponent implements OnInit {
     this.contentService.userStorageObservable.getStorageObservable().subscribe(async(user)=>{
       this.entity = user // This is the correct way
       // The other function should't be used in this component
-      if(this.entity.user_settings){
+      if(this.entity?.user_settings){
         this.activityStatusForm.patchValue(this.entity.user_settings)
       }
 
       // Handle json extra_data
-      if (typeof(this.entity.extra_data ) == "string"){
+      if (typeof(this.entity?.extra_data ) == "string"){
         this.entity.extra_data = this.entity.extra_data ? JSON.parse(this.entity.extra_data) : null
         this.os.onboardingData.set(this.entity.extra_data).then(()=>{
           this.cdr.detectChanges();
