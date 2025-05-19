@@ -87,10 +87,10 @@ import '@videojs/http-streaming';  // Import VHS plugin
                   <span class="metadata-label">Durée</span>
                   <span class="metadata-value">{{ video?.extra?.duration }}</span>
               </div>
-              <div class="metadata-item" *ngIf="video?.extra?.calories">
+              <div class="metadata-item" *ngIf="video?.extra?.calorie">
                   <ion-icon name="flame-outline"></ion-icon>
                   <span class="metadata-label">Calories</span>
-                  <span class="metadata-value">{{ video?.extra?.calories }}</span>
+                  <span class="metadata-value">{{ video?.extra?.calorie }}</span>
               </div>
             </div>
             
@@ -98,7 +98,6 @@ import '@videojs/http-streaming';  // Import VHS plugin
             <div class="detail-section" *ngIf="video?.description">
                 <h3>Description</h3>
                 <p>{{ video?.description }}</p>
-                {{ mode }}
             </div>
 
             <div class="detail-section program-section" *ngIf="video?.extra?.program">
@@ -494,9 +493,8 @@ ion-item {
 
     `],
   styleUrls: [
-    "../../../../node_modules/video.js/dist/video-js.css"
   ],
-    encapsulation: ViewEncapsulation.None // Add this line to change style scope
+  encapsulation: ViewEncapsulation.Emulated // Add this line to change style scope
 })
 export class VideoViewPage implements OnInit, AfterViewInit {
   videoUrl:any = null

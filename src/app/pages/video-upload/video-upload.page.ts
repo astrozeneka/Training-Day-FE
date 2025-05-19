@@ -159,6 +159,52 @@ interface VideoFormData {
           ></ion-input>
         </ion-item>
 
+        <!-- Metainformation: level -->
+        <ion-item>
+          <ion-select
+            formControlName="level"
+            label="Niveau"
+            label-placement="floating"
+          >
+            <ion-select-option value="">Non spécifié</ion-select-option>
+            <ion-select-option value="debutant">Débutant</ion-select-option>
+            <ion-select-option value="intermediaire">Intermédiaire</ion-select-option>
+            <ion-select-option value="avance">Avancé</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <!-- Metainformation: duration -->
+        <ion-item>
+          <ion-input
+            type="number"
+            label="Durée (minutes)"
+            label-placement="floating"
+            formControlName="duration"
+            placeholder="Durée de l'entraînement en minutes"
+          ></ion-input>
+        </ion-item>
+
+        <!-- Metainformation: calories -->
+        <ion-item>
+          <ion-input
+            type="number"
+            label="Calories"
+            label-placement="floating"
+            formControlName="calorie"
+            placeholder="Calories brûlées estimées"
+          ></ion-input>
+        </ion-item>
+
+        <!-- Metainformation: equipment -->
+        <!--<ion-item>
+          <ion-input
+            label="Matériel requis"
+            label-placement="floating"
+            formControlName="material"
+            placeholder="Liste du matériel nécessaire"
+          ></ion-input>
+        </ion-item>-->
+
         <br/>
         <app-upload-video [formControl]="fileControl" [autoload]="false" [progress]="fileProgress"></app-upload-video>
         <br/>
@@ -183,14 +229,20 @@ export class VideoUploadPage extends FormComponent {
     'mainCategory': new FormControl('', []),
     'subCategory': new FormControl('', []),
     'category': new FormControl('', []),
-    'privilege': new FormControl('public,hoylt,moreno,alonzo', []),
+    'privilege': new FormControl('public,hoylt,gursky,smiley,moreno,alonzo', []),
     'sort_field': new FormControl('', []),
     'destination': new FormControl<VideoDestination>('s3', [Validators.required]),
     'file': this.fileControl,
     // Required for the 'exercise'/'program' features
     'isExercise': new FormControl(false),
     'program': new FormControl('none'),
-    'customProgram': new FormControl('')
+    'customProgram': new FormControl(''),
+
+    // new controls for extra_data
+    'level': new FormControl('', []),
+    'duration': new FormControl('', []),
+    'calorie': new FormControl('', []),
+    'material': new FormControl('', [])
   });
   isFormLoading = false;
   valid = false;
@@ -273,10 +325,11 @@ export class VideoUploadPage extends FormComponent {
     data.extra = {
       isExercise: data.isExercise || false,
       program: program,
-      niveau: null,
-      duree: null,
-      calorie: null,
-      materiel: null
+
+      level: data.level || null,
+      duration: data.duration || null,
+      calorie: data.calorie || null,
+      material: data.material || null
     };
 
     if (data.destination == 'server') {
