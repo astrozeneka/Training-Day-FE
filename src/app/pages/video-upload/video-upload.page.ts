@@ -7,6 +7,8 @@ import { FeedbackService } from "../../feedback.service";
 import { catchError, finalize, throwError } from "rxjs";
 import { HttpClient, HttpEventType, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { th } from 'date-fns/locale';
+import { environment } from 'src/environments/environment';
+import { VideoFormService } from 'src/app/video-form.service';
 
 type VideoDestination = 's3' | 'server'
 interface File {
@@ -272,6 +274,7 @@ export class VideoUploadPage extends FormComponent {
   ];
 
   // To manage the maincategory/subcategory hierarchy
+  // TODO: Refactor this to use a service
   categoryHierarchy: { [category: string]: [string, string][] } = {};
   availableCategories: string[] = [];
   availableSubCategories: [string, string][] = [];
@@ -282,7 +285,8 @@ export class VideoUploadPage extends FormComponent {
     private contentService: ContentService,
     private feedbackService: FeedbackService,
     private cs: ContentService,
-    private http: HttpClient
+    private http: HttpClient,
+    private vfs: VideoFormService
   ) {
     super();
     this.form.valueChanges.subscribe((value) => {
@@ -291,8 +295,19 @@ export class VideoUploadPage extends FormComponent {
   }
 
   ngOnInit() {
-    this.fetchCategoryHierarchy();
-    this.fetchProgramHierarchy();
+
+    // Fetch the category hierarchy
+    this.vfs.fetchCategoryHierarchy()
+      .subscribe((response: any) => {
+        this.categoryHierarchy = response;
+        this.availableCategories = Object.keys(this.categoryHierarchy);
+      })
+    
+    // Fetch the program hierarchy
+    this.vfs.fetchProgramHierarchy()
+      .subscribe((response: any) => {
+        this.programHierarchy = response;
+      });
 
     // Listen for category changes
     this.form.get('category').valueChanges.subscribe(category => {
@@ -421,6 +436,13 @@ export class VideoUploadPage extends FormComponent {
                     } else {
                       this.feedbackService.registerNow('Erreur lors de l\'ajout de la vidéo', 'danger')
                     }
+                    // Requesting the server to sync the db with the s3 bucket
+                    setTimeout(() => {
+                      this.http.post(`${environment.apiEndpoint}/video-s3/sync-v2`, {})
+                        .subscribe((res)=>{
+                          console.log('S3 bucket synced with the database');
+                        })
+                    }, 4000);
                   })
 
               }
@@ -435,21 +457,6 @@ export class VideoUploadPage extends FormComponent {
     if (!this.showCustomProgram) {
       this.form.get('customProgram')?.reset();
     }
-  }
-
-  // Fetch the program hierarchy from the server
-  fetchProgramHierarchy() {
-    this.contentService.getCollection('/videos/programs-hierarchy')
-      .subscribe({
-        next: (response: any) => {
-          this.programHierarchy = response;
-          console.log('Program hierarchy loaded:', this.programHierarchy);
-        },
-        error: (error) => {
-          console.error('Error loading program hierarchy:', error);
-          this.feedbackService.registerNow('Erreur lors du chargement des programmes', 'danger');
-        }
-      });
   }
 
   updateProgramOptions(category: string) {
@@ -498,22 +505,6 @@ export class VideoUploadPage extends FormComponent {
         }
       });
     }
-  }
-
-  // Fetch the category hierarchy from the server
-  fetchCategoryHierarchy() {
-    this.contentService.getCollection('/videos/category-hierarchy')
-    .subscribe({
-      next: (response: any) => {
-        this.categoryHierarchy = response;
-        this.availableCategories = Object.keys(this.categoryHierarchy);
-        console.log('Category hierarchy loaded:', this.categoryHierarchy);
-      },
-      error: (error) => {
-        console.error('Error loading category hierarchy:', error);
-        this.feedbackService.registerNow('Erreur lors du chargement des catégories', 'danger');
-      }
-    });
   }
 
   // Get display label for main category

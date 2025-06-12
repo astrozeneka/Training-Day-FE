@@ -9,6 +9,7 @@ import { AlertController } from '@ionic/angular';
 import videojs from 'video.js';
 import 'videojs-hls-quality-selector';
 import '@videojs/http-streaming';  // Import VHS plugin
+import { VideoFormService } from 'src/app/video-form.service';
 
 @Component({
   selector: 'app-video-view',
@@ -119,6 +120,7 @@ import '@videojs/http-streaming';  // Import VHS plugin
                             [errorText]="displayedError.title"
                         ></ion-input>
                     </ion-item>
+                    <!-- Secondary title input -->
                     <ion-item>
                         <ion-input
                             label="Titre secondaire (facultatif)"
@@ -127,6 +129,55 @@ import '@videojs/http-streaming';  // Import VHS plugin
                             [errorText]="displayedError.sort_field"
                         ></ion-input>
                     </ion-item>
+                    <!-- Description textarea -->
+                    <ion-item>
+                        <ion-textarea
+                            label="Description"
+                            formControlName="description"
+                            placeholder="Description de la vidéo"
+                            [rows]="5"
+                            [errorText]="displayedError.description"
+                        ></ion-textarea>
+                    </ion-item>
+                    <!-- The category (same as in video-upload) -->
+                    <ion-item>
+                      <ion-select
+                              formControlName="mainCategory"
+                              label="Catégorie principale"
+                              label-placement="floating"
+                              (ionChange)="onMainCategoryChange($event)"
+                      >
+                        <ion-select-option value="">Sélectionner une catégorie</ion-select-option>
+                        <ion-select-option *ngFor="let category of availableCategories" [value]="category">
+                            {{getCategoryLabel(category)}}
+                        </ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                    <!-- The subcategory (same as in video-upload) -->
+                    <ion-item>
+                      <ion-select
+                              formControlName="subCategory"
+                              label="Sous-catégorie"
+                              label-placement="floating"
+                              (ionChange)="onSubCategoryChange($event)"
+                              [disabled]="!form.get('mainCategory').value"
+                      >
+                          <ion-select-option value="">Sélectionner une sous-catégorie</ion-select-option>
+                          <ion-select-option *ngFor="let subCategory of availableSubCategories" [value]="subCategory[0]">
+                              {{subCategory[1]}}
+                          </ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                    <!-- Tags -->
+                    <ion-item>
+                        <ion-input
+                            label="Tags"
+                            label-placement="floating"
+                            formControlName="tags"
+                            [errorText]="displayedError.tags"
+                        ></ion-input>
+                    </ion-item>
+                    <!--
                     <ion-item>
                         <ion-select
                             formControlName="category"
@@ -150,6 +201,7 @@ import '@videojs/http-streaming';  // Import VHS plugin
                         <ion-select-option value="boxing/pieds-poings-genoux">Boxing > Pieds, poings et genoux</ion-select-option>
                         </ion-select>
                     </ion-item>
+                    -->
                     <ion-item>
                         <ion-select
                             label="Visibilité"
@@ -160,35 +212,87 @@ import '@videojs/http-streaming';  // Import VHS plugin
                             <ion-select-option [value]="1">Privée</ion-select-option>
                         </ion-select>
                     </ion-item>
-                    <ion-item>
-                        <ion-textarea
-                            label="Description"
-                            formControlName="description"
-                            placeholder="Description de la vidéo"
-                            [rows]="5"
-                            [errorText]="displayedError.description"
-                        ></ion-textarea>
-                    </ion-item>
-                    <ion-item>
-                        <ion-input
-                            label="Tags"
-                            label-placement="floating"
-                            formControlName="tags"
-                            [errorText]="displayedError.tags"
-                        ></ion-input>
-                    </ion-item>
+                    <!-- Privilege selection -->
                     <ion-item>
                         <ion-select
                             formControlName="privilege"
                             label="Privilège requis"
                             label-placement="floating"
                         >
-                            <ion-select-option value='public,hoylt,moreno,alonzo'>Tout le monde</ion-select-option>
-                            <ion-select-option value='hoylt,moreno,alonzo'>Hoylt ou supérieur</ion-select-option>
-                            <ion-select-option value="moreno,alonzo">Moreno ou supérieur</ion-select-option>
-                            <ion-select-option value="alonzo">Alonzo</ion-select-option>
+                          <ion-select-option value='public,hoylt,gursky,smiley,moreno,alonzo'>Tout le monde</ion-select-option>
+                          <ion-select-option value='hoylt,gursky,smiley,moreno,alonzo'>Hoylt ou supérieur</ion-select-option>
+                          <ion-select-option value="gursky,smiley,moreno,alonzo">Gursky/Smiley ou supérieur</ion-select-option>
+                          <ion-select-option value="alonzo">Alonzo</ion-select-option>
                         </ion-select>
                     </ion-item>
+
+                    <!-- IsExercise checkbox -->
+                    <ion-item>
+                      <ion-checkbox formControlName="isExercise">Afficher comme exercice</ion-checkbox>
+                    </ion-item>
+
+                    <!-- Program selection -->
+                    <ion-item>
+                      <ion-select
+                        formControlName="program"
+                        label="Programme"
+                        label-placement="floating"
+                        (ionChange)="onProgramChange($event)"
+                        [disabled]="!form.get('category').value || form.get('category').value === 'undefined'"
+                      >
+                        <ion-select-option *ngFor="let option of availableProgramOptions" [value]="option.value">
+                          {{option.label}}
+                        </ion-select-option>
+                      </ion-select>
+                    </ion-item>
+
+                    <!-- Custom program input (shown only when "Autres" is selected) -->
+                    <ion-item *ngIf="showCustomProgram">
+                      <ion-input
+                        label="Nom du programme"
+                        label-placement="floating"
+                        formControlName="customProgram"
+                        placeholder="Entrez le nom du programme"
+                      ></ion-input>
+                    </ion-item>
+
+                    <!-- Metainformation: level -->
+                    <ion-item>
+                      <ion-select
+                        formControlName="level"
+                        label="Niveau"
+                        label-placement="floating"
+                      >
+                        <ion-select-option value="">Non spécifié</ion-select-option>
+                        <ion-select-option value="debutant">Débutant</ion-select-option>
+                        <ion-select-option value="intermediaire">Intermédiaire</ion-select-option>
+                        <ion-select-option value="avance">Avancé</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+
+                    <!-- Metainformation: duration -->
+                    <ion-item>
+                      <ion-input
+                        type="number"
+                        label="Durée (minutes)"
+                        label-placement="floating"
+                        formControlName="duration"
+                        placeholder="Durée de l'entraînement en minutes"
+                      ></ion-input>
+                    </ion-item>
+
+                    <!-- Metainformation: calories -->
+                    <ion-item>
+                      <ion-input
+                        type="number"
+                        label="Calories"
+                        label-placement="floating"
+                        formControlName="calorie"
+                        placeholder="Calories brûlées estimées"
+                      ></ion-input>
+                    </ion-item>
+
+                    <!-- Action buttons -->
                     <div class="form-actions">
                         <app-ux-button
                             expand="block"
@@ -506,10 +610,25 @@ export class VideoViewPage implements OnInit, AfterViewInit {
     'title': new FormControl('', [Validators.required]),
     'description': new FormControl('', [Validators.required]),
     'tags': new FormControl('', []),
+
+    'mainCategory': new FormControl('', []),
+    'subCategory': new FormControl('', []),
     'category': new FormControl('undefined', []),
+
     'privilege': new FormControl(['public', 'hoylt', 'moreno', 'alonzo'], []),
     'hidden': new FormControl(false, []),
-    'sort_field': new FormControl('', [])
+    'sort_field': new FormControl('', []),
+
+    // Required for the 'exercise'/'program' features
+    'isExercise': new FormControl(false),
+    'program': new FormControl('none'),
+    'customProgram': new FormControl(''),
+
+    // new controls for extra_data
+    'level': new FormControl('', []),
+    'duration': new FormControl('', []),
+    'calorie': new FormControl('', []),
+    'material': new FormControl('', [])
   })
   displayedError = {
     'title': undefined,
@@ -535,13 +654,31 @@ export class VideoViewPage implements OnInit, AfterViewInit {
   //isVideoUnavailable = false;
   //requiredSubscription = '';
 
+  // TO keep track if the custom program text is displayed
+  showCustomProgram:boolean = false;// Store all programs by category
+
+  // Store all programs by category
+  programHierarchy: { [category: string]: string[] } = {};
+  // Store available program options for the selected category
+  availableProgramOptions: { value: string, label: string }[] = [
+    { value: 'none', label: 'Pas inclus dans un programme' },
+    { value: 'other', label: 'Autres' }
+  ];
+
+  // To manage the maincategory/subcategory hierarchy
+  // TODO: Refactor this to use a service
+  categoryHierarchy: { [category: string]: [string, string][] } = {};
+  availableCategories: string[] = [];
+  availableSubCategories: [string, string][] = [];
+
   constructor(
     public router: Router,
     public contentService: ContentService,
     public feedbackService: FeedbackService,
     public route: ActivatedRoute,
     private alertController: AlertController,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private vfs: VideoFormService
   ) {
     this.videoId = this.route.snapshot.paramMap.get('id')
     this.router.events.subscribe(async (event)=>{
@@ -576,6 +713,55 @@ export class VideoViewPage implements OnInit, AfterViewInit {
           // Manage the reader
           this.initVideoJsReader()
 
+          // Patch mainCategory and subCategory
+          const categoryParts = this.video.category.split('/');
+          if (categoryParts.length > 1){
+            this.form.get('mainCategory')?.setValue(categoryParts[0]);
+            if (categoryParts[0] && this.categoryHierarchy[categoryParts[0]]) {
+              // Update available subcategories based on main category
+              this.availableSubCategories = this.categoryHierarchy[categoryParts[0]];
+              if (categoryParts.length > 1) {
+                // Set subCategory if it exists in the hierarchy
+                const subCategory = this.availableSubCategories.find(sub => sub[0] === categoryParts[1]);
+                if (subCategory) {
+                  this.form.get('subCategory')?.setValue(subCategory[0]);
+                } else {
+                  // If subcategory not found, reset it
+                  this.form.get('subCategory')?.setValue('');
+                }
+
+                // Load the program options based on the selected category
+                this.updateProgramOptions(`${categoryParts[0]}/${categoryParts[1]}`);
+              }
+            }
+          }
+
+          // Patch program
+          console.log("Video extra data:", this.video.extra.program)
+          setTimeout(() => {
+            this.form.get("program")?.setValue(this.video.extra?.program || 'none');
+            console.log("Program set to:", this.form.get("program")?.value);
+          }, 1000);
+
+          // isExercuse and program handling
+          this.form.get('isExercise')?.setValue(this.video.extra?.isExercise || false);
+          this.form.get('program')?.setValue(this.video.extra?.program || 'none');
+          this.showCustomProgram = this.form.get('program')?.value === 'other';
+          this.form.get('customProgram')?.setValue(this.video.extra?.program || '');
+
+          // Patch the extra data
+          this.form.get('level')?.setValue(this.video.extra?.level || '');
+          this.form.get('duration')?.setValue(this.video.extra?.duration || '');
+          this.form.get('calorie')?.setValue(this.video.extra?.calorie || '');
+
+          /*if (categoryParts.length == 2) {
+            this.updateCategoryValue(); // Update the category value based on main and subcategory
+            setTimeout(() => {
+              console.log("Setting subCategory to", categoryParts[1])
+              this.form.get('subCategory')?.setValue(categoryParts[1]);
+            }, 1000);
+          }*/
+
           // THe older way to patch value (should be removed later)
           /*
           this.form.patchValue({
@@ -595,6 +781,19 @@ export class VideoViewPage implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    // Fetch the category hierarchy
+    this.vfs.fetchCategoryHierarchy()
+      .subscribe((response: any) => {
+        this.categoryHierarchy = response;
+        this.availableCategories = Object.keys(this.categoryHierarchy);
+      })
+    
+    // Fetch the program hierarchy
+    this.vfs.fetchProgramHierarchy()
+      .subscribe((response: any) => {
+        this.programHierarchy = response;
+      });
+
     // Subscribe to query parameter changes
     this.routeParameterSubscription.add(
       this.route.queryParamMap.subscribe(params => {
@@ -648,6 +847,23 @@ export class VideoViewPage implements OnInit, AfterViewInit {
       .filter(a=>a.trim() !== '')
       .join(',')
 
+    // Prepare extra_data informations
+    let program = data.program;
+    if (data.program === 'other' && data.customProgram) {
+      program = data.customProgram;
+    } else if (data.program === 'none') {
+      program = null;
+    }
+    data.extra = {
+      isExercise: data.isExercise || false,
+      program: program,
+
+      level: data.level || null,
+      duration: data.duration || null,
+      calorie: data.calorie || null,
+      material: data.material || null
+    };
+
     data.video_id = this.video.id
     this.contentService.put('/video', data)
       .pipe(finalize(()=>this.isFormLoading = false)) // WARNING, no validation is present here
@@ -693,6 +909,125 @@ export class VideoViewPage implements OnInit, AfterViewInit {
       ]
     })
     await alert.present();
+  }
+
+  // To manage the program selection
+  onProgramChange(event: any) {
+    this.showCustomProgram = event.detail.value === 'other';
+    if (!this.showCustomProgram) {
+      this.form.get('customProgram')?.reset();
+    }
+
+    // Update validators based on program selection
+    if (event.detail.value === 'other') {
+      this.form.get('customProgram')?.setValidators([Validators.required]);
+    } else {
+      this.form.get('customProgram')?.clearValidators();
+    }
+  }
+
+  updateProgramOptions(category: string) {
+    // Reset the program selection when category changes
+    this.form.get('program').setValue('none');
+    
+    // Reset available options to defaults
+    this.availableProgramOptions = [
+      { value: 'none', label: 'Pas inclus dans un programme' },
+      { value: 'other', label: 'Autres' }
+    ];
+    
+    // If no category or "undefined" is selected, we're done
+    if (!category || category === 'undefined') {
+      return;
+    }
+    
+    // Get programs for this category
+    if (this.programHierarchy[category]) {
+      // Add programs from this category to the options
+      this.programHierarchy[category].forEach(program => {
+        this.availableProgramOptions.splice(this.availableProgramOptions.length - 1, 0, {
+          value: program,
+          label: program
+        });
+      });
+    }
+    
+    // For parent categories like "training" or "boxing", also include programs from subcategories
+    if (category === 'training' || category === 'boxing') {
+      Object.keys(this.programHierarchy).forEach(key => {
+        if (key.startsWith(category + '/') && this.programHierarchy[key]) {
+          this.programHierarchy[key].forEach(program => {
+            // Check if this program already exists in options
+            const exists = this.availableProgramOptions.some(
+              option => option.value === program.toLowerCase().replace(/\s+/g, '-')
+            );
+            
+            if (!exists) {
+              this.availableProgramOptions.splice(this.availableProgramOptions.length - 1, 0, {
+                value: program.toLowerCase().replace(/\s+/g, '-'),
+                label: program
+              });
+            }
+          });
+        }
+      });
+    }
+  }
+
+  // Get display label for main category
+  getCategoryLabel(category: string): string {
+    // Capitalize first letter
+    return category.charAt(0).toUpperCase() + category.slice(1);
+  }
+
+  // Handle main category change
+  onMainCategoryChange(event: any) {
+    const selectedCategory = event.detail.value;
+    
+    // Reset subcategory and program
+    this.form.get('subCategory').setValue('');
+    this.form.get('program').setValue('none');
+    
+    // Update available subcategories
+    if (selectedCategory && this.categoryHierarchy[selectedCategory]) {
+      this.availableSubCategories = this.categoryHierarchy[selectedCategory];
+    } else {
+      this.availableSubCategories = [];
+    }
+    
+    // If we only have one subcategory, select it automatically
+    if (this.availableSubCategories.length === 1) {
+      this.form.get('subCategory').setValue(this.availableSubCategories[0][0]);
+      this.updateCategoryValue();
+    }
+  }
+
+  // Handle subcategory change
+  onSubCategoryChange(event: any) {
+    this.updateCategoryValue();
+    
+    // Reset and update program selection
+    this.form.get('program').setValue('none');
+    const mainCategory = this.form.get('mainCategory').value;
+    const subCategory = event.detail.value;
+    
+    if (mainCategory && subCategory) {
+      this.updateProgramOptions(`${mainCategory}/${subCategory}`);
+    }
+  }
+
+  // Update the category value based on main and subcategory
+  updateCategoryValue() {
+    const mainCategory = this.form.get('mainCategory').value;
+    const subCategory = this.form.get('subCategory').value;
+    
+    if (mainCategory && subCategory) {
+      this.form.get('category').setValue(`${mainCategory}/${subCategory}`);
+    } else if (mainCategory) {
+      this.form.get('category').setValue(mainCategory);
+    } else {
+      this.form.get('category').setValue('');
+    }
   }
 
 }

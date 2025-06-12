@@ -16,26 +16,19 @@ import { SwiperOptions } from 'swiper/types';
 @Component({
   selector: 'app-home',
   template: `
-    <ion-header>
-    <ion-toolbar>
-        <ion-buttons slot="start">
-            <app-back-button [customUrl]="'welcome-menu'"></app-back-button>
-            <ion-menu-button></ion-menu-button>
-        </ion-buttons>
-        <ion-title>Training Day</ion-title>
-    </ion-toolbar>
-</ion-header>
+<div class="welcome-header ion-padding">
+    <div class="greeting-section">
+        <h1 class="greeting-title">Bonjour, John</h1>
+        <div class="streak-counter">
+            <ion-icon name="flame"></ion-icon>
+            <span class="streak-number">7</span>
+            <span class="streak-label">jours</span>
+        </div>
+    </div>
+</div>
 
 <ion-content>
-    <p></p>
-    <div>
-        <!--
-          Have a small bug on iphone
-          SHould be updated
-        -->
-    </div>
 
-    <h2 class="ion-padding">Bienvenue sur Training Day</h2>
 
 
     <div *ngIf="user">
@@ -71,11 +64,24 @@ import { SwiperOptions } from 'swiper/types';
         </div>
 
 
-        <h1 class="display-1 ion-padding">Mes Applications</h1>
+        <!-- The searchbar -->
+        <div class="search-section ion-padding">
+            <div class="search-container">
+                <ion-icon name="search" class="search-icon"></ion-icon>
+                <input type="text" placeholder="Rechercher un exercice, un programme..." class="search-input">
+                <ion-icon name="options" class="filter-icon"></ion-icon>
+            </div>
+        </div>
+
+        <!-- The applications section -->
+        <div class="section-header ion-padding">
+          <h2 class="section-title">Mes Applications</h2>
+          <span class="voir-plus">Voir plus</span>
+        </div>
+
+        <!-- Swiper container for the apps -->
         <div class="container">
-            <!-- Additional required wrapper -->
-            <swiper-container navigation="false" pagination="true" autoplay-delay="2500" css-mode="false" loop="true"
-                #swiperEl init="true">
+            <swiper-container navigation="false" pagination="true" css-mode="false" loop="false" slides-per-view="1.2" space-between="16" centered-slides="false" #swiperEl init="true">
                 <swiper-slide>
                     <div class="image-container">
                         <img title="GPS" src="../../../assets/medias/IMG_0962_1024x683.jpeg" />
@@ -149,21 +155,89 @@ import { SwiperOptions } from 'swiper/types';
                 </swiper-slide>
             </swiper-container>
         </div>
+
+        <!-- CTA section to talk with the coach -->
+        <div class="chat-cta-section ion-padding">
+          <div class="chat-cta-container">
+            <div class="chat-cta-content">
+              <ion-icon name="chatbubbles" class="chat-icon"></ion-icon>
+              <div class="chat-text">
+                <h3>Besoin d'aide ?</h3>
+                <p>Parlez à votre coach personnel</p>
+              </div>
+            </div>
+            <ion-button class="chat-button" (click)="navigateTo('/chat')">
+                Commencer la discussion
+            </ion-button>
+          </div>
+        </div>
+
+        <div class="training-section">
+          <div class="section-header ion-padding">
+              <h2 class="section-title">S'entraîner</h2>
+              <span class="voir-plus">Voir plus</span>
+          </div>
+          
+          <div class="chip-selector ion-padding-horizontal">
+              <ion-chip class="training-chip active">Tout</ion-chip>
+              <ion-chip class="training-chip">Cardio</ion-chip>
+              <ion-chip class="training-chip">Musculation</ion-chip>
+              <ion-chip class="training-chip">Yoga</ion-chip>
+              <ion-chip class="training-chip">HIIT</ion-chip>
+          </div>
+          
+          <div class="training-videos ion-padding-horizontal">
+              <div class="training-video-card" *ngFor="let workout of videos">
+                  <div class="video-thumbnail">
+                      <img [src]="workout.thumbnail" [alt]="workout.title">
+                      <div class="play-overlay">
+                          <ion-icon name="play"></ion-icon>
+                      </div>
+                      <!--<div class="duration-badge">{{ workout.duration }}</div>-->
+                  </div>
+                  <div class="video-info">
+                      <!--<h4 class="video-title">{{ workout.title }}</h4>-->
+                      <div class="video-stats">
+                          <!--<span class="difficulty">{{ workout.difficulty }}</span>-->
+                          <!--<span class="calories">{{ workout.calories }} cal</span>-->
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
     </div>
 
 
-    <div class="premium-subscription ion-padding">
-        <h1 class="display-1">Un accompagnement et un suivi réel et personnalisé</h1>
-        <p>
-            Nos solutions d’accompagnement vous permettent d'accéder à des programmes d'entraînement personnalisés et un
-            suivi avec un coach personnel.
-        </p>
-        <p>
-            Rendez-vous à la page abonnement afin de trouver la solution qui vous convient.
-        </p>
-        <div>
-            <ion-button (click)="navigateTo('/swipeable-store')">Découvrir les offres</ion-button>
-        </div>
+    <div class="premium-subscription-redesigned">
+      <div class="subscription-card ion-padding">
+          <div class="subscription-header">
+              <!--<ion-icon name="star" class="premium-icon"></ion-icon>-->
+              <!-- Icon of the app -->
+              <img src="/assets/logo-dark-cropped.png" width="64" alt="Training Day Logo" class="premium-icon" />
+              <h2>Optez pour un abonnement</h2>
+          </div>
+          <p class="subscription-description">
+              Débloquez des programmes personnalisés et un suivi avec votre coach
+          </p>
+          <div class="premium-features">
+              <div class="feature-item">
+                  <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                  <span>Programmes personnalisés</span>
+              </div>
+              <div class="feature-item">
+                  <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                  <span>Coach personnel dédié</span>
+              </div>
+              <div class="feature-item">
+                  <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                  <span>Suivi en temps réel</span>
+              </div>
+          </div>
+          <ion-button class="premium-button" (click)="navigateTo('/swipeable-store')">
+              Accéder à la boutique
+          </ion-button>
+      </div>
     </div>
 
     <div class="">
@@ -193,7 +267,7 @@ import { SwiperOptions } from 'swiper/types';
     </div>
 
     <!-- Autres contenus -->
-    <div>
+    <!--<div>
         <h1 class="display-1 ion-padding">Autres astuces et conseils</h1>
         <div class="misc-list">
             <div class="misc-item">
@@ -245,8 +319,7 @@ import { SwiperOptions } from 'swiper/types';
                 </div>
             </div>
         </div>
-        <!-- debug section (only used while debugging) -->
-        <!--
+        
             <div>
                 <h2 class="display-1 ion-padding-horizontal">Debug section</h2>
                 <div>
@@ -259,13 +332,28 @@ import { SwiperOptions } from 'swiper/types';
                     <ion-button fill="clear" (click)="refreshToken()">Refresh token</ion-button>
                 </div>
             </div>
-            -->
         <br />
         <br />
         <br />
         <br />
         <br />
+    </div>-->
+
+    <div class="share-section ion-padding">
+      <div class="share-container">
+        <div class="share-content">
+          <ion-icon name="share-social" class="share-icon"></ion-icon>
+          <div class="share-text">
+            <h3>Partagez Training Day</h3>
+            <p>Invitez vos amis à vous rejoindre</p>
+          </div>
+        </div>
+        <ion-button fill="outline" class="share-button">
+          Partager
+        </ion-button>
+      </div>
     </div>
+    <br/><br/><br/><br/>
 
     <app-button-to-chat></app-button-to-chat>
 </ion-content>
@@ -344,81 +432,227 @@ h2 {
   }
 }
 
-// 2. The swipper
+// The new welcome header
+.welcome-header {
+  padding-top: calc(env(safe-area-inset-top) + 1.5rem);
+  
+  .greeting-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .greeting-title {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+    }
+    
+    .streak-counter {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(45deg, var(--ion-color-warning), var(--ion-color-danger));
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      
+      ion-icon {
+        color: white;
+        font-size: 1.2rem;
+        margin-right: 0.3rem;
+      }
+      
+      .streak-number {
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-right: 0.2rem;
+      }
+      
+      .streak-label {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+// Search section
+.search-section {
+  .search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--ion-color-light);
+    border-radius: 16px;
+    padding: 0.8rem 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    
+    .search-icon {
+      color: var(--ion-color-medium);
+      font-size: 1.2rem;
+      margin-right: 0.8rem;
+    }
+    
+    .search-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 1rem;
+      color: var(--ion-color-dark);
+      
+      &::placeholder {
+        color: var(--ion-color-medium);
+      }
+      
+      &:focus {
+        outline: none;
+      }
+    }
+    
+    .filter-icon {
+      color: var(--ion-color-medium);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+  }
+}
+
+// 2. The swipper (v2)
 .swiper {
   width: 100%;
-  height: 380px;
+  height: 320px;
+  overflow: visible;
+  padding: 0 0 2rem 0;
 }
 
-:host {
-  --swiper-navigation-color: var(--ion-color-primary); // Replace with your desired color value
-}
+/*:host {
+  --swiper-navigation-color: var(--ion-color-primary);
+  --swiper-pagination-color: var(--ion-color-primary);
+  --swiper-pagination-bullet-inactive-color: var(--ion-color-light);
+  --swiper-pagination-bottom: 0px;
+}*/
 
+// Modern swiper design
+.container {
+  padding: 0 0rem;
+  overflow: visible;
+  & > *:first-child {
+    margin-left: 1rem;
+  }
+}
 
 swiper-slide {
   position: relative;
-  height: 380px;
-  display: flex;
-  align-items: flex-end;
-  padding: 1em;
+  height: 280px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
   background: var(--ion-color-light);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-right: 16px;
 
-  & .icon {
+  /*&:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+  }*/
+
+  .description {
     position: absolute;
-    top: 0;
+    bottom: 0;
+    left: 0;
     right: 0;
-    font-size: 300px;
-    opacity: 0.1;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    padding: 3rem 1.5rem 1.5rem;
+    text-align: left;
+    z-index: 2;
   }
 
-  & .description {
-    flex: 1;
-    text-align: right;
-    padding-left: 2em;
-    padding-right: 2em;
-  }
-
-  & h3 {
+  h3 {
     color: white;
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    text-shadow: 0 0 10px black;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 
-    & span {
+    span {
       @include display-1;
     }
   }
 
-  & p {
-    color: white;
-    text-shadow: 0 0 10px black;
+  p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin: 0 0 1rem 0;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
   }
 
-  & svg {
-    stroke: red !important;
+  ion-button {
+    // The same as in the CTA
+    --background: rgba(255, 255, 255, 0.2);
+    --color: white;
+    //--border-radius: 12px;
+    --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    --padding-start: 1.2rem;
+    --padding-end: 1.2rem;
+    --padding-top: 0.6rem;
+    --padding-bottom: 0.6rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    backdrop-filter: blur(10px);
+    
+    &:hover {
+      --background: rgba(255, 255, 255, 0.3);
+    }
   }
 
-  & ion-button {
-    margin-bottom: 1em;
-  }
-
-  & .image-container {
-    overflow: hidden;
+  .image-container {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: -999;
     width: 100%;
     height: 100%;
+    z-index: 1;
 
     img {
-      position: relative;
-      filter: blur(.5px) brightness(0.8);
       width: 100%;
       height: 100%;
       object-fit: cover;
+      filter: brightness(0.9) contrast(1.1);
     }
+  }
+}
+
+// Responsive design
+/*@media screen and (min-width: 768px) {
+  .container {
+    padding: 0 2rem;
+  }
+  
+  .swiper {
+    height: 360px;
+  }
+  
+  swiper-slide {
+    height: 320px;
+    
+    .description {
+      padding: 4rem 2rem 2rem;
+    }
+    
+    h3 {
+      font-size: 1.6rem;
+    }
+    
+    p {
+      font-size: 0.9rem;
+    }
+  }
+}*/
+
+@media screen and (min-width: 1024px) {
+  swiper-slide {
+    margin-right: 24px;
   }
 }
 
@@ -542,7 +776,318 @@ swiper-slide {
   &>div {
     flex: 1;
   }
-}`]
+}
+
+// Apps header with "Voir plus"
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h1 {
+    margin: 0;
+    flex: 1;
+  }
+
+  .voir-plus {
+    color: var(--ion-color-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+// The section title
+.section-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+}
+
+// Chat CTA styles
+.chat-cta-section {
+  .chat-cta-container {
+    background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+    border-radius: 20px;
+    padding: 1.5rem;
+    
+    .chat-cta-content {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      
+      .chat-icon {
+        color: white;
+        font-size: 2rem;
+        margin-right: 1rem;
+      }
+      
+      .chat-text {
+        h3 {
+          color: white;
+          margin: 0 0 0.2rem 0;
+          font-size: 1.2rem;
+          font-weight: 600;
+        }
+        
+        p {
+          color: rgba(255, 255, 255, 0.9);
+          margin: 0;
+          font-size: 0.9rem;
+        }
+      }
+    }
+    
+    .chat-button {
+      // The same as in the swiper
+      --background: rgba(255, 255, 255, 0.2);
+      --color: white;
+      width: 100%;
+      //--border-radius: 8px;
+      --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      --padding-start: 1.2rem;
+      --padding-end: 1.2rem;
+      --padding-top: 0.6rem;
+      --padding-bottom: 0.6rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      backdrop-filter: blur(10px);
+      
+      &:hover {
+        --background: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+}
+
+// Training section styles
+.training-section {
+  .chip-selector {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    
+    .training-chip {
+      --background: var(--ion-color-light);
+      --color: var(--ion-color-medium);
+      font-size: 0.85rem;
+      
+      &.active {
+        --background: var(--ion-color-primary);
+        --color: white;
+      }
+    }
+  }
+  
+  .training-videos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    
+    .training-video-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      
+      .video-thumbnail {
+        position: relative;
+        height: 160px;
+        overflow: hidden;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        
+        .play-overlay {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(0, 0, 0, 0.7);
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          
+          ion-icon {
+            color: white;
+            font-size: 1.5rem;
+          }
+        }
+        
+        .duration-badge {
+          position: absolute;
+          bottom: 0.5rem;
+          right: 0.5rem;
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 0.2rem 0.5rem;
+          border-radius: 8px;
+          font-size: 0.75rem;
+        }
+      }
+      
+      .video-info {
+        padding: 1rem;
+        
+        .video-title {
+          margin: 0 0 0.5rem 0;
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+        }
+        
+        .video-stats {
+          display: flex;
+          gap: 1rem;
+          
+          span {
+            font-size: 0.8rem;
+            color: var(--ion-color-medium);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Premium subscription redesign
+.premium-subscription-redesigned {
+  padding: 2rem 1rem;
+  
+  .subscription-card {
+    //background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 2rem;
+    border-radius: 24px;
+    color: white;
+    text-align: center;
+    
+    .subscription-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1rem;
+      
+      .premium-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        color: #ffd700;
+      }
+      
+      h2 {
+        margin: 0;
+        font-size: 1.6rem;
+        font-weight: 700;
+      }
+    }
+    
+    .subscription-description {
+      margin: 0 0 1.5rem 0;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    
+    .premium-features {
+      margin-bottom: 2rem;
+      
+      .feature-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.8rem;
+        
+        ion-icon {
+          margin-right: 0.5rem;
+          font-size: 1.2rem;
+        }
+        
+        span {
+          font-size: 0.9rem;
+        }
+      }
+    }
+    
+    .premium-button {
+      width: 100%;
+      // Same as in the swiper and chat CTA
+      --background: rgba(255, 255, 255, 0.2);
+      --color: white;
+      //--border-radius: 12px;
+      --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      --padding-start: 1.2rem;
+      --padding-end: 1.2rem;
+      --padding-top: 0.6rem;
+      --padding-bottom: 0.6rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      backdrop-filter: blur(10px);
+      
+      &:hover {
+        --background: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+}
+
+// Share section styles
+.share-section {
+  .share-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--ion-color-light);
+    border-radius: 16px;
+    padding: 1rem;
+    
+    .share-content {
+      display: flex;
+      align-items: center;
+      
+      .share-icon {
+        color: var(--ion-color-primary);
+        font-size: 1.8rem;
+        margin-right: 1rem;
+      }
+      
+      .share-text {
+        h3 {
+          margin: 0 0 0.2rem 0;
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+        }
+        
+        p {
+          margin: 0;
+          font-size: 0.85rem;
+          color: var(--ion-color-medium);
+        }
+      }
+    }
+    
+    .share-button {
+
+      --border-color: var(--ion-color-primary);
+      --color: var(--ion-color-primary);
+      --border-radius: 12px;
+    }
+  }
+}
+`]
 })
 export class HomePage extends FormComponent implements OnInit, AfterViewInit {
   user: any = null
