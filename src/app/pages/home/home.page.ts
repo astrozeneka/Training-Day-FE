@@ -10,6 +10,8 @@ import { environment } from "../../../environments/environment";
 import { Navigation, Pagination } from 'swiper/modules';
 import { register } from 'swiper/element/bundle';
 import { SwiperOptions } from 'swiper/types';
+import { catchError, debounceTime, distinctUntilChanged, EMPTY, switchMap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -18,7 +20,10 @@ import { SwiperOptions } from 'swiper/types';
   template: `
 <div class="welcome-header ion-padding">
     <div class="greeting-section">
-        <h1 class="greeting-title">Bonjour, John</h1>
+
+        <ion-menu-button *ngIf="user?.function === 'admin' || user?.function === 'coach' || user?.function === 'coach'"></ion-menu-button>
+        <h1 class="greeting-title" *ngIf="user">Bonjour, {{ user.firstname }}</h1>
+        <h1 class="greeting-title" *ngIf="!user">Bienvenue sur Training Day</h1>
         <div class="streak-counter">
             <ion-icon name="flame"></ion-icon>
             <span class="streak-number">7</span>
@@ -28,8 +33,6 @@ import { SwiperOptions } from 'swiper/types';
 </div>
 
 <ion-content>
-
-
 
     <div *ngIf="user">
         <ion-card color="warning" class="ion-padding"
@@ -63,20 +66,93 @@ import { SwiperOptions } from 'swiper/types';
             </ion-card>
         </div>
 
-
-        <!-- The searchbar -->
+        <!-- Functional search section -->
         <div class="search-section ion-padding">
-            <div class="search-container">
-                <ion-icon name="search" class="search-icon"></ion-icon>
-                <input type="text" placeholder="Rechercher un exercice, un programme..." class="search-input">
-                <ion-icon name="options" class="filter-icon"></ion-icon>
+          <div class="search-container">
+            <ion-icon name="search" class="search-icon"></ion-icon>
+            <input 
+              type="text" 
+              placeholder="Rechercher un exercice, un programme..." 
+              class="search-input"
+              [formControl]="searchControl"
+              (blur)="onSearchBlur()">
+            <ion-icon name="options" class="filter-icon"></ion-icon>
+          </div>
+
+          <!-- Search Results Container -->
+          <div class="search-results-container" *ngIf="showSearchResults">
+            <!-- Loading State -->
+            <div class="search-loading" *ngIf="isSearching">
+              <ion-spinner></ion-spinner>
+              <span>Recherche en cours...</span>
             </div>
+
+            <!-- Results -->
+            <div class="search-results" *ngIf="!isSearching && searchResults">
+              <!-- No Results -->
+              <div class="no-results" *ngIf="!searchResults.videos?.length && !searchResults.recipes?.length && !searchResults.applinks?.length">
+                <ion-icon name="search"></ion-icon>
+                <p>Aucun résultat trouvé pour "{{ searchQuery }}"</p>
+              </div>
+
+              <!-- Results List -->
+              <div class="results-list" *ngIf="searchResults.videos?.length || searchResults.recipes?.length || searchResults.applinks?.length">
+                <!-- Videos -->
+                <div class="result-item" 
+                  *ngFor="let video of searchResults.videos" 
+                  (click)="onSearchResultClick(video)">
+                  <div class="result-icon">
+                    <ion-icon [name]="getResultIcon(video.entity)"></ion-icon>
+                  </div>
+                  <div class="result-content">
+                    <h4 class="result-title">{{ video.title }}</h4>
+                    <p class="result-description">{{ video.description }}</p>
+                    <span class="result-type">Vidéo</span>
+                  </div>
+                  <div class="result-thumbnail" *ngIf="video.thumbnailUrl">
+                    <img [src]="video.thumbnailUrl" [alt]="video.title">
+                  </div>
+                </div>
+
+                <!-- Recipes -->
+                <div class="result-item" 
+                  *ngFor="let recipe of searchResults.recipes" 
+                  (click)="onSearchResultClick(recipe)">
+                  <div class="result-icon">
+                      <ion-icon [name]="getResultIcon(recipe.entity)"></ion-icon>
+                  </div>
+                  <div class="result-content">
+                    <h4 class="result-title">{{ recipe.title }}</h4>
+                    <p class="result-description">{{ recipe.description }}</p>
+                    <span class="result-type">Recette</span>
+                  </div>
+                  <div class="result-thumbnail" *ngIf="recipe.thumbnailUrl">
+                    <img [src]="recipe.thumbnailUrl" [alt]="recipe.title">
+                  </div>
+                </div>
+
+                <!-- App Links -->
+                <div class="result-item" 
+                  *ngFor="let applink of searchResults.applinks" 
+                  (click)="onSearchResultClick(applink)">
+                  <div class="result-icon">
+                    <ion-icon [name]="getResultIcon(applink.entity)"></ion-icon>
+                  </div>
+                  <div class="result-content">
+                    <h4 class="result-title">{{ applink.title }}</h4>
+                    <p class="result-description">{{ applink.description }}</p>
+                    <span class="result-type">Application</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- The applications section -->
         <div class="section-header ion-padding">
           <h2 class="section-title">Mes Applications</h2>
-          <span class="voir-plus">Voir plus</span>
+          <span class="voir-plus" (click)="navigateTo('/tools')">Voir plus</span>
         </div>
 
         <!-- Swiper container for the apps -->
@@ -166,7 +242,7 @@ import { SwiperOptions } from 'swiper/types';
                 <p>Parlez à votre coach personnel</p>
               </div>
             </div>
-            <ion-button class="chat-button" (click)="navigateTo('/chat')">
+            <ion-button class="chat-button" (click)="navigateTo('/messenger-master')">
                 Commencer la discussion
             </ion-button>
           </div>
@@ -175,10 +251,41 @@ import { SwiperOptions } from 'swiper/types';
         <div class="training-section">
           <div class="section-header ion-padding">
               <h2 class="section-title">S'entraîner</h2>
-              <span class="voir-plus">Voir plus</span>
+              <span class="voir-plus" (click)="navigateTo('/video-home')">Voir plus</span>
+          </div>
+
+          <div class="training-cta-section ion-padding">
+            <div class="training-cta-container">
+              <div class="training-cta-content">
+                <div class="cta-icon-container">
+                  <ion-icon name="fitness" class="training-icon"></ion-icon>
+                </div>
+                <div class="training-text">
+                  <h3>Commencez votre entraînement</h3>
+                  <p>Découvrez nos programmes personnalisés et vidéos d'exercices</p>
+                </div>
+              </div>
+              <div class="training-features">
+                <div class="feature-item">
+                  <ion-icon name="play-circle" color="light"></ion-icon>
+                  <span>Vidéos HD</span>
+                </div>
+                <div class="feature-item">
+                  <ion-icon name="timer" color="light"></ion-icon>
+                  <span>Programmes adaptés</span>
+                </div>
+                <div class="feature-item">
+                  <ion-icon name="trophy" color="light"></ion-icon>
+                  <span>Suivi des progrès</span>
+                </div>
+              </div>
+              <ion-button class="training-button" (click)="navigateTo('/video-home')">
+                Explorer les entraînements
+              </ion-button>
+            </div>
           </div>
           
-          <div class="chip-selector ion-padding-horizontal">
+          <!--<div class="chip-selector ion-padding-horizontal">
               <ion-chip class="training-chip active">Tout</ion-chip>
               <ion-chip class="training-chip">Cardio</ion-chip>
               <ion-chip class="training-chip">Musculation</ion-chip>
@@ -193,23 +300,26 @@ import { SwiperOptions } from 'swiper/types';
                       <div class="play-overlay">
                           <ion-icon name="play"></ion-icon>
                       </div>
-                      <!--<div class="duration-badge">{{ workout.duration }}</div>-->
+                      <div class="duration-badge">{{ workout.duration }}</div>
                   </div>
                   <div class="video-info">
-                      <!--<h4 class="video-title">{{ workout.title }}</h4>-->
+                      <h4 class="video-title">{{ workout.title }}</h4>
                       <div class="video-stats">
-                          <!--<span class="difficulty">{{ workout.difficulty }}</span>-->
-                          <!--<span class="calories">{{ workout.calories }} cal</span>-->
+                          <span class="difficulty">{{ workout.difficulty }}</span>
+                          <span class="calories">{{ workout.calories }} cal</span>
                       </div>
                   </div>
               </div>
-          </div>
+          </div>-->
       </div>
 
     </div>
 
 
     <div class="premium-subscription-redesigned">
+      <div class="section-header ion-padding">
+        <h2 class="section-title">Profiter des avantages</h2>
+      </div>
       <div class="subscription-card ion-padding">
           <div class="subscription-header">
               <!--<ion-icon name="star" class="premium-icon"></ion-icon>-->
@@ -478,6 +588,7 @@ h2 {
 
 // Search section
 .search-section {
+    position: relative; // Add this for absolute positioning of results
   .search-container {
     position: relative;
     display: flex;
@@ -516,6 +627,197 @@ h2 {
     }
   }
 }
+
+// Search Results Container
+.search-results-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin-top: 0.5rem;
+  background: var(--ion-color-light);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  max-height: 400px;
+  overflow: hidden;
+  
+  .search-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 0.8rem;
+    color: var(--ion-color-medium);
+    
+    ion-spinner {
+      width: 20px;
+      height: 20px;
+    }
+    
+    span {
+      font-size: 0.9rem;
+    }
+  }
+  
+  .search-results {
+    .no-results {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      color: var(--ion-color-medium);
+      text-align: center;
+      
+      ion-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.6;
+      }
+      
+      p {
+        margin: 0;
+        font-size: 0.9rem;
+      }
+    }
+    
+    .results-list {
+      max-height: 350px;
+      overflow-y: auto;
+      
+      .result-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid var(--ion-color-light);
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        
+        &:hover {
+          background-color: var(--ion-color-light);
+        }
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        .result-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          border-radius: 12px;
+          background: var(--ion-color-light);
+          margin-right: 1rem;
+          flex-shrink: 0;
+          
+          ion-icon {
+            font-size: 1.2rem;
+            color: var(--ion-color-primary);
+          }
+        }
+        
+        .result-content {
+          flex: 1;
+          min-width: 0; // Allows text truncation
+          
+          .result-title {
+            margin: 0 0 0.2rem 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--ion-color-dark);
+            
+            // Truncate long titles
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          
+          .result-description {
+            margin: 0 0 0.3rem 0;
+            font-size: 0.85rem;
+            color: var(--ion-color-medium);
+            line-height: 1.3;
+            
+            // Limit to 2 lines
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+          
+          .result-type {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            background: var(--ion-color-light);
+            color: var(--ion-color-dark);
+            border-radius: 12px;
+            font-weight: 500;
+          }
+        }
+        
+        .result-thumbnail {
+          width: 50px;
+          height: 50px;
+          border-radius: 8px;
+          overflow: hidden;
+          margin-left: 1rem;
+          flex-shrink: 0;
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media screen and (max-width: 480px) {
+  .search-results-container {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    border-radius: 0;
+    
+    .results-list .result-item {
+      padding: 0.8rem;
+      
+      .result-icon {
+        width: 35px;
+        height: 35px;
+        margin-right: 0.8rem;
+      }
+      
+      .result-thumbnail {
+        width: 40px;
+        height: 40px;
+        margin-left: 0.8rem;
+      }
+    }
+  }
+}
+
+// Animation for search results appearance
+.search-results-container {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 // 2. The swipper (v2)
 .swiper {
@@ -653,6 +955,150 @@ swiper-slide {
 @media screen and (min-width: 1024px) {
   swiper-slide {
     margin-right: 24px;
+  }
+}
+
+// Training CTA styles
+.training-cta-section {
+  padding-top: 0;
+  .training-cta-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 24px;
+    padding: 2rem;
+    margin: 0 0 1rem 0;
+    position: relative;
+    overflow: hidden;
+    
+    // Add subtle pattern overlay
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.1"><circle cx="30" cy="30" r="2"/></g></svg>');
+      pointer-events: none;
+    }
+    
+    .training-cta-content {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 2;
+      
+      .cta-icon-container {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 1rem;
+        margin-right: 1rem;
+        backdrop-filter: blur(10px);
+        
+        .training-icon {
+          color: white;
+          font-size: 2rem;
+        }
+      }
+      
+      .training-text {
+        flex: 1;
+        
+        h3 {
+          color: white;
+          margin: 0 0 0.5rem 0;
+          font-size: 1.3rem;
+          font-weight: 700;
+          text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        p {
+          color: rgba(255, 255, 255, 0.9);
+          margin: 0;
+          font-size: 0.9rem;
+          line-height: 1.4;
+          text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+        }
+      }
+    }
+    
+    .training-features {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 2;
+      
+      .feature-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        flex: 1;
+        
+        ion-icon {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 12px;
+          padding: 0.5rem;
+          backdrop-filter: blur(5px);
+        }
+        
+        span {
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 0.8rem;
+          font-weight: 500;
+        }
+      }
+    }
+    
+    .training-button {
+      width: 100%;
+      --background: rgba(255, 255, 255, 0.2);
+      --color: white;
+      --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      --padding-start: 1.5rem;
+      --padding-end: 1.5rem;
+      --padding-top: 0.8rem;
+      --padding-bottom: 0.8rem;
+      font-weight: 600;
+      font-size: 1rem;
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 2;
+      
+      &:hover {
+        --background: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media screen and (max-width: 480px) {
+  .training-cta-section {
+    .training-cta-container {
+      padding: 1.5rem;
+      
+      .training-cta-content {
+        .training-text h3 {
+          font-size: 1.1rem;
+        }
+      }
+      
+      .training-features {
+        .feature-item {
+          ion-icon {
+            font-size: 1.2rem;
+          }
+          
+          span {
+            font-size: 0.75rem;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -817,6 +1263,7 @@ swiper-slide {
     background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
     border-radius: 20px;
     padding: 1.5rem;
+    margin: 1rem 0;
     
     .chat-cta-content {
       display: flex;
@@ -966,7 +1413,6 @@ swiper-slide {
 
 // Premium subscription redesign
 .premium-subscription-redesigned {
-  padding: 2rem 1rem;
   
   .subscription-card {
     //background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -975,6 +1421,7 @@ swiper-slide {
     border-radius: 24px;
     color: white;
     text-align: center;
+    margin: 0rem 1rem;
     
     .subscription-header {
       display: flex;
@@ -1105,12 +1552,20 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
   // The swiper at the top of the page
   @ViewChild('swiperEl') swiperEl: ElementRef | null = null as any
 
+  // Required by the Search component
+  searchControl = new FormControl('');
+  searchResults: any = null;
+  isSearching = false;
+  showSearchResults = false;
+  private searchSubscription: any;
+
   constructor(
     private contentService: ContentService,
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
-    private router: Router,
-    private feedbackService: FeedbackService
+    public router: Router,
+    private feedbackService: FeedbackService,
+    private http: HttpClient
   ) {
     super()
     this.route.params.subscribe(async (params) => {
@@ -1144,6 +1599,15 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
     this.contentService.storage.get('token').then((token) => {
       this.token = token
     })
+
+    // Setup the search feature
+    this.setupSearch();
+  }
+
+  async ngOnDestroy() {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   async ngAfterViewInit() {
@@ -1230,5 +1694,84 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
         this.cdRef.detectChanges()
       }, 1000)
     })
+  }
+  
+  private setupSearch() {
+    this.searchSubscription = this.searchControl.valueChanges.pipe(
+      debounceTime(300), // Wait for 300ms pause in events
+      distinctUntilChanged(), // Only emit if the value has changed
+      switchMap((query: string) => {
+        if (!query || query.trim().length < 2) {
+          this.showSearchResults = false;
+          this.searchResults = null;
+          this.isSearching = false;
+          return EMPTY;
+        }
+
+        this.isSearching = true;
+        this.showSearchResults = true;
+
+        return this.http.get<any[]>(`${environment.apiEndpoint}/search?query=${encodeURIComponent(query)}`)
+          .pipe(
+            catchError((error) => {
+              console.error('Search error:', error);
+              this.isSearching = false;
+              this.showSearchResults = false;
+              return EMPTY; // Return an empty observable on error
+            })
+          );
+      })
+    )
+      .subscribe((response:any) => {
+        this.isSearching = false;
+        if (response && response.status === 'success') {
+          this.searchResults = response.data;
+        } else {
+          this.searchResults = { videos: [], recipes: [], applinks: [] };
+        }
+        this.cdRef.detectChanges();
+      })
+  }
+
+  onSearchInput(event: any) {
+    // What is this ??? (TODO later)
+    const value = event.target.value;
+    this.searchControl.setValue(value, { emitEvent: true });
+  }
+
+  onSearchBlur(): void {
+    // What is this for ???
+    setTimeout(() => {
+      this.showSearchResults = false;
+      this.cdRef.detectChanges();
+    }, 200);
+  }
+
+  onSearchResultClick(result: any): void {
+    this.showSearchResults = false;
+    this.searchControl.setValue('');
+    
+    // Navigate based on the result route
+    if (result.route) {
+      this.router.navigate([result.route]);
+    }
+  }
+
+  getResultIcon(entity: string): string {
+    switch (entity) {
+      case 'video':
+        return 'play-circle';
+      case 'recipe':
+        return 'restaurant';
+      case 'applink':
+        return 'apps';
+      default:
+        return 'document';
+    }
+  }
+
+  // Getter for template
+  get searchQuery(): string {
+    return this.searchControl.value || '';
   }
 }
