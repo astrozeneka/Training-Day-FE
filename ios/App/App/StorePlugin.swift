@@ -36,7 +36,11 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "purchaseProductWithDiscount", returnType: CAPPluginReturnPromise),
         
         // Open a safari view (experimental for Google loginà
-        CAPPluginMethod(name: "openSafariView", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "openSafariView", returnType: CAPPluginReturnPromise),
+        
+        // Displaying a ShareSheet
+      
+        CAPPluginMethod(name:"displayShareSheet", returnType: CAPPluginReturnPromise)
     ]
     
     private var store: Store?
@@ -342,5 +346,30 @@ public class StorePlugin: CAPPlugin, CAPBridgedPlugin {
         call.resolve()
     }
 
+  }
+  
+  @objc func displayShareSheet(_ call: CAPPluginCall){
+    DispatchQueue.main.async {
+      let textToShare = call.getString("message") ?? ""
+      let activityVC = UIActivityViewController(activityItems: [textToShare], applicationActivities: nil)
+      if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+        let rootVC = scene.windows.first?.rootViewController {
+          // For iPad, set the sourceView and sourceRect
+          if let popoverController = activityVC.popoverPresentationController {
+            popoverController.sourceView = rootVC.view
+            popoverController.sourceRect = CGRect(x: rootVC.view.bounds.midX, y: rootVC.view.bounds.midY, width: 0, height: 0);
+            popoverController.permittedArrowDirections = []
+          }
+          rootVC.present(activityVC, animated: true) {
+          call.resolve(["messages": "Share sheet displayed successfully from native"])
+        }
+      } else {
+        call.reject("unable to find root view controller")
+      }
+      /*if let rootVC = UIApplication.shared.keyWindow?.rootViewController {
+        rootVC.present(activityVC, animated: true, completion: nil)
+      }*/
+      call.resolve(["message": "Share sheet displayed successfully from native"])
+    }
   }
 }

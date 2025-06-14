@@ -482,6 +482,14 @@ const mockStorePlugin: StorePlugin = {
   openSafariView: async(options: { url: string })=>{
     // Fakely return something
     return {"message": "Hello from web"}
+  },
+  // Share intent
+  displayShareSheet: (options: { message: string, url?: string }) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(()=>{
+        resolve({message: "Fakely shared"})
+      }, 1300);
+    });
   }
 }
 export interface StorePlugin {
@@ -546,7 +554,10 @@ export interface StorePlugin {
 
   // Open safari view
   openSafariView: (options: { url: string })=>Promise<{ message: string }>
-}
+
+  // Share intent
+  displayShareSheet(options: {message: string, intentTitle?: string, subject?: string}): Promise<{ message:string|null }>}
+
 export interface Transaction {
   bundleId: string;
   deviceVerificationNonce: string;

@@ -12,6 +12,8 @@ import { register } from 'swiper/element/bundle';
 import { SwiperOptions } from 'swiper/types';
 import { catchError, debounceTime, distinctUntilChanged, EMPTY, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Platform } from '@ionic/angular';
+import Store from 'src/app/custom-plugins/store.plugin';
 
 
 
@@ -458,7 +460,7 @@ import { HttpClient } from '@angular/common/http';
             <p>Invitez vos amis à vous rejoindre</p>
           </div>
         </div>
-        <ion-button fill="outline" class="share-button">
+        <ion-button fill="outline" class="share-button" (click)="clickShareApp()">
           Partager
         </ion-button>
       </div>
@@ -1565,7 +1567,8 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
     private cdRef: ChangeDetectorRef,
     public router: Router,
     private feedbackService: FeedbackService,
-    private http: HttpClient
+    private http: HttpClient,
+    private platform: Platform
   ) {
     super()
     this.route.params.subscribe(async (params) => {
@@ -1773,5 +1776,17 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
   // Getter for template
   get searchQuery(): string {
     return this.searchControl.value || '';
+  }
+
+  async clickShareApp() {
+    if (this.platform.is("ios")) {
+      let link = 'https://apps.apple.com/app/id1234567890'; // Replace with your iOS app link
+      let res = await Store.displayShareSheet({message: link});
+      console.log(res);
+    } else if (this.platform.is("android")) {
+      let link = 'https://play.google.com/store/apps/details?id=com.example.app'; // Replace with your Android app link
+      let res = await Store.displayShareSheet({message: link});
+      console.log(res);
+    }
   }
 }
