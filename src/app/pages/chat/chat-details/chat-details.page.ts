@@ -100,12 +100,13 @@ export class ChatDetailsPage extends FormComponent implements OnInit, ViewWillEn
     })
 
     // Handle the badge deletion
-    this.router.events.pipe(
+    // Not used anymore
+    /*this.router.events.pipe(
       filter(event => event instanceof NavigationEnd && this.router.url.includes('chat/details')),
       filter(event => this.componentIsActive) // Experimental
     ).subscribe(async () => {
       Badge.clear();
-    });
+    });*/
 
     // The below code is not optimized
     /*this.navigationStartSubscription = this.router.events.pipe(

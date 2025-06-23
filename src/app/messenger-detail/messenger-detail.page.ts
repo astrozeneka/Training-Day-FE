@@ -20,6 +20,7 @@ import { MsgAttachmentService } from '../msg-attachment.service';
 import { FilePicker } from '@capawesome/capacitor-file-picker';
 import { FeedbackService } from '../feedback.service';
 import { Browser } from '@capacitor/browser';
+import { Badge } from '@capawesome/capacitor-badge';
 
 interface File {
   name: any,
@@ -381,7 +382,15 @@ export class MessengerDetailPage implements OnInit {
         // The pagination properties
         this.oldestMessageId = res.oldest_message_id;
         this.hasMore = res.has_more;
-        
+
+        // The unread
+        let unread = res.unread_count || 0;
+        console.log("Unread messages: " + unread);
+        // Set badge
+        Badge.set({
+          count: unread
+        });
+
         this.scrollToBottom(true)
         this.cdr.detectChanges();
       })
@@ -430,6 +439,11 @@ export class MessengerDetailPage implements OnInit {
       console.log("Scrolling to bottom", this.content)
       this.content?.scrollToBottom(animate ? 300 : 0);
     }, 100);
+    // Redo again after a delay to ensure the content is fully loaded
+    setTimeout(() => {
+      console.log("Scrolling to bottom", this.content)
+      this.content?.scrollToBottom(animate ? 300 : 0);
+    }, 400);
   }
 
   // Open or fetch the conversation by using /api/conversations
