@@ -198,7 +198,7 @@ import Store from 'src/app/custom-plugins/store.plugin';
                 </swiper-slide>
                 <swiper-slide>
                     <div class="image-container">
-                        <img title="GPS" src="../../../assets/medias/IMG_0964_1024x683.jpeg" />
+                        <img title="GPS" src="../../../assets/medias/imc-stockphoto.png" />
                     </div>
                     <div class="description">
                         <p>
@@ -213,7 +213,7 @@ import Store from 'src/app/custom-plugins/store.plugin';
                 </swiper-slide>
                 <swiper-slide>
                     <div class="image-container">
-                        <img title="IMC" src="../../../assets/medias/IMG_0965_1024x683.jpeg" />
+                        <img title="Calories" src="../../../assets/medias/calory-stockphoto.png" />
                     </div>
                     <div class="description">
                         <p>
@@ -227,7 +227,7 @@ import Store from 'src/app/custom-plugins/store.plugin';
                 </swiper-slide>
                 <swiper-slide>
                     <div class="image-container">
-                        <img title="Suivi du poids" src="../../../assets/medias/image-calendar-2_612x250.jpeg" />
+                        <img title="Suivi du poids" src="../../../assets/medias/weight-tracking-stockphoto.png" />
                     </div>
                     <div class="description">
                         <p>

@@ -132,7 +132,6 @@ interface Exercise {
                 </div>
                 <div class="exercise-info">
                   <div class="exercise-name">{{ exercise.title }}</div>
-                    {{ exercise.id }}
                   <div class="exercise-description" *ngIf="exercise.available">
                     {{ exercise.description }}
                   </div>

@@ -215,7 +215,7 @@ import { environment } from 'src/environments/environment';
         <swiper-slide>
           <div class="slide-content">
             <div class="image-container">
-              <img title="Calculateur IMC" src="../../../assets/medias/IMG_0964_1024x683.jpeg" />
+              <img title="Calculateur IMC" src="./../../assets/medias/imc-stockphoto.png" />
             </div>
             <div class="slide-description">
               <p>Découvrez notre application calculateur d'IMC pour connaître votre indice de masse corporelle.</p>
@@ -230,7 +230,7 @@ import { environment } from 'src/environments/environment';
         <swiper-slide>
           <div class="slide-content">
             <div class="image-container">
-              <img title="Calculateur de calories" src="../../../assets/medias/IMG_0965_1024x683.jpeg" />
+              <img title="Calculateur de calories" src="../../../assets/medias/calory-stockphoto.png" />
             </div>
             <div class="slide-description">
               <p>Découvrez notre application calculateur de calories.</p>
@@ -245,7 +245,7 @@ import { environment } from 'src/environments/environment';
         <swiper-slide>
           <div class="slide-content">
             <div class="image-container">
-              <img title="Suivi du poids" src="../../../assets/medias/image-calendar-2_612x250.jpeg" />
+              <img title="Suivi du poids" src="../../../assets/medias/weight-tracking-stockphoto.png" />
             </div>
             <div class="slide-description">
               <p>Découvrez notre application suivi du poids.</p>
@@ -483,7 +483,7 @@ ion-content {
   --padding-top: 0.6rem;
   --padding-bottom: 0.6rem;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   backdrop-filter: blur(10px);
   
   &:hover {
@@ -609,7 +609,7 @@ ion-content {
             }
             
             &.trial-expiry {
-              font-size: 0.85rem;
+              font-size: 0.9rem;
               opacity: 0.9;
             }
             
@@ -659,7 +659,7 @@ ion-content {
             }
             
             &.messages-action {
-              font-size: 0.85rem;
+              font-size: 0.9rem;
               opacity: 0.9;
             }
             
@@ -746,7 +746,7 @@ ion-content {
             .appointment-reason {
               margin: 0;
               color: var(--ion-color-medium);
-              font-size: 0.85rem;
+              font-size: 0.9rem;
               line-height: 1.3;
               
               strong {
@@ -778,7 +778,7 @@ ion-content {
           
           .trial-text {
             p {
-              font-size: 0.85rem;
+              font-size: 0.9rem;
               
               &.trial-expiry {
                 font-size: 0.8rem;
@@ -810,7 +810,7 @@ ion-content {
             
             .appointment-details {
               .appointment-date {
-                font-size: 0.85rem;
+                font-size: 0.9rem;
               }
               
               .appointment-reason {
@@ -957,7 +957,7 @@ ion-content {
     }
     
     span {
-      font-size: 0.85rem; // Smaller text
+      font-size: 0.9rem; // Smaller text
     }
   }
   
@@ -977,7 +977,7 @@ ion-content {
     
     p {
       margin: 0;
-      font-size: 0.85rem; // Smaller text
+      font-size: 0.9rem; // Smaller text
     }
   }
   
@@ -1099,7 +1099,7 @@ ion-content {
       
       .result-content {
         .result-title {
-          font-size: 0.85rem;
+          font-size: 0.9rem;
         }
         
         .result-description {
@@ -1174,7 +1174,7 @@ swiper-slide {
       
       p {
         color: rgba(255, 255, 255, 0.9);
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         line-height: 1.4;
         margin: 0 0 1rem 0;
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
@@ -1191,6 +1191,15 @@ swiper-slide {
       .slide-button {
         @include glassmorphism-button;
       }
+
+      // Some white font-color is not visible on the white background
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(3px);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
     }
   }
 }
@@ -1429,7 +1438,7 @@ swiper-slide {
     
     .subscription-description {
       margin: 0 0 1.5rem 0;
-      font-size: 1rem;
+      font-size: 0.9rem;
       opacity: 0.9;
     }
     
@@ -1536,7 +1545,7 @@ swiper-slide {
         
         .video-description {
           margin: 0;
-          font-size: 0.85rem;
+          font-size: 0.9rem;
           color: var(--ion-color-medium);
           line-height: 1.4;
           
@@ -1664,7 +1673,7 @@ swiper-slide {
           
           p {
             color: rgba(255, 255, 255, 0.85);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             line-height: 1.4;
             margin: 0;
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
@@ -1694,7 +1703,7 @@ swiper-slide {
           }
           
           .tip-excerpt {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
           }
         }
       }
@@ -1734,7 +1743,7 @@ swiper-slide {
         
         p {
           margin: 0;
-          font-size: 0.85rem;
+          font-size: 0.9rem;
           color: var(--ion-color-medium);
         }
       }
@@ -1778,7 +1787,7 @@ swiper-slide {
       }
       
       .share-button {
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         --padding-start: 1rem;
         --padding-end: 1rem;
       }
