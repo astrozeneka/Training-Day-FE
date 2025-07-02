@@ -7,10 +7,10 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
-  {
+  /*{
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
-  },
+  },*/
   {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
@@ -335,6 +335,10 @@ const routes: Routes = [
   {
     path: 'exercise-list',
     loadChildren: () => import('./exercise-list/exercise-list.module').then( m => m.ExerciseListPageModule)
+  },
+  {
+    path: 'home',
+    loadChildren: () => import('./pages/home-v2/home-v2.module').then( m => m.HomeV2PageModule)
   },
 ];
 

@@ -26,7 +26,7 @@ import Store from 'src/app/custom-plugins/store.plugin';
         <ion-menu-button *ngIf="user?.function === 'admin' || user?.function === 'coach' || user?.function === 'coach'"></ion-menu-button>
         <h1 class="greeting-title" *ngIf="user">Bonjour, {{ user.firstname }}</h1>
         <h1 class="greeting-title" *ngIf="!user">Bienvenue sur Training Day</h1>
-        <div class="streak-counter">
+        <div class="streak-counter" *ngIf="false">
             <ion-icon name="flame"></ion-icon>
             <span class="streak-number">7</span>
             <span class="streak-label">jours</span>
@@ -68,21 +68,29 @@ import Store from 'src/app/custom-plugins/store.plugin';
             </ion-card>
         </div>
 
+        <!-- Fullscreen search overlay -->
+        <div class="search-overlay" [class.active]="isSearchActive" (click)="onSearchBlur()">
+        </div>
+
         <!-- Functional search section -->
-        <div class="search-section ion-padding">
-          <div class="search-container">
+        <div class="search-section ion-padding" [class.search-active]="isSearchActive">
+          <div class="search-container" [class.search-focused]="isSearchActive">
             <ion-icon name="search" class="search-icon"></ion-icon>
             <input 
               type="text" 
               placeholder="Rechercher un exercice, un programme..." 
               class="search-input"
               [formControl]="searchControl"
+              (focus)="onSearchFocus()"
               (blur)="onSearchBlur()">
-            <ion-icon name="options" class="filter-icon"></ion-icon>
+            <ion-icon name="options" class="filter-icon" *ngIf="!isSearchActive"></ion-icon>
+            <ion-icon name="close" class="close-icon" *ngIf="isSearchActive" (click)="onSearchBlur()"></ion-icon>
           </div>
 
           <!-- Search Results Container -->
-          <div class="search-results-container" *ngIf="showSearchResults">
+          <div class="search-results-container" 
+            [class.fullscreen]="isSearchActive"
+            *ngIf="showSearchResults">
             <!-- Loading State -->
             <div class="search-loading" *ngIf="isSearching">
               <ion-spinner></ion-spinner>
@@ -378,6 +386,67 @@ import Store from 'src/app/custom-plugins/store.plugin';
         </div>
     </div>
 
+    <!-- Replace the existing "Autres astuces et conseils" section with this -->
+    <div class="tips-section">
+      <div class="section-header ion-padding">
+        <h2 class="section-title">Astuces et conseils</h2>
+        <span class="voir-plus" (click)="navigateTo('/tips')">Voir plus</span>
+      </div>
+
+      <!-- Swiper container for tips -->
+      <div class="container">
+        <swiper-container navigation="false" pagination="true" css-mode="false" loop="false" 
+                          slides-per-view="1.1" space-between="16" centered-slides="false" 
+                          autoplay="true" autoplay-delay="4000" #tipsSwiperEl init="true">
+          
+          <swiper-slide>
+            <div class="image-container">
+              <img title="Les calories" src="../../../assets/medias/plat-bol-bouddha-legumes-legumineuses-vue-dessus-1024x683.jpeg" />
+            </div>
+            <div class="tip-content">
+              <h3>Les calories</h3>
+              <p class="tip-excerpt">
+                Chaque jour, votre corps a besoin d'énergie pour fonctionner et accomplir correctement ses missions.
+              </p>
+              <div class="tip-details" [class.expanded]="expandedTips['calories']">
+                <p>
+                  La calorie est une unité de mesure de l'énergie couramment utilisée en nutrition. Par habitude, 
+                  on évoque nos besoins journaliers en "calories", mais il s'agit en fait de kilocalories (kcal). 
+                  1 kilocalorie = 1 000 calories.
+                </p>
+              </div>
+              <ion-button class="tip-button" (click)="toggleTip('calories')">
+                {{ expandedTips['calories'] ? 'Réduire' : 'En savoir plus' }}
+              </ion-button>
+            </div>
+          </swiper-slide>
+
+          <swiper-slide>
+            <div class="image-container">
+              <img title="Rééquilibrage alimentaire" src="../../../assets/medias/femme-active-mesurant-sa-taille-1024x767.jpeg" />
+            </div>
+            <div class="tip-content">
+              <h3>Rééquilibrage alimentaire</h3>
+              <p class="tip-excerpt">
+                Dans notre société sédentaire, où l'abondance et la consommation effrénée sont les maîtres-mots.
+              </p>
+              <div class="tip-details" [class.expanded]="expandedTips['reequilibrage']">
+                <p>
+                  Dans un tel contexte, il peut être difficile de se repérer parmi les informations qui nous parviennent 
+                  continuellement. « 5 fruits et légumes par jour », « 10000 pas par jour », « limiter les aliments gras, 
+                  salés, sucrés » : tout le monde connaît ces messages de santé publique.
+                </p>
+              </div>
+              <ion-button class="tip-button" (click)="toggleTip('reequilibrage')">
+                {{ expandedTips['reequilibrage'] ? 'Réduire' : 'En savoir plus' }}
+              </ion-button>
+            </div>
+          </swiper-slide>
+
+        </swiper-container>
+      </div>
+    </div>
+
     <!-- Autres contenus -->
     <!--<div>
         <h1 class="display-1 ion-padding">Autres astuces et conseils</h1>
@@ -466,12 +535,20 @@ import Store from 'src/app/custom-plugins/store.plugin';
       </div>
     </div>
     <br/><br/><br/><br/>
+    <ion-button (click)="navigateTo('/home-v2')" class="ion-padding" expand="block" color="primary">
+      Aller à la version 2
+    </ion-button>
+    <br/><br/><br/><br/>
 
-    <app-button-to-chat></app-button-to-chat>
+    <!--<app-button-to-chat></app-button-to-chat>-->
 </ion-content>
   `,
   styles: [`
     @import '../../../mixins';
+
+ion-content {
+  --padding-bottom: 63px; /* Height of your navbar */
+}
 
 #container {
   text-align: center;
@@ -588,9 +665,65 @@ h2 {
   }
 }
 
+// Fullscreen search overlay
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 1998; // Increase from 998 to be above welcome header
+  
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 // Search section
 .search-section {
-    position: relative; // Add this for absolute positioning of results
+  position: relative; // Add this for absolute positioning of results
+  transition: all 0.3s ease;
+
+  &.search-active {
+    position: fixed;
+    top: calc(env(safe-area-inset-top)); // Adjust to account for welcome header height = 80px (no need)
+    left: 1rem;
+    right: 1rem;
+    z-index: 1999; // Increase from 999 to be above welcome header
+    background: var(--ion-background-color, #fff);
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 120px); // Adjust for header
+    overflow: hidden;
+  }
+
+  .search-container {
+    transition: all 0.3s ease;
+    
+    &.search-focused {
+      padding: 0.6rem 1rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+    
+    .close-icon {
+      color: var(--ion-color-medium);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      
+      &:hover {
+        color: var(--ion-color-dark);
+      }
+    }
+  }
+
   .search-container {
     position: relative;
     display: flex;
@@ -627,6 +760,42 @@ h2 {
       font-size: 1.2rem;
       cursor: pointer;
     }
+  }
+}
+
+// Enhanced search results container
+.search-results-container {
+  &.fullscreen {
+    position: static;
+    margin-top: 1rem;
+    max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 200px);
+    overflow-y: auto;
+    border-radius: 12px;
+    
+    .results-list {
+      max-height: none;
+    }
+  }
+}
+
+// Mobile-specific adjustments
+@media screen and (max-width: 480px) {
+  .search-section.search-active {
+    left: 0.5rem;
+    right: 0.5rem;
+    // top: calc(env(safe-area-inset-top) + 0.5rem);
+    top: calc(env(safe-area-inset-top) + 70px); // Slightly less space on mobile
+  }
+  
+  .search-results-container.fullscreen {
+    max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 170px); // Account for header
+  }
+}
+
+// Keyboard adjustment for iOS
+@supports (-webkit-touch-callout: none) {
+  .search-section.search-active {
+    max-height: calc(100vh - env(keyboard-inset-height, 0px) - env(safe-area-inset-top) - 2rem);
   }
 }
 
@@ -1177,7 +1346,7 @@ swiper-slide {
   color: var(--ion-color-secondary);
 }
 
-.misc-list {
+/*.misc-list {
   .misc-item {
     margin-top: 1em;
     margin-bottom: 1em;
@@ -1209,7 +1378,7 @@ swiper-slide {
       margin-top: 1em;
     }
   }
-}
+}*/
 
 .appointment-card {
   display: flex;
@@ -1536,6 +1705,133 @@ swiper-slide {
     }
   }
 }
+
+// Tips section styling (consistent with existing swiper design)
+.tips-section {
+  .container {
+    padding: 0 0rem;
+    overflow: visible;
+    & > *:first-child {
+      margin-left: 1rem;
+    }
+  }
+
+  swiper-slide {
+    position: relative;
+    height: 320px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    background: var(--ion-color-light);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-right: 16px;
+
+
+    .tip-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+      padding: 3rem 1.5rem 1.5rem;
+      text-align: left;
+      z-index: 2;
+      max-height: 90%;
+      overflow-y: auto;
+    }
+
+    h3 {
+      color: white;
+      margin: 0 0 0.8rem 0;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .tip-excerpt {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .tip-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, margin 0.3s ease;
+      
+      &.expanded {
+        max-height: 200px;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin: 0;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    .tip-button {
+      --background: rgba(255, 255, 255, 0.2);
+      --color: white;
+      --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      --padding-start: 1.2rem;
+      --padding-end: 1.2rem;
+      --padding-top: 0.6rem;
+      --padding-bottom: 0.6rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      backdrop-filter: blur(10px);
+      
+      &:hover {
+        --background: rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    .image-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.9) contrast(1.1);
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media screen and (min-width: 768px) {
+  .tips-section {
+    swiper-slide {
+      height: 360px;
+      
+      .tip-content {
+        padding: 4rem 2rem 2rem;
+        max-height: 75%;
+      }
+      
+      h3 {
+        font-size: 1.6rem;
+      }
+      
+      .tip-excerpt {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
 `]
 })
 export class HomePage extends FormComponent implements OnInit, AfterViewInit {
@@ -1560,6 +1856,13 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
   isSearching = false;
   showSearchResults = false;
   private searchSubscription: any;
+  
+  // Used to handle the dynamic search
+  isSearchActive = false;
+  private searchFocusTimeout: any;
+
+  // Used to manage the newly designed tips section
+  expandedTips: { [key: string]: boolean } = {};
 
   constructor(
     private contentService: ContentService,
@@ -1610,6 +1913,9 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
   async ngOnDestroy() {
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
+    }
+    if (this.searchFocusTimeout) {
+      clearTimeout(this.searchFocusTimeout);
     }
   }
 
@@ -1744,13 +2050,26 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
 
   onSearchBlur(): void {
     // What is this for ???
-    setTimeout(() => {
+    /*setTimeout(() => {
+      this.showSearchResults = false;
+      this.cdRef.detectChanges();
+    }, 200);*/
+
+    // Clear any existing timeout
+    if (this.searchFocusTimeout) {
+      clearTimeout(this.searchFocusTimeout);
+    }
+    
+    // Delay hiding to allow for result clicks
+    this.searchFocusTimeout = setTimeout(() => {
+      this.isSearchActive = false;
       this.showSearchResults = false;
       this.cdRef.detectChanges();
     }, 200);
   }
 
   onSearchResultClick(result: any): void {
+    this.isSearchActive = false;
     this.showSearchResults = false;
     this.searchControl.setValue('');
     
@@ -1788,5 +2107,18 @@ export class HomePage extends FormComponent implements OnInit, AfterViewInit {
       let res = await Store.displayShareSheet({message: link});
       console.log(res);
     }
+  }
+
+  // Used to handle the dynamic search
+  onSearchFocus(): void {
+    this.isSearchActive = true;
+    this.showSearchResults = true;
+    this.cdRef.detectChanges();
+  }
+
+  // Used to toggle the expanded state of a tip
+  toggleTip(tipKey: string): void {
+    this.expandedTips[tipKey] = !this.expandedTips[tipKey];
+    this.cdRef.detectChanges();
   }
 }

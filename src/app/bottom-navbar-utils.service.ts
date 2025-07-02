@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, merge, of } from 'rxjs';
 
@@ -46,5 +46,9 @@ export class BottomNavbarUtilsService {
     if (tabName)
       return tabName
     return undefined
+  }
+
+  setVisibility(visible: boolean) {
+    this.bottomNavbarAvailable = visible
   }
 }
