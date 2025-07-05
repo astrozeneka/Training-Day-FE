@@ -127,9 +127,16 @@ interface Exercise {
             
             <div class="exercises-list" *ngIf="!isLoading && exercises.length > 0">
               <div class="exercise-item" *ngFor="let exercise of exercises" (click)="exercise.available ? openExerciseDetail(exercise) : null" [class.unavailable]="!exercise.available">
-                <div class="exercise-icon">
+                <div class="exercise-icon" *ngIf="!exercise.thumbnailUrl">
                   <ion-icon name="fitness-outline"></ion-icon>
                 </div>
+                <div class="exercise-thumbnail" *ngIf="exercise.thumbnailUrl">
+                  <img [src]="exercise.thumbnailUrl" [alt]="exercise.title">
+                  <div class="play-overlay">
+                    <ion-icon name="play-circle-outline"></ion-icon>
+                  </div>
+                </div>
+
                 <div class="exercise-info">
                   <div class="exercise-name">{{ exercise.title }}</div>
                   <div class="exercise-description" *ngIf="exercise.available">
@@ -366,6 +373,32 @@ interface Exercise {
               ion-icon {
                 font-size: 20px;
                 color: var(--ion-color-primary);
+              }
+            }
+
+            .exercise-thumbnail {
+              position: relative;
+              width: 48px;
+              height: 48px;
+              border-radius: 8px;
+              overflow: hidden;
+              margin-right: 16px;
+              flex-shrink: 0;
+              
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
+              
+              .play-overlay {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: rgba(255, 255, 255, 0.9);
+                font-size: 1.2rem;
+                text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
               }
             }
             
@@ -630,9 +663,9 @@ interface Exercise {
       }
       
       .shimmer-exercise-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
         margin-right: 16px;
         position: relative;
         overflow: hidden;

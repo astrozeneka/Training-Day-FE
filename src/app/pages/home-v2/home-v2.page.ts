@@ -60,7 +60,9 @@ import { environment } from 'src/environments/environment';
               Touchez pour voir vos messages
             </p>
           </div>
-          <ion-icon name="chevron-forward" class="messages-arrow"></ion-icon>
+          <div class="message-arrow-container">
+            <ion-icon name="chevron-forward" class="messages-arrow"></ion-icon>
+          </div>
         </div>
       </ion-card-content>
     </ion-card>
@@ -286,9 +288,9 @@ import { environment } from 'src/environments/environment';
     <div class="training-cta-section ion-padding">
       <div class="training-cta-container">
         <div class="training-cta-content">
-          <div class="cta-icon-container">
+          <!--<div class="cta-icon-container">-->
             <ion-icon name="fitness" class="training-icon"></ion-icon>
-          </div>
+          <!--</div>-->
           <div class="training-text">
             <h3>Commencez votre entraînement</h3>
             <p>Découvrez nos programmes personnalisés et vidéos d'exercices</p>
@@ -316,35 +318,82 @@ import { environment } from 'src/environments/environment';
   </div>
 
   <!-- Premium Subscription Section -->
-  <div class="premium-subscription-section">
-    <div class="section-header ion-padding">
-      <h2 class="section-title">Profiter des avantages</h2>
-    </div>
-    <div class="subscription-card ion-padding">
-      <div class="subscription-header">
-        <img src="/assets/logo-dark-cropped.png" width="64" alt="Training Day Logo" class="premium-icon" />
-        <h2>Optez pour un abonnement</h2>
+  <div class="ion-padding-horizontal ion-padding-bottom">
+    <div class="premium-subscription-section">
+      <div class="section-header ion-padding">
+        <h2 class="section-title">Profiter des avantages</h2>
       </div>
-      <p class="subscription-description">
-        Débloquez des programmes personnalisés et un suivi avec votre coach
-      </p>
-      <div class="premium-features">
-        <div class="feature-item">
-          <ion-icon name="checkmark-circle" color="success"></ion-icon>
-          <span>Programmes personnalisés</span>
-        </div>
-        <div class="feature-item">
-          <ion-icon name="checkmark-circle" color="success"></ion-icon>
-          <span>Coach personnel dédié</span>
-        </div>
-        <div class="feature-item">
-          <ion-icon name="checkmark-circle" color="success"></ion-icon>
-          <span>Suivi en temps réel</span>
+      <div class="subscription-card">
+        <div class="subscription-content">
+          <!-- Premium Badge -->
+          <div class="premium-badge-wrapper">
+            <div class="premium-badge">
+              <ion-icon name="diamond" class="premium-badge-icon"></ion-icon>
+              <span class="premium-badge-text">Premium</span>
+            </div>
+          </div>
+          
+          <!-- Header with Logo -->
+          <div class="subscription-header">
+            <img src="/assets/logo-dark-cropped.png" width="48" alt="Training Day Logo" class="premium-logo" />
+            <h2 class="subscription-title">Optez pour un abonnement</h2>
+            <p class="subscription-subtitle">
+              Débloquez des programmes personnalisés et un suivi avec votre coach
+            </p>
+          </div>
+
+          <!-- Premium Features with Enhanced Icons -->
+          <div class="premium-features">
+            <div class="feature-item">
+              <div class="feature-icon-container">
+                <ion-icon name="fitness" class="feature-icon"></ion-icon>
+              </div>
+              <div class="feature-content">
+                <span class="feature-title">Programmes personnalisés</span>
+                <span class="feature-description">Adaptés à vos objectifs</span>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon-container">
+                <ion-icon name="person" class="feature-icon"></ion-icon>
+              </div>
+              <div class="feature-content">
+                <span class="feature-title">Coach personnel dédié</span>
+                <span class="feature-description">Accompagnement quotidien</span>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon-container">
+                <ion-icon name="analytics" class="feature-icon"></ion-icon>
+              </div>
+              <div class="feature-content">
+                <span class="feature-title">Suivi en temps réel</span>
+                <span class="feature-description">Progression détaillée</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Call to Action Button -->
+          <ion-button 
+            class="premium-cta-button" 
+            expand="block" 
+            size="large"
+            shape="round"
+            (click)="navigateTo('/swipeable-store')">
+            <ion-icon name="storefront" slot="start"></ion-icon>
+            Accéder à la boutique
+            <ion-icon name="arrow-forward" slot="end"></ion-icon>
+          </ion-button>
+          
+          <!-- Trust Indicators -->
+          <div class="trust-indicators">
+            <div class="trust-item">
+              <ion-icon name="shield-checkmark" color="success"></ion-icon>
+              <span>Garantie satisfait ou remboursé</span>
+            </div>
+          </div>
         </div>
       </div>
-      <ion-button class="premium-button" (click)="navigateTo('/swipeable-store')">
-        Accéder à la boutique
-      </ion-button>
     </div>
   </div>
 
@@ -574,28 +623,81 @@ ion-content {
     opacity: 0;
     visibility: hidden;
   }
-  
-  .trial-notification {
+
+  @mixin notification-card($color) {
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
     margin-bottom: 1rem;
-    
-    ion-card-content {
-      padding: 1rem;
-      
-      .trial-content {
+
+    & ion-card-content {
+      & .trial-content, & .messages-content {
         display: flex;
         align-items: flex-start;
         
-        .trial-icon {
+        & .trial-icon, & .messages-icon {
+          color: $color;
+          font-size: 1.5rem;
+          //margin-right: 1rem;
+          margin-top: 0.2rem;
+          flex-shrink: 0;
+          width: 48px;
+        }
+
+        & .trial-icon {
+          font-size: 1.65rem!important; // Icon size adjustment
+        }
+        
+        & .trial-text, & .messages-text {
+          flex: 1!important;
+          
+          p {
+            margin: 0 0 0.5rem 0;
+            color: $color;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            
+            &:last-child {
+              margin-bottom: 0;
+            }
+            
+            &.trial-expiry {
+              font-size: 0.9rem;
+              opacity: 0.9;
+            }
+            
+            strong {
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+
+  }
+  
+  .trial-notification {
+    @include notification-card(var(--ion-color-warning-contrast));
+
+    /*border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+    margin-bottom: 1rem;*/
+    
+    ion-card-content {
+      //padding: 1rem;
+      
+      .trial-content {
+        /*display: flex;
+        align-items: flex-start;*/
+        
+        /*.trial-icon {
           color: var(--ion-color-warning-contrast);
           font-size: 1.5rem;
           margin-right: 1rem;
           margin-top: 0.2rem;
           flex-shrink: 0;
-        }
+        }*/
         
-        .trial-text {
+        /*.trial-text {
           flex: 1;
           
           p {
@@ -617,35 +719,38 @@ ion-content {
               font-weight: 600;
             }
           }
-        }
+        }*/
       }
     }
   }
 
   // Messages notification
   .messages-notification {
-    border-radius: 16px;
+
+    @include notification-card(var(--ion-color-primary-contrast));
+
+    /*border-radius: 16px;
     box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.2);
     margin-bottom: 1rem;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;*/
     
     ion-card-content {
-      padding: 1rem;
+      //padding: 1rem;
       
       .messages-content {
-        display: flex;
-        align-items: center;
+        /*display: flex;
+        align-items: center;*/
 
-        .messages-icon {
+        /*.messages-icon {
           color: var(--ion-color-primary-contrast);
           font-size: 1.5rem;
           margin-right: 1rem;
           margin-top: 0.2rem;
           flex-shrink: 0;
-        }
+        }*/
         
-        .messages-text {
+        /*.messages-text {
           flex: 1;
           
           p {
@@ -667,15 +772,18 @@ ion-content {
               font-weight: 600;
             }
           }
-        }
+        }*/
         
-        .messages-arrow {
-          color: var(--ion-color-primary-contrast);
-          font-size: 1.2rem;
-          opacity: 0.7;
-          margin-left: 0.5rem;
-          margin-top: 0.2rem;
-          flex-shrink: 0;
+        .message-arrow-container{
+          align-self: stretch; // used to make it occupy all vertical space
+          display: flex;
+          align-items: center;
+          .messages-arrow {
+            color: var(--ion-color-primary-contrast);
+            font-size: 1.2rem;
+            opacity: 0.7;
+            margin-left: 0.5rem;
+          }
         }
       }
     }
@@ -770,7 +878,7 @@ ion-content {
       ion-card-content {
         padding: 0.75rem;
         
-        .trial-content {
+        /*.trial-content {
           .trial-icon {
             font-size: 1.3rem;
             margin-right: 0.75rem;
@@ -785,7 +893,7 @@ ion-content {
               }
             }
           }
-        }
+        }*/
       }
     }
   }
@@ -1219,6 +1327,44 @@ swiper-slide {
   }
 }
 
+// Common styles between chat-cta and training-cta sections
+@mixin cta-container {
+  & .chat-cta-content, & .training-cta-content {
+
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    & .chat-icon, & .training-icon {
+      color: white;
+      font-size: 2rem;
+      margin-right: 1rem;
+    }
+
+    & .training-icon {
+      font-size: 2.2em!important; // Size adjustment
+    }
+
+    & .chat-text, & .training-text {
+        h3 {
+          color: white;
+          margin: 0 0 0.2rem 0;
+          font-size: 1.2rem;
+          font-weight: 600;
+        }
+        
+        p {
+          color: rgba(255, 255, 255, 0.9);
+          margin: 0;
+          font-size: 0.9rem;
+        }
+      }
+
+    & > *{
+    }
+  }
+}
+
 // Chat CTA section
 .chat-cta-section {
   .chat-cta-container {
@@ -1226,8 +1372,10 @@ swiper-slide {
     border-radius: 20px;
     padding: 1.5rem;
     margin: 1rem 0;
+
+    @include cta-container;
     
-    .chat-cta-content {
+    /*.chat-cta-content {
       display: flex;
       align-items: center;
       margin-bottom: 1rem;
@@ -1252,7 +1400,7 @@ swiper-slide {
           font-size: 0.9rem;
         }
       }
-    }
+    }*/
     
     .chat-button {
       @include glassmorphism-button;
@@ -1280,6 +1428,8 @@ swiper-slide {
       position: relative;
       overflow: hidden;
       
+      @include cta-container;
+      
       // Subtle pattern overlay
       &::before {
         content: '';
@@ -1306,13 +1456,13 @@ swiper-slide {
           margin-right: 1rem;
           backdrop-filter: blur(10px);
           
-          .training-icon {
+          /*.training-icon {
             color: white;
             font-size: 2rem;
-          }
+          }*/
         }
         
-        .training-text {
+        /*.training-text {
           flex: 1;
           
           h3 {
@@ -1330,7 +1480,7 @@ swiper-slide {
             line-height: 1.4;
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
           }
-        }
+        }*/
       }
       
       .training-features {
@@ -1405,66 +1555,410 @@ swiper-slide {
 
 // Premium subscription section
 .premium-subscription-section {
-  margin-bottom: 2rem;
+  position: relative;
   
   .section-header {
     @include section-header;
   }
   
   .subscription-card {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 2rem;
+    background: var(--ion-color-light);
     border-radius: 24px;
-    color: white;
-    text-align: center;
-    margin: 0rem 1rem;
+    //margin: 0rem 1rem;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    padding: 10px;
     
-    .subscription-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 1rem;
-      
-      .premium-icon {
-        margin-bottom: 0.5rem;
-      }
-      
-      h2 {
-        margin: 0;
-        font-size: 1.6rem;
-        font-weight: 700;
-      }
+    // Enhanced border for premium feel
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 24px;
+      padding: 2px;
+      /*background: linear-gradient(135deg, 
+        var(--ion-color-warning, #ff9500) 0%, 
+        var(--ion-color-warning-tint, #ffad33) 50%, 
+        var(--ion-color-warning, #ff9500) 100%);*/
+      background: var(--ion-color-primary, #3880ff);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: xor;
+      z-index: 1;
     }
     
-    .subscription-description {
-      margin: 0 0 1.5rem 0;
-      font-size: 0.9rem;
-      opacity: 0.9;
-    }
-    
-    .premium-features {
-      margin-bottom: 2rem;
-      
-      .feature-item {
+    .subscription-content {
+      position: relative;
+      z-index: 2;
+      padding: 2rem;
+      background: var(--ion-color-light);
+      border-radius: 22px;
+
+      .premium-badge-wrapper {
         display: flex;
-        align-items: center;
         justify-content: center;
-        margin-bottom: 0.8rem;
+      }
+      
+      // Premium badge at the top
+      .premium-badge {
+        display: inline-flex;
+        align-items: center;
+        /*background: linear-gradient(135deg, 
+          var(--ion-color-warning, #ff9500), 
+          var(--ion-color-warning-shade, #e68900));*/
+        background: var(--ion-color-primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 12px rgba(255, 149, 0, 0.3);
+        
+        .premium-badge-icon {
+          font-size: 1rem;
+          margin-right: 0.4rem;
+        }
+        
+        .premium-badge-text {
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+      
+      // Header section
+      .subscription-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        
+        .premium-logo {
+          margin-bottom: 1rem;
+          filter: brightness(0.8) contrast(1.2);
+        }
+        
+        .subscription-title {
+          margin: 0 0 0.8rem 0;
+          font-size: 1.8rem;
+          font-weight: 700;
+          color: var(--ion-color-dark, #000000);
+          line-height: 1.2;
+        }
+        
+        .subscription-subtitle {
+          margin: 0;
+          font-size: 1rem;
+          color: var(--ion-color-medium, #666666);
+          line-height: 1.4;
+          max-width: 280px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+      
+      // Enhanced features section
+      .premium-features {
+        margin-bottom: 2.5rem;
+        
+        .feature-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 1.2rem;
+          padding: 0.8rem;
+          background: rgba(255, 149, 0, 0.05);
+          border-radius: 16px;
+          border-left: 4px solid var(--ion-color-primary);
+          transition: all 0.3s ease;
+          
+          &:last-child {
+            margin-bottom: 0;
+          }
+          
+          .feature-icon-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            /*background: linear-gradient(135deg, 
+              var(--ion-color-warning, #ff9500), 
+              var(--ion-color-warning-shade, #e68900));*/
+            background: var(--ion-color-primary);
+            border-radius: 12px;
+            margin-right: 1rem;
+            box-shadow: 0 4px 12px rgba(255, 149, 0, 0.25);
+            
+            .feature-icon {
+              color: white;
+              font-size: 1.3rem;
+            }
+          }
+          
+          .feature-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            
+            .feature-title {
+              font-size: 0.95rem;
+              font-weight: 600;
+              color: var(--ion-color-dark, #000000);
+              margin-bottom: 0.2rem;
+              line-height: 1.2;
+            }
+            
+            .feature-description {
+              font-size: 0.8rem;
+              color: var(--ion-color-medium, #666666);
+              line-height: 1.3;
+            }
+          }
+        }
+      }
+      
+      // Enhanced CTA button with animation
+      .premium-cta-button {
+        //--background: linear-gradient(135deg, var(--ion-color-warning, #ff9500) 0%, var(--ion-color-warning-shade, #e68900) 100%);
+        --background: var(--ion-color-primary, #3880ff);
+        --color: white;
+        //--border-radius: 16px;
+        //--box-shadow: 0 6px 20px rgba(255, 149, 0, 0.4), 0 2px 8px rgba(255, 149, 0, 0.2);
+        --padding-top: 1rem;
+        --padding-bottom: 1rem;
+        --padding-start: 1.5rem;
+        --padding-end: 1.5rem;
+        
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0 0 1.5rem 0;
+        text-transform: none;
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+        
+        // Pulse animation for attention
+        //animation: premiumPulse 3s ease-in-out infinite;
+        
+        // Shimmer effect
+        /*&::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+          );
+          animation: shimmer 2.5s ease-in-out infinite;
+        }
+        
+        // Ripple effect for iOS-like feel
+        &::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.3);
+          transform: translate(-50%, -50%);
+          transition: width 0.6s, height 0.6s;
+        }
+        
+        &:active::after {
+          width: 300px;
+          height: 300px;
+        }*/
         
         ion-icon {
-          margin-right: 0.5rem;
           font-size: 1.2rem;
+          
+          &[slot="start"] {
+            margin-right: 0.5rem;
+          }
+          
+          &[slot="end"] {
+            margin-left: 0.5rem;
+          }
         }
-        
-        span {
-          font-size: 0.9rem;
+      }
+      
+      // Trust indicators
+      .trust-indicators {
+        .trust-item {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--ion-color-medium, #666666);
+          font-size: 0.8rem;
+          
+          ion-icon {
+            margin-right: 0.4rem;
+            font-size: 1rem;
+          }
         }
       }
     }
-    
-    .premium-button {
-      @include glassmorphism-button;
-      width: 100%;
+  }
+}
+
+// Keyframe animations
+@keyframes premiumPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 6px 20px rgba(255, 149, 0, 0.4), 0 2px 8px rgba(255, 149, 0, 0.2);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(255, 149, 0, 0.5), 0 4px 12px rgba(255, 149, 0, 0.3);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  50%, 100% {
+    left: 100%;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .premium-subscription-section {
+    .subscription-card {
+      // background: var(--ion-color-light);
+      
+      .subscription-content {
+        // background: var(--ion-color-light);
+        
+        .subscription-header {
+          .subscription-title {
+            color: var(--ion-color-dark);
+          }
+          
+          .subscription-subtitle {
+            color: var(--ion-color-medium-tint, #8a8a8a);
+          }
+        }
+        
+        .premium-features {
+          .feature-item {
+            background: rgba(255, 149, 0, 0.1);
+            
+            .feature-content {
+              .feature-title {
+                color: var(--ion-color-dark, #ffffff);
+              }
+              
+              .feature-description {
+                color: var(--ion-color-medium-tint, #8a8a8a);
+              }
+            }
+          }
+        }
+        
+        .trust-indicators {
+          .trust-item {
+            color: var(--ion-color-medium-tint, #8a8a8a);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Mobile responsiveness
+@media screen and (max-width: 480px) {
+  .premium-subscription-section {
+    .subscription-card {
+      margin: 0 0.5rem;
+      
+      .subscription-content {
+        padding: 1.5rem;
+        
+        .subscription-header {
+          margin-bottom: 1.5rem;
+          
+          .subscription-title {
+            font-size: 1.5rem;
+          }
+          
+          .subscription-subtitle {
+            font-size: 0.9rem;
+          }
+        }
+        
+        .premium-features {
+          margin-bottom: 2rem;
+          
+          .feature-item {
+            padding: 0.6rem;
+            margin-bottom: 1rem;
+            
+            .feature-icon-container {
+              width: 40px;
+              height: 40px;
+              margin-right: 0.8rem;
+              
+              .feature-icon {
+                font-size: 1.1rem;
+              }
+            }
+            
+            .feature-content {
+              .feature-title {
+                font-size: 0.9rem;
+              }
+              
+              .feature-description {
+                font-size: 0.75rem;
+              }
+            }
+          }
+        }
+        
+        .premium-cta-button {
+          --padding-top: 0.9rem;
+          --padding-bottom: 0.9rem;
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+// High-end touch feedback
+.premium-subscription-section {
+  .subscription-card {
+    .subscription-content {
+      .premium-cta-button {
+        // Enhanced touch feedback for premium feel
+        &:active {
+          transform: scale(0.98);
+          transition: transform 0.1s ease;
+        }
+      }
+      
+      .premium-features {
+        .feature-item {
+          // Subtle touch feedback on feature items
+          &:active {
+            transform: scale(0.99);
+            background: rgba(255, 149, 0, 0.08);
+            transition: all 0.1s ease;
+          }
+        }
+      }
     }
   }
 }
@@ -1489,10 +1983,10 @@ swiper-slide {
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       
-      &:hover {
+      /*&:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-      }
+      }*/
       
       &:last-child {
         margin-bottom: 0;
@@ -1557,9 +2051,9 @@ swiper-slide {
         }
       }
       
-      &:hover .video-thumbnail .play-overlay {
+      /*&:hover .video-thumbnail .play-overlay {
         color: var(--ion-color-primary);
-      }
+      }*/
     }
   }
 }

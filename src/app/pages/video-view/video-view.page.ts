@@ -105,6 +105,54 @@ import { VideoFormService } from 'src/app/video-form.service';
               <h3>Programme</h3>
               <p>{{ video?.extra?.program }}</p>
             </div>
+
+            <div class="detail-section" *ngIf="video?.extra?.program">
+              <h3>Autres vidéos du programme</h3>
+              
+              <!-- Loading state -->
+              <div *ngIf="isLoadingProgramVideos" class="loading-container">
+                <ion-spinner></ion-spinner>
+                <p>Chargement des vidéos...</p>
+              </div>
+              
+              <!-- Program videos list -->
+              <div *ngIf="!isLoadingProgramVideos && programVideos.length > 0" class="program-videos-container">
+                <div class="program-videos-list">
+                  <div class="program-video-item" 
+                      *ngFor="let programVideo of programVideos" 
+                      [class.current]="programVideo.id === video.id"
+                      (click)="navigateToVideo(programVideo.id)">
+                    
+                    <div class="video-thumbnail" *ngIf="programVideo.thumbnailUrl">
+                      <img [src]="programVideo.thumbnailUrl" [alt]="programVideo.title">
+                      <div class="play-overlay">
+                        <ion-icon name="play-circle-outline"></ion-icon>
+                      </div>
+                    </div>
+                    
+                    <div class="video-icon" *ngIf="!programVideo.thumbnailUrl">
+                      <ion-icon name="play-circle-outline"></ion-icon>
+                    </div>
+                    
+                    <div class="video-info">
+                      <div class="video-name">{{ programVideo.title }}</div>
+                      <div class="video-description" *ngIf="programVideo.description">
+                        {{ programVideo.description }}
+                      </div>
+                    </div>
+                    
+                    <ion-icon name="checkmark-circle" *ngIf="programVideo.id === video.id" class="current-indicator"></ion-icon>
+                    <ion-icon name="chevron-forward" *ngIf="programVideo.id !== video.id" class="arrow-icon"></ion-icon>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Empty state -->
+              <div *ngIf="!isLoadingProgramVideos && programVideos.length === 0" class="empty-state">
+                <ion-icon name="videocam-outline" class="empty-icon"></ion-icon>
+                <p>Aucune autre vidéo dans ce programme</p>
+              </div>
+            </div>
         </div>
 
         <!-- Admin/Coach edit form section -->
@@ -595,6 +643,204 @@ ion-item {
     }
 }
 
+/* Program videos section - consistent with exercise-list styling */
+.program-videos-container {
+  margin-top: 16px;
+}
+
+.program-videos-list {
+  background-color: var(--ion-color-light);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.program-video-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: var(--ion-color-light);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:hover:not(.current) {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+  
+  &.current {
+    background-color: rgba(var(--ion-color-primary-rgb), 0.1);
+    border-left: 4px solid var(--ion-color-primary);
+    padding-left: 12px; // Adjust for border
+  }
+  
+  .video-thumbnail {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: 16px;
+    flex-shrink: 0;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .play-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.2rem;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+  }
+  
+  .video-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background-color: var(--ion-color-primary-tint);
+    margin-right: 16px;
+    flex-shrink: 0;
+    
+    ion-icon {
+      font-size: 20px;
+      color: var(--ion-color-primary);
+    }
+  }
+  
+  .video-info {
+    flex: 1;
+    min-width: 0; // Allows text truncation
+    
+    .video-name {
+      color: var(--ion-color-dark);
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      
+      // Limit to 2 lines
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .video-description {
+      color: var(--ion-color-medium);
+      font-size: 14px;
+      line-height: 1.4;
+      
+      // Limit to 2 lines
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+  
+  .current-indicator {
+    color: var(--ion-color-primary);
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  
+  .arrow-icon {
+    color: var(--ion-color-medium);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+}
+
+/* Loading and empty states */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  
+  ion-spinner {
+    margin-bottom: 16px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  
+  .empty-icon {
+    font-size: 48px;
+    color: var(--ion-color-medium);
+    margin-bottom: 16px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 480px) {
+  .program-video-item {
+    padding: 12px;
+    
+    .video-thumbnail,
+    .video-icon {
+      width: 40px;
+      height: 40px;
+      margin-right: 12px;
+    }
+    
+    .video-thumbnail .play-overlay {
+      font-size: 1rem;
+    }
+    
+    .video-icon ion-icon {
+      font-size: 18px;
+    }
+    
+    .video-info {
+      .video-name {
+        font-size: 14px;
+      }
+      
+      .video-description {
+        font-size: 13px;
+      }
+    }
+    
+    .current-indicator,
+    .arrow-icon {
+      font-size: 16px;
+    }
+  }
+}
+
     `],
   styleUrls: [
   ],
@@ -642,6 +888,9 @@ export class VideoViewPage implements OnInit, AfterViewInit {
   formValid = false
   isFormLoading = false
 
+  programVideos: any[] = [];
+  isLoadingProgramVideos = false;
+
   // The video element reference
   @ViewChild('videoElement', { static: false }) videoElement:any = undefined
   videoPlayer: any; // A video-js object
@@ -683,96 +932,7 @@ export class VideoViewPage implements OnInit, AfterViewInit {
     this.videoId = this.route.snapshot.paramMap.get('id')
     this.router.events.subscribe(async (event)=>{
       if(event instanceof NavigationEnd && this.router.url.includes('/video-view')){
-        this.user = await this.contentService.storage.get('user')
-        await this.contentService.storage.get('token')
-        this.contentService.getOne(`/video-details/${this.videoId}`, {}).subscribe((res:any)=>{
-          this.video = res
-
-          
-          if (this.video.file){
-            // The old way (Back-end server) of loading videos
-            this.videoUrl = environment.rootEndpoint + '/' + this.video.file.permalink
-          } else if (this.video.hlsUrl) {
-            // The new way (AWS S3) of loading videos
-            console.log("HLS Url detected")
-            this.videoUrl = this.video.hlsUrl
-          }
-          this.cdr.detectChanges()
-          // Manage the tags by removing the category (training or boxing) from the tags
-
-          let tags = this.video.tags.split(',')
-          let category = tags.filter((tag:any)=>tag.includes('training') || tag.includes('boxing'))
-          tags = tags.filter((tag:any)=>!tag.includes('training') && !tag.includes('boxing'))
-          this.video.tags = tags.join(', ')
-          this.video.category = category.pop() // Always the last item of the pile, because the first item is the mother category
-
-          // Patch the value (In next steps, fully typed expression should be used)
-          this.video.privilege = this.video.privilege.join(',')
-          this.form.patchValue(this.video)
-
-          // Manage the reader
-          this.initVideoJsReader()
-
-          // Patch mainCategory and subCategory
-          const categoryParts = this.video.category.split('/');
-          if (categoryParts.length > 1){
-            this.form.get('mainCategory')?.setValue(categoryParts[0]);
-            if (categoryParts[0] && this.categoryHierarchy[categoryParts[0]]) {
-              // Update available subcategories based on main category
-              this.availableSubCategories = this.categoryHierarchy[categoryParts[0]];
-              if (categoryParts.length > 1) {
-                // Set subCategory if it exists in the hierarchy
-                const subCategory = this.availableSubCategories.find(sub => sub[0] === categoryParts[1]);
-                if (subCategory) {
-                  this.form.get('subCategory')?.setValue(subCategory[0]);
-                } else {
-                  // If subcategory not found, reset it
-                  this.form.get('subCategory')?.setValue('');
-                }
-
-                // Load the program options based on the selected category
-                this.updateProgramOptions(`${categoryParts[0]}/${categoryParts[1]}`);
-              }
-            }
-          }
-
-          // Patch program
-          console.log("Video extra data:", this.video.extra.program)
-          setTimeout(() => {
-            this.form.get("program")?.setValue(this.video.extra?.program || 'none');
-            console.log("Program set to:", this.form.get("program")?.value);
-          }, 1000);
-
-          // isExercuse and program handling
-          this.form.get('isExercise')?.setValue(this.video.extra?.isExercise || false);
-          this.form.get('program')?.setValue(this.video.extra?.program || 'none');
-          this.showCustomProgram = this.form.get('program')?.value === 'other';
-          this.form.get('customProgram')?.setValue(this.video.extra?.program || '');
-
-          // Patch the extra data
-          this.form.get('level')?.setValue(this.video.extra?.level || '');
-          this.form.get('duration')?.setValue(this.video.extra?.duration || '');
-          this.form.get('calorie')?.setValue(this.video.extra?.calorie || '');
-
-          /*if (categoryParts.length == 2) {
-            this.updateCategoryValue(); // Update the category value based on main and subcategory
-            setTimeout(() => {
-              console.log("Setting subCategory to", categoryParts[1])
-              this.form.get('subCategory')?.setValue(categoryParts[1]);
-            }, 1000);
-          }*/
-
-          // THe older way to patch value (should be removed later)
-          /*
-          this.form.patchValue({
-            title: this.video.title,
-            description: this.video.description,
-            tags: this.video.tags,
-            category: this.video.category,
-            privilege: this.video.privilege.join(','),
-            hidden: this.video.hidden
-          })*/
-        })
+        
       }
     })
     this.form.valueChanges.subscribe((value)=>{
@@ -807,6 +967,84 @@ export class VideoViewPage implements OnInit, AfterViewInit {
     this.routeParameterSubscription.unsubscribe();
   }
 
+  async ionViewWillEnter() {
+    // Run each time the user enters the page
+    this.user = await this.contentService.storage.get('user')
+    await this.contentService.storage.get('token')
+    this.contentService.getOne(`/video-details/${this.videoId}`, {}).subscribe((res:any)=>{
+      this.video = res
+
+      if (this.video.file){
+        // The old way (Back-end server) of loading videos
+        this.videoUrl = environment.rootEndpoint + '/' + this.video.file.permalink
+      } else if (this.video.hlsUrl) {
+        // The new way (AWS S3) of loading videos
+        console.log("HLS Url detected")
+        this.videoUrl = this.video.hlsUrl
+      }
+      this.cdr.detectChanges()
+      // Manage the tags by removing the category (training or boxing) from the tags
+
+      let tags = this.video.tags.split(',')
+      let category = tags.filter((tag:any)=>tag.includes('training') || tag.includes('boxing'))
+      tags = tags.filter((tag:any)=>!tag.includes('training') && !tag.includes('boxing'))
+      this.video.tags = tags.join(', ')
+      this.video.category = category.pop() // Always the last item of the pile, because the first item is the mother category
+        
+      // Patch the value (In next steps, fully typed expression should be used)
+      this.video.privilege = this.video.privilege.join(',')
+      this.form.patchValue(this.video)
+
+      // Manage the reader
+      this.initVideoJsReader()
+
+      // Load program videos if this video belongs to a program
+      if (this.video?.extra?.program) {
+        this.loadProgramVideos(this.video.extra.program);
+      }
+
+      // Patch mainCategory and subCategory
+      const categoryParts = this.video.category.split('/');
+      if (categoryParts.length > 1){
+        this.form.get('mainCategory')?.setValue(categoryParts[0]);
+        if (categoryParts[0] && this.categoryHierarchy[categoryParts[0]]) {
+          // Update available subcategories based on main category
+          this.availableSubCategories = this.categoryHierarchy[categoryParts[0]];
+          if (categoryParts.length > 1) {
+            // Set subCategory if it exists in the hierarchy
+            const subCategory = this.availableSubCategories.find(sub => sub[0] === categoryParts[1]);
+            if (subCategory) {
+              this.form.get('subCategory')?.setValue(subCategory[0]);
+            } else {
+              // If subcategory not found, reset it
+              this.form.get('subCategory')?.setValue('');
+            }
+
+            // Load the program options based on the selected category
+            this.updateProgramOptions(`${categoryParts[0]}/${categoryParts[1]}`);
+          }
+        }
+      }
+
+      // Patch program
+      setTimeout(() => {
+        this.form.get("program")?.setValue(this.video.extra?.program || 'none');
+        console.log("Program set to:", this.form.get("program")?.value);
+      }, 1000);
+
+      // isExercuse and program handling
+      this.form.get('isExercise')?.setValue(this.video.extra?.isExercise || false);
+      this.form.get('program')?.setValue(this.video.extra?.program || 'none');
+      this.showCustomProgram = this.form.get('program')?.value === 'other';
+      this.form.get('customProgram')?.setValue(this.video.extra?.program || '');
+
+      // Patch the extra data
+      this.form.get('level')?.setValue(this.video.extra?.level || '');
+      this.form.get('duration')?.setValue(this.video.extra?.duration || '');
+      this.form.get('calorie')?.setValue(this.video.extra?.calorie || '');
+    })
+  }
+
   ngAfterViewInit(){
     // this.setVideoJsReader()
     console.log("videoElement", this.videoElement)
@@ -834,6 +1072,35 @@ export class VideoViewPage implements OnInit, AfterViewInit {
     this.videoPlayer.on('error', ()=>{
       console.log('video-js error occured:', this.videoPlayer.error())
     })
+  }
+
+  loadProgramVideos(programName: string) {
+    this.isLoadingProgramVideos = true;
+
+    this.contentService.getCollection(`/videos/by-program`, 0, {
+      program: programName,
+      limit: 50
+    })
+      .pipe(
+        catchError((error:any) => {
+          console.error('Error loading program videos:', error);
+          this.isLoadingProgramVideos = false;
+          return [];
+        }
+      ))
+      .subscribe((response:any)=>{
+        this.programVideos = response.data || [];
+        this.isLoadingProgramVideos = false;
+        this.cdr.detectChanges
+      })
+  }
+
+  navigateToVideo(videoId: number) {
+    if (videoId !== this.video.id) {
+      this.router.navigate(['/video-view', videoId], { 
+        queryParams: { mode: this.mode } 
+      });
+    }
   }
 
   submit(event:any){
