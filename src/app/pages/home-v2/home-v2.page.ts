@@ -54,7 +54,7 @@ import { environment } from 'src/environments/environment';
           <div class="messages-text">
             <p>
               Vous avez <strong>{{ unreadMessagesCount }} {{ unreadMessagesCount === 1 ? 'nouveau message' : 'nouveaux messages' }}</strong> 
-              de votre coach.
+              <span *ngIf="user?.function === 'customer'">de votre coach.</span>
             </p>
             <p class="messages-action">
               Touchez pour voir vos messages

@@ -207,6 +207,17 @@ interface VideoFormData {
           ></ion-input>
         </ion-item>-->
 
+        <!-- Metainformation: repetitions -->
+        <ion-item>
+          <ion-input
+            type="number"
+            label="Nombre de répétitions"
+            label-placement="floating"
+            formControlName="repetitions"
+            placeholder="Nombre de répétitions"
+          ></ion-input>
+        </ion-item>
+
         <br/>
         <app-upload-video [formControl]="fileControl" [autoload]="false" [progress]="fileProgress"></app-upload-video>
         <br/>
@@ -244,7 +255,8 @@ export class VideoUploadPage extends FormComponent {
     'level': new FormControl('', []),
     'duration': new FormControl('', []),
     'calorie': new FormControl('', []),
-    'material': new FormControl('', [])
+    'material': new FormControl('', []),
+    'repetitions': new FormControl('', []),
   });
   isFormLoading = false;
   valid = false;
@@ -344,7 +356,8 @@ export class VideoUploadPage extends FormComponent {
       level: data.level || null,
       duration: data.duration || null,
       calorie: data.calorie || null,
-      material: data.material || null
+      material: data.material || null,
+      repetitions: data.repetitions || null
     };
 
     if (data.destination == 'server') {
