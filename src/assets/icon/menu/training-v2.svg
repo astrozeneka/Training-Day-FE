@@ -1,0 +1,104 @@
+<svg width="46" height="29" viewBox="0 0 46 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<clipPath id="clip0_189_935">
+<rect width="45" height="28" fill="white" transform="translate(0.966309 0.744141)"/>
+</clipPath>
+
+<!-- 3D Gradient for T character -->
+<linearGradient id="tGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+<stop offset="30%" style="stop-color:#e8e8e8;stop-opacity:1" />
+<stop offset="70%" style="stop-color:#c0c0c0;stop-opacity:1" />
+<stop offset="100%" style="stop-color:#909090;stop-opacity:1" />
+</linearGradient>
+
+<!-- 3D Gradient for D character -->
+<linearGradient id="dGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+<stop offset="25%" style="stop-color:#f0f0f0;stop-opacity:1" />
+<stop offset="65%" style="stop-color:#d0d0d0;stop-opacity:1" />
+<stop offset="100%" style="stop-color:#a0a0a0;stop-opacity:1" />
+</linearGradient>
+
+<!-- Highlight gradient -->
+<linearGradient id="highlightGradient" x1="0%" y1="0%" x2="100%" y2="50%">
+<stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8" />
+<stop offset="50%" style="stop-color:#ffffff;stop-opacity:0.3" />
+<stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+</linearGradient>
+
+<!-- Shadow gradient -->
+<linearGradient id="shadowGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+<stop offset="0%" style="stop-color:#000000;stop-opacity:0.4" />
+<stop offset="50%" style="stop-color:#000000;stop-opacity:0.1" />
+<stop offset="100%" style="stop-color:#000000;stop-opacity:0" />
+</linearGradient>
+
+<!-- Drop shadow filter -->
+<filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+<feGaussianBlur in="SourceAlpha" stdDeviation="1.5"/>
+<feOffset dx="2" dy="2" result="offset"/>
+<feComponentTransfer>
+<feFuncA type="linear" slope="0.3"/>
+</feComponentTransfer>
+<feMerge> 
+<feMergeNode/>
+<feMergeNode in="SourceGraphic"/> 
+</feMerge>
+</filter>
+
+<!-- Inner shadow filter -->
+<filter id="innerShadow" x="-50%" y="-50%" width="200%" height="200%">
+<feGaussianBlur in="SourceGraphic" stdDeviation="1"/>
+<feOffset dx="1" dy="1"/>
+</filter>
+
+<!-- Bevel effect -->
+<filter id="bevel" x="-50%" y="-50%" width="200%" height="200%">
+<feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
+<feSpecularLighting result="specOut" in="blur" specularConstant="1.5" specularExponent="20" lighting-color="#ffffff">
+<fePointLight x="-5000" y="-10000" z="20000"/>
+</feSpecularLighting>
+<feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut"/>
+<feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+</filter>
+</defs>
+
+<g clip-path="url(#clip0_189_935)">
+
+<!-- Shadow layer for T -->
+<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M9.04879 0.715332C15.7478 0.715332 22.4469 0.715332 29.1459 0.715332C29.1459 2.54351 29.1459 4.37169 29.1459 6.19987C25.7129 6.22436 22.2802 6.26285 18.8477 6.31533C18.735 12.493 18.5997 18.6703 18.442 24.8473C16.5696 23.0768 14.6972 21.3064 12.8248 19.536C12.7936 15.0906 12.7832 10.6453 12.7936 6.19987C12.4393 6.19028 12.0856 6.1999 11.7326 6.22873C10.5155 7.23904 9.29844 8.24935 8.08138 9.25966C8.00231 11.0696 7.91911 12.8785 7.83173 14.6865C5.54105 12.5964 3.24216 10.518 0.935059 8.45141C0.935059 8.41291 0.935059 8.37446 0.935059 8.33595C3.66052 5.81492 6.3651 3.27471 9.04879 0.715332Z" 
+fill="#000000" transform="translate(1.5, 1.5)" filter="url(#dropShadow)"/>
+
+<!-- Main T character with 3D gradient -->
+<path opacity="0.941" fill-rule="evenodd" clip-rule="evenodd" d="M9.04879 0.715332C15.7478 0.715332 22.4469 0.715332 29.1459 0.715332C29.1459 2.54351 29.1459 4.37169 29.1459 6.19987C25.7129 6.22436 22.2802 6.26285 18.8477 6.31533C18.735 12.493 18.5997 18.6703 18.442 24.8473C16.5696 23.0768 14.6972 21.3064 12.8248 19.536C12.7936 15.0906 12.7832 10.6453 12.7936 6.19987C12.4393 6.19028 12.0856 6.1999 11.7326 6.22873C10.5155 7.23904 9.29844 8.24935 8.08138 9.25966C8.00231 11.0696 7.91911 12.8785 7.83173 14.6865C5.54105 12.5964 3.24216 10.518 0.935059 8.45141C0.935059 8.41291 0.935059 8.37446 0.935059 8.33595C3.66052 5.81492 6.3651 3.27471 9.04879 0.715332Z" 
+fill="url(#tGradient)" filter="url(#bevel)"/>
+
+<!-- Highlight overlay for T -->
+<path opacity="0.6" fill-rule="evenodd" clip-rule="evenodd" d="M9.04879 0.715332C15.7478 0.715332 22.4469 0.715332 29.1459 0.715332C29.1459 2.54351 29.1459 4.37169 29.1459 6.19987C25.7129 6.22436 22.2802 6.26285 18.8477 6.31533C18.735 12.493 18.5997 18.6703 18.442 24.8473C16.5696 23.0768 14.6972 21.3064 12.8248 19.536C12.7936 15.0906 12.7832 10.6453 12.7936 6.19987C12.4393 6.19028 12.0856 6.1999 11.7326 6.22873C10.5155 7.23904 9.29844 8.24935 8.08138 9.25966C8.00231 11.0696 7.91911 12.8785 7.83173 14.6865C5.54105 12.5964 3.24216 10.518 0.935059 8.45141C0.935059 8.41291 0.935059 8.37446 0.935059 8.33595C3.66052 5.81492 6.3651 3.27471 9.04879 0.715332Z" 
+fill="url(#highlightGradient)"/>
+
+<!-- Shadow layer for D -->
+<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M45.935 8.27795C45.935 8.31646 45.935 8.35491 45.935 8.39341C38.5062 15.1689 31.079 21.9428 23.6535 28.7151C23.6327 28.7151 23.6118 28.7151 23.5911 28.7151C23.5911 22.7302 23.5911 16.7453 23.5911 10.7604C25.3602 10.7745 27.1286 10.7553 28.8962 10.7027C28.8858 12.8773 28.8962 15.0519 28.9274 17.2264C31.9941 14.2549 35.0836 11.301 38.1958 8.36455C37.341 7.55463 36.4672 6.7656 35.5744 5.99754C35.0339 5.96868 34.493 5.95906 33.9517 5.96867C33.9517 4.29444 33.9517 2.62022 33.9517 0.94599C35.4082 0.93637 36.8644 0.945992 38.3206 0.974856C40.8277 3.43824 43.3658 5.87261 45.935 8.27795Z" 
+fill="#000000" transform="translate(1.5, 1.5)" filter="url(#dropShadow)"/>
+
+<!-- Main D character with 3D gradient -->
+<path opacity="0.99" fill-rule="evenodd" clip-rule="evenodd" d="M45.935 8.27795C45.935 8.31646 45.935 8.35491 45.935 8.39341C38.5062 15.1689 31.079 21.9428 23.6535 28.7151C23.6327 28.7151 23.6118 28.7151 23.5911 28.7151C23.5911 22.7302 23.5911 16.7453 23.5911 10.7604C25.3602 10.7745 27.1286 10.7553 28.8962 10.7027C28.8858 12.8773 28.8962 15.0519 28.9274 17.2264C31.9941 14.2549 35.0836 11.301 38.1958 8.36455C37.341 7.55463 36.4672 6.7656 35.5744 5.99754C35.0339 5.96868 34.493 5.95906 33.9517 5.96867C33.9517 4.29444 33.9517 2.62022 33.9517 0.94599C35.4082 0.93637 36.8644 0.945992 38.3206 0.974856C40.8277 3.43824 43.3658 5.87261 45.935 8.27795Z" 
+fill="url(#dGradient)" filter="url(#bevel)"/>
+
+<!-- Highlight overlay for D -->
+<path opacity="0.6" fill-rule="evenodd" clip-rule="evenodd" d="M45.935 8.27795C45.935 8.31646 45.935 8.35491 45.935 8.39341C38.5062 15.1689 31.079 21.9428 23.6535 28.7151C23.6327 28.7151 23.6118 28.7151 23.5911 28.7151C23.5911 22.7302 23.5911 16.7453 23.5911 10.7604C25.3602 10.7745 27.1286 10.7553 28.8962 10.7027C28.8858 12.8773 28.8962 15.0519 28.9274 17.2264C31.9941 14.2549 35.0836 11.301 38.1958 8.36455C37.341 7.55463 36.4672 6.7656 35.5744 5.99754C35.0339 5.96868 34.493 5.95906 33.9517 5.96867C33.9517 4.29444 33.9517 2.62022 33.9517 0.94599C35.4082 0.93637 36.8644 0.945992 38.3206 0.974856C40.8277 3.43824 43.3658 5.87261 45.935 8.27795Z" 
+fill="url(#highlightGradient)"/>
+
+<!-- Enhanced detail elements with metallic effect -->
+<path fill-rule="evenodd" clip-rule="evenodd" d="M28.5843 1.23486C28.6466 2.72596 28.6674 4.227 28.6467 5.73796C27.5857 5.73796 26.5246 5.73796 25.4636 5.73796C26.4929 5.68043 27.5331 5.66118 28.5843 5.68022C28.5843 4.19844 28.5843 2.71665 28.5843 1.23486Z" 
+fill="#B8956A" filter="url(#bevel)"/>
+
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.4261 12.0308C7.44675 12.5326 7.42597 13.0329 7.36368 13.5318C7.3258 13.5246 7.30501 13.5054 7.30127 13.4741C7.3429 12.993 7.38447 12.5118 7.4261 12.0308Z" 
+fill="#C8A56A" filter="url(#bevel)"/>
+
+<path fill-rule="evenodd" clip-rule="evenodd" d="M17.9739 22.6533C17.9945 22.9827 17.9736 23.3098 17.9115 23.6348C17.8736 23.6276 17.8529 23.6084 17.8491 23.577C17.8908 23.2691 17.9323 22.9612 17.9739 22.6533Z" 
+fill="#A8856A" filter="url(#bevel)"/>
+
+</g>
+</svg>
