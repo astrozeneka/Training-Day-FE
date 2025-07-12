@@ -192,7 +192,7 @@ import { environment } from 'src/environments/environment';
             <div class="slide-description">
               <p>Entraînez-vous avec l'application chronomètre réglable pour chaque tour d'entraînement.</p>
               <h3>Chronomètre</h3>
-              <ion-button class="slide-button" (click)="navigateTo('/app-timer')">
+              <ion-button class="slide-button" (click)="navigateTo('/app-timer')" shape="round">
                 Découvrir
               </ion-button>
             </div>
@@ -207,7 +207,7 @@ import { environment } from 'src/environments/environment';
             <div class="slide-description">
               <p>Calculez vos kilomètres parcourus avec l'application GPS.</p>
               <h3>Course</h3>
-              <ion-button class="slide-button" (click)="navigateTo('/app-gps')">
+              <ion-button class="slide-button" (click)="navigateTo('/app-gps')" shape="round">
                 Découvrir
               </ion-button>
             </div>
@@ -222,7 +222,7 @@ import { environment } from 'src/environments/environment';
             <div class="slide-description">
               <p>Découvrez notre application calculateur d'IMC pour connaître votre indice de masse corporelle.</p>
               <h3>Calculateur d'IMC</h3>
-              <ion-button class="slide-button" (click)="navigateTo('/app-imc')">
+              <ion-button class="slide-button" (click)="navigateTo('/app-imc')" shape="round">
                 Découvrir
               </ion-button>
             </div>
@@ -237,7 +237,7 @@ import { environment } from 'src/environments/environment';
             <div class="slide-description">
               <p>Découvrez notre application calculateur de calories.</p>
               <h3>Calculateur de calories</h3>
-              <ion-button class="slide-button" (click)="navigateTo('/app-calories')">
+              <ion-button class="slide-button" (click)="navigateTo('/app-calories')" shape="round">
                 Découvrir
               </ion-button>
             </div>
@@ -252,7 +252,7 @@ import { environment } from 'src/environments/environment';
             <div class="slide-description">
               <p>Découvrez notre application suivi du poids.</p>
               <h3>Suivi du poids</h3>
-              <ion-button class="slide-button" (click)="navigateTo('/app-weight-tracking')">
+              <ion-button class="slide-button" (click)="navigateTo('/app-weight-tracking')" shape="round">
                 Découvrir
               </ion-button>
             </div>
@@ -273,7 +273,7 @@ import { environment } from 'src/environments/environment';
           <p>Parlez à votre coach personnel</p>
         </div>
       </div>
-      <ion-button class="chat-button" (click)="goToMessenger()">
+      <ion-button class="chat-button" (click)="goToMessenger()" shape="round">
         Commencer la discussion
       </ion-button>
     </div>
@@ -310,7 +310,7 @@ import { environment } from 'src/environments/environment';
             <span>Suivi des progrès</span>
           </div>
         </div>
-        <ion-button class="training-button" (click)="navigateTo('/video-home')">
+        <ion-button class="training-button" (click)="navigateTo('/video-home')" shape="round">
           Explorer les entraînements
         </ion-button>
       </div>
@@ -522,6 +522,15 @@ ion-content {
   --padding-bottom: 63px;
 }
 
+@mixin home-button-font{
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: none!important; // Override the ionic default (doesn't work)
+  & ::ng-deep ion-button button {
+      text-transform: none!important; // Override the ionic default (doesn't work)
+  }
+}
+
 // Common mixins for better maintainability
 @mixin glassmorphism-button {
   --background: rgba(255, 255, 255, 0.2);
@@ -531,9 +540,7 @@ ion-content {
   --padding-end: 1.2rem;
   --padding-top: 0.6rem;
   --padding-bottom: 0.6rem;
-  font-weight: 600;
-  font-size: 0.9rem;
-  backdrop-filter: blur(10px);
+  //backdrop-filter: blur(10px);
   
   &:hover {
     --background: rgba(255, 255, 255, 0.3);
@@ -1299,6 +1306,7 @@ swiper-slide {
       
       .slide-button {
         @include glassmorphism-button;
+        @include home-button-font;
       }
 
       // Some white font-color is not visible on the white background
@@ -1405,6 +1413,7 @@ swiper-slide {
     
     .chat-button {
       @include glassmorphism-button;
+      @include home-button-font;
       width: 100%;
     }
   }
@@ -1517,6 +1526,7 @@ swiper-slide {
       
       .training-button {
         @include glassmorphism-button;
+        @include home-button-font;
         width: 100%;
         position: relative;
         z-index: 2;
@@ -1643,9 +1653,11 @@ swiper-slide {
         }
         
         .subscription-title {
-          margin: 0 0 0.8rem 0;
-          font-size: 1.8rem;
-          font-weight: 700;
+          margin: 0 0 0.2rem 0;
+
+          font-size: 1.2rem;
+          font-weight: 600;
+          
           color: var(--ion-color-dark, #000000);
           line-height: 1.2;
         }
@@ -1654,7 +1666,9 @@ swiper-slide {
           margin: 0;
           font-size: 1rem;
           color: var(--ion-color-medium, #666666);
-          line-height: 1.4;
+          
+          font-size: 0.9rem;
+
           max-width: 280px;
           margin-left: auto;
           margin-right: auto;
@@ -1732,53 +1746,16 @@ swiper-slide {
         --padding-bottom: 1rem;
         --padding-start: 1.5rem;
         --padding-end: 1.5rem;
+
+        @include home-button-font;
         
-        font-size: 1.1rem;
-        font-weight: 700;
+        //font-size: 1.1rem;
+        //font-weight: 700;
         margin: 0 0 1.5rem 0;
-        text-transform: none;
-        letter-spacing: 0.3px;
+        //text-transform: none;
+        //letter-spacing: 0.3px;
         position: relative;
         overflow: hidden;
-        
-        // Pulse animation for attention
-        //animation: premiumPulse 3s ease-in-out infinite;
-        
-        // Shimmer effect
-        /*&::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.3),
-            transparent
-          );
-          animation: shimmer 2.5s ease-in-out infinite;
-        }
-        
-        // Ripple effect for iOS-like feel
-        &::after {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 0;
-          height: 0;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.3);
-          transform: translate(-50%, -50%);
-          transition: width 0.6s, height 0.6s;
-        }
-        
-        &:active::after {
-          width: 300px;
-          height: 300px;
-        }*/
         
         ion-icon {
           font-size: 1.2rem;
@@ -1809,18 +1786,6 @@ swiper-slide {
         }
       }
     }
-  }
-}
-
-// Keyframe animations
-@keyframes premiumPulse {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 6px 20px rgba(255, 149, 0, 0.4), 0 2px 8px rgba(255, 149, 0, 0.2);
-  }
-  50% {
-    transform: scale(1.02);
-    box-shadow: 0 8px 24px rgba(255, 149, 0, 0.5), 0 4px 12px rgba(255, 149, 0, 0.3);
   }
 }
 
@@ -1889,14 +1854,6 @@ swiper-slide {
         
         .subscription-header {
           margin-bottom: 1.5rem;
-          
-          .subscription-title {
-            font-size: 1.5rem;
-          }
-          
-          .subscription-subtitle {
-            font-size: 0.9rem;
-          }
         }
         
         .premium-features {
@@ -2177,6 +2134,7 @@ swiper-slide {
         
         .tip-button {
           @include glassmorphism-button;
+          @include home-button-font;
         }
       }
     }

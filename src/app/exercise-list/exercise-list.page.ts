@@ -4,6 +4,7 @@ import { ContentService } from '../content.service';
 import { FeedbackService } from '../feedback.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { from, map, Observable, of, shareReplay, switchMap, take } from 'rxjs';
 
 
 
@@ -903,6 +904,10 @@ export class ExerciseListPage implements OnInit {
   isLoading = false;
   hasError = false;
 
+  // Observable for bearer token, if needed
+  private isUserConnected$: Observable<boolean>;
+  private bearerToken$: Observable<string>;
+
   constructor(
     private route: ActivatedRoute,
     private contentService: ContentService,
@@ -912,20 +917,66 @@ export class ExerciseListPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      if (params['category']) {
-        this.categoryName = params['category'];
-        this.loadData(this.categoryName);
-      }
-    });
+    // Check whether or not the user is connected
+    this.isUserConnected$ = this.contentService.userStorageObservable.gso$()
+      .pipe(
+        map((user) => {
+          return !!user;
+        }),
+        shareReplay(1)
+      );
+    
+    // The bearer token
+    this.bearerToken$ = this.isUserConnected$.pipe(
+      switchMap((isConnected) => {
+        console.log("$$$$$$$$$$$$$$", "isConnected", isConnected);
+        if (isConnected) {
+          return from(this.contentService.storage.get('token'))
+        } else {
+          return of(''); // from([null]) might work as well
+        }
+      }),
+      shareReplay(1)
+    )
   }
 
+  ionViewWillEnter() {
+    // 1. Load the category name from query parameters
+    const params = this.route.snapshot.queryParams;
+    if (params['category']) {
+      this.categoryName = params['category'];
+    }
+    
+    // 2. Trigger the data to load
+    this.loadData(this.categoryName);
+  }
+
+  /** 
+   * A generic HTTP GET method that automatically adds the Bearer token if available.
+    */
+  httpGet(url:string): Observable<any> {
+    return this.bearerToken$.pipe(
+      take(1), // Take the first emitted value
+      switchMap((token) => {
+        let headers = {};
+        if (token) {
+          headers = { 'Authorization': `Bearer ${token}` };
+        }
+        return this.http.get(url, { headers });
+      })
+    )
+  }
+
+  /**
+   * Load exercises and programs based on the selected category.
+   * @param category The category to load exercises and programs for.
+   */
   loadData(category: string) {
     this.isLoading = true;
     this.hasError = false;
-    
+
     // Load exercises
-    this.http.get(`${environment.apiEndpoint}/videos/exercises-by-category?category=${category}`)
+    this.httpGet(`${environment.apiEndpoint}/videos/exercises-by-category?category=${category}`)
       .subscribe({
         next: (response: any) => {
           this.exercises = response.data || [];
@@ -940,7 +991,7 @@ export class ExerciseListPage implements OnInit {
       });
     
     // Load programs
-    this.http.get(`${environment.apiEndpoint}/videos/programs-by-category?category=${category}`)
+    this.httpGet(`${environment.apiEndpoint}/videos/programs-by-category?category=${category}`)
       .subscribe({
         next: (response: any) => {
           this.programs = response.data || [];
@@ -971,6 +1022,7 @@ export class ExerciseListPage implements OnInit {
     this.selectedProgram = null;*/
   }
 
+  /*
   loadProgramDetails(program: Program) {
     // First load all videos for this program
     this.contentService.get(`/videos/videos-by-program?program=${program.name}`)
@@ -1009,7 +1061,7 @@ export class ExerciseListPage implements OnInit {
           this.feedbackService.registerNow('Erreur lors du chargement des détails du programme', 'danger');
         }
       });
-  }
+  }*/
 
   openProgramDetail(program: Program) {
     /*this.selectedProgram = program;

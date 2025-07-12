@@ -289,7 +289,6 @@ export class BottomNavbarComponent  implements OnInit {
 
     // Check if the user is connected
     this.contentService.userStorageObservable.gso$().subscribe((user) => {
-      console.log("user", user);
       if (user && user.id) {
         this.profileButtonText = "Profil";
         this.profileButtonDestination = "profile";
@@ -306,11 +305,9 @@ export class BottomNavbarComponent  implements OnInit {
   goToTab(target:string){
     // Navigate to the target tab
     if (this.bnus.tabSequences.indexOf(target) < this.bnus.tabSequences.indexOf(this.tabName || 'dashboard')) {
-      console.log("back")
       this.navController.navigateRoot(['/' + target], { animated: false });
       // this.navController.navigateBack(['/' + target], { animated: false, animationDirection: 'back' });
     } else {
-      console.log("forward")
       this.navController.navigateRoot(['/' + target], { animated: false });
       // this.navController.navigateForward(['/' + target], { animated: false, animationDirection: 'forward' });
     }
