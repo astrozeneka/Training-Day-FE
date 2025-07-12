@@ -55,6 +55,40 @@ import { OnboardingService } from 'src/app/onboarding.service';
         <ion-icon slot="end" name="cloud-upload-outline"></ion-icon>
       </ion-button>
     </div>
+
+    <!-- In case the user doesn't have a renewable_id -->
+    <div *ngIf="entity">
+      <div *ngIf="entity && !entity?.renewable_id && !active_entitled_subscription && entity.function === 'customer'">
+        <div class="subscription-cta-compact ion-padding-horizontal">
+          <div class="subscription-cta-card">
+              <div class="subscription-cta-content">
+                  <!-- Premium Badge -->
+                  <div class="premium-badge">
+                      <ion-icon name="diamond" class="premium-badge-icon"></ion-icon>
+                      <span class="premium-badge-text">Premium</span>
+                  </div>
+                  
+                  <!-- Content -->
+                  <div class="cta-header">
+                      <h3 class="cta-title">Débloquez tous les avantages</h3>
+                      <p class="cta-subtitle">Programmes personnalisés et coach dédié</p>
+                  </div>
+                  
+                  <!-- CTA Button -->
+                  <ion-button 
+                      class="premium-cta-button-compact" 
+                      expand="block" 
+                      shape="round"
+                      (click)="navigateTo('/swipeable-store')">
+                      <ion-icon name="storefront" slot="start"></ion-icon>
+                      Accéder à la boutique
+                      <ion-icon name="arrow-forward" slot="end"></ion-icon>
+                  </ion-button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
     
     <!-- The form below is redundant -->
       <form [formGroup]="form">
@@ -270,36 +304,15 @@ import { OnboardingService } from 'src/app/onboarding.service';
 
     <div *ngIf="entity">
         <h3 class="display-1 ion-padding">Abonnement</h3>
+
         <div *ngIf="entity && !entity?.renewable_id && !active_entitled_subscription">
-          <div class="subscription-cta-compact ion-padding-horizontal">
-              <div class="subscription-cta-card">
-                  <div class="subscription-cta-content">
-                      <!-- Premium Badge -->
-                      <div class="premium-badge">
-                          <ion-icon name="diamond" class="premium-badge-icon"></ion-icon>
-                          <span class="premium-badge-text">Premium</span>
-                      </div>
-                      
-                      <!-- Content -->
-                      <div class="cta-header">
-                          <h3 class="cta-title">Débloquez tous les avantages</h3>
-                          <p class="cta-subtitle">Programmes personnalisés et coach dédié</p>
-                      </div>
-                      
-                      <!-- CTA Button -->
-                      <ion-button 
-                          class="premium-cta-button-compact" 
-                          expand="block" 
-                          shape="round"
-                          (click)="navigateTo('/swipeable-store')">
-                          <ion-icon name="storefront" slot="start"></ion-icon>
-                          Accéder à la boutique
-                          <ion-icon name="arrow-forward" slot="end"></ion-icon>
-                      </ion-button>
-                  </div>
-              </div>
-          </div>
-      </div>
+            <div class="span-button ion-padding-horizontal">
+                <span>
+                    Vous n'avez pas d'abonnement actif.
+                </span>
+            </div>
+        </div>
+
         <div *ngIf="entity?.renewable_id && active_entitled_subscription">
             <div class="span-button ion-padding-horizontal">
                 <span>

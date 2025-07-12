@@ -273,7 +273,7 @@ import { environment } from 'src/environments/environment';
           <p>Parlez à votre coach personnel</p>
         </div>
       </div>
-      <ion-button class="chat-button" (click)="navigateTo('/messenger-master')">
+      <ion-button class="chat-button" (click)="goToMessenger()">
         Commencer la discussion
       </ion-button>
     </div>
@@ -988,11 +988,12 @@ ion-content {
 
   &.search-active {
     top: calc(env(safe-area-inset-top) + 1rem);
-    left: 1rem;
-    right: 1rem;
+    // width: calc(100% - 2rem);
+    // left: 1rem;
+    // right: 1rem;
     z-index: 1999;
     background: var(--ion-background-color, #fff);
-    border-radius: 16px;
+    // border-radius: 16px;
     padding: 1rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     max-height: calc(100vh - env(safe-area-inset-top) - 2rem);
@@ -2545,6 +2546,14 @@ export class HomeV2Page implements OnInit {
         await navigator.clipboard.writeText(text);
         // You could show a toast here indicating the link was copied
       }
+    }
+  }
+
+  async goToMessenger() {
+    if(this.user) {
+      this.router.navigate(['/messenger-master']);
+    } else {
+      this.router.navigate(['/login']);
     }
   }
 }

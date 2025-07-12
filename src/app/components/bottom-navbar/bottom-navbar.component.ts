@@ -4,6 +4,7 @@ import { NavController } from '@ionic/angular';
 import { filter, merge, of } from 'rxjs';
 import { BottomNavbarUtilsService } from 'src/app/bottom-navbar-utils.service';
 import { ContentService } from 'src/app/content.service';
+import { use } from 'video.js/dist/types/tech/middleware';
 
 @Component({
   selector: 'app-bottom-navbar',
@@ -60,7 +61,10 @@ import { ContentService } from 'src/app/content.service';
       [class]="tabName === 'profile' ? 'active' : ''"
     >
       <div class="inner">
-        <ion-icon src="/assets/icon/menu/profile.svg" class="profile-icon"></ion-icon>
+        <div class="icon-container">
+          <ion-icon src="/assets/icon/menu/profile.svg" class="profile-icon"></ion-icon>
+          <div class="badge" *ngIf="profileBadgeDisplayed">1</div>
+        </div>
         <div class="label">{{ profileButtonText }}</div>
       </div>
     </ion-button>
@@ -125,6 +129,31 @@ import { ContentService } from 'src/app/content.service';
             fill: none;
             //stroke: #484848;
             stroke: var(--ion-color-darkgrey);
+        }
+
+        & .icon-container {
+          position: relative;
+          display: inline-block;
+        }
+
+        & .badge {
+          position: absolute;
+          top: -6px;
+          right: -6px;
+          background-color: var(--ion-color-danger, #eb445a);
+          color: white;
+          border-radius: 50%;
+          width: 16px;
+          height: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          font-weight: 600;
+          line-height: 1;
+          z-index: 10;
+          border: 2px solid var(--ion-background-color, white);
+          box-sizing: border-box;
         }
 
 
@@ -225,6 +254,7 @@ import { ContentService } from 'src/app/content.service';
     }
 }
 
+
   `]
 })
 export class BottomNavbarComponent  implements OnInit {
@@ -234,6 +264,9 @@ export class BottomNavbarComponent  implements OnInit {
   // The right-most button shows different text depending on if the user is connected or not
   profileButtonText: string = "Se connecter"
   profileButtonDestination: string = "login"
+
+  // If the user doesn't have a renewable_id, we display a badge on the profile button
+  profileBadgeDisplayed: boolean = false;
 
   constructor(
     protected bnus: BottomNavbarUtilsService,
@@ -262,6 +295,12 @@ export class BottomNavbarComponent  implements OnInit {
         this.profileButtonDestination = "profile";
       }
     });
+  }
+
+  ionViewWillEnter() {
+    this.contentService.userStorageObservable.getStorageObservable().subscribe(async(user)=>{
+      this.profileBadgeDisplayed = user.renewable_id == null && user.active_entitled_subscription == null && user.function === 'customer';
+    })
   }
 
   goToTab(target:string){
