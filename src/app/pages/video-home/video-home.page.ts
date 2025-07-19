@@ -66,7 +66,7 @@ import { Router } from '@angular/router';
 
   @import '../../../mixins';
 
-// Card container mixin
+// Card container mixin (used in mixins.scss as well)
 @mixin card-container {
   border-radius: 24px;
   overflow: hidden;
@@ -85,7 +85,7 @@ import { Router } from '@angular/router';
   z-index: 2;
 }
 
-// Glassmorphism button mixin
+// Glassmorphism button mixin (same as in mixins.scss)
 @mixin glassmorphism-button {
   --background: rgba(255, 255, 255, 0.2);
   --color: white;
@@ -136,90 +136,7 @@ import { Router } from '@angular/router';
 }
 
 .tool-card {
-  @include card-container;
-  position: relative;
-  height: 320px;
-  width: 100%;
-  
-  .image-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(0.9) contrast(1.1);
-    }
-  }
-  
-  .card-description {
-    @include gradient-overlay;
-    padding: 3rem 1.5rem 1.5rem;
-    text-align: left;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(3px);
-
-    & .spacer {
-      flex-grow: 1;
-    }
-    
-    p {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 0.9rem;
-      line-height: 1.4;
-      margin: 0 0 1rem 0;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-    }
-    
-    h3 {
-      color: white;
-      margin: 0 0 1.5rem 0;
-      font-size: 1.4rem;
-      font-weight: 700;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    }
-    
-    .tool-button {
-      @include glassmorphism-button;
-      width: 100%;
-      margin-top: auto;
-      
-      // Override the active state for touch devices
-      &:active,
-      &.ion-activated {
-        --background: rgba(0, 0, 0, 0.8) !important;
-        --background-activated: rgba(0, 0, 0, 0.8) !important;
-        --color: white !important;
-        --color-activated: white !important;
-        transform: scale(0.98);
-        transition: all 0.1s ease;
-      }
-      
-      // Disable native iOS button styling
-      -webkit-appearance: none !important;
-      -webkit-tap-highlight-color: transparent !important;
-      
-      // Target the native button element inside ion-button
-      & .button-native {
-        &:active,
-        &.ion-activated {
-          background: rgba(0, 0, 0, 0.8) !important;
-          color: white !important;
-        }
-      }
-    }
-  }
-
+  @include tool-card;
   // Specific to 'video-home' page only
   & {
     margin-bottom: 2rem;
@@ -235,19 +152,7 @@ import { Router } from '@angular/router';
   }
   
   .tool-card {
-    height: 280px;
-    
-    .card-description {
-      padding: 2.5rem 1rem 1rem;
-      
-      h3 {
-        font-size: 1.2rem;
-      }
-      
-      p {
-        font-size: 0.9rem;
-      }
-    }
+    @include tool-card-mobile;
   }
 }
 

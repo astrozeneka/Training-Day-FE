@@ -20,12 +20,25 @@
       </div>
     </div>
 
-    <div class="menu">
-      <app-condensed-menu-item [img]="category.imageUrl" [routerLink]="'/recipe-by-category/' + category.name" *ngFor="let category of categories">
-        {{ category.name }}
-      </app-condensed-menu-item>
+    <div class="card-list">
+      <div class="tool-card" *ngFor="let category of categories">
+        <div class="image-container">
+          <img [title]="category.name" [src]="category.imageUrl" />
+        </div>
+        <div class="card-description">
+          <div class="spacer"></div>
+          <p>Découvrez des recettes savoureuses et nutritives spécialement conçues pour les sportifs.</p>
+          <h3>{{ category.name }}</h3>
+          <ion-button style="align-self: stretch;" expand="block" shape="round" [routerLink]="'/recipe-by-category/' + category.name">
+            Découvrir
+          </ion-button>
+        </div>
+      </div>
     </div>
   </div>
+
+  <br/>
+  <br/>
 
   <app-button-to-chat></app-button-to-chat>
 </ion-content>

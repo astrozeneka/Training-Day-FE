@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { HomeV2PageRoutingModule } from './home-v2-routing.module';
 
 import { HomeV2Page } from './home-v2.page';
+import { UtilitiesModule } from 'src/app/components/utilities.module';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { HomeV2Page } from './home-v2.page';
     FormsModule,
     IonicModule,
     HomeV2PageRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    UtilitiesModule
   ],
   declarations: [HomeV2Page],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

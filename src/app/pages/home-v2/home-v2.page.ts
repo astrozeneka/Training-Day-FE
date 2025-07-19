@@ -515,13 +515,16 @@ import { environment } from 'src/environments/environment';
 
   <!-- Bottom Spacing -->
   <div class="bottom-spacing"></div>
+
+  <!-- Chat Button -->
+  <app-button-to-chat></app-button-to-chat>
 </ion-content>
   `,
   styles: [`
 @import '../../../mixins';
 
 ion-content {
-  --padding-bottom: 63px;
+  // --padding-bottom: 63px;
 }
 
 @mixin home-button-font{
