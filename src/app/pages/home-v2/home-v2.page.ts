@@ -2,9 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Platform } from '@ionic/angular';
 import { catchError, debounceTime, distinctUntilChanged, EMPTY, switchMap } from 'rxjs';
 import { BottomNavbarUtilsService } from 'src/app/bottom-navbar-utils.service';
 import { ContentService } from 'src/app/content.service';
+import Store from 'src/app/custom-plugins/store.plugin';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -193,7 +195,7 @@ import { environment } from 'src/environments/environment';
               <p>Entraînez-vous avec l'application chronomètre réglable pour chaque tour d'entraînement.</p>
               <h3>Chronomètre</h3>
               <ion-button class="slide-button" (click)="navigateTo('/app-timer')" shape="round">
-                Découvrir
+                Commencer
               </ion-button>
             </div>
           </div>
@@ -208,7 +210,7 @@ import { environment } from 'src/environments/environment';
               <p>Calculez vos kilomètres parcourus avec l'application GPS.</p>
               <h3>Course</h3>
               <ion-button class="slide-button" (click)="navigateTo('/app-gps')" shape="round">
-                Découvrir
+                Commencer
               </ion-button>
             </div>
           </div>
@@ -223,7 +225,7 @@ import { environment } from 'src/environments/environment';
               <p>Découvrez notre application calculateur d'IMC pour connaître votre indice de masse corporelle.</p>
               <h3>Calculateur d'IMC</h3>
               <ion-button class="slide-button" (click)="navigateTo('/app-imc')" shape="round">
-                Découvrir
+                Commencer
               </ion-button>
             </div>
           </div>
@@ -238,7 +240,7 @@ import { environment } from 'src/environments/environment';
               <p>Découvrez notre application calculateur de calories.</p>
               <h3>Calculateur de calories</h3>
               <ion-button class="slide-button" (click)="navigateTo('/app-calories')" shape="round">
-                Découvrir
+                Commencer
               </ion-button>
             </div>
           </div>
@@ -253,7 +255,7 @@ import { environment } from 'src/environments/environment';
               <p>Découvrez notre application suivi du poids.</p>
               <h3>Suivi du poids</h3>
               <ion-button class="slide-button" (click)="navigateTo('/app-weight-tracking')" shape="round">
-                Découvrir
+                Commencer
               </ion-button>
             </div>
           </div>
@@ -2278,7 +2280,8 @@ export class HomeV2Page implements OnInit {
     private router: Router,
     private http: HttpClient,
     private contentService: ContentService,
-    private bnus: BottomNavbarUtilsService
+    private bnus: BottomNavbarUtilsService,
+    private platform: Platform
   ) { }
   
   ngOnInit() {
@@ -2486,24 +2489,14 @@ export class HomeV2Page implements OnInit {
   }
 
   async clickShareApp() {
-    // For now, we'll use the Web Share API or fallback to a simple share
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Training Day',
-          text: 'Découvrez Training Day - Votre coach personnel',
-          url: window.location.origin
-        });
-      } catch (error) {
-        console.log('Error sharing:', error);
-      }
-    } else {
-      // Fallback for browsers that don't support Web Share API
-      const text = `Découvrez Training Day - Votre coach personnel: ${window.location.origin}`;
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(text);
-        // You could show a toast here indicating the link was copied
-      }
+    if (this.platform.is("ios")) {
+      let link = 'https://apps.apple.com/app/id1234567890'; // Replace with your iOS app link
+      let res = await Store.displayShareSheet({message: link});
+      console.log(res);
+    } else if (this.platform.is("android")) {
+      let link = 'https://play.google.com/store/apps/details?id=com.example.app'; // Replace with your Android app link
+      let res = await Store.displayShareSheet({message: link});
+      console.log(res);
     }
   }
 

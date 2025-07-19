@@ -33,7 +33,7 @@ import { Router } from '@angular/router';
         <p>Calculez vos kilomètres parcourus avec l'application GPS.</p>
         <h3>GPS</h3>
         <ion-button class="tool-button" expand="block" (click)="navigateTo('/app-gps')">
-          Découvrir
+          Commencer
         </ion-button>
       </div>
     </div>
@@ -48,7 +48,7 @@ import { Router } from '@angular/router';
         <p>Entraînez-vous avec l'application chronomètre réglable pour chaque tour d'entraînement.</p>
         <h3>Chronomètre</h3>
         <ion-button class="tool-button" expand="block" (click)="navigateTo('/app-timer')">
-          Découvrir
+          Commencer
         </ion-button>
       </div>
     </div>
@@ -63,7 +63,7 @@ import { Router } from '@angular/router';
         <p>Découvrez notre application calculateur d'IMC pour connaître votre indice de masse corporelle.</p>
         <h3>Calculateur d'IMC</h3>
         <ion-button class="tool-button" expand="block" (click)="navigateTo('/app-imc')">
-          Découvrir
+          Commencer
         </ion-button>
       </div>
     </div>
@@ -78,7 +78,7 @@ import { Router } from '@angular/router';
         <p>Découvrez notre application calculateur de calories.</p>
         <h3>Calculateur de calorie</h3>
         <ion-button class="tool-button" expand="block" (click)="navigateTo('/app-calories')">
-          Découvrir
+          Commencer
         </ion-button>
       </div>
     </div>
@@ -94,7 +94,7 @@ import { Router } from '@angular/router';
         <p>Découvrez notre application suivi du poids.</p>
         <h3>Suivi du poids</h3>
         <ion-button class="tool-button" expand="block" (click)="navigateTo('/app-weight-tracking')">
-          Découvrir
+          Commencer
         </ion-button>
       </div>
     </div>

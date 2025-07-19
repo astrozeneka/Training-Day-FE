@@ -37,7 +37,7 @@ import { Router } from '@angular/router';
           <p>Explore des programmes sportifs adaptés à ton niveau et construits autour de tes objectifs personnels.</p>
           <h3>Training of the day</h3>
           <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateToCategory('/exercise-categories', 'training')">
-            Découvrir
+            Commencer
           </ion-button>
         </div>
       </div>
@@ -51,7 +51,7 @@ import { Router } from '@angular/router';
           <p>De l'initiation aux entraînements avancés, progresse en boxe selon tes objectifs personnels.</p>
           <h3>Boxing of the day</h3>
             <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateToCategory('/exercise-categories', 'boxing')">
-              Découvrir
+              Commencer
             </ion-button>
         </div>
       </div>
