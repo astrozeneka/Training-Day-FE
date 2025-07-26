@@ -13,7 +13,59 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-ios-purchase-invoice',
-  templateUrl: './ios-purchase-invoice.page.html',
+  template: `
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+          <app-back-button></app-back-button>
+          <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Abonnements</ion-title>
+      <ion-progress-bar [value]="processProgress" *ngIf="processProgress > 0"></ion-progress-bar>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="ios-purchase-invoice">
+      <h1 class="display-1 ion-padding">Confirmez votre achat</h1>
+
+      <form [formGroup]="form">
+        <div class="ion-padding-horizontal description">
+          Veuillez sélectionner votre offre d'abonnement. Les prélèvements seront effectués automatiquement par Apple Store.
+        </div>
+        <div class="ion-padding-horizontal bubble-wrapper">
+          <app-promotional-bubble-selector-ios *ngIf="productList && productId" [product]="productList[productId]" formControlName="offer"></app-promotional-bubble-selector-ios>
+          <div class="placeholder" *ngIf="offersAreLoading"><ion-spinner></ion-spinner></div>
+        </div>
+
+        <div class="floating-bottom">
+          <div class="ion-padding">
+            <div class="cgv-row">
+              <ion-label>Accepter <a class="a" (click)="openCGV()">les CGV</a></ion-label>
+              <ion-checkbox formControlName="acceptCGV" slot="end" color="primary"></ion-checkbox>
+            </div>
+
+            <app-ux-button
+              expand="block" 
+              color="primary" 
+              shape="round" 
+              [disabled]="!form.valid"
+              (click)="continueToPayment()"
+              [loading]="isLoading"
+            >
+              Continuer
+            </app-ux-button>
+            <!-- TODO, redeem code -->
+            <div class="helper ion-text-center" style="font-size:smaller">
+              <!-- Enregistrement de votre commande en cours <br/> -->
+              {{ loadingStep }}
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ion-content>
+  `,
   styleUrls: ['./ios-purchase-invoice.page.scss', '../purchase-invoice.scss'],
 })
 export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implements OnInit {
