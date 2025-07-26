@@ -167,6 +167,38 @@ import { environment } from 'src/environments/environment';
     </div>
   </div>
 
+  <!-- Training video section -->
+  <div class="video-card-list">
+      <!-- Training everyday -->
+      <div class="tool-card">
+        <div class="image-container">
+          <img title="Training of the day" src="../../../assets/medias/rounded-cards/sample-image-training-of-the-day.jpg" />
+        </div>
+        <div class="card-description">
+          <div class="spacer"></div>
+          <p>Explore des programmes sportifs adaptés à ton niveau et construits autour de tes objectifs personnels.</p>
+          <h3>Training of the day</h3>
+          <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateToCategory('/exercise-categories', 'training')">
+            Commencer
+          </ion-button>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <div class="image-container">
+          <img title="Boxing of the day" src="../../../assets/medias/rounded-cards/sample-image-boxing-of-the-day.jpg" />
+        </div>
+        <div class="card-description">
+          <div class="spacer"></div>
+          <p>De l'initiation aux entraînements avancés, progresse en boxe selon tes objectifs personnels.</p>
+          <h3>Boxing of the day</h3>
+            <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateToCategory('/exercise-categories', 'boxing')">
+              Commencer
+            </ion-button>
+        </div>
+      </div>
+  </div>
+
   <!-- Applications Section -->
   <div class="apps-section">
     <div class="section-header ion-padding">
@@ -187,44 +219,29 @@ import { environment } from 'src/environments/environment';
         init="true">
         
         <swiper-slide>
-          <div class="slide-content">
-            <div class="image-container">
-              <img title="Chronomètre" src="../../../assets/medias/IMG_0962_1024x683.jpeg" />
-            </div>
-            <div class="slide-description">
-              <p>Entraînez-vous avec l'application chronomètre réglable pour chaque tour d'entraînement.</p>
-              <h3>Chronomètre</h3>
-              <ion-button class="slide-button" (click)="navigateTo('/app-timer')" shape="round">
-                Commencer
-              </ion-button>
-            </div>
-          </div>
-        </swiper-slide>
-        
-        <swiper-slide>
-          <div class="slide-content">
-            <div class="image-container">
-              <img title="GPS Course" src="../../../assets/medias/IMG_0961_1024x683.jpeg" />
-            </div>
-            <div class="slide-description">
-              <p>Calculez vos kilomètres parcourus avec l'application GPS.</p>
-              <h3>Course</h3>
-              <ion-button class="slide-button" (click)="navigateTo('/app-gps')" shape="round">
-                Commencer
-              </ion-button>
-            </div>
-          </div>
-        </swiper-slide>
-        
-        <swiper-slide>
-          <div class="slide-content">
+          <div class="slide-content enhanced-slide-content" (click)="navigateTo('/app-imc')">
             <div class="image-container">
               <img title="Calculateur IMC" src="./../../assets/medias/imc-stockphoto.png" />
             </div>
             <div class="slide-description">
               <p>Découvrez notre application calculateur d'IMC pour connaître votre indice de masse corporelle.</p>
               <h3>Calculateur d'IMC</h3>
-              <ion-button class="slide-button" (click)="navigateTo('/app-imc')" shape="round">
+              <ion-button class="slide-button" (click)="$event.stopPropagation(); navigateTo('/app-imc')" shape="round">
+                Commencer
+              </ion-button>
+            </div>
+          </div>
+        </swiper-slide>
+
+        <swiper-slide>
+          <div class="slide-content enhanced-slide-content" (click)="navigateTo('/app-weight-tracking')">
+            <div class="image-container">
+              <img title="Suivi du poids" src="../../../assets/medias/weight-tracking-stockphoto.png" />
+            </div>
+            <div class="slide-description">
+              <p>Découvrez notre application suivi du poids.</p>
+              <h3>Suivi du poids</h3>
+              <ion-button class="slide-button" (click)="navigateTo('/app-weight-tracking')" shape="round">
                 Commencer
               </ion-button>
             </div>
@@ -232,7 +249,7 @@ import { environment } from 'src/environments/environment';
         </swiper-slide>
         
         <swiper-slide>
-          <div class="slide-content">
+          <div class="slide-content enhanced-slide-content" (click)="navigateTo('/app-calories')">
             <div class="image-container">
               <img title="Calculateur de calories" src="../../../assets/medias/calory-stockphoto.png" />
             </div>
@@ -247,14 +264,29 @@ import { environment } from 'src/environments/environment';
         </swiper-slide>
         
         <swiper-slide>
-          <div class="slide-content">
+          <div class="slide-content enhanced-slide-content" (click)="navigateTo('/app-gps')">
             <div class="image-container">
-              <img title="Suivi du poids" src="../../../assets/medias/weight-tracking-stockphoto.png" />
+              <img title="Chronomètre" src="../../../assets/medias/IMG_0962_1024x683.jpeg" />
             </div>
             <div class="slide-description">
-              <p>Découvrez notre application suivi du poids.</p>
-              <h3>Suivi du poids</h3>
-              <ion-button class="slide-button" (click)="navigateTo('/app-weight-tracking')" shape="round">
+              <p>Entraînez-vous avec l'application chronomètre réglable pour chaque tour d'entraînement.</p>
+              <h3>Chronomètre</h3>
+              <ion-button class="slide-button" (click)="navigateTo('/app-timer')" shape="round">
+                Commencer
+              </ion-button>
+            </div>
+          </div>
+        </swiper-slide>
+        
+        <swiper-slide>
+          <div class="slide-content enhanced-slide-content" (click)="navigateTo('/app-gps')">
+            <div class="image-container">
+              <img title="GPS Course" src="../../../assets/medias/IMG_0961_1024x683.jpeg" />
+            </div>
+            <div class="slide-description">
+              <p>Calculez vos kilomètres parcourus avec l'application GPS.</p>
+              <h3>Course</h3>
+              <ion-button class="slide-button" (click)="navigateTo('/app-gps')" shape="round">
                 Commencer
               </ion-button>
             </div>
@@ -1258,10 +1290,18 @@ ion-content {
     --swiper-pagination-bottom: 0px;
     
     // Add internal padding to create breathing room
-    padding-left: 1rem;
-    padding-right: 1rem;
-    // margin-left: -1rem; // Compensate for internal padding
-    // margin-right: -1rem;
+    //padding-left: 1rem;
+    //padding-right: 1rem;
+    margin-left: -1rem; // Compensate for internal padding
+    margin-right: -1rem;
+  }
+
+  & swiper-slide:nth-of-type(1) {
+    margin-left: 1em!important;
+  }
+
+  & swiper-slide:last-of-type {
+    padding-right: 2em!important;
   }
 }
 
@@ -1324,6 +1364,73 @@ swiper-slide {
       justify-content: flex-end;
     }
   }
+
+  // Enhanced content
+  & .slide-content.enhanced-slide-content {
+    & .slide-description, & .card-description {
+      & p {
+        font-weight: 500;
+      }
+      & h3{
+        font-family: "Shadows Into Light", cursive;
+        font-size: 1.5rem!important ;
+        position: relative;
+        &::after {
+          content: '';
+          display: inline-block;
+          height: 2px;
+          width: 100%;
+          background: linear-gradient(90deg, #b05322ff, #ff8c4200);
+          position: absolute;
+          left: 0;
+          bottom: -10px;
+        }
+      }
+      // A button (similar to in the tools.page)
+      /*& ion-button {
+        @include glassmorphism-button;
+        width: 100%; // Full-width as requested
+        margin-top: auto; // Push button to bottom
+
+        &:active,
+        &.ion-activated {
+          --background: rgba(0, 0, 0, 0.8) !important;
+          --background-activated: rgba(0, 0, 0, 0.8) !important;
+          --background-focused: rgba(0, 0, 0, 0.8) !important;
+          --color: white !important;
+          --color-activated: white !important;
+          --color-focused: white !important;
+          --ripple-color: rgba(255, 255, 255, 0.3) !important;
+          transform: scale(0.98);
+          transition: all 0.1s ease;
+        }
+
+        & .button-native {
+          &:active,
+          &.ion-activated {
+            background: rgba(0, 0, 0, 0.8) !important;
+            color: white !important;
+          }
+        }
+    
+        // Ensure no hover effects interfere on touch devices
+        @media (hover: none) and (pointer: coarse) {
+          &:hover {
+            --background: rgba(255, 255, 255, 0.2);
+          }
+          
+          &:active {
+            --background: rgba(0, 0, 0, 0.8) !important;
+            --color: white !important;
+          }
+        }
+      }*/
+    }
+    & ion-button {
+      margin-top: 12px;
+    }
+  }
+
 }
 
 // Mobile responsiveness
@@ -2077,7 +2184,7 @@ swiper-slide {
     .tip-slide {
       @include card-container;
       position: relative;
-      height: 320px;
+      height: 640px;
       
       .tip-image-container {
         position: absolute;
@@ -2151,7 +2258,7 @@ swiper-slide {
   .tips-section {
     .tips-swiper-container {
       .tip-slide {
-        height: 280px;
+        height: 520px;
         
         .tip-content {
           padding: 2.5rem 1rem 1rem;
@@ -2161,7 +2268,7 @@ swiper-slide {
           }
           
           .tip-excerpt {
-            font-size: 0.9rem;
+            font-size: 1rem;
           }
         }
       }
@@ -2252,6 +2359,38 @@ swiper-slide {
     }
   }
 }
+
+// The video component
+// @import '../../../mixins';
+
+.video-card-list{
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin: 0 1rem;
+}
+
+.tool-card {
+  @include tool-card;
+  // Specific to 'video-home' page only
+  & {
+    margin-bottom: 2rem;
+  }
+}
+
+// Mobile responsiveness
+@media screen and (max-width: 480px) {
+  .video-home {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    gap: 1rem;
+  }
+  
+  .tool-card {
+    @include tool-card-mobile;
+  }
+}
+
   `]
 })
 export class HomeV2Page implements OnInit {
@@ -2509,5 +2648,9 @@ export class HomeV2Page implements OnInit {
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  navigateToCategory(route: string, category: string) {
+    this.router.navigate([route], { queryParams: { category: category } });
   }
 }

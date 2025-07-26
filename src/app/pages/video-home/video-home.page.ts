@@ -28,7 +28,7 @@ import { Router } from '@angular/router';
 
     <div class="card-list">
       <!-- Training everyday -->
-      <div class="tool-card">
+      <div class="tool-card enhanced-tool-card ">
         <div class="image-container">
           <img title="Training of the day" src="../../../assets/medias/rounded-cards/sample-image-training-of-the-day.jpg" />
         </div>
@@ -36,13 +36,13 @@ import { Router } from '@angular/router';
           <div class="spacer"></div>
           <p>Explore des programmes sportifs adaptés à ton niveau et construits autour de tes objectifs personnels.</p>
           <h3>Training of the day</h3>
-          <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateToCategory('/exercise-categories', 'training')">
+          <ion-button style="align-self: stretch;" expand="block" (click)="navigateToCategory('/exercise-categories', 'training')">
             Commencer
           </ion-button>
         </div>
       </div>
 
-      <div class="tool-card">
+      <div class="tool-card enhanced-tool-card">
         <div class="image-container">
           <img title="Boxing of the day" src="../../../assets/medias/rounded-cards/sample-image-boxing-of-the-day.jpg" />
         </div>
@@ -50,7 +50,7 @@ import { Router } from '@angular/router';
           <div class="spacer"></div>
           <p>De l'initiation aux entraînements avancés, progresse en boxe selon tes objectifs personnels.</p>
           <h3>Boxing of the day</h3>
-            <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateToCategory('/exercise-categories', 'boxing')">
+            <ion-button style="align-self: stretch;" expand="block" (click)="navigateToCategory('/exercise-categories', 'boxing')">
               Commencer
             </ion-button>
         </div>
@@ -140,6 +140,70 @@ import { Router } from '@angular/router';
   // Specific to 'video-home' page only
   & {
     margin-bottom: 2rem;
+  }
+
+
+}
+// WARNING, the code is duplicated with tools and in recipes
+.enhanced-tool-card {
+  & .card-description {
+    & p {
+      font-weight: 500;
+    }
+    & h3{
+      font-family: "Shadows Into Light", cursive;
+      font-size: 1.5rem!important ;
+      position: relative;
+      &::after {
+        content: '';
+        display: inline-block;
+        height: 2px;
+        width: 100%;
+        background: linear-gradient(90deg, #b05322ff, #ff8c4200);
+        position: absolute;
+        left: 0;
+        bottom: -10px;
+      }
+    }
+    // A button (similar to in the tools.page)
+    & ion-button {
+      @include glassmorphism-button;
+      width: 100%; // Full-width as requested
+      margin-top: auto; // Push button to bottom
+
+      &:active,
+      &.ion-activated {
+        --background: rgba(0, 0, 0, 0.8) !important;
+        --background-activated: rgba(0, 0, 0, 0.8) !important;
+        --background-focused: rgba(0, 0, 0, 0.8) !important;
+        --color: white !important;
+        --color-activated: white !important;
+        --color-focused: white !important;
+        --ripple-color: rgba(255, 255, 255, 0.3) !important;
+        transform: scale(0.98);
+        transition: all 0.1s ease;
+      }
+
+      & .button-native {
+        &:active,
+        &.ion-activated {
+          background: rgba(0, 0, 0, 0.8) !important;
+          color: white !important;
+        }
+      }
+  
+      // Ensure no hover effects interfere on touch devices
+      @media (hover: none) and (pointer: coarse) {
+        &:hover {
+          --background: rgba(255, 255, 255, 0.2);
+        }
+        
+        &:active {
+          --background: rgba(0, 0, 0, 0.8) !important;
+          --color: white !important;
+        }
+      }
+    }
   }
 }
 
