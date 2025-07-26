@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { tr } from 'date-fns/locale';
+import { ContentService } from 'src/app/content.service';
 
 @Component({
   selector: 'app-video-home',
@@ -13,7 +15,25 @@ import { Router } from '@angular/router';
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content id="video-home-content">
+
+  <!-- this is used to invite the user to select login -->
+  <div class="faded-cover" *ngIf="!isUserLoggedIn"></div>
+  <ion-card class="ion-padding cta" *ngIf="!isUserLoggedIn">
+    <ion-card-content>
+      <h1 class="display-1">Créer un compte gratuitement pour continuer</h1>
+      <br />
+      <p class="helper">
+        L'enregistrement de votre historique de poids requiert un compte utilisateur.
+      </p>
+      <br />
+      <app-ux-button shape="round" expand="full" routerLink="/login">
+        Se connecter
+      </app-ux-button>
+    </ion-card-content>
+  </ion-card>
+
+
   <!-- some header here (according to the new theme) -->
   <div class="video-home">
     <div class="ion-padding-horizontal">
@@ -27,7 +47,7 @@ import { Router } from '@angular/router';
 
     <div class="card-list">
       <!-- Training everyday -->
-      <div class="tool-card enhanced-tool-card ">
+      <div class="tool-card enhanced-tool-card" *ngIf="videoOptions.includes('training')">
         <div class="image-container">
           <img title="Training of the day" src="../../../assets/medias/rounded-cards/sample-image-training-of-the-day.jpg" />
         </div>
@@ -35,13 +55,36 @@ import { Router } from '@angular/router';
           <div class="spacer"></div>
           <p>Explore des programmes sportifs adaptés à ton niveau et construits autour de tes objectifs personnels.</p>
           <h3>Training of the day</h3>
-          <ion-button style="align-self: stretch;" expand="block" (click)="navigateToCategory('/exercise-categories', 'training')">
+          <ion-button 
+            style="align-self: stretch;" 
+            expand="block" 
+            (click)="navigateToCategory('/exercise-categories', 'training')"
+            *ngIf="isUserLoggedIn && !isVideoDisabled"
+          >
             Commencer
           </ion-button>
+          <ion-button
+            style="align-self: stretch;" 
+            expand="block" 
+            (click)="navigateTo('/swipeable-store')"
+            color="warning"
+            *ngIf="isUserLoggedIn && isVideoDisabled"
+          >
+            Choisir mon abonnement
+          </ion-button>
+          <ion-button 
+            style="align-self: stretch;" 
+            expand="block" 
+            (click)="navigateTo('/login')"
+            *ngIf="!isUserLoggedIn"
+          >
+            Se connecter
+          </ion-button>
+
         </div>
       </div>
 
-      <div class="tool-card enhanced-tool-card">
+      <div class="tool-card enhanced-tool-card" *ngIf="videoOptions.includes('boxing')">
         <div class="image-container">
           <img title="Boxing of the day" src="../../../assets/medias/rounded-cards/sample-image-boxing-of-the-day.jpg" />
         </div>
@@ -49,9 +92,31 @@ import { Router } from '@angular/router';
           <div class="spacer"></div>
           <p>De l'initiation aux entraînements avancés, progresse en boxe selon tes objectifs personnels.</p>
           <h3>Boxing of the day</h3>
-            <ion-button style="align-self: stretch;" expand="block" (click)="navigateToCategory('/exercise-categories', 'boxing')">
-              Commencer
-            </ion-button>
+          <ion-button 
+            style="align-self: stretch;" 
+            expand="block" 
+            (click)="navigateToCategory('/exercise-categories', 'boxing')"
+            *ngIf="isUserLoggedIn && !isVideoDisabled"
+          >
+            Commencer
+          </ion-button>
+          <ion-button
+            style="align-self: stretch;" 
+            expand="block" 
+            (click)="navigateTo('/swipeable-store')"
+            color="warning"
+            *ngIf="isUserLoggedIn && isVideoDisabled"
+          >
+            Choisir mon abonnement
+          </ion-button>
+          <ion-button 
+            style="align-self: stretch;" 
+            expand="block" 
+            (click)="navigateTo('/login')"
+            *ngIf="!isUserLoggedIn"
+          >
+            Se connecter
+          </ion-button>
         </div>
       </div>
     </div>
@@ -219,19 +284,90 @@ import { Router } from '@angular/router';
   }
 }
 
+
+// The login cta
+#video-home-content {
+  position: relative;
+  .faded-cover {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      background-color: var(--ion-color-light)cc;
+      &>* {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+      }
+  }
+
+  .cta {
+      z-index: 101;
+      color: var(--ion-color-dark);
+      margin: 0 !important;
+      /* Put it centered */
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      width: 80%;
+  }
+}
+
 `]
 })
 export class VideoHomePage implements OnInit {
 
+  isVideoDisabled = true; // ONly available for premium users
+  isUserLoggedIn = false;
+
+  videoOptions = []
+
   constructor(
-    private router: Router
+    private router: Router,
+    private contentService: ContentService
   ) { }
 
   ngOnInit() {
+
+    // Load user data
+    this.loadUserData();
   }
 
   navigateToCategory(route: string, category: string) {
     this.router.navigate([route], { queryParams: { category: category } });
+  }
+
+  // Load user data from the content service
+  private loadUserData() {
+    this.contentService.userStorageObservable.getStorageObservable().subscribe((user) => {
+      if (!user) {
+        this.isUserLoggedIn = false;
+      } else if (user.renewable_id == null){
+        this.isUserLoggedIn = true;
+        this.isVideoDisabled = true;
+      } else if (user.renewable_id == 'hoylt' && !user.user_settings['training_option']) {
+        // Navigate to the training program selection page
+        this.router.navigate(['/training-program-selection']);
+      } else if (user.renewable_id == 'hoylt' && user.user_settings['training_option']) {
+        this.videoOptions = [user.user_settings['training_option']];
+        this.isUserLoggedIn = true;
+        this.isVideoDisabled = false;
+      } else { // For higher renewable_id users
+        this.videoOptions = ['training', 'boxing']; // Default options
+        this.isUserLoggedIn = true;
+        this.isVideoDisabled = false;
+      }
+    });
+  }
+
+  public navigateTo(route: string) {
+    this.router.navigate([route]);
   }
 
 }

@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { catchError, from, Observable, of, shareReplay, switchMap } from 'rxjs';
 import { ContentService } from 'src/app/content.service';
 import { User } from 'src/app/models/Interfaces';
@@ -28,8 +29,6 @@ import { environment } from 'src/environments/environment';
         Les abonnés Hoylt ont le choix entre deux options de programmes d'entraînement.
       </div>
     </div>
-
-    {{ user.user_settings | json }}
 
     <div class="card-list">
       <!-- Training everyday -->
@@ -239,6 +238,7 @@ export class TrainingProgramSelectionPage implements OnInit {
     private contentService: ContentService,
     private cdRef: ChangeDetectorRef,
     private http: HttpClient,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -264,7 +264,7 @@ export class TrainingProgramSelectionPage implements OnInit {
         this.formIsSubmitting = true;
         return this.http.put(`${environment.apiEndpoint}/user-settings`, {
           user_id: this.user.id,
-          key: 'training-option',
+          key: 'training_option',
           value: category
         }, { headers: header })
       }),
@@ -278,12 +278,9 @@ export class TrainingProgramSelectionPage implements OnInit {
       this.formIsSubmitting = false;
       this.selectedOption = ''; // Reset the selected option after submission
 
-      // TODO: redirect the user to the next page
-      //
-      //
-      //
-      // =======================================
-      
+      // REDIRECT TO THE VIDEO PAGE
+      this.router.navigate(['/video-home'], { queryParams: { category: category } });
+
     })
   }
 
@@ -291,7 +288,6 @@ export class TrainingProgramSelectionPage implements OnInit {
   // Load user data from the content service
   private loadUserData() {
     this.contentService.userStorageObservable.getStorageObservable().subscribe((user) => {
-      console.log("===>GET")
       this.user = user;
       this.userIsLoading = false;
       this.cdRef.detectChanges();
