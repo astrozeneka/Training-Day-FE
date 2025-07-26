@@ -16,7 +16,6 @@ import { Router } from '@angular/router';
 <ion-content>
   <!-- some header here (according to the new theme) -->
   <div class="video-home">
-
     <div class="ion-padding-horizontal">
       <div class="title">
         Choisi ton Training

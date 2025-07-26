@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
 import { Platform } from '@ionic/angular';
-import { BehaviorSubject, catchError, filter, finalize, forkJoin, from, Observable, of, Subject, switchMap, take, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, filter, finalize, forkJoin, from, map, Observable, of, Subject, switchMap, take, tap, throwError } from 'rxjs';
 import { ContentService } from 'src/app/content.service';
 import { DarkModeService } from 'src/app/dark-mode.service';
 import { FeedbackService } from 'src/app/feedback.service';
@@ -101,30 +101,60 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implemen
 
   product: Product = null
 
+  /**
+   * Load the product list from the storage and the purchase service
+   * @returns An observable of the product list
+   */
+  loadProductList(): Observable<{products: Product[], productId: string}> {
+    // Note that the product type for ios and android is different
+    // Handling polymorphism is not possible since the user path is different
+    return from(this.cs.storage.get('productId'))
+      .pipe(
+        switchMap((productId) => {
+          return from(this.purchaseService.getProducts())
+            .pipe(
+              catchError((err) => {
+                console.error("Error while fetching product list ", JSON.stringify(err))
+                return throwError(() => err)
+              })
+            )
+            .pipe(
+              map((data: {products: Product[]}) => {
+                return {
+                  products: data.products,
+                  productId: productId
+                }
+              })
+            )
+        })
+      )
+
+  }
+
   ngOnInit() {
 
     // 1. Load products to be used (similar but a little bit simplified than the Android version)
     this.offersAreLoading = true
-    from(this.cs.storage.get('productId'))
+    this.loadProductList()
       .pipe(
-        switchMap((productId)=>{
-          this.productId = productId
-          return from(this.purchaseService.getProducts())
-            .pipe(catchError((err)=>{
-              console.error("Error while fetching product list ", JSON.stringify(err))
-              this.offersAreLoading = false
-              this.cdr.detectChanges()
-              return []
-            }))
+        catchError((err) => {
+          console.error("Error while loading product list: ", JSON.stringify(err))
+          this.offersAreLoading = false
+          this.cdr.detectChanges()
+          return throwError(() => err)
         }),
-        switchMap((data:{products:Product[]}) => {
+        switchMap((data:{products:Product[], productId:string}) => {
+          console.log("Product id is: " + data.productId)
           // console.log("Product fetched by using purchaseService.getProducts() : " + JSON.stringify(data))
           this.productList = data.products.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
           this.offersAreLoading = false
           this.cdr.detectChanges()
 
           // 2. Load offer token for each of the loaded promotional offer
-          let product = this.productList[this.productId]
+          let product = this.productList[data.productId]
+
+          // Set some state variables
+          this.productId = data.productId
           this.product = product
 
           let observables = product.offers.map((offer) => 
@@ -157,6 +187,7 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implemen
 
     let res: any
     if (this.form.value.offer.offerId){
+      // In case a promotional offer is selected
       console.log(`Purchasing a promotional offer ${this.form.value.offer.offerId} : ${JSON.stringify(this.form.value.offer)}`)
       res = this.offerSignatureLoading$
         .pipe(
@@ -182,6 +213,7 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implemen
         )
       // res = from(this.purchaseService.purchaseProductById(this.form.value.offer.offerId, null, null, 'ios', null, null))
     } else{
+      // In case a base offer is selected
       console.log(`Purchasing the base offer ${this.productId} : ${JSON.stringify(this.form.value.offer)}`)
       res = from(this.purchaseService.purchaseProductById(this.productId, null, null, 'ios', null, null))
         .pipe(
@@ -197,10 +229,6 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implemen
     }
     res.pipe(
       switchMap((res:{success:any, transaction:any})=>{
-        console.log(`Here : ${JSON.stringify(res)}`)
-        /**
-         * Sample data: 
-         */
         // Preprocess the receipt and run same as the purchaseCompleted from the old page
         res.transaction.currency = "_"
         res.transaction.amount = this.productList[this.productId as string].price * 100 // No need to apply patch for iOS
@@ -233,4 +261,12 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implemen
       this.redirectWithFeedback()
     })
   }
+
+  /*private processBaseOffer(): Observable<any> {
+
+  }
+
+  private processPromotionalOffer(offer: PromoOfferIOS): Observable<any> {
+
+  }*/
 }

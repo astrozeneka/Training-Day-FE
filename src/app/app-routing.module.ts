@@ -340,6 +340,10 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () => import('./pages/home-v2/home-v2.module').then( m => m.HomeV2PageModule)
   },
+  {
+    path: 'training-program-selection',
+    loadChildren: () => import('./pages/training-program-selection/training-program-selection.module').then( m => m.TrainingProgramSelectionPageModule)
+  },
 ];
 
 @NgModule({

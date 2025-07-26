@@ -350,9 +350,8 @@ import { environment } from 'src/environments/environment';
       </div>
     </div>
   </div>
-
   <!-- Premium Subscription Section -->
-  <div class="ion-padding-horizontal ion-padding-bottom">
+  <div class="ion-padding-horizontal ion-padding-bottom" *ngIf="!user || user.renewable_id == null">
     <div class="premium-subscription-section">
       <div class="section-header ion-padding">
         <h2 class="section-title">Profiter des avantages</h2>
