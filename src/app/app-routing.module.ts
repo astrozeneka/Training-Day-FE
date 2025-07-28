@@ -344,6 +344,10 @@ const routes: Routes = [
     path: 'training-program-selection',
     loadChildren: () => import('./pages/training-program-selection/training-program-selection.module').then( m => m.TrainingProgramSelectionPageModule)
   },
+  {
+    path: 'calendar-booking',
+    loadChildren: () => import('./pages/calendar-booking/calendar-booking.module').then( m => m.CalendarBookingPageModule)
+  },
 ];
 
 @NgModule({

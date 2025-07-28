@@ -12,6 +12,7 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-home-v2',
   template: `
+<ion-header></ion-header>
 <ion-content>
   <!-- Header Section -->
   <div class="app-header" [class.transparent]="isSearchActive">
@@ -178,7 +179,7 @@ import { environment } from 'src/environments/environment';
           <div class="spacer"></div>
           <p>Explore des programmes sportifs adaptés à ton niveau et construits autour de tes objectifs personnels.</p>
           <h3>Training of the day</h3>
-          <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateToCategory('/exercise-categories', 'training')">
+          <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateTo('/video-home')">
             Commencer
           </ion-button>
         </div>
@@ -192,7 +193,7 @@ import { environment } from 'src/environments/environment';
           <div class="spacer"></div>
           <p>De l'initiation aux entraînements avancés, progresse en boxe selon tes objectifs personnels.</p>
           <h3>Boxing of the day</h3>
-            <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateToCategory('/exercise-categories', 'boxing')">
+            <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateTo('/video-home')">
               Commencer
             </ion-button>
         </div>
@@ -580,6 +581,30 @@ ion-content {
   
   &:hover {
     --background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+//
+@mixin fix-button-default-primary{
+  &:active,
+  &.ion-activated {
+    --background: rgba(0, 0, 0, 0.8) !important;
+    --background-activated: rgba(0, 0, 0, 0.8) !important;
+    --background-focused: rgba(0, 0, 0, 0.8) !important;
+    --color: white !important;
+    --color-activated: white !important;
+    --color-focused: white !important;
+    --ripple-color: rgba(255, 255, 255, 0.3) !important;
+    transform: scale(0.98);
+    transition: all 0.1s ease;
+  }
+
+  & .button-native {
+    &:active,
+    &.ion-activated {
+      background: rgba(0, 0, 0, 0.8) !important;
+      color: white !important;
+    }
   }
 }
 
@@ -2367,6 +2392,17 @@ swiper-slide {
   flex-direction: row;
   gap: 0.5rem;
   margin: 0 1rem;
+  & .tool-card {
+    height: 340px;
+    & p {
+      font-size: 0.8rem!important;
+    }
+    & ion-button {
+      @include glassmorphism-button;
+      @include fix-button-default-primary;
+      @include home-button-font;
+    }
+  }
 }
 
 .tool-card {

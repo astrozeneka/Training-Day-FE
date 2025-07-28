@@ -31,20 +31,24 @@
         <app-m-form [formGroup]="form" (submit)="submit()">
             <ion-item class="ion-margin-vertical">
                 <ion-input
-                        label="Email"
-                        label-placement="floating"
-                        formControlName="email"
-                        [errorText]="displayedError.email"
+                  label="Email"
+                  label-placement="floating"
+                  formControlName="email"
+                  [errorText]="displayedError.email"
+                  autocomplete="email"
+                  appAutofill
                 ></ion-input>
             </ion-item>
 
             <ion-item class="ion-margin-vertical">
                 <ion-input
-                        label="Password"
-                        label-placement="floating"
-                        formControlName="password"
-                        [type]="passwordToggle.value ? 'text' : 'password'"
-                        [errorText]="displayedError.password"
+                  label="Password"
+                  label-placement="floating"
+                  formControlName="password"
+                  [type]="passwordToggle.value ? 'text' : 'password'"
+                  [errorText]="displayedError.password"
+                  autocomplete="password"
+                  appAutofill
                 ></ion-input>
                 <ion-button
                   color="medium"

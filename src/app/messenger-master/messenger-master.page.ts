@@ -153,6 +153,13 @@ import { Haptics } from '@capacitor/haptics';
           Découvrir nos abonnements
         </ion-button>
       </div>
+
+      <!-- Test button go to appointments -->
+       <div>
+        <ion-button class="cta-button" expand="block" [routerLink]="['/calendar-booking']">
+          Prendre rendez-vous
+        </ion-button>
+      </div>
     </div>
   </div>
 </ion-content>`
