@@ -1,5 +1,10 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NavController, ToastController, LoadingController, AlertController } from '@ionic/angular';
+import { env } from 'process';
+import { catchError, from, Observable, shareReplay, switchMap } from 'rxjs';
+import { ContentService } from 'src/app/content.service';
+import { environment } from 'src/environments/environment';
 
 // Interfaces for type safety
 interface TimeSlot {
@@ -385,16 +390,27 @@ export class CalendarBookingPage implements OnInit {
   availableDates: any[] = [];
   timeSlots: TimeSlot[] = [];
 
+  private bearerToken$: Observable<string>;
+
   constructor(
     private navCtrl: NavController,
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+
+    private contentService: ContentService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
     this.generateAvailableDates();
+
+
+    // The token$ is used to get the token from the content service
+    this.bearerToken$ = from(this.contentService.storage.get('token')).pipe(
+      shareReplay(1) // cache and share the latest emitted value of an observable with multiple subscribers.
+    );
   }
 
   generateAvailableDates() {
@@ -533,6 +549,38 @@ export class CalendarBookingPage implements OnInit {
       bookingTimestamp: new Date().toISOString()
     };
 
+    // Send http post to the server
+    this.bearerToken$
+      .pipe(
+        switchMap(token => {
+          const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          });
+          let payload = { // This should follow the API's expected structure
+            'staff_id': environment.coachId,
+            'start_datetime': bookingDetails.timeSlot.date.toISOString(),
+            'end_datetime': new Date(bookingDetails.timeSlot.date.getTime() + 30 * 60 * 1000).toISOString(), // Assuming each slot is 30 minutes
+          }
+          return this.http.post(`${environment.apiEndpoint}/calendar/book-time-slot`, payload, { headers })
+            .pipe(
+              catchError(error => {
+                console.error('Booking error:', error);
+                this.showErrorToast();
+                this.isBooking = false;
+                throw new Error('Booking failed');
+              })
+            )
+        })
+      ).subscribe((response: any) => {
+        // Handle successful booking response
+        console.log('Booking successful:', response);
+        this.showSuccessToast();
+        this.navCtrl.back();
+        this.isBooking = false;
+        this.cdr.detectChanges();
+      });
+
     /*
       {
           "selectedDate": "2025-08-01",
@@ -549,7 +597,7 @@ export class CalendarBookingPage implements OnInit {
     console.log('Booking Details:', bookingDetails);
 
     // Simulate API call
-    setTimeout(async () => {
+    /*setTimeout(async () => {
       // Mock response
       const success = Math.random() > 0.1; // 90% success rate
 
@@ -563,7 +611,7 @@ export class CalendarBookingPage implements OnInit {
 
       this.isBooking = false;
       this.cdr.detectChanges();
-    }, 2000);
+    }, 2000);*/
   }
 
   async showSuccessToast() {

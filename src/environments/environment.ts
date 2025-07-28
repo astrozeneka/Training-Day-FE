@@ -41,6 +41,7 @@ export const environment = {
   personalTrainerAvailable: false,            // Whether or not the personal trainer tab is available from the shop page
 
   // SPECIAL VARIABLES
+  coachId: 113, // ID of the coach for the app, used in booking and other functionalities
   nutritionistId: 15,
 
   // CGU

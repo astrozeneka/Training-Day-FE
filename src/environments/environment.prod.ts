@@ -19,6 +19,7 @@ export const environment = {
   personalTrainerAvailable: false,             // Whether or not the personal trainer tab is available from the shop page
 
   // SPECIAL VARIABLES
+  coachId: 18, // Change to 14 when in real production
   nutritionistId: 19,
 
   // CGU
