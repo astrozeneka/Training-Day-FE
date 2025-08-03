@@ -155,7 +155,7 @@ import { Haptics } from '@capacitor/haptics';
       </div>
 
       <!-- Test button go to appointments -->
-       <div>
+       <div *ngIf="!environment.production">
         <ion-button class="cta-button" expand="block" [routerLink]="['/calendar-booking']">
           Prendre rendez-vous
         </ion-button>
@@ -498,4 +498,6 @@ export class MessengerMasterPage implements OnInit {
       this.audio_incoming.play()
     }
   }
+
+  environment = environment; // Expose the environment to the template
 }

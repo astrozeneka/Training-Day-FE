@@ -348,6 +348,10 @@ const routes: Routes = [
     path: 'calendar-booking',
     loadChildren: () => import('./pages/calendar-booking/calendar-booking.module').then( m => m.CalendarBookingPageModule)
   },
+  {
+    path: 'calendar',
+    loadChildren: () => import('./pages/calendar/calendar.module').then( m => m.CalendarPageModule)
+  },
 ];
 
 @NgModule({

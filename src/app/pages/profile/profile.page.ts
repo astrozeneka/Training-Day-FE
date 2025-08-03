@@ -857,7 +857,8 @@ export class ProfilePage extends FormComponent implements OnInit {
       if (event instanceof NavigationEnd && event.url == '/profile') {
         this.entity = await this.contentService.storage.get('user')
         // Define one dictionnary by mapping the this.entity.grouped_perishables
-        this.grouped_perishables = this.entity.grouped_perishables.reduce((acc:any, item:any)=>{
+        // The code below is not used anymore since the perishables is not handled anymore by the system
+        this.grouped_perishables = this.entity.grouped_perishables?.reduce((acc:any, item:any)=>{
           acc[item.slug] = item
           return acc
         }, {})
