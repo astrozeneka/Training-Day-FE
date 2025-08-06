@@ -218,15 +218,18 @@ export class AppComponent implements OnInit{
     })
 
     // Validate token, then disconnect if expired (might be unused)
-    this.cs.post('/users/is-token-valid', {})
-      .pipe(catchError((err)=>{
-        // If error 401 or 403
-        if(err.status == 401 || err.status == 403){
-          this.cs.logout()
-        }
-        return throwError(err)
-      }))
-      .subscribe(()=>{})
+    // Only validate if the user is not on signup
+    if (!this.router.url.includes('/signup') && !this.router.url.includes('/login')) {
+      this.cs.post('/users/is-token-valid', {})
+        .pipe(catchError((err)=>{
+          // If error 401 or 403
+          if(err.status == 401 || err.status == 403){
+            this.cs.logout()
+          }
+          return throwError(err)
+        }))
+        .subscribe(()=>{})
+    }
     
     // Refresh the token
     this.cs.refreshToken().subscribe(()=>{})

@@ -30,8 +30,215 @@ import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  template: `
+<ion-header [translucent]="true">
+  <!--
+  <ion-toolbar>
+    <ion-title>login</ion-title>
+  </ion-toolbar>
+  -->
+</ion-header>
+
+<ion-content class="ion-padding">
+  
+  <!-- app-loader-v2 causes the login page to bug, it has been disabled -->
+  <!--<app-loader-v2 [isLoading]="formIsLoading"></app-loader-v2>-->
+
+  <!--
+    <ion-header collapse="condense">
+      <ion-toolbar>
+        <ion-title size="large">login</ion-title>
+      </ion-toolbar>
+    </ion-header>
+  -->
+  <div class="centered-container">
+    <div>
+      <div class="login-header">
+        <h1>Se connecter</h1>
+        <br/>
+        <div>
+          <img src="assets/logo-light-cropped.png" alt="Training Day" class="ion-padding" width="150px" *ngIf="!useDarkMode">
+          <img src="assets/logo-dark-cropped.png" alt="Training Day" class="ion-padding" width="150px" *ngIf="useDarkMode">
+        </div>
+      </div>
+        <app-m-form [formGroup]="form" (submit)="submit()">
+            <ion-item class="ion-margin-vertical">
+                <ion-input
+                  label="Email"
+                  label-placement="floating"
+                  formControlName="email"
+                  [errorText]="displayedError.email"
+                  autocomplete="email"
+                  appAutofill
+                ></ion-input>
+            </ion-item>
+
+            <ion-item class="ion-margin-vertical">
+                <ion-input
+                  label="Password"
+                  label-placement="floating"
+                  formControlName="password"
+                  [type]="passwordToggle.value ? 'text' : 'password'"
+                  [errorText]="displayedError.password"
+                  autocomplete="password"
+                  appAutofill
+                ></ion-input>
+                <ion-button
+                  color="medium"
+                  fill="clear"
+                  class="password-toggle"
+                  shape="round"
+                  (touchstart)="passwordToggle.toggle($event, true)"
+                  (touchend)="passwordToggle.toggle($event, false)"
+                  (mousedown)="passwordToggle.toggle($event, true)"
+                  (mouseup)="passwordToggle.toggle($event, false)"
+                >
+                  <div>
+                    <ion-icon slot="end" name="eye"></ion-icon>
+                  </div>
+                </ion-button>
+            </ion-item>
+
+            <app-ux-button
+                    expand="full"
+                    type="submit"
+                    shape="round"
+                    [loading]="formIsLoading"
+            >
+                Se connecter
+            </app-ux-button>
+        </app-m-form>
+
+        <p>
+            <a routerLink="/forgot-password">Mot de passe oublié ?</a>
+        </p>
+        <!--
+          <form [formGroup]="form" (submit)="submit()">
+              <br/>
+            <hr/>
+          </form>
+          -->
+
+
+      <div>
+        <ion-button expand="full" type="submit" color="medium" (click)="goTo('/subscribe')" shape="round">S'inscrire gratuitement</ion-button>
+        <ion-button expand="full" type="submit" color="tertiary" (click)="goTo('/home')" shape="round">Continuer sans s'inscrire</ion-button>
+
+        <!--<ion-button (click)="testPasswordAutofill()" *ngIf="false">Test autofill</ion-button>-->
+
+
+        <hr/>
+
+        <app-continue-with-google-button
+          (action)="requestLogin($event)"
+          color="medium"
+          expand="full"
+          type="button"
+          shape="round"
+          fill="clear"
+        ></app-continue-with-google-button>
+
+        <!--
+        <app-ux-button 
+          (click)="continueWithGoogle()"
+          color="medium"
+          expand="full"
+          type="button"
+          shape="round"
+          fill="clear"
+        >
+          <div class="inner">
+            <img src="/assets/icon/social-menu/google-logo.svg" alt="Google" width="20px" height="20px">
+            <div>Continuer avec Google</div>
+          </div>
+        </app-ux-button>-->
+        
+      </div>
+        <a *ngIf="false" routerLink="/s6-activity">Test select component</a>
+        <div *ngIf="false">
+            <h3 class="helper">Experimental features</h3>
+            <ion-button (click)="continueWith('github')" color="medium">
+                <!-- Used both registering or login -->
+                Continue with Github
+                <ion-icon  name="logo-github"></ion-icon>
+            </ion-button>
+            <ion-button (click)="continueWith('google')" color="medium">
+                <!-- Used both registering or login -->
+                Continue with Google
+                <ion-icon  name="logo-google"></ion-icon>
+            </ion-button>
+            <ion-button (click)="continueWith('facebook')" color="medium">
+                <!-- Used both registering or login -->
+                Continue with Facebook
+                <ion-icon  name="logo-facebook"></ion-icon>
+            </ion-button><br/>
+
+
+            <ion-button (click)="registerWithGithub()">
+                Register with Github
+            </ion-button>
+            <ion-button (click)="exchangeGithubToken()">
+                Exchange Github Token
+            </ion-button>
+        </div>
+
+    </div>
+  </div>
+</ion-content>
+`,
+  styles: [`
+@import '../../../mixins';
+@import 'src/theme/mixins.scss';
+
+.login-header{
+  padding-bottom: 2em;
+
+  h1{
+    @include display-1;
+  }
+}
+
+.dark-logo img {
+  display: none; /* Hide the light logo by default */
+}
+
+.dark-logo img:last-child {
+  display: block; /* Display the dark logo when the dark mode is active */
+}
+
+ion-content{
+}
+
+.centered-container{
+  text-align: center;
+  max-width: 600px;
+  margin: auto;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+
+  &>div{
+    width: 100%;
+  }
+}
+
+
+// Password toggle
+.password-toggle{
+  @include password-toggle;
+}
+
+// The social authentication
+app-ux-button .inner{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 7px;
+}
+`],
 })
 export class LoginPage extends FormComponent implements OnInit {
 

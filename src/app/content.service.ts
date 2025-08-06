@@ -229,6 +229,7 @@ export class ContentService {
             if(error.status == 404){
               // Return null if the token is not usable anymore
               // TODO: this part should need thorough test (maybe after many hours or days)
+              console.log("logged out fom heee")
               this.logout()
               // this.router.navigate(['/logout'])
               return of(null)
@@ -317,6 +318,9 @@ export class ContentService {
     this.storage.remove('token')
     this.storage.remove('refresh_token')
     this.storage.remove('user')
+    // Print stacktrace
+    console.trace("User logged out")
+  
     this.menuController.close();
     this.router.navigate(['/login'])
   }
