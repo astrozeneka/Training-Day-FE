@@ -5,7 +5,7 @@ import {ContentService} from "../../content.service";
 import {FeedbackService} from "../../feedback.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {catchError, finalize, Subscription} from "rxjs";
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import videojs from 'video.js';
 import 'videojs-hls-quality-selector';
 import '@videojs/http-streaming';  // Import VHS plugin
@@ -927,7 +927,8 @@ export class VideoViewPage implements OnInit, AfterViewInit {
     public route: ActivatedRoute,
     private alertController: AlertController,
     private cdr: ChangeDetectorRef,
-    private vfs: VideoFormService
+    private vfs: VideoFormService,
+    private navCtrl: NavController
   ) {
     this.videoId = this.route.snapshot.paramMap.get('id')
     this.router.events.subscribe(async (event)=>{
@@ -962,6 +963,9 @@ export class VideoViewPage implements OnInit, AfterViewInit {
       })
     );
   }
+
+
+
 
   ngOnDestroy(){
     this.routeParameterSubscription.unsubscribe();
@@ -1166,6 +1170,7 @@ export class VideoViewPage implements OnInit, AfterViewInit {
             .subscribe((response:any)=>{
               if(response.message){
                 this.feedbackService.register('Le vidéo a été supprimé avec succes', 'success')
+                // this.navCtrl.back();
                 window.history.back()
               }else{
                 this.feedbackService.registerNow('Erreur lors de la suppression de la vidéo', 'danger')

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormComponent } from "../../components/form.component";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -9,6 +9,7 @@ import { HttpClient, HttpEventType, HttpHeaders, HttpRequest } from '@angular/co
 import { th } from 'date-fns/locale';
 import { environment } from 'src/environments/environment';
 import { VideoFormService } from 'src/app/video-form.service';
+import { NavController } from '@ionic/angular';
 
 type VideoDestination = 's3' | 'server'
 interface File {
@@ -298,7 +299,9 @@ export class VideoUploadPage extends FormComponent {
     private feedbackService: FeedbackService,
     private cs: ContentService,
     private http: HttpClient,
-    private vfs: VideoFormService
+    private vfs: VideoFormService,
+    private navCtrl: NavController,
+    private cdr: ChangeDetectorRef
   ) {
     super();
     this.form.valueChanges.subscribe((value) => {
@@ -360,7 +363,7 @@ export class VideoUploadPage extends FormComponent {
       repetitions: data.repetitions || null
     };
 
-    if (data.destination == 'server') {
+    /*if (data.destination == 'server') {
       this.contentService.post('/video', data)
         .pipe(finalize(() => { // WARNING, no validation is present here
           this.isFormLoading = false
@@ -379,7 +382,8 @@ export class VideoUploadPage extends FormComponent {
             this.feedbackService.registerNow('Erreur lors de l\'ajout de la vidéo', 'danger')
           }
         })
-    } else if (data.destination == 's3') {
+    } else */
+    if (data.destination == 's3') {
       let fileData = (this.fileControl.value as any).blob ? (this.fileControl.value as any).blob : this.fileControl.value
       if (!fileData) {
         this.feedbackService.registerNow('Veuillez sélectionner un fichier', 'danger')
@@ -445,7 +449,9 @@ export class VideoUploadPage extends FormComponent {
                     this.fileControl.reset()
                     if (response.id) {
                       this.feedbackService.register('Votre vidéo a été ajoutée avec succès', 'success')
-                      this.router.navigate(['/home'])
+                      // this.router.navigate(['/home']) // <= do not use this, this will not reset the page
+                      // navCtrl.back (this will reset the page as well)
+                      this.navCtrl.back();
                     } else {
                       this.feedbackService.registerNow('Erreur lors de l\'ajout de la vidéo', 'danger')
                     }

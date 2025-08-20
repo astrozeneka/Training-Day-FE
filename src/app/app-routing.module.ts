@@ -356,6 +356,14 @@ const routes: Routes = [
     path: 'signup',
     loadChildren: () => import('./pages/signup/signup.module').then( m => m.SignupPageModule)
   },
+  {
+    path: 'calendar-v2',
+    loadChildren: () => import('./pages/calendar-v2/calendar-v2.module').then( m => m.CalendarV2PageModule)
+  },
+  {
+    path: 'book-appointment',
+    loadChildren: () => import('./pages/book-appointment/book-appointment.module').then( m => m.BookAppointmentPageModule)
+  },
 ];
 
 @NgModule({
