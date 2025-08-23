@@ -31,7 +31,11 @@ import { from, shareReplay, switchMap } from 'rxjs';
       <ion-icon name="calendar-outline" class="counter-icon"></ion-icon>
       <div class="counter-content">
         <p class="cta-text">Réserver une séance</p>
-        <p class="remaining-sessions">Vous avez {{ availableAppointments }} séances disponibles</p>
+        <div class="quota-info" *ngIf="remainingBookings !== undefined">
+          <p class="remaining-sessions">{{ remainingBookings }}/{{ monthlyLimit }} séance{{ remainingBookings > 1 ? 's' : '' }} restante{{ remainingBookings > 1 ? 's' : '' }}</p>
+          <p class="used-sessions" *ngIf="usedThisMonth > 0">{{ usedThisMonth }} utilisée{{ usedThisMonth > 1 ? 's' : '' }} ce mois</p>
+        </div>
+        <p class="remaining-sessions" *ngIf="remainingBookings === undefined">Chargement des informations...</p>
       </div>
     </div>
 
@@ -229,7 +233,7 @@ import { from, shareReplay, switchMap } from 'rxjs';
 .counter-content {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .cta-text {
@@ -239,11 +243,25 @@ import { from, shareReplay, switchMap } from 'rxjs';
     color: var(--ion-color-dark);
 }
 
+.quota-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
 .remaining-sessions {
     margin: 4px 0 0 0;
     font-size: 12px;
     font-weight: 400;
     color: var(--ion-color-medium);
+}
+
+.used-sessions {
+    margin: 0;
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--ion-color-light-shade);
+    opacity: 0.8;
 }
 
 ion-content {
@@ -506,7 +524,9 @@ ion-content {
 })
 export class BookAppointmentPage implements OnInit {
 
-  availableAppointments: number = 3;
+  remainingBookings: number | undefined = undefined;
+  monthlyLimit: number = 0;
+  usedThisMonth: number = 0;
   isModalOpen: boolean = false;
   isTimeSlotsModalOpen: boolean = false;
   isLoadingTimeSlots: boolean = false;
@@ -551,6 +571,10 @@ export class BookAppointmentPage implements OnInit {
         next: (response) => {
           if (response.status === 'success') {
             this.transformApiData(response.data);
+            
+            this.remainingBookings = response.remaining_bookings || 0;
+            this.monthlyLimit = response.monthly_limit || 0;
+            this.usedThisMonth = response.used_this_month || 0;
           }
         },
         error: (error) => {
@@ -684,6 +708,9 @@ export class BookAppointmentPage implements OnInit {
           if (response.status === 'success') {
             this.feedbackMessage = 'Rendez-vous confirmé avec succès !';
             this.showSuccessMessage = true;
+            
+            this.loadAvailableSlots();
+            this.loadBookedEvents();
           } else {
             this.feedbackMessage = 'Erreur lors de la réservation. Veuillez réessayer.';
             this.showErrorMessage = true;
@@ -729,5 +756,6 @@ export class BookAppointmentPage implements OnInit {
     const date = new Date(dateTimeString);
     return date.toTimeString().slice(0, 5);
   }
+
 
 }

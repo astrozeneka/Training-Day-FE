@@ -364,6 +364,10 @@ const routes: Routes = [
     path: 'book-appointment',
     loadChildren: () => import('./pages/book-appointment/book-appointment.module').then( m => m.BookAppointmentPageModule)
   },
+  {
+    path: 'confirm-appointment',
+    loadChildren: () => import('./pages/confirm-appointment/confirm-appointment.module').then( m => m.ConfirmAppointmentPageModule)
+  },
 ];
 
 @NgModule({

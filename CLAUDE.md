@@ -1,6 +1,20 @@
 
 One most important detail you need to take care is that the code you write is coherent with my code writing style.
 And if there are best practices that are not respected in my existing code, you will ignore those and help me to apply the best practices.
+For data structure for the api, you will not assume or predefine any structure. You will always fetch the data structure from the api using a http call to the api.
+
+# Authentication
+The login is done using /api/request-login endpoint.
+For testing you call use those credentials to exchange for a token:
+{
+    "email": "ryanrasoarahona@gmail.com",
+    "password": "ryanrasoarahona1@"
+}
+In case an access to a coach is needed use the following:
+{
+    "email": "coach@localhost.com",
+    "password": "coachcoach1@"
+}
 
 # Backend
 
