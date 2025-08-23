@@ -155,15 +155,10 @@ import { Haptics } from '@capacitor/haptics';
       </div>
 
       <!-- Test button go to appointments -->
-       <div *ngIf="!environment.production">
-        <ion-button class="cta-button" expand="block" [routerLink]="['/calendar-booking']">
-          Prendre rendez-vous
-        </ion-button>
-      </div>
-
-      <ion-button class="cta-button" expand="block" [routerLink]="['/calendar-v2']">
-        Voir le calendrier
+      <ion-button class="cta-button" expand="block" [routerLink]="['/book-appointment']">
+        Prendre rendez-vous
       </ion-button>
+
     </div>
   </div>
 </ion-content>`

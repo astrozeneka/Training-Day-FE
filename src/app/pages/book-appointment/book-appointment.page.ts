@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { ContentService } from '../../content.service';
+import { from, shareReplay, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-book-appointment',
@@ -29,6 +32,33 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
       <div class="counter-content">
         <p class="cta-text">Réserver une séance</p>
         <p class="remaining-sessions">Vous avez {{ availableAppointments }} séances disponibles</p>
+      </div>
+    </div>
+
+    <div class="booked-events-section">
+      <div class="section-title">Mes rendez-vous</div>
+      
+      <div class="loader-container" *ngIf="isLoadingEvents">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+        <p class="loader-text">Chargement des rendez-vous...</p>
+      </div>
+
+      <div class="events-list" *ngIf="!isLoadingEvents && bookedEvents.length > 0">
+        <div class="event-item" *ngFor="let event of bookedEvents">
+          <div class="event-date">
+            <p class="event-day">{{ formatEventDate(event.start_datetime) }}</p>
+            <p class="event-time">{{ formatEventTime(event.start_datetime) }}</p>
+          </div>
+          <div class="event-details">
+            <p class="event-title">{{ event.title }}</p>
+            <p class="event-status" [class]="'status-' + event.status">{{ event.status }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-events" *ngIf="!isLoadingEvents && bookedEvents.length === 0">
+        <ion-icon name="calendar-clear-outline" class="no-events-icon"></ion-icon>
+        <p class="no-events-text">Aucun rendez-vous programmé</p>
       </div>
     </div>
 
@@ -127,12 +157,23 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
               <p class="confirmation-time">{{ selectedTimeSlot }}</p>
             </div>
             <div class="confirmation-buttons">
-              <ion-button expand="block" (click)="confirmBooking()" color="primary">
+              <app-ux-button 
+                expand="block" 
+                shape="round" 
+                [loading]="isBookingInProgress"
+                (click)="confirmBooking()"
+              >
                 Confirmer
-              </ion-button>
-              <ion-button expand="block" fill="outline" (click)="closeConfirmationModal()">
+              </app-ux-button>
+              <app-ux-button 
+                expand="block" 
+                fill="outline" 
+                shape="round"
+                [disabled]="isBookingInProgress"
+                (click)="closeConfirmationModal()"
+              >
                 Annuler
-              </ion-button>
+              </app-ux-button>
             </div>
           </div>
         </ion-content>
@@ -367,6 +408,100 @@ ion-content {
     font-weight: 500;
     color: var(--ion-color-dark);
 }
+
+.booked-events-section {
+    margin: 32px 22px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin-bottom: 20px;
+}
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.event-item {
+    background: var(--ion-color-light);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--ion-color-light-shade);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.event-date {
+    text-align: center;
+    min-width: 80px;
+}
+
+.event-day {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+}
+
+.event-time {
+    margin: 4px 0 0 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+}
+
+.event-details {
+    flex: 1;
+}
+
+.event-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ion-color-dark);
+}
+
+.event-status {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-pending {
+    color: var(--ion-color-warning);
+}
+
+.status-confirmed {
+    color: var(--ion-color-success);
+}
+
+.status-cancelled {
+    color: var(--ion-color-danger);
+}
+
+.no-events {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.no-events-icon {
+    font-size: 48px;
+    color: var(--ion-color-medium);
+    margin-bottom: 16px;
+}
+
+.no-events-text {
+    margin: 0;
+    font-size: 16px;
+    color: var(--ion-color-medium);
+}
   `]
 })
 export class BookAppointmentPage implements OnInit {
@@ -376,31 +511,42 @@ export class BookAppointmentPage implements OnInit {
   isTimeSlotsModalOpen: boolean = false;
   isLoadingTimeSlots: boolean = false;
   isConfirmationModalOpen: boolean = false;
+  isBookingInProgress: boolean = false;
   selectedDate: any = null;
   selectedTimeSlot: string = '';
   availableDates: any[] = [];
+  bookedEvents: any[] = [];
+  isLoadingEvents: boolean = false;
   showSuccessMessage: boolean = false;
   showErrorMessage: boolean = false;
   feedbackMessage: string = '';
+  
+  bearerToken$ = from(this.contentService.storage.get('token')).pipe(
+    shareReplay(1)
+  );
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private contentService: ContentService) { }
 
   ngOnInit() {
     this.loadAvailableSlots();
+    this.loadBookedEvents();
   }
 
   loadAvailableSlots() {
-    const headers = new HttpHeaders({
-      'Authorization': 'Bearer 2936|xu7W3kUg6zRIkHjj8b68T2lnoML3k2oVJpq2T2tnddab6688',
-      'Content-Type': 'application/json'
-    });
-
     const body = {
-      staff_id: 113,
+      staff_id: environment.coachId,
       n_days: 7
     };
 
-    this.http.post<any>('http://localhost:8080/api/calendar/available-slots', body, { headers })
+    this.bearerToken$.pipe(
+      switchMap(token => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        });
+        return this.http.post<any>(`${environment.apiEndpoint}/calendar/available-slots`, body, { headers });
+      })
+    )
       .subscribe({
         next: (response) => {
           if (response.status === 'success') {
@@ -435,6 +581,34 @@ export class BookAppointmentPage implements OnInit {
       };
     });
   }
+
+  loadBookedEvents() {
+    this.isLoadingEvents = true;
+
+    this.bearerToken$.pipe(
+      switchMap(token => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        });
+        return this.http.get<any>(`${environment.apiEndpoint}/calendar/booked-events`, { headers });
+      })
+    )
+      .subscribe({
+        next: (response) => {
+          this.isLoadingEvents = false;
+          if (response.status === 'success' || response.data) {
+            this.bookedEvents = response.data || response;
+          }
+        },
+        error: (error) => {
+          this.isLoadingEvents = false;
+          console.log('Error loading events:', error);
+          this.bookedEvents = [];
+        }
+      });
+  }
+
 
   openDateModal() {
     this.isLoadingTimeSlots = true;
@@ -479,39 +653,81 @@ export class BookAppointmentPage implements OnInit {
     const selectedDate = this.selectedDate;
     const selectedTimeSlot = this.selectedTimeSlot;
     
-    this.closeConfirmationModal();
-    
-    const headers = new HttpHeaders({
-      'Authorization': 'Bearer 2936|xu7W3kUg6zRIkHjj8b68T2lnoML3k2oVJpq2T2tnddab6688',
-      'Content-Type': 'application/json'
-    });
+    this.isBookingInProgress = true;
 
+    const startDateTime = `${selectedDate.date} ${selectedTimeSlot}:00`;
+    const startTime = new Date(startDateTime);
+    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // Add 1 hour
+    
     const body = {
-      staff_id: 113,
-      date: selectedDate.date,
-      time: selectedTimeSlot
+      staff_id: environment.coachId,
+      title: 'Séance de coaching',
+      start_datetime: startDateTime,
+      end_datetime: `${selectedDate.date} ${endTime.toTimeString().slice(0, 8)}`,
+      timezone: 'Europe/Paris'
     };
 
-    // Simulate booking API call
-    setTimeout(() => {
-      // Randomly simulate success or error for testing
-      const isSuccess = Math.random() > 0.3; // 70% success rate
-      
-      if (isSuccess) {
-        this.feedbackMessage = 'Rendez-vous confirmé avec succès !';
-        this.showSuccessMessage = true;
-      } else {
-        this.feedbackMessage = 'Erreur lors de la réservation. Veuillez réessayer.';
-        this.showErrorMessage = true;
-      }
-      
-      setTimeout(() => this.closeFeedback(), 3000);
-    }, 1000);
+    this.bearerToken$.pipe(
+      switchMap(token => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        });
+        return this.http.post<any>(`${environment.apiEndpoint}/calendar/book-event`, body, { headers });
+      })
+    ) // WE ARE HERE
+      .subscribe({
+        next: (response) => {
+          this.isBookingInProgress = false;
+          this.closeConfirmationModal();
+          
+          if (response.status === 'success') {
+            this.feedbackMessage = 'Rendez-vous confirmé avec succès !';
+            this.showSuccessMessage = true;
+          } else {
+            this.feedbackMessage = 'Erreur lors de la réservation. Veuillez réessayer.';
+            this.showErrorMessage = true;
+          }
+          setTimeout(() => this.closeFeedback(), 3000);
+        },
+        error: (error) => {
+          this.isBookingInProgress = false;
+          this.closeConfirmationModal();
+          
+          let errorMessage = 'Erreur lors de la réservation. Veuillez réessayer.';
+          
+          if (error.error?.message) {
+            errorMessage = error.error.message;
+          } else if (error.error?.errors) {
+            const firstError = Object.values(error.error.errors)[0];
+            if (Array.isArray(firstError) && firstError.length > 0) {
+              errorMessage = firstError[0];
+            }
+          }
+          
+          this.feedbackMessage = errorMessage;
+          this.showErrorMessage = true;
+          setTimeout(() => this.closeFeedback(), 3000);
+        }
+      });
   }
 
   closeFeedback() {
     this.showSuccessMessage = false;
     this.showErrorMessage = false;
+  }
+
+  formatEventDate(dateTimeString: string): string {
+    const date = new Date(dateTimeString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    
+    return `${day}/${month}`;
+  }
+
+  formatEventTime(dateTimeString: string): string {
+    const date = new Date(dateTimeString);
+    return date.toTimeString().slice(0, 5);
   }
 
 }
