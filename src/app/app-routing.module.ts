@@ -368,6 +368,10 @@ const routes: Routes = [
     path: 'confirm-appointment',
     loadChildren: () => import('./pages/confirm-appointment/confirm-appointment.module').then( m => m.ConfirmAppointmentPageModule)
   },
+  {
+    path: 'staff-appointment',
+    loadChildren: () => import('./pages/staff-appointment/staff-appointment.module').then( m => m.StaffAppointmentPageModule)
+  },
 ];
 
 @NgModule({

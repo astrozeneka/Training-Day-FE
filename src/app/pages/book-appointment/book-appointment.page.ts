@@ -55,7 +55,7 @@ import { from, shareReplay, switchMap } from 'rxjs';
           </div>
           <div class="event-details">
             <p class="event-title">{{ event.title }}</p>
-            <p class="event-status" [class]="'status-' + event.status">{{ event.status }}</p>
+            <p class="event-status" [class]="'status-' + event.status">{{ getStatusLabel(event.status) }}</p>
           </div>
         </div>
       </div>
@@ -699,7 +699,7 @@ export class BookAppointmentPage implements OnInit {
         });
         return this.http.post<any>(`${environment.apiEndpoint}/calendar/book-event`, body, { headers });
       })
-    ) // WE ARE HERE
+    )
       .subscribe({
         next: (response) => {
           this.isBookingInProgress = false;
@@ -757,5 +757,14 @@ export class BookAppointmentPage implements OnInit {
     return date.toTimeString().slice(0, 5);
   }
 
+  getStatusLabel(status: string): string {
+    switch (status) {
+      case 'pending': return 'En attente';
+      case 'confirmed': return 'Confirmé';
+      case 'rejected': return 'Refusé';
+      case 'cancelled': return 'Annulé';
+      default: return status;
+    }
+  }
 
 }

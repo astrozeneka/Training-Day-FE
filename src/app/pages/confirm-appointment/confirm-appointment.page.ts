@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ContentService } from '../../content.service';
-import { from, shareReplay, switchMap } from 'rxjs';
+import { combineLatest, forkJoin, from, Observable, shareReplay, Subject, switchMap } from 'rxjs';
 
 interface PendingAppointment {
   id: number;
@@ -46,6 +46,7 @@ interface PendingAppointment {
     perishables: any[];
   };
 }
+
 
 @Component({
   selector: 'app-confirm-appointment',
@@ -490,6 +491,8 @@ export class ConfirmAppointmentPage implements OnInit {
   bearerToken$ = from(this.contentService.storage.get('token')).pipe(
     shareReplay(1)
   );
+  appointmentLoadedSubject: Subject<boolean> = new Subject<boolean>();
+  appointmentLoaded$: Observable<boolean> = this.appointmentLoadedSubject.asObservable();
 
   constructor(
     private route: ActivatedRoute, 
@@ -504,7 +507,7 @@ export class ConfirmAppointmentPage implements OnInit {
   }
 
   checkUrlParameters() {
-    this.route.queryParams.subscribe(params => {
+    combineLatest([this.route.queryParams, this.appointmentLoaded$]).subscribe(([params, loaded]) => {
       if (params['appointmentId']) {
         const appointmentId = parseInt(params['appointmentId']);
         const appointment = this.pendingAppointments.find(app => app.id === appointmentId);
@@ -512,7 +515,7 @@ export class ConfirmAppointmentPage implements OnInit {
           this.openAppointmentModal(appointment);
         }
       }
-    });
+    })
   }
 
   loadPendingAppointments() {
@@ -524,13 +527,14 @@ export class ConfirmAppointmentPage implements OnInit {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         });
-        return this.http.get<any>(`${environment.apiEndpoint}/calendar/pending-events`, { headers });
+        return this.http.get<any>(`${environment.apiEndpoint}/calendar/events`, { headers });
       })
     ).subscribe({
       next: (response) => {
         this.isLoadingAppointments = false;
         if (response.status === 'success') {
           this.pendingAppointments = response.data;
+          this.appointmentLoadedSubject.next(true);
         }
       },
       error: (error) => {
@@ -560,8 +564,9 @@ export class ConfirmAppointmentPage implements OnInit {
 
     this.isProcessing = true;
     
-    // TODO: Replace with actual API call when endpoint is available
-    // Expected endpoint: POST /calendar/events/{id}/confirm
+    const body = {
+      event_id: this.selectedAppointment.id
+    };
     
     this.bearerToken$.pipe(
       switchMap(token => {
@@ -569,22 +574,20 @@ export class ConfirmAppointmentPage implements OnInit {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         });
-        
-        // Simulating API call for now
-        return new Promise(resolve => {
-          setTimeout(() => {
-            resolve({ status: 'success', message: 'Appointment confirmed' });
-          }, 2000);
-        });
+        return this.http.post<any>(`${environment.apiEndpoint}/calendar/confirm-pending`, body, { headers });
       })
     ).subscribe({
-      next: (response: any) => {
+      next: (response) => {
         this.isProcessing = false;
-        if (this.selectedAppointment) {
-          this.selectedAppointment.status = 'confirmed';
-          this.updateAppointmentInList();
+        if (response.status === 'success') {
+          // Update the appointment with the returned data
+          if (response.data && this.selectedAppointment) {
+            this.selectedAppointment.status = response.data.status;
+            this.selectedAppointment.updated_at = response.data.updated_at;
+            this.updateAppointmentInList();
+          }
           this.closeModal();
-          this.feedbackMessage = 'Rendez-vous confirmé avec succès !';
+          this.feedbackMessage = response.message || 'Rendez-vous confirmé avec succès !';
           this.showSuccessMessage = true;
           setTimeout(() => this.closeFeedback(), 3000);
         }
@@ -592,7 +595,15 @@ export class ConfirmAppointmentPage implements OnInit {
       error: (error) => {
         this.isProcessing = false;
         console.error('Error confirming appointment:', error);
-        this.feedbackMessage = 'Erreur lors de la confirmation.';
+        
+        let errorMessage = 'Erreur lors de la confirmation.';
+        if (error.error?.error) {
+          errorMessage = error.error.error;
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        
+        this.feedbackMessage = errorMessage;
         this.showErrorMessage = true;
         setTimeout(() => this.closeFeedback(), 3000);
       }
@@ -604,8 +615,12 @@ export class ConfirmAppointmentPage implements OnInit {
 
     this.isProcessing = true;
     
-    // TODO: Replace with actual API call when endpoint is available
-    // Expected endpoint: POST /calendar/events/{id}/reject
+    const body = {
+      event_id: this.selectedAppointment.id
+    };
+    
+    // TODO: Replace with actual reject endpoint when available
+    // Expected endpoint: POST /calendar/reject-pending
     
     this.bearerToken$.pipe(
       switchMap(token => {
@@ -614,21 +629,33 @@ export class ConfirmAppointmentPage implements OnInit {
           'Content-Type': 'application/json'
         });
         
-        // Simulating API call for now
+        // Using placeholder simulation until reject endpoint is available
         return new Promise(resolve => {
           setTimeout(() => {
-            resolve({ status: 'success', message: 'Appointment rejected' });
+            resolve({ 
+              status: 'success', 
+              message: 'Rendez-vous refusé avec succès',
+              data: {
+                ...this.selectedAppointment,
+                status: 'rejected',
+                updated_at: new Date().toISOString()
+              }
+            });
           }, 1000);
         });
       })
     ).subscribe({
       next: (response: any) => {
         this.isProcessing = false;
-        if (this.selectedAppointment) {
-          this.selectedAppointment.status = 'rejected';
-          this.updateAppointmentInList();
+        if (response.status === 'success') {
+          // Update the appointment with the returned data
+          if (response.data && this.selectedAppointment) {
+            this.selectedAppointment.status = response.data.status;
+            this.selectedAppointment.updated_at = response.data.updated_at;
+            this.updateAppointmentInList();
+          }
           this.closeModal();
-          this.feedbackMessage = 'Rendez-vous refusé.';
+          this.feedbackMessage = response.message || 'Rendez-vous refusé.';
           this.showErrorMessage = true;
           setTimeout(() => this.closeFeedback(), 3000);
         }
@@ -636,7 +663,15 @@ export class ConfirmAppointmentPage implements OnInit {
       error: (error) => {
         this.isProcessing = false;
         console.error('Error rejecting appointment:', error);
-        this.feedbackMessage = 'Erreur lors du refus.';
+        
+        let errorMessage = 'Erreur lors du refus.';
+        if (error.error?.error) {
+          errorMessage = error.error.error;
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        
+        this.feedbackMessage = errorMessage;
         this.showErrorMessage = true;
         setTimeout(() => this.closeFeedback(), 3000);
       }
@@ -687,11 +722,13 @@ export class ConfirmAppointmentPage implements OnInit {
     }
   }
 
+
   getStatusLabel(status: string): string {
     switch (status) {
       case 'pending': return 'En attente';
       case 'confirmed': return 'Confirmé';
       case 'rejected': return 'Refusé';
+      case 'cancelled': return 'Annulé';
       default: return status;
     }
   }
