@@ -233,7 +233,7 @@ import { from, shareReplay, switchMap } from 'rxjs';
 .counter-content {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .cta-text {

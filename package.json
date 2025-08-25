@@ -9,7 +9,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "deploy": "ng build && ssh ec2-user@codecrane.me 'rm -rf /var/www/Training-Day-FE/www && mkdir /var/www/Training-Day-FE/www' && scp -r www/* ec2-user@codecrane.me:/var/www/Training-Day-FE/www"
   },
   "private": true,
   "dependencies": {

@@ -327,18 +327,23 @@ ion-content {
 }
 
 .status-pending {
-  background: var(--ion-color-warning-tint);
+  background: rgba(var(--ion-color-warning-rgb), 0.2);
   color: var(--ion-color-warning-shade);
 }
 
 .status-confirmed {
-  background: var(--ion-color-success-tint);
+  background: rgba(var(--ion-color-success-rgb), 0.2);
   color: var(--ion-color-success-shade);
 }
 
 .status-rejected {
-  background: var(--ion-color-danger-tint);
+  background: rgba(var(--ion-color-danger-rgb), 0.2);
   color: var(--ion-color-danger-shade);
+}
+
+.status-cancelled {
+  background: rgba(var(--ion-color-medium-tint-rgb), 0.2);
+  color: var(--ion-color-medium-shade);
 }
 
 .chevron-icon {
@@ -377,15 +382,14 @@ ion-content {
 .appointment-details {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
 }
 
 .detail-card {
   background: var(--ion-color-light);
-  border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--ion-color-light-shade);
 }
 
@@ -527,7 +531,7 @@ export class ConfirmAppointmentPage implements OnInit {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         });
-        return this.http.get<any>(`${environment.apiEndpoint}/calendar/events`, { headers });
+        return this.http.get<any>(`${environment.apiEndpoint}/calendar/events?status=pending`, { headers });
       })
     ).subscribe({
       next: (response) => {
@@ -553,9 +557,14 @@ export class ConfirmAppointmentPage implements OnInit {
   closeModal() {
     this.isModalOpen = false;
     this.selectedAppointment = null;
-    this.router.navigate([], { 
+    /*this.router.navigate([], { 
       queryParams: {}, 
       relativeTo: this.route 
+    });*/// Navigate and replace
+    this.router.navigate([], {
+      queryParams: {},
+      relativeTo: this.route,
+      replaceUrl: true // This will allow to remove the appointmentId=XX url from the route stack
     });
   }
 

@@ -1,10 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
-import { catchError, debounceTime, distinctUntilChanged, EMPTY, switchMap } from 'rxjs';
+import { catchError, combineLatest, debounceTime, distinctUntilChanged, EMPTY, filter, from, shareReplay, switchMap } from 'rxjs';
 import { BottomNavbarUtilsService } from 'src/app/bottom-navbar-utils.service';
+import { StaffAppointment } from 'src/app/components/appointment-list/appointment-list.component';
 import { ContentService } from 'src/app/content.service';
 import Store from 'src/app/custom-plugins/store.plugin';
 import { environment } from 'src/environments/environment';
@@ -198,6 +199,16 @@ import { environment } from 'src/environments/environment';
             </ion-button>
         </div>
       </div>
+  </div>
+
+  <!-- Mes rendez-vous -->
+  <div class="appointments-section" *ngIf="user?.function === 'coach' || user?.function === 'nutritionist'">
+    <div class="section-header ion-padding">
+      <h2 class="section-title">Mes Rendez-vous en attente de confirmation</h2>
+      <span class="voir-plus" (click)="navigateTo('/staff-appointment')">Voir plus</span>
+    </div>
+
+    <app-appointment-list [appointments]="staffAppointments" [isLoadingAppointments]="isLoadingAppointments"></app-appointment-list>
   </div>
 
   <!-- Applications Section -->
@@ -2452,6 +2463,10 @@ export class HomeV2Page implements OnInit {
   // The unread messages count
   unreadMessagesCount: number = 0;
 
+  // Related to the staff appointments
+  staffAppointments: StaffAppointment[] = [];
+  isLoadingAppointments: boolean = false;
+
   constructor(
     private cdRef: ChangeDetectorRef,
     private router: Router,
@@ -2466,6 +2481,7 @@ export class HomeV2Page implements OnInit {
     this.loadUserData();
     this.loadUnreadCount();
     this.loadFeaturedVideos();
+    this.loadStaffAppointments();
   }
 
   ngOnDestroy() {
@@ -2687,5 +2703,50 @@ export class HomeV2Page implements OnInit {
 
   navigateToCategory(route: string, category: string) {
     this.router.navigate([route], { queryParams: { category: category } });
+  }
+
+  // Related to the appointments
+  loadStaffAppointments() {
+    var bearerToken$ = from(this.contentService.storage.get('token')).pipe(
+      shareReplay(1)
+    );
+
+
+    this.isLoadingAppointments = true;
+
+    let tokenAndUserLoaded = combineLatest([
+      bearerToken$,
+      this.contentService.userStorageObservable.getStorageObservable()
+    ]);
+
+    tokenAndUserLoaded.pipe(
+      filter(([token, user]) => {
+        // Only process if the user is a coach or nutritionist
+        return user?.function === 'coach' || user?.function === 'nutritionist';
+      }),
+      switchMap(([token, user]) => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        });
+        return this.http.get<any>(`${environment.apiEndpoint}/calendar/events?limit=5&status=pending`, { headers });
+      })
+    ).subscribe({
+      next: (response) => {
+        this.isLoadingAppointments = false;
+        if (response.status === 'success') {
+          this.staffAppointments = response.data;
+        }
+      },
+      error: (error) => {
+        this.isLoadingAppointments = false;
+        console.error('Error loading staff appointments:', error);
+        this.staffAppointments = [];
+        /*this.feedbackMessage = 'Erreur lors du chargement des rendez-vous.';
+        this.showErrorMessage = true;
+        setTimeout(() => this.closeFeedback(), 3000);
+        */
+      }
+    });
   }
 }
