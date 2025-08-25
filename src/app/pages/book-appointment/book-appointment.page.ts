@@ -83,8 +83,9 @@ import { from, shareReplay, switchMap } from 'rxjs';
             <div class="dates-list">
               <div 
                 class="date-item" 
+                [class.disabled]="date.timeSlots.length === 0"
                 *ngFor="let date of availableDates" 
-                (click)="selectDate(date)"
+                (click)="date.timeSlots.length > 0 && selectDate(date)"
               >
                 <div class="date-info">
                   <p class="date-line">{{ date.day }} {{ date.fullDate }}</p>
@@ -284,6 +285,20 @@ ion-content {
     padding: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--ion-color-light-shade);
+}
+
+.date-item.disabled {
+    opacity: 0.5;
+    background: var(--ion-color-light-tint);
+    pointer-events: none;
+}
+
+.date-item.disabled .date-line {
+    color: var(--ion-color-medium);
+}
+
+.date-item.disabled .slots-count {
+    color: var(--ion-color-medium);
 }
 
 .date-info {

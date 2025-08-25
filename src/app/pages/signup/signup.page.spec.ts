@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { IonicModule, Platform } from '@ionic/angular';
+import { provideRouter } from '@angular/router';
+import { IonicModule, Platform, NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { SignupPage } from './signup.page';
 import { ContentService } from '../../content.service';
@@ -26,6 +27,7 @@ describe('SignupPage', () => {
     const feedbackServiceSpy = jasmine.createSpyObj('FeedbackService', ['registerNow']);
     const darkModeServiceSpy = jasmine.createSpyObj('DarkModeService', ['isAvailableAndEnabled']);
     const platformSpy = jasmine.createSpyObj('Platform', ['is']);
+    const navControllerSpy = jasmine.createSpyObj('NavController', ['navigateForward', 'navigateBack', 'navigateRoot']);
 
     await TestBed.configureTestingModule({
       declarations: [SignupPage],
@@ -33,15 +35,17 @@ describe('SignupPage', () => {
         IonicModule.forRoot(),
         ReactiveFormsModule,
         HttpClientTestingModule,
-        RouterTestingModule,
         UtilitiesModule
       ],
       providers: [
+        provideRouter([]),
         { provide: ContentService, useValue: contentServiceSpy },
         { provide: FeedbackService, useValue: feedbackServiceSpy },
         { provide: DarkModeService, useValue: darkModeServiceSpy },
-        { provide: Platform, useValue: platformSpy }
-      ]
+        { provide: Platform, useValue: platformSpy },
+        { provide: NavController, useValue: navControllerSpy }
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignupPage);
