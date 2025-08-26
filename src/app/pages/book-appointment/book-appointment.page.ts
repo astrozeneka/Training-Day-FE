@@ -27,7 +27,7 @@ import { from, shareReplay, switchMap } from 'rxjs';
         </div>
     </div>
     
-    <div class="appointment-counter" (click)="openDateModal()">
+    <div class="appointment-counter" [class.disabled]="remainingBookings === 0" (click)="remainingBookings > 0 && openDateModal()">
       <ion-icon name="calendar-outline" class="counter-icon"></ion-icon>
       <div class="counter-content">
         <p class="cta-text">Réserver une séance</p>
@@ -37,6 +37,11 @@ import { from, shareReplay, switchMap } from 'rxjs';
         </div>
         <p class="remaining-sessions" *ngIf="remainingBookings === undefined">Chargement des informations...</p>
       </div>
+    </div>
+    
+    <div class="no-sessions-warning" *ngIf="remainingBookings === 0">
+      <ion-icon name="warning-outline" class="warning-icon"></ion-icon>
+      <p class="warning-text">Vous n'avez plus de sessions disponibles pour cette période.</p>
     </div>
 
     <div class="booked-events-section">
@@ -225,6 +230,20 @@ import { from, shareReplay, switchMap } from 'rxjs';
     margin: 0 22px;
 }
 
+.appointment-counter.disabled {
+    opacity: 0.6;
+    background: var(--ion-color-light-tint);
+    pointer-events: none;
+}
+
+.appointment-counter.disabled .counter-icon {
+    color: var(--ion-color-medium);
+}
+
+.appointment-counter.disabled .cta-text {
+    color: var(--ion-color-medium);
+}
+
 .counter-icon {
     font-size: 24px;
     margin-right: 12px;
@@ -261,8 +280,34 @@ import { from, shareReplay, switchMap } from 'rxjs';
     margin: 0;
     font-size: 10px;
     font-weight: 400;
-    color: var(--ion-color-light-shade);
+    color: var(--ion-color-medium);
     opacity: 0.8;
+}
+
+.no-sessions-warning {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: var(--ion-color-warning-tint);
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid var(--ion-color-warning);
+    margin: 16px 22px 0 22px;
+}
+
+.warning-icon {
+    font-size: 20px;
+    color: var(--ion-color-warning);
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.warning-text {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: black;
+    line-height: 1.3;
 }
 
 ion-content {

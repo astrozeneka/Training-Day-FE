@@ -10,7 +10,7 @@ import { ContentService } from '../content.service';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Location } from '@angular/common';
-import { ActionSheetController, IonContent, Platform } from '@ionic/angular';
+import { ActionSheetController, IonContent, NavController, Platform } from '@ionic/angular';
 import { User } from '../models/Interfaces';
 import { MessengerService } from '../messenger.service';
 import PrivateChannel from 'pusher-js/types/src/core/channels/private_channel';
@@ -291,6 +291,7 @@ export class MessengerDetailPage implements OnInit {
     private actionSheetCtrl: ActionSheetController,
     private cdr: ChangeDetectorRef,
     private messengerService: MessengerService,
+    private navCtrl: NavController,
     private attachmentService: MsgAttachmentService,
     private platform: Platform,
     private feedbackService: FeedbackService
@@ -814,8 +815,7 @@ export class MessengerDetailPage implements OnInit {
   }
 
   goBack() {
-    // Navigate back to the previous page
-    this.location.back();
+    this.navCtrl.back();
   }/**
    * https://github.com/the-vv/college-notifier-app/blob/36a17186a0865fba01669fea2da70ac44e86a5d4/src/app/shared/file-upload/file-upload.component.ts#L122
    * @param dataURI 
