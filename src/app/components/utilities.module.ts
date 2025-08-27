@@ -62,6 +62,7 @@ import { ButtonToChatComponent } from './button-to-chat/button-to-chat.component
 import { PromotionalBubbleSelectorIosComponent } from './promotional-bubble-selector-ios/promotional-bubble-selector-ios.component';
 import { CoachMessengerSettingsComponent } from './coach-messenger-settings/coach-messenger-settings.component';
 import { AppointmentListComponent } from './appointment-list/appointment-list.component';
+import { SubscriptionCtaCompactComponent } from './subscription-cta-compact/subscription-cta-compact.component';
 
 
 @NgModule({
@@ -103,6 +104,7 @@ import { AppointmentListComponent } from './appointment-list/appointment-list.co
     CoachChatSettingsComponent,
     CoachMessengerSettingsComponent,
     AppointmentListComponent,
+    SubscriptionCtaCompactComponent,
 
     ImagePickerComponent,
     OutlineInputComponent,
@@ -179,6 +181,7 @@ import { AppointmentListComponent } from './appointment-list/appointment-list.co
     CoachChatSettingsComponent,
     CoachMessengerSettingsComponent,
     AppointmentListComponent,
+    SubscriptionCtaCompactComponent,
 
 
     // External projects

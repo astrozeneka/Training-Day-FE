@@ -36,13 +36,18 @@ import { ContentService } from 'src/app/content.service';
 
   <!-- some header here (according to the new theme) -->
   <div class="video-home">
-    <div class="ion-padding-horizontal">
+    <div class="ion-padding-horizontal" *ngIf="!shouldShowSubscriptionCTA">
       <div class="title">
         Choisi ton Training
       </div>
       <div class="subtitle">
         Ces contenus ont été sélectionnés pour vous aider à progresser dans votre entraînement.
       </div>
+    </div>
+
+    <!-- Subscription CTA for users without subscription -->
+    <div *ngIf="shouldShowSubscriptionCTA" class="ion-padding-horizontal" style="display: flex; align-items: center; justify-content: center; min-height: 500px;">
+      <app-subscription-cta-compact (buttonClick)="navigateTo('/swipeable-store')"></app-subscription-cta-compact>
     </div>
 
     <div class="card-list">
@@ -325,6 +330,7 @@ export class VideoHomePage implements OnInit {
 
   isVideoDisabled = true; // ONly available for premium users
   isUserLoggedIn = false;
+  shouldShowSubscriptionCTA = false;
 
   videoOptions: ('training' | 'boxing')[] = []
 
@@ -348,20 +354,26 @@ export class VideoHomePage implements OnInit {
     this.contentService.userStorageObservable.getStorageObservable().subscribe((user) => {
       if (!user) {
         this.isUserLoggedIn = false;
+        this.shouldShowSubscriptionCTA = false;
       } else if (user.renewable_id == null){
         this.isUserLoggedIn = true;
         this.isVideoDisabled = true;
+        // Show subscription CTA if user doesn't have renewable_id and is a customer
+        this.shouldShowSubscriptionCTA = user.function === 'customer';
       } else if (user.renewable_id == 'hoylt' && !user.user_settings['training_option']) {
         // Navigate to the training program selection page
         this.router.navigate(['/training-program-selection']);
+        this.shouldShowSubscriptionCTA = false;
       } else if (user.renewable_id == 'hoylt' && user.user_settings['training_option']) {
         this.videoOptions = [user.user_settings['training_option']];
         this.isUserLoggedIn = true;
         this.isVideoDisabled = false;
+        this.shouldShowSubscriptionCTA = false;
       } else { // For higher renewable_id users
         this.videoOptions = ['training', 'boxing']; // Default options
         this.isUserLoggedIn = true;
         this.isVideoDisabled = false;
+        this.shouldShowSubscriptionCTA = false;
       }
     });
   }
