@@ -121,7 +121,7 @@ import { Platform } from '@ionic/angular';
 
 
       <div>
-        <ion-button expand="full" type="submit" color="medium" (click)="goTo('/subscribe')" shape="round">S'inscrire gratuitement</ion-button>
+        <ion-button expand="full" type="submit" color="medium" (click)="goTo('/signup')" shape="round">S'inscrire gratuitement</ion-button>
         <ion-button expand="full" type="submit" color="tertiary" (click)="goTo('/home')" shape="round">Continuer sans s'inscrire</ion-button>
 
         <!--<ion-button (click)="testPasswordAutofill()" *ngIf="false">Test autofill</ion-button>-->

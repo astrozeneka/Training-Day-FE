@@ -326,7 +326,7 @@ export class VideoHomePage implements OnInit {
   isVideoDisabled = true; // ONly available for premium users
   isUserLoggedIn = false;
 
-  videoOptions = []
+  videoOptions: ('training' | 'boxing')[] = []
 
   constructor(
     private router: Router,

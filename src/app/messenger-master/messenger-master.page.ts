@@ -155,7 +155,7 @@ import { Haptics } from '@capacitor/haptics';
       </div>
 
       <!-- Test button go to appointments -->
-      <ion-button class="cta-button" expand="block" [routerLink]="['/book-appointment']">
+      <ion-button class="cta-button" expand="block" [routerLink]="['/book-appointment']" *ngIf="chatPermissions.canChatWithCoach !== 'noaccess' || chatPermissions.canChatWithNutritionist !== 'noaccess'">
         Prendre rendez-vous
       </ion-button>
 

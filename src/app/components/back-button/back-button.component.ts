@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import {Router} from "@angular/router";
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-back-button',
@@ -13,7 +14,8 @@ export class BackButtonComponent  implements OnInit {
 
   constructor(
     private location: Location,
-    private router: Router
+    private router: Router,
+    private navCtrl: NavController
   ) {
     this.location.onUrlChange((value) => {
       this.update()
@@ -33,6 +35,6 @@ export class BackButtonComponent  implements OnInit {
     if(this.customUrl)
       this.router.navigateByUrl(this.customUrl)
     else
-      this.location.back()
+      this.navCtrl.back()
   }
 }

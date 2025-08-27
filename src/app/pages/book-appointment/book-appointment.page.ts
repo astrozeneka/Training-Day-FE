@@ -814,7 +814,9 @@ export class BookAppointmentPage implements OnInit {
 
   formatEventTime(dateTimeString: string): string {
     const date = new Date(dateTimeString);
-    return date.toTimeString().slice(0, 5);
+    // Change timezone
+    const options = { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit' } as const;
+    return date.toLocaleTimeString('fr-FR', options);
   }
 
   getStatusLabel(status: string): string {
