@@ -15,10 +15,19 @@
         //white-space: nowrap;
         min-width: 60px;
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         & .prefix, & .suffix{
             color: var(--ion-color-lightgrey);
             font-size: 14px;
             height: 16px;
+        }
+        & .weekly-price{
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 4px;
+            display: inline;
         }
     }
 

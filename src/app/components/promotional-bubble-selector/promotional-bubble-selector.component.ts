@@ -26,6 +26,9 @@ export class PromotionalBubbleSelectorComponent  implements ControlValueAccessor
   // Experimental mode: for android, the base offers are included inside the offer property (no need since this component is fully reserved for the android version)
   @Input() os:'ios'|'android' = 'ios'
 
+  // Weekly price calculations
+  offerWeeklyPrices: {[key: string]: string} = {}
+
   constructor(
       private controlContainer: ControlContainer,
       private cdr: ChangeDetectorRef
@@ -38,6 +41,7 @@ export class PromotionalBubbleSelectorComponent  implements ControlValueAccessor
     // Listen for event 
     // TODO ...
     console.log("passed product is " + JSON.stringify(this.product))
+    this.calculateWeeklyPrices()
   }
 
   writeValue(obj: any): void {
@@ -61,5 +65,25 @@ export class PromotionalBubbleSelectorComponent  implements ControlValueAccessor
   chooseOption(choice:Product|PromoOfferIOS|any){
     this.formControl.setValue(choice)
     this.cdr.detectChanges()
+  }
+
+  private calculateWeeklyPrices() {
+    if (this.product?.offers) {
+      this.product.offers.forEach((offer, index) => {
+        const offerId = offer.androidOfferToken || `offer_${index}`
+        console.log("====> Calculting weekly price", JSON.stringify(offer))
+        this.offerWeeklyPrices[offerId] = this.getWeeklyPrice(offer.displayPrice)
+      })
+    }
+  }
+
+  private getWeeklyPrice(displayPrice: string): string {
+    console.log("Calculating weekly price for display price (android): " + displayPrice)
+    const numericPrice = parseFloat(displayPrice.replace(/[^0-9.,]/g, '').replace(',', '.'))
+    if (!isNaN(numericPrice)) {
+      const weekly = (numericPrice / 4.33).toFixed(2)
+      return weekly.replace('.', ',')
+    }
+    return ''
   }
 }

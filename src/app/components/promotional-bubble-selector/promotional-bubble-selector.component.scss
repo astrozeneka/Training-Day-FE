@@ -42,6 +42,7 @@
             & .row{
                 display: flex;
                 flex-direction: row;
+                align-items: center;
 
                 & .left{
                     flex-grow: 1;
@@ -56,9 +57,27 @@
                 }
 
                 & .right{
+                    margin-left: 16px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    min-width: 80px;
+                    max-width: 120px;
+                    // flex-shrink: 0;
                     & .price{
                         font-size: 22px;
                         padding-top: 8px;
+                        text-align: center;
+                        word-wrap: break-word;
+                    }
+                    & .weekly-price{
+                        font-weight: bold;
+                        font-size: 14px;
+                        margin-top: 4px;
+                        text-align: center;
+                        word-wrap: break-word;
+                        white-space: normal;
+                        line-height: 1.2;
                     }
                 }
             }

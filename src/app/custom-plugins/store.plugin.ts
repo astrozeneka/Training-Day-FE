@@ -585,6 +585,8 @@ export interface Product {
 export interface AndroidSubscriptionOffer {
   displayPrice: string;
   pricingPhases?: PricingPhase[];
+  androidOfferToken?: string;
+  price?: number;
 }
 
 

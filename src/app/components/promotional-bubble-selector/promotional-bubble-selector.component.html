@@ -26,7 +26,7 @@
   </div>-->
   <!-- The promotional offers -->
   <div class="wrapper">
-    <ion-button *ngFor="let offer of product.offers"
+    <ion-button *ngFor="let offer of product.offers; let i = index"
       fill="clear"
       expand="block"
       color="dark"
@@ -49,6 +49,7 @@
           </div>
           <div class="right">
             <div class="price display-1">{{ offer.displayPrice }}</div>
+            <div class="weekly-price" *ngIf="offerWeeklyPrices[offer.androidOfferToken || 'offer_' + i]">Soit {{ offerWeeklyPrices[offer.androidOfferToken || 'offer_' + i] }}€/sem.</div>
           </div>
         </div>
       </div>

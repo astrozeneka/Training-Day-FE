@@ -22,6 +22,7 @@ export class StorefrontItemComponent  implements OnInit, OnChanges {
   displayPricePrefix = undefined
   displayPrice = undefined
   displayPriceSuffix = undefined
+  weeklyPrice = undefined
 
   constructor(
     private cs: ContentService // Low coupling strategy
@@ -45,6 +46,13 @@ export class StorefrontItemComponent  implements OnInit, OnChanges {
         displayPrice = displayPrice.replace("/mois", "")
       }
       this.displayPrice = displayPrice
+      
+      // Calculate weekly price
+      const numericPrice = parseFloat(displayPrice.replace(/[^0-9.,]/g, '').replace(',', '.'));
+      if (!isNaN(numericPrice)) {
+        const weekly = (numericPrice / 4.33).toFixed(2); // Average weeks per month
+        this.weeklyPrice = weekly.replace('.', ',');
+      }
     }
   }
 

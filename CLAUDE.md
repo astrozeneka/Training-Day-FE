@@ -16,6 +16,18 @@ In case an access to a coach is needed use the following:
     "password": "coachcoach1@"
 }
 
+# Complex tasks
+For complex and lengthy tasks, you will make sure to create a dynamic and smartly crafted todo list.
+
+
+# User privileges
+In case some features requires the user privileges (free, hoylt, gursky, smiley, alonzo), you will check at the user.renewable_id property for it. Ensure that the user has been loaded (or use userObservable from the content service).
+
+# Code refactoring
+
+For refactoring code, you will ensure every scss are correctly fetched and organized. If you can find better writing method for a better modularity of the content, you can apply. If possible write scss in a nested way.
+The components will be placed inside the src/app/components directory.
+
 # Backend
 
 In case you require a backend connection, you will use this endpoint: `http://localhost:8080/docs/api` to fetch the docs and find the suitable endpoints.

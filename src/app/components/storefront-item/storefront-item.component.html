@@ -9,6 +9,7 @@
       <div class="main">{{ displayPrice }}</div>
       <div class="suffix" *ngIf="displayPriceSuffix">{{ displayPriceSuffix }}</div>
       <div class="suffix" *ngIf="!displayPriceSuffix">/mois</div>
+      <div class="weekly-price" *ngIf="weeklyPrice">Soit {{ weeklyPrice }}€/sem.</div>
     </div>
   </h2>
   <p class="description">

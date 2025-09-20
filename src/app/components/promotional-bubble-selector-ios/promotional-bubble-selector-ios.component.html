@@ -16,6 +16,7 @@
           </div>
           <div class="right">
             <div class="price display-1">{{ product?.baseOfferDisplayPrice || product.displayPrice }}</div>
+            <div class="weekly-price" *ngIf="baseWeeklyPrice">Soit {{ baseWeeklyPrice }}€/sem.</div>
           </div>
         </div>
       </div>
@@ -43,6 +44,7 @@
         </div>
         <div class="right">
           <div class="price display-1">{{ offer.displayPrice }}</div>
+          <div class="weekly-price" *ngIf="offerWeeklyPrices[offer.offerId]">Soit {{ offerWeeklyPrices[offer.offerId] }}€/sem.</div>
         </div>
       </div>
     </div>
