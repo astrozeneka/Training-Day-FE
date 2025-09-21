@@ -1,5 +1,6 @@
 import {Capacitor, registerPlugin} from '@capacitor/core'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'
+import { environment } from 'src/environments/environment';
 const mockStorePlugin: StorePlugin = {
   getProducts: async(options: {type:'subs'|'inapp'|null}) => { // Type is only for android
     if (mockStorePlugin._emulatedOSData == 'ios'){
@@ -83,6 +84,37 @@ const mockStorePlugin: StorePlugin = {
           }
         ]}
       } else if (options.type == 'subs'){
+          return new Promise((resolve, reject) => {
+            console.log(",,,,,,,", `${environment.apiEndpoint}/play-store/products`)
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `${environment.apiEndpoint}/play-store/products`);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            xhr.onload = function() {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                  const data = JSON.parse(xhr.responseText);
+                  console.log(`FFFFFF`, data);
+                  resolve({
+                    products: [data.subscription]
+                  });
+                } catch (e) {
+                  console.error('JSON Parse Error:', e);
+                  reject(e);
+                }
+              } else {
+                console.error('HTTP Error:', xhr.status, xhr.statusText);
+                reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+              }
+            };
+
+            xhr.onerror = function() {
+              console.error('Network Error');
+              reject(new Error('Network Error'));
+            };
+
+            xhr.send();
+          })
         /* // used with billingclient v6.0.0 (doesn't support promotional offer)
         return {products: [
           {
@@ -142,7 +174,7 @@ const mockStorePlugin: StorePlugin = {
         ]}
         */
         // used with billingclient v7.1.1
-        return {"products": [
+        /*return {"products": [
           {
               "productId": "training_day",
               "type": "subs",
@@ -299,7 +331,7 @@ const mockStorePlugin: StorePlugin = {
                   }
               ]
           }
-      ]}
+        ]}*/
       } else {
         console.log(options.type)
         return {products: []}

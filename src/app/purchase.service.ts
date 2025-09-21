@@ -129,6 +129,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
       } else if (this.os == 'android') {
         // The typo can lead to confusion
         let androidProductList:AndroidProduct[]|AndroidSubscription[] = (await StorePlugin.getProducts({type: type})).products
+        console.log(`Android fetching products: ${JSON.stringify(androidProductList)}`)
         // Standardize the output format to fit the existing front-end code
         if (type == 'inapp' || type == null) { // In-app purchases (default)
           products = (androidProductList as AndroidProduct[]).map((product:AndroidProduct) => {
@@ -148,7 +149,6 @@ export class PurchaseService { // This class cannot be used anymore due to andro
             throw new Error(`Multiple products found from Android Subscription List (${androidProductList.map(a=>(a as AndroidSubscription).name).join(', ')}), except to only have one`)
           }
           let androidProduct = (androidProductList as AndroidSubscription[])[0];
-
           // Fetch the base plans
           let basePlans:{[key: string]:AndroidSubscription} = androidProduct.subscriptionOfferDetails.filter(e=>!(e as any).offerId).reduce((acc, curr) => {
             acc[curr.basePlanId] = curr
@@ -161,6 +161,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
             // For this feature, the price phasing is not yet supported
             /*if (offerDetail.pricingPhases.length > 1)
               throw new Error('Multiple pricing phases found, except to only have one')*/
+            console.log(",", offerDetail)
             if (offerDetail.pricingPhases.length == 0)
               throw new Error('No pricing phases found')
             let pricingPhases = offerDetail.pricingPhases

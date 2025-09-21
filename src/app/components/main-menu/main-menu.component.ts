@@ -44,16 +44,21 @@ export class MainMenuComponent extends AbstractComponent implements OnInit {
       this.unreadMessages = unreadMessages
       this.cdr.detectChanges()
     })
+
+    // The content service should not be used for managing user
+    // Sth like authService should manage it, cause the user go paired with the bearer token
     this.contentService.userStorageObservable.gso$().subscribe(async (user: any) => {
       this.user = user;
-      if(this.user) {
+      // The code below has been commented, issue might arise
+      // After testing, the code below doesn't even work
+      /*if(this.user) {
         await new Promise((resolve) => setTimeout(resolve, 100)) // Unoptimized way for waiting the token to be loaded
         this.contentService.getOne('/chat/unread', {})
           .subscribe((data: any) => {
             // this.unreadMessages = data.unread // old code
             this.chatService.unreadMessagesSubject.next(data.unread)
           })
-      }
+      }*/
     })
   }
 

@@ -66,7 +66,7 @@ export class AutorenewableBubblesComponent extends EntitlementReady implements O
     } else if ((this.platform.is('capacitor') || true) && (this.platform.is('android') || true)) { // IMOPRTANT, REVERT AFTER DEBUGGING SESSION
       try {
         // Load from Android
-        console.log("Calling getProdcuts [android]")
+        console.log("Calling getProducts [android]")
         products = this.purchaseService.getProducts('subs')
       } catch (error) {
         this.feedbackService.registerNow('Failed to load products from native plugin ' + error.toString(), 'danger');
@@ -80,6 +80,7 @@ export class AutorenewableBubblesComponent extends EntitlementReady implements O
       }
     }
     products.then(({products}) => {
+      console.log("===>", JSON.stringify(products))
       this.productList = (products as Subscription[]).reduce((acc, product) => {
         acc[(product as IOSSubscription).id || (product as AndroidSubscription).productId] = product
         return acc
