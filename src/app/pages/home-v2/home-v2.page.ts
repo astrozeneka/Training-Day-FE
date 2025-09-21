@@ -211,6 +211,36 @@ import { environment } from 'src/environments/environment';
     <app-appointment-list [appointments]="staffAppointments" [isLoadingAppointments]="isLoadingAppointments"></app-appointment-list>
   </div>
 
+
+
+  <!-- Featured Videos Section -->
+  <div class="featured-videos-section">
+    <div class="section-header ion-padding">
+      <h2 class="section-title">Découvrez les nouvelles actualités sportives</h2>
+    </div>
+    
+    <div class="videos-container ion-padding">
+      <div style="height: 50px; display: flex; justify-content: center; align-items: center;" *ngIf="featuredVideoIsLoading" >
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+      <div class="video-card" *ngFor="let video of videos" (click)="goToVideo(video.id)">
+        <div class="video-thumbnail">
+          <img 
+            [src]="video.thumbnail ? getUrl(video.thumbnail.permalink) : '/assets/logo-light-1024x1024-noalpha.jpg'" 
+            [alt]="video.title" 
+            class="thumbnail-image" />
+          <div class="play-overlay">
+            <ion-icon name="play-circle-outline"></ion-icon>
+          </div>
+        </div>
+        <div class="video-content">
+          <h3 class="video-title">{{ video.title }}</h3>
+          <p class="video-description">{{ video.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Applications Section -->
   <div class="apps-section">
     <div class="section-header ion-padding">
@@ -437,31 +467,6 @@ import { environment } from 'src/environments/environment';
               <span>Garantie satisfait ou remboursé</span>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Featured Videos Section -->
-  <div class="featured-videos-section">
-    <div class="section-header ion-padding">
-      <h2 class="section-title">Découvrez les nouvelles actualités sportives</h2>
-    </div>
-    
-    <div class="videos-container ion-padding">
-      <div class="video-card" *ngFor="let video of videos" (click)="goToVideo(video.id)">
-        <div class="video-thumbnail">
-          <img 
-            [src]="video.thumbnail ? getUrl(video.thumbnail.permalink) : '/assets/logo-light-1024x1024-noalpha.jpg'" 
-            [alt]="video.title" 
-            class="thumbnail-image" />
-          <div class="play-overlay">
-            <ion-icon name="play-circle-outline"></ion-icon>
-          </div>
-        </div>
-        <div class="video-content">
-          <h3 class="video-title">{{ video.title }}</h3>
-          <p class="video-description">{{ video.description }}</p>
         </div>
       </div>
     </div>
@@ -2568,9 +2573,12 @@ export class HomeV2Page implements OnInit {
   }
 
   // Load featured videos
+  featuredVideoIsLoading: boolean = false;
   private loadFeaturedVideos() {
+    this.featuredVideoIsLoading = true;
     this.contentService.getCollection('/videos', 0, { f_category: 'home' }).subscribe((res: any) => {
       this.videos = res.data as any[];
+      this.featuredVideoIsLoading = false;
       this.cdRef.detectChanges();
     });
   }

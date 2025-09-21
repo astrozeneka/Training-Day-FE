@@ -171,7 +171,9 @@ export class AppComponent implements OnInit{
           .subscribe((response)=>{
             this.user = response
             // Sync the user data
-            this.contentService.userStorageObservable.updateStorage(this.user)
+            // this.contentService.userStorageObservable.updateStorage(this.user)
+            // Using the above code lead to an infinite loop
+            this.contentService.storage.set('user', this.user)
           })
       }
     });

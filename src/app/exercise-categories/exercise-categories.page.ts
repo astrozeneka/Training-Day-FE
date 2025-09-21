@@ -34,15 +34,14 @@ interface CategoryItem {
 
         <!-- The Content -->
         <div class="categories-list">
-          <ion-button 
-            *ngFor="let category of categories" 
-            class="category-button" 
-            expand="block" 
-            shape="round"
+          <div
+            *ngFor="let category of categories"
+            class="category-item"
             (click)="navigateToExerciseList(category)"
           >
-            {{ category.name }}
-          </ion-button>
+            <span class="category-name">{{ category.name }}</span>
+            <ion-icon name="play-circle-outline" class="category-icon"></ion-icon>
+          </div>
         </div>
       </div>
 
@@ -92,15 +91,41 @@ interface CategoryItem {
         flex-direction: column;
         align-items: center;
         gap: 12px;
-        
-        .category-button {
+
+        .category-item {
           max-width: 500px;
           width: 100%;
           margin: 0;
-          --border-radius: 25px;
-          font-weight: 500;
-          height: 50px;
-          text-transform: none;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 16px 20px;
+          border-radius: 25px;
+          background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
+          border: none;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.3);
+
+          &:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(var(--ion-color-primary-rgb), 0.4);
+          }
+
+          .category-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            flex: 1;
+            text-align: left;
+          }
+
+          .category-icon {
+            font-size: 24px;
+            color: white;
+            margin-left: 12px;
+            opacity: 0.9;
+          }
         }
         
         .all-exercises {
@@ -159,7 +184,7 @@ interface CategoryItem {
     }
 
     .shimmer-category-button {
-      height: 50px;
+      height: 60px;
       width: 100%;
       max-width: 500px;
       border-radius: 25px;

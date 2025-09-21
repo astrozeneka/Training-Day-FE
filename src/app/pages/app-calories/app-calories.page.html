@@ -162,6 +162,17 @@
           </app-ux-button>
         </ion-card-content>
       </ion-card>
+
+      <ion-card class="ion-padding cta" *ngIf="user && user?.renewable_id == null">
+        <ion-card-content>
+          <h1 class="display-1">Veuillez à un abonnement pour continuer</h1>
+          <p>Le calculateur de calories n'est pas disponible pour votre compte. Veuillez souscrire à un pack <b>Hoylt</b> ou supérieur pour en bénéficier.</p>
+          <br />
+          <app-ux-button shape="round" expand="full" routerLink="/swipeable-store">
+            Accéder à la boutique
+          </app-ux-button>
+        </ion-card-content>
+      </ion-card>
     </div>
   </div>
 

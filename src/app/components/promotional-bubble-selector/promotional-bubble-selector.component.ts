@@ -72,12 +72,24 @@ export class PromotionalBubbleSelectorComponent  implements ControlValueAccessor
       this.product.offers.forEach((offer, index) => {
         const offerId = offer.androidOfferToken || `offer_${index}`
         console.log("====> Calculting weekly price", JSON.stringify(offer))
-        this.offerWeeklyPrices[offerId] = this.getWeeklyPrice(offer.displayPrice)
+        this.offerWeeklyPrices[offerId] = this.getWeeklyPrice(offer.pricingPhases[0]?.priceAmountMicros, offer.pricingPhases[0]?.billingPeriod as 'P1M'|'P3M'|'P6M')
       })
     }
   }
 
-  private getWeeklyPrice(displayPrice: string): string {
+  private getWeeklyPrice(micros: number, billingPeriod: 'P1M'|'P3M'|'P6M'): string {
+    if (!micros || !billingPeriod) return ''
+    switch(billingPeriod) {
+      case 'P1M': // 1 month
+        return (micros / 1000000 / 4.33).toFixed(2).replace('.', ',')
+      case 'P3M': // 3 months
+        return (micros / 1000000 / (4.33 * 3)).toFixed(2).replace('.', ',')
+      case 'P6M': // 6 months
+        return (micros / 1000000 / (4.33 * 6)).toFixed(2).replace('.', ',')
+      default:
+        return ''
+    }
+    /*
     console.log("Calculating weekly price for display price (android): " + displayPrice)
     const numericPrice = parseFloat(displayPrice.replace(/[^0-9.,]/g, '').replace(',', '.'))
     if (!isNaN(numericPrice)) {
@@ -85,5 +97,6 @@ export class PromotionalBubbleSelectorComponent  implements ControlValueAccessor
       return weekly.replace('.', ',')
     }
     return ''
+    */
   }
 }
