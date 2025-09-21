@@ -251,7 +251,7 @@ export class MessengerMasterPage implements OnInit {
           let success = res.success as boolean;
           let conversations = res.conversations as Conversation[];
           this.chats = conversations;
-          console.log("res", res);
+          console.log("Conversations loaded from the server", res); // Remove later
           // Handle chat permissions and chat cta messages
           if (res.chat_permissions) {
             this.chatPermissions = res.chat_permissions;
@@ -259,7 +259,6 @@ export class MessengerMasterPage implements OnInit {
           this.applySearchFilter();
           this.isLoading = false;
           this.cdr.detectChanges();
-          console.log("Conversation loaded, data: ", res);
         })
     })
 
@@ -312,33 +311,7 @@ export class MessengerMasterPage implements OnInit {
   // Load chat data - in a real app, this would be a service call
   loadChatData() {
     // This is sample data - you would normally fetch this from an API
-    this.chats = [
-      /*{
-        id: 6,
-        name: 'Coach Coach',
-        avatar: '../../../assets/samples/profile-sample-1.jpg',
-        lastMessage: 'Bonjour, comment allez-vous aujourd\'hui?',
-        timestamp: '10:23',
-        unreadCount: 2
-      },
-      {
-        id: 7,
-        name: 'Ryan Rasoarahona',
-        avatar: '../../../assets/samples/profile-sample-1.jpg',
-        lastMessage: 'J\'ai terminé mon entraînement d\'aujourd\'hui!',
-        timestamp: '09:15',
-        unreadCount: 0
-      },
-      {
-        id: 15,
-        name: 'John Doe',
-        avatar: '../../../assets/samples/profile-sample-1.jpg',
-        lastMessage: 'Merci pour votre aide, à bientôt!',
-        timestamp: 'Hier',
-        unreadCount: 0
-      },*/
-      // Add more sample data as needed
-    ];
+    this.chats = [];
 
     // this.filteredChats = [...this.chats];
   }
@@ -374,7 +347,7 @@ export class MessengerMasterPage implements OnInit {
 
       this.applySearchFilter();
       this.isLoading = false;
-    }, 500);
+    }, 50);
   }
 
   searchChats(event: any) {
@@ -392,6 +365,7 @@ export class MessengerMasterPage implements OnInit {
       } else if (user.function === 'coach' || user.function === 'nutritionist') {
         if (this.userType === 'coach') {
           filtered = this.chats.filter(chat => chat.members.some(member => member.user.id === user.id));
+          console.log("Filter by coach", this.chats, filtered);
         } else if (this.userType === 'nutritionist') {
           filtered = this.chats.filter(chat => chat.members.some(member => member.user.function === 'nutritionist'));
         }

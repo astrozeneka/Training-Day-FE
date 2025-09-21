@@ -219,6 +219,10 @@ export class ContentService {
     return this.httpClient.delete(`${this.apiEndpoint}${suffix}?${debugParams}&${passwordParams}`, {headers})
   }
 
+  /**
+   * 
+   * @deprecated, do not use this function
+   */
   async reloadUserData(){
     return new Promise(async (resolve, reject)=>{
       let token = await this.storage.get('token')

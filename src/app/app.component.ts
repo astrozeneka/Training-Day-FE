@@ -89,7 +89,7 @@ export class AppComponent implements OnInit{
       ...fromDeviceData,
       platform: this.platform.is('ios') ? 'ios' : 'android'
     }) )
-    this.contentService.post('/users/sync-entitlements', {
+    /*this.contentService.post('/users/sync-entitlements', {
       ...fromDeviceData,
       platform: this.platform.is('ios') ? 'ios' : 'android'
     })
@@ -103,7 +103,7 @@ export class AppComponent implements OnInit{
         console.log("Device entitlements verified from the server : "+ JSON.stringify(response))
         if (!environment.production)
           this.feedbackService.registerNow("Device entitlements verified from the server", "success")
-      })
+      })*/
 
     /*
     // Store
@@ -158,7 +158,7 @@ export class AppComponent implements OnInit{
 
     // Check token if expired or not, otherwise disconnect the user
     this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
-      console.log("===============> Reload the user data [again]")
+      console.log("===============> Reload the user data [for bearer token verification and refreshing the user data] [ incomplete function ]")
       if(user){
         this.contentService.getOne(`/users/${user.id}`, {})
           .pipe(catchError((error) => {
@@ -166,10 +166,12 @@ export class AppComponent implements OnInit{
               this.feedbackService.register("Votre session a expiré, veuillez vous reconnecter", "danger")
               this.contentService.logout()
             }
-            return throwError(error)
+            return throwError(() => error)
           }))
           .subscribe((response)=>{
             this.user = response
+            // Sync the user data
+            this.contentService.userStorageObservable.updateStorage(this.user)
           })
       }
     });
@@ -221,7 +223,7 @@ export class AppComponent implements OnInit{
     // Validate token, then disconnect if expired (might be unused)
     // Only validate if the user is not on signup
     if (!this.router.url.includes('/signup') && !this.router.url.includes('/login')) {
-      this.cs.post('/users/is-token-valid', {})
+      /*this.cs.post('/users/is-token-valid', {})
         .pipe(catchError((err)=>{
           // If error 401 or 403
           if(err.status == 401 || err.status == 403){
@@ -229,7 +231,7 @@ export class AppComponent implements OnInit{
           }
           return throwError(err)
         }))
-        .subscribe(()=>{})
+        .subscribe(()=>{})*/
     }
     
     // Refresh the token
@@ -248,8 +250,8 @@ export class AppComponent implements OnInit{
     })
 
     // We also update the user information from the database
-    console.log("======> reloadUserData")
-    this.contentService.reloadUserData()
+    // console.log("======> reloadUserData")
+    // this.contentService.reloadUserData()
 
     // If the push notification listener is not yet configured, make them works
     /*if(this.user){

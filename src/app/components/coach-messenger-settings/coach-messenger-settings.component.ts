@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { catchError, debounceTime, from, map, merge, Observable, of, share, shareReplay, startWith, Subject, Subscription, switchMap } from 'rxjs';
+import { catchError, debounceTime, from, map, merge, Observable, of, share, shareReplay, startWith, Subject, Subscription, switchMap, tap } from 'rxjs';
 import { ContentService } from 'src/app/content.service';
 import { User, UserSettings } from 'src/app/models/Interfaces';
 import { environment } from 'src/environments/environment';
@@ -128,6 +128,15 @@ export class CoachMessengerSettingsComponent implements OnInit {
 
     // The user settings
     this.userSettings$ = merge(
+      this.contentService.userStorageObservable.gso$().pipe(map(user => user.user_settings)),
+      this.refreshSettings$
+    ).pipe(
+      catchError(() => of(null)),
+      shareReplay(1)
+    );
+
+    // Calling GET method for updated settings is not efficient at all
+    /*this.userSettings$ = merge(
       this.refreshSettings$.pipe(startWith(undefined))
     )
       .pipe(
@@ -141,7 +150,7 @@ export class CoachMessengerSettingsComponent implements OnInit {
           return this.http.get(`${environment.apiEndpoint}/user-settings`, { headers }) as Observable<UserSettings>;
         }),
         shareReplay(1)
-      )
+      )*/
 
     // The user id
     this.userId$ = this.contentService.userStorageObservable.gso$().pipe(
@@ -177,7 +186,6 @@ export class CoachMessengerSettingsComponent implements OnInit {
    */
   private computeAvailabilityStatus(): void {
     this.userSettings$.subscribe((userSettings) => {
-
       // const userSettings = this.user.user_settings || {} as UserSettings;
 
       // Check manual availability setting
@@ -218,16 +226,19 @@ export class CoachMessengerSettingsComponent implements OnInit {
         if (userSettings.unavailable) {
           this.isAvailable = false;
         } else {
-        this.isAvailable = true;}
+          this.isAvailable = true;
+        }
+        this.toggleActivated = userSettings.unavailable;
       }
       if (!scheduledAvailable) {
         if (userSettings.available) {
           this.isAvailable = true;
-          console.log("===>", this.isAvailable);
         } else {
           this.isAvailable = false;
         }
+        this.toggleActivated = userSettings.available;
       }
+      console.log("Final availability:", this.isAvailable);
       this.scheduledAvailable = scheduledAvailable;
       this.cdr.detectChanges();
     });
@@ -254,19 +265,17 @@ export class CoachMessengerSettingsComponent implements OnInit {
             console.error('Error updating availability:', error);
             this.isAvailable = !isChecked;
             return of(null);
-          })
+          }),
+          map (data => data['user_settings'])
         )
-        .subscribe(()=>{
-          // Refresh the user settings
-          this.refreshSettings$.next();
+        .subscribe((userSettings)=>{
+          this.refreshSettings$.next(userSettings);
         });
     })
 
 
     /*if (!this.user) return;
-
     const isChecked = event.detail.checked;
-
     // Update the user settings
     const updatePayload = {
       user_id: this.user.id,

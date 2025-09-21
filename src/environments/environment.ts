@@ -1,32 +1,10 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
-import { ro } from "date-fns/locale";
-import { push } from "ionicons/icons";
-
-enum paymentMethod {
-  stripe = 'stripe',
-  inAppPurchase = 'inAppPurchase'
-}
-
 export const environment = {
-  production: false,
-  // apiEndpoint: 'http://192.168.1.187:8000/api',
-  // rootEndpoint: 'http://192.168.1.187:8000',
-  // apiEndpoint: 'http://192.168.88.188:8000/api',
-  // rootEndpoint: 'http://192.168.88.188:8000',
-
-  //apiEndpoint: 'http://192.168.1.231:8000/api',
-  //rootEndpoint: 'http://192.168.1.231:8000',
-
-  apiEndpoint: 'http://localhost:8080/api',
-  rootEndpoint: 'http://localhost:8080',
+  production: true,
+  apiEndpoint: 'https://training-day-be.codecrane.me/api',
+  rootEndpoint: 'https://training-day-be.codecrane.me',
 
   // Pusher configuration
   pusher_app_key: 'app-key',
-  /*pusher_host : '192.168.1.231',
-  pusher_port: 6001,*/
   pusher_host: 'soketi.codecrane.me',
   pusher_port: 443,
   pusher_cluster: 'eu',
@@ -36,13 +14,13 @@ export const environment = {
   GITHUB_AUTH_REDIRECT_URI: '',
 
   // FUNCTIONALITIES  
-  paymentServiceEnabled: true,                // Deprecated
-  paymentMethod: paymentMethod.inAppPurchase, // Deprecated, only inAppPurchase is maintained for the app
-  personalTrainerAvailable: false,            // Whether or not the personal trainer tab is available from the shop page
+  paymentServiceEnabled: true,
+  paymentMethod: 'inAppPurchase',
+  personalTrainerAvailable: false,             // Whether or not the personal trainer tab is available from the shop page
 
   // SPECIAL VARIABLES
-  coachId: 113, // ID of the coach for the app, used in booking and other functionalities
-  nutritionistId: 15,
+  coachId: 18, // Change to 14 when in real production
+  nutritionistId: 19,
 
   // CGU
   cgu_uri: '/docs/CGU-Training-Day.pdf',
@@ -52,19 +30,10 @@ export const environment = {
   redeemCodeEnabled: true,
 
   // Cache prefix
-  cachePrefix: 'trainingdaydev_',
+  cachePrefix: 'trainingday_',
 
   // iOS promo code doesn't work (2024), waiting for next update: 
   // https://developer.apple.com/forums/thread/742113
   // https://www.reddit.com/r/iOSProgramming/comments/18cvp7t/cannot_redeem_code/?rdt=53265
   iosPromoCodeEnabled: false
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
