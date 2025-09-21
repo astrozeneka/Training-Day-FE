@@ -161,7 +161,6 @@ export class PurchaseService { // This class cannot be used anymore due to andro
             // For this feature, the price phasing is not yet supported
             /*if (offerDetail.pricingPhases.length > 1)
               throw new Error('Multiple pricing phases found, except to only have one')*/
-            console.log(",", offerDetail)
             if (offerDetail.pricingPhases.length == 0)
               throw new Error('No pricing phases found')
             let pricingPhases = offerDetail.pricingPhases
@@ -186,7 +185,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
             offerDetail.pricingPhases[0].billingNMonth = this.billingPeriodToMonth(offerDetail.pricingPhases[0].billingPeriod)
           })
         }
-        if (this.platform.is('android') && type == 'subs'){
+        if (this.os === 'android' && type == 'subs'){
           products = this.groupAndroidSubscriptionOffers(products)
         }
         return {
