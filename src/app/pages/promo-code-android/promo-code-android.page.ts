@@ -171,7 +171,7 @@ export class PromoCodeAndroidPage implements OnInit {
       buttonText: null,
       primaryButtonText: (productId.includes('foodcoach') || productId.includes('smiley')) ? 'Prendre contact avec mon nutritionniste' : 'Prendre contact avec mon coach',
       secondaryButtonText: 'Retour à l\'accueil',
-      primaryButtonAction: '/chat',
+      primaryButtonAction: '/messenger-master',
       secondaryButtonAction: '/home',
       modalImage: this.useDarkMode ? 'assets/logo-dark-cropped.png' : 'assets/logo-light-cropped.png',
     }

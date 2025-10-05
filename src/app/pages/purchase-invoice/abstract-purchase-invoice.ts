@@ -66,7 +66,7 @@ export abstract class AbstractPurchaseInvoicePage {
       buttonText: null,
       primaryButtonText: (this.productId.includes('foodcoach') || this.productId.includes('smiley')) ? 'Prendre contact avec mon nutritionniste' : 'Prendre contact avec mon coach',
       secondaryButtonText: 'Retour à l\'accueil',
-      primaryButtonAction: '/chat',
+      primaryButtonAction: '/messenger-master',
       secondaryButtonAction: '/home',
       modalImage: (await this.dms.isAvailableAndEnabled()) ? 'assets/logo-dark-cropped.png' : 'assets/logo-light-cropped.png',
     }

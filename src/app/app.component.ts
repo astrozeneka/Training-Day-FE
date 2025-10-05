@@ -173,7 +173,9 @@ export class AppComponent implements OnInit{
             // Sync the user data
             // this.contentService.userStorageObservable.updateStorage(this.user)
             // Using the above code lead to an infinite loop
-            this.contentService.storage.set('user', this.user)
+            // Keep in mind that two storage is used
+            this.contentService.storage.set('user', this.user) // Deprecated
+            localStorage.setItem('user', JSON.stringify(this.user)) // Not efficient, but this will work since it is used by the StorageObservable
           })
       }
     });

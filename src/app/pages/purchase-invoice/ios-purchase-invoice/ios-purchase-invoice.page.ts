@@ -181,6 +181,8 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implemen
   }
 
   continueToPayment(){
+    if (!this.form.valid) return
+    
     this.isLoading = true
     this.processProgress = 0.3
     this.loadingStep = "Connexion à l'App Store"

@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 interface CategoryItem {
   slug: string;
   name: string;
+  thumbnailUrl: string | null;
 }
 
 @Component({
@@ -33,14 +34,19 @@ interface CategoryItem {
         </div>
 
         <!-- The Content -->
-        <div class="categories-list">
-          <div
-            *ngFor="let category of categories"
-            class="category-item"
-            (click)="navigateToExerciseList(category)"
-          >
-            <span class="category-name">{{ category.name }}</span>
-            <ion-icon name="play-circle-outline" class="category-icon"></ion-icon>
+        <div class="card-list">
+          <div class="tool-card enhanced-tool-card" *ngFor="let category of categories" (click)="navigateToExerciseList(category)">
+            <div class="image-container">
+              <img [title]="category.name" [src]="category.thumbnailUrl" />
+            </div>
+            <div class="card-description">
+              <div class="spacer"></div>
+              <p>Découvrez des exercices adaptés à vos besoins et à votre niveau.</p>
+              <h3>{{ category.name }}</h3>
+              <ion-button style="align-self: stretch;" expand="block" shape="round">
+                Découvrir
+              </ion-button>
+            </div>
           </div>
         </div>
       </div>
@@ -63,11 +69,13 @@ interface CategoryItem {
     </ion-content>
   `,
   styles: [`
+    @import '../../mixins';
+
     .categories-page {
-      margin-left: 22px; 
+      margin-left: 22px;
       margin-right: 22px;
       margin-bottom: 32px;
-      
+
       .title {
         font-size: 24px;
         font-weight: 400;
@@ -75,7 +83,7 @@ interface CategoryItem {
         padding-top: 32px;
         margin-top: 0px;
       }
-      
+
       .subtitle {
         font-size: 16px;
         font-weight: 400;
@@ -84,60 +92,92 @@ interface CategoryItem {
         margin-top: 20px;
         margin-bottom: 25px;
       }
-      
-      .categories-list {
+
+      .card-list {
         width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 12px;
+      }
+    }
 
-        .category-item {
-          max-width: 500px;
-          width: 100%;
-          margin: 0;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 16px 20px;
-          border-radius: 25px;
-          background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
-          border: none;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.3);
+    .tool-card {
+      @include tool-card;
+      margin-bottom: 2rem;
+    }
 
-          &:active {
-            transform: scale(0.98);
-            box-shadow: 0 2px 8px rgba(var(--ion-color-primary-rgb), 0.4);
-          }
+    @media screen and (max-width: 480px) {
+      .categories-page {
+        margin-left: 1rem;
+        margin-right: 1rem;
+        gap: 1rem;
+      }
 
-          .category-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            flex: 1;
-            text-align: left;
-          }
+      .tool-card {
+        @include tool-card-mobile;
+      }
+    }
 
-          .category-icon {
-            font-size: 24px;
-            color: white;
-            margin-left: 12px;
-            opacity: 0.9;
+    .enhanced-tool-card {
+      cursor: pointer;
+
+      .card-description {
+        p {
+          font-weight: 500;
+        }
+
+        h3 {
+          font-family: "Shadows Into Light", cursive;
+          font-size: 1.5rem!important;
+          position: relative;
+
+          &::after {
+            content: '';
+            display: inline-block;
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, #b05322ff, #ff8c4200);
+            position: absolute;
+            left: 0;
+            bottom: -10px;
           }
         }
-        
-        .all-exercises {
-          margin-top: 24px;
+
+        ion-button {
+          @include glassmorphism-button;
           width: 100%;
-          max-width: 500px;
-          border-top: 1px solid var(--ion-color-lightgrey);
-          padding-top: 15px;
-          
-          ion-button {
-            color: var(--ion-color-primary);
-            text-transform: none;
+          margin-top: auto;
+
+          &:active,
+          &.ion-activated {
+            --background: rgba(0, 0, 0, 0.8) !important;
+            --background-activated: rgba(0, 0, 0, 0.8) !important;
+            --background-focused: rgba(0, 0, 0, 0.8) !important;
+            --color: white !important;
+            --color-activated: white !important;
+            --color-focused: white !important;
+            --ripple-color: rgba(255, 255, 255, 0.3) !important;
+            transform: scale(0.98);
+            transition: all 0.1s ease;
+          }
+
+          .button-native {
+            &:active,
+            &.ion-activated {
+              background: rgba(0, 0, 0, 0.8) !important;
+              color: white !important;
+            }
+          }
+
+          @media (hover: none) and (pointer: coarse) {
+            &:hover {
+              --background: rgba(255, 255, 255, 0.2);
+            }
+
+            &:active {
+              --background: rgba(0, 0, 0, 0.8) !important;
+              --color: white !important;
+            }
           }
         }
       }
@@ -248,10 +288,11 @@ export class ExerciseCategoriesPage implements OnInit {
     this.http.get<any>(`${environment.apiEndpoint}/videos/category-hierarchy`).subscribe({
       next: (data) => {
         if (data && data[this.mainCategory]) {
-          this.categories = data[this.mainCategory].map((item: [string, string]) => {
+          this.categories = data[this.mainCategory].map((item: [string, string, string]) => {
             return {
               slug: item[0],
-              name: item[1]
+              name: item[1],
+              thumbnailUrl: item[2] || null
             };
           });
         }
