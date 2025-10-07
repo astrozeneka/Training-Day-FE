@@ -7,7 +7,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import {QuillModule} from "ngx-quill";
-import {HttpClientModule, HttpClientXsrfModule, provideHttpClient, withInterceptorsFromDi, withXsrfConfiguration} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule, provideHttpClient, withInterceptorsFromDi, withXsrfConfiguration} from "@angular/common/http";
 import {IonicStorageModule} from "@ionic/storage-angular";
 import {UtilitiesModule} from "./components/utilities.module";
 import { InAppPurchase2 } from "@ionic-native/in-app-purchase-2/ngx";
@@ -18,6 +18,7 @@ import { DisplayListPipe } from './display-list.pipe';
 import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
 import { CustomRouteReuseStrategy } from './custom-route-reuse-strategy';
 import { DisplayPricePipe } from './pipes/display-price.pipe';
+import { ConversationCacheInterceptor } from './messenger-master/messenger-master.page';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,11 @@ import { DisplayPricePipe } from './pipes/display-price.pipe';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     InAppPurchase2,
     ThemeDetection,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ConversationCacheInterceptor,
+      multi: true
+    },
     provideHttpClient(
       withInterceptorsFromDi(),
       // Enable XSRF protection (defaults to cookie 'XSRF-TOKEN' and header 'X-XSRF-TOKEN'):

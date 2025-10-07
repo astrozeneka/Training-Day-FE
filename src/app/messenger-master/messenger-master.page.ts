@@ -1,18 +1,146 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Injectable, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActionSheetController, IonContent, IonSearchbar, LoadingController, ModalController, NavController, Platform, ToastController } from '@ionic/angular';
 import { User } from '../models/Interfaces';
 import { Conversation, Msg } from '../messenger-interfaces';
-import { BehaviorSubject, catchError, combineLatest, filter, from, map, Observable, shareReplay, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, concat, filter, from, map, Observable, of, shareReplay, switchMap, tap, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentService } from '../content.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { MessengerService } from '../messenger.service';
 import { environment } from 'src/environments/environment';
 import Echo from 'laravel-echo';
 import { PusherPrivateChannel } from 'laravel-echo/dist/channel';
 import { NativeAudio } from '@capgo/native-audio';
 import { Haptics } from '@capacitor/haptics';
+
+// HTTP Cache Interceptor for optimizing conversation requests
+@Injectable()
+export class ConversationCacheInterceptor implements HttpInterceptor {
+  private readonly CACHE_PREFIX = 'http_cache_';
+  private cacheDuration = 5 * 60 * 1000; // 5 minutes cache duration
+
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // console.log("Intercepting request for caching", req.url);
+    // Only cache GET requests to conversations endpoint
+    if (req.method !== 'GET' || !req.url.includes('/conversations')) {
+      return next.handle(req);
+    }
+
+    const cacheKey = this.getCacheKey(req);
+    const cached = this.getCachedResponse(cacheKey);
+
+    // Cache-then-network strategy: emit cached data first, then fetch fresh data
+    if (cached && this.isCacheValid(cached.timestamp)) {
+      // Emit cached response first, then network response
+      const cachedResponse$ = of(cached.response.clone());
+      const networkResponse$ = this.fetchAndCache(req, next, cacheKey);
+
+      return concat(cachedResponse$, networkResponse$);
+    }
+
+    // No valid cache, just fetch from network
+    return this.fetchAndCache(req, next, cacheKey);
+  }
+
+  private fetchAndCache(req: HttpRequest<any>, next: HttpHandler, cacheKey: string): Observable<HttpEvent<any>> {
+    return next.handle(req).pipe(
+      tap(event => {
+        if (event instanceof HttpResponse) {
+          this.cacheResponse(cacheKey, event);
+        }
+      })
+    );
+  }
+
+  private getCacheKey(req: HttpRequest<any>): string {
+    const authHeader = req.headers.get('Authorization') || '';
+    const url = req.urlWithParams;
+    const rawKey = `${url}|${authHeader}`;
+    return this.hashString(rawKey);
+  }
+
+  private hashString(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return `${this.CACHE_PREFIX}${Math.abs(hash).toString(36)}`;
+  }
+
+  private getCachedResponse(cacheKey: string): { response: HttpResponse<any>, timestamp: number } | null {
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (!cached) return null;
+
+      const parsed = JSON.parse(cached);
+      return {
+        response: new HttpResponse({
+          body: parsed.body,
+          headers: parsed.headers,
+          status: parsed.status,
+          statusText: parsed.statusText,
+          url: parsed.url
+        }),
+        timestamp: parsed.timestamp
+      };
+    } catch (e) {
+      console.error('Error reading cache:', e);
+      return null;
+    }
+  }
+
+  private cacheResponse(cacheKey: string, response: HttpResponse<any>): void {
+    try {
+      const cacheData = {
+        body: response.body,
+        headers: response.headers,
+        status: response.status,
+        statusText: response.statusText,
+        url: response.url,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+    } catch (e) {
+      console.error('Error writing cache:', e);
+    }
+  }
+
+  private isCacheValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.cacheDuration;
+  }
+
+  clearCache(): void {
+    try {
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.startsWith(this.CACHE_PREFIX)) {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch (e) {
+      console.error('Error clearing cache:', e);
+    }
+  }
+
+  invalidateCache(url: string): void {
+    try {
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.startsWith(this.CACHE_PREFIX)) {
+          const cached = localStorage.getItem(key);
+          if (cached && cached.includes(url)) {
+            localStorage.removeItem(key);
+          }
+        }
+      });
+    } catch (e) {
+      console.error('Error invalidating cache:', e);
+    }
+  }
+}
 
 @Component({
   selector: 'app-messenger-master',
@@ -248,6 +376,7 @@ export class MessengerMasterPage implements OnInit {
           })
         )
         .subscribe((res: any) => {
+          console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
           let success = res.success as boolean;
           let conversations = res.conversations as Conversation[];
           this.chats = conversations;
