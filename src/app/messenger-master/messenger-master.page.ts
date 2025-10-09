@@ -557,7 +557,7 @@ export class MessengerMasterPage implements OnInit {
     let channel = echo.private(`user.${user.id}.conversations`)
     channel.listen('ConversationUpdated', (e: Conversation) => {
       console.log("Received ConversationUpdated event", e)
-
+      console.log("==>", JSON.stringify(e.latest_message))
       // update the conversation in the list
       let index = this.chats.findIndex(c => c.id === e.id);
       if (index !== -1) {

@@ -478,6 +478,7 @@ export class MessengerDetailPage implements OnInit {
     channel.listen('MessageSent', (e: Msg) => {
       this.lastMessage = e.content
       console.log("Message received", e)
+      console.log("==>", JSON.stringify(e))
 
       // Check if the message is already added as a 'sending' message
       const tempIndex = this.messages.findIndex(m => 
