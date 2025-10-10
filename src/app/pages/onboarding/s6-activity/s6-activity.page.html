@@ -48,17 +48,31 @@
 
 
 
-    <div class="onboarding-floating-bottom-1">
+    <div class="onboarding-floating-bottom-3">
       <div class="ion-padding">
         <app-ux-button
-          expand="block" 
-          color="primary" 
-          shape="round" 
+          expand="block"
+          color="primary"
+          shape="round"
           [disabled]="!form.valid"
           [loading]="isLoading"
         >
           <div *ngIf="formMode == 'onboarding'">Continuer</div>
           <div *ngIf="formMode == 'edit'">Mettre à jour</div>
+        </app-ux-button>
+        <!-- bar here -->
+        <app-ux-button
+          expand="block"
+          fill="clear"
+          color="medium"
+          shape="round"
+          (click)="skip()"
+          *ngIf="formMode == 'onboarding'"
+          class="skip-button"
+          [disabled]="isLoading"
+          type="button"
+        >
+          Pas pour le moment
         </app-ux-button>
       </div>
     </div>

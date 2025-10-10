@@ -5,7 +5,7 @@
  * The code below are experimental feature for new kind of loader
  */
 .loading-placeholder {
-    position:absolute;
+    position:fixed;
     top:0;
     left:0;
     right:0;
@@ -25,6 +25,7 @@
         z-index: -1;
         opacity: 0;
     }
+    // background: red;
 }
 
 /**
@@ -39,4 +40,10 @@ ion-progress-bar[type=indeterminate]{
         opacity: 0;
         height: 0px;
     }
+}
+
+.skip-button {
+    --background-activated: transparent;
+    --background-activated-opacity: 0;
+    --ripple-color: transparent;
 }

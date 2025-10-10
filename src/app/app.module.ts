@@ -28,7 +28,9 @@ import { ConversationCacheInterceptor } from './messenger-master/messenger-maste
     imports: [
         BrowserModule,
         IonicModule.forRoot({
-          innerHTMLTemplatesEnabled: true
+          mode: 'ios',
+          innerHTMLTemplatesEnabled: true,
+          inputShims: true
         }),
         AppRoutingModule,
         /*HttpClientModule,

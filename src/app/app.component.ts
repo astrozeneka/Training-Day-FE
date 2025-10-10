@@ -158,7 +158,6 @@ export class AppComponent implements OnInit{
 
     // Check token if expired or not, otherwise disconnect the user
     this.contentService.userStorageObservable.getStorageObservable().subscribe((user)=>{
-      console.log("===============> Reload the user data [for bearer token verification and refreshing the user data] [ incomplete function ]")
       if(user){
         this.contentService.getOne(`/users/${user.id}`, {})
           .pipe(catchError((error) => {
@@ -254,7 +253,6 @@ export class AppComponent implements OnInit{
     })
 
     // We also update the user information from the database
-    // console.log("======> reloadUserData")
     // this.contentService.reloadUserData()
 
     // If the push notification listener is not yet configured, make them works

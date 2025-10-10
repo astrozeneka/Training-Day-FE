@@ -59,3 +59,18 @@
     padding-left: 16px;
     padding-right: 16px;
 }
+
+// Used in s2-more-info page (latest version)
+.onboarding-floating-bottom-3{
+    $height: 120px;
+    $extraSafeZone: 30px;
+    height: calc($height + env(safe-area-inset-bottom) + $extraSafeZone);
+    &>div{
+        padding-top: 8px!important; // OVERRIDE the .ion-padding class margin-top
+        // background: cyan;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: var(--ion-background-color);
+    }
+}

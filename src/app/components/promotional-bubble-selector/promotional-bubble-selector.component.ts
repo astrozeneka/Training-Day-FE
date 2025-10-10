@@ -71,7 +71,6 @@ export class PromotionalBubbleSelectorComponent  implements ControlValueAccessor
     if (this.product?.offers) {
       this.product.offers.forEach((offer, index) => {
         const offerId = offer.androidOfferToken || `offer_${index}`
-        console.log("====> Calculting weekly price", JSON.stringify(offer))
         this.offerWeeklyPrices[offerId] = this.getWeeklyPrice(offer.pricingPhases[0]?.priceAmountMicros, offer.pricingPhases[0]?.billingPeriod as 'P1M'|'P3M'|'P6M')
       })
     }

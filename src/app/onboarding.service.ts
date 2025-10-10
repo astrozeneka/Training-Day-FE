@@ -90,11 +90,12 @@ export class OnboardingService {
       .pipe(switchMap((data:OnboardingData) => {
         return this.cs.put('/users', {
           id: userId, 
-          extra_data: data,
-          height: data.height,
-          weight: data.weight,
-          age: data.age,
-          sex: data.sex
+          extra_data: data ? data : {},
+          // Optional height
+          ...(data?.height ? { height: data.height } : {}),
+          ...(data?.weight ? { weight: data.weight } : {}),
+          ...(data?.age ? { age: data.age } : {}),
+          ...(data?.sex ? { sex: data.sex } : {})
         })
           .pipe(catchError((error) => { 
             console.error("Error", error)

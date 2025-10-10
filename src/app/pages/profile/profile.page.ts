@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angu
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {NavigationEnd, Router} from "@angular/router";
 import {ContentService} from "../../content.service";
-import {catchError, filter, finalize, from, merge, Observable, of, switchMap, throwError} from "rxjs";
+import {catchError, filter, finalize, from, merge, Observable, of, shareReplay, Subject, switchMap, takeUntil, throwError} from "rxjs";
 import {FeedbackService} from "../../feedback.service";
 import {FormComponent} from "../../components/form.component";
 import {AlertController, ModalController, Platform} from "@ionic/angular";
@@ -15,6 +15,8 @@ import {EntitlementReady} from "../../abstract-components/EntitlementReady";
 import { ConvertHeicToJpegResult, FilePicker, PickImagesResult } from '@capawesome/capacitor-file-picker';
 import { PhonePrefixSelectComponent } from 'src/app/components-submodules/phone-prefix-select/phone-prefix-select.component';
 import { OnboardingService } from 'src/app/onboarding.service';
+import { User } from 'src/app/models/Interfaces';
+import { el } from 'date-fns/locale';
 
 
 @Component({
@@ -207,7 +209,7 @@ import { OnboardingService } from 'src/app/onboarding.service';
             </tr>
         </div>
     </div>
-    
+
     <div class="info-table-wrapper">
         <div class="info-table-heading">
             <div>Mon sommeil</div>
@@ -663,6 +665,12 @@ export class ProfilePage extends FormComponent implements OnInit {
   // 9. Sex attribute key accessor
   sexKeyAccessor = (option: any) => { return { "male": "Homme", "female": "Femme" }}
 
+  // 11. The user observable (used by the new method of retrieving user data)
+  user$: Observable<User>;
+
+  // 10. The destroy subject
+  private destroy$ = new Subject<void>();
+
   constructor(
     private router:Router,
     public contentService: ContentService,
@@ -677,21 +685,21 @@ export class ProfilePage extends FormComponent implements OnInit {
     super();
     router.events.subscribe(async(event: any)=>{ // This way of loading data is not suitable for angular
       if (event instanceof NavigationEnd && event.url == '/profile') {
-        this.entity = await this.contentService.storage.get('user')
+        // this.entity = await this.contentService.storage.get('user')
         // Define one dictionnary by mapping the this.entity.grouped_perishables
         // The code below is not used anymore since the perishables is not handled anymore by the system
-        this.grouped_perishables = this.entity.grouped_perishables?.reduce((acc:any, item:any)=>{
+        /*this.grouped_perishables = this.entity.grouped_perishables?.reduce((acc:any, item:any)=>{
           acc[item.slug] = item
           return acc
-        }, {})
-        console.log(this.grouped_perishables)
-        this.user_id = this.entity?.id
+        }, {})*/
+        // console.log(this.grouped_perishables)
+        /*this.user_id = this.entity?.id
         let {prefix, number} = PhonePrefixSelectComponent.preparePhoneNumber(this.entity.phone)
         this.form.patchValue({
           ...this.entity,
           phone_prefix: prefix,
           phone: number
-        })
+        })*/
       }
     });
 
@@ -716,23 +724,59 @@ export class ProfilePage extends FormComponent implements OnInit {
   }
 
   ngOnInit() {
-    // This is the new way to retrieve user data from local
-    this.contentService.userStorageObservable.getStorageObservable().subscribe(async(user)=>{
-      this.entity = user // This is the correct way
-      // The other function should't be used in this component
-      if(this.entity?.user_settings){
-        this.activityStatusForm.patchValue(this.entity.user_settings)
-      }
+  }
 
-      // Handle json extra_data
-      if (typeof(this.entity?.extra_data ) == "string"){
-        this.entity.extra_data = this.entity.extra_data ? JSON.parse(this.entity.extra_data) : null
-        this.os.onboardingData.set(this.entity.extra_data).then(()=>{
-          this.cdr.detectChanges();
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  ionViewWillEnter(){
+    this.user$ = this.cs.userStorageObservable.gso$().pipe(
+      shareReplay(1)
+    )
+
+    // Load user related properties
+    this.user$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.entity = user // This is the correct way
+        // The other function should't be used in this component
+        if(this.entity?.user_settings){
+          this.activityStatusForm.patchValue(this.entity.user_settings)
+        }
+
+        // Handle json extra_data
+        if (this.entity?.extra_data){
+          if (typeof(this.entity?.extra_data ) == "string"){
+            // The extra_data still need to be parsed
+            this.entity.extra_data = this.entity.extra_data ? JSON.parse(this.entity.extra_data) : null
+            this.os.onboardingData.set(this.entity.extra_data).then(()=>{
+              this.cdr.detectChanges();
+            })
+          } else if (typeof(this.entity?.extra_data ) == "object"){
+            // The extra-data is ready to use
+            this.os.onboardingData.set(this.entity.extra_data).then(()=>{
+              this.cdr.detectChanges();
+            })
+          } else {
+            console.error("The extra_data is neither an object nor a string", this.entity.extra_data)
+          }
+        }
+
+        // Update the user_id
+        this.user_id = this.entity?.id
+
+        // The phone
+        let {prefix, number} = PhonePrefixSelectComponent.preparePhoneNumber(this.entity.phone)
+
+        // The form
+        this.form.patchValue({
+          ...this.entity,
+          phone_prefix: prefix,
+          phone: number
         })
-      }
-
-    })
+      })
   }
 
   @ViewChild('fileInput') fileInput:any = undefined;
