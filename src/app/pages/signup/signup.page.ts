@@ -185,7 +185,7 @@ import { Browser } from '@capacitor/browser';
         <div class="conditions-container">
           <h3>Conditions d'utilisation</h3>
           <p class="helper">Veuillez accepter nos conditions pour finaliser votre inscription</p>
-          
+
           <div class="custom-checkbox-container" (click)="toggleConditions()">
             <div class="custom-checkbox" [class.checked]="form.get('acceptConditions')?.value">
               <ion-icon name="checkmark" *ngIf="form.get('acceptConditions')?.value"></ion-icon>
@@ -194,11 +194,23 @@ import { Browser } from '@capacitor/browser';
               J'accepte <a class="conditions-link" (click)="openCGU(); $event.stopPropagation()">les conditions générales d'utilisation</a>
             </div>
           </div>
-          
+
           <div class="error-message" *ngIf="displayedError.acceptConditions">
             {{ displayedError.acceptConditions }}
           </div>
         </div>
+
+        <ion-button
+          expand="full"
+          fill="outline"
+          color="medium"
+          shape="round"
+          class="privacy-policy-button"
+          (click)="openPrivacyPolicy()"
+        >
+          <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
+          Politique d'engagement de confidentialité
+        </ion-button>
 
         <app-ux-button
           expand="full"
@@ -333,6 +345,12 @@ import { Browser } from '@capacitor/browser';
   font-size: 0.85rem;
   margin-top: 0.5rem;
   padding: 0 1rem;
+}
+
+.privacy-policy-button {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 `]
 })
@@ -580,7 +598,16 @@ export class SignupPage extends FormComponent implements OnInit {
   }
 
   openCGU() {
-    let url = environment.rootEndpoint + environment.cgu_uri;
+    const url = 'https://training-day-be.codecrane.me/doc-cgu';
+    if (this.platform.is('capacitor')) {
+      Browser.open({url: url});
+    } else {
+      window.open(url, '_blank');
+    }
+  }
+
+  openPrivacyPolicy() {
+    const url = 'https://training-day-be.codecrane.me/doc-privacy-policy';
     if (this.platform.is('capacitor')) {
       Browser.open({url: url});
     } else {

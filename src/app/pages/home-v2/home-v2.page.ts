@@ -9,6 +9,7 @@ import { StaffAppointment } from 'src/app/components/appointment-list/appointmen
 import { ContentService } from 'src/app/content.service';
 import Store from 'src/app/custom-plugins/store.plugin';
 import { environment } from 'src/environments/environment';
+import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-home-v2',
@@ -560,6 +561,22 @@ import { environment } from 'src/environments/environment';
       </ion-button>
     </div>
   </div>
+
+  <!-- Privacy Policy Section -->
+  <div class="privacy-policy-section ion-padding">
+    <ion-button
+      fill="clear"
+      color="medium"
+      size="small"
+      class="privacy-policy-button"
+      (click)="openPrivacyPolicy()">
+      <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
+      Politique de confidentialité
+    </ion-button>
+  </div>
+  <br/>
+  <br/>
+  <br/>
 
   <!-- Bottom Spacing -->
   <div class="bottom-spacing"></div>
@@ -2319,7 +2336,7 @@ swiper-slide {
 // Share section
 .share-section {
   margin-bottom: 2rem;
-  
+
   .share-container {
     display: flex;
     justify-content: space-between;
@@ -2327,17 +2344,17 @@ swiper-slide {
     background: var(--ion-color-light);
     border-radius: 16px;
     padding: 1rem;
-    
+
     .share-content {
       display: flex;
       align-items: center;
-      
+
       .share-icon {
         color: var(--ion-color-primary);
         font-size: 1.8rem;
         margin-right: 1rem;
       }
-      
+
       .share-text {
         h3 {
           margin: 0 0 0.2rem 0;
@@ -2345,7 +2362,7 @@ swiper-slide {
           font-weight: 600;
           color: var(--ion-color-dark);
         }
-        
+
         p {
           margin: 0;
           font-size: 0.9rem;
@@ -2353,7 +2370,7 @@ swiper-slide {
         }
       }
     }
-    
+
     .share-button {
       --border-color: var(--ion-color-primary);
       --color: var(--ion-color-primary);
@@ -2363,38 +2380,68 @@ swiper-slide {
   }
 }
 
+// Privacy Policy section
+.privacy-policy-section {
+  text-align: center;
+  margin-bottom: 1rem;
+  padding-top: 0;
+
+  .privacy-policy-button {
+    font-size: 0.85rem;
+    font-weight: 400;
+    --color: var(--ion-color-medium);
+    text-transform: none;
+    letter-spacing: normal;
+
+    ion-icon {
+      font-size: 1rem;
+      margin-right: 0.3rem;
+    }
+  }
+}
+
 // Bottom spacing to account for navigation
 .bottom-spacing {
   height: 2rem;
 }
 
-// Mobile responsiveness for share section
+// Mobile responsiveness for share and privacy policy sections
 @media screen and (max-width: 480px) {
   .share-section {
     .share-container {
       padding: 0.75rem;
-      
+
       .share-content {
         .share-icon {
           font-size: 1.5rem;
           margin-right: 0.75rem;
         }
-        
+
         .share-text {
           h3 {
             font-size: 0.9rem;
           }
-          
+
           p {
             font-size: 0.8rem;
           }
         }
       }
-      
+
       .share-button {
         font-size: 0.9rem;
         --padding-start: 1rem;
         --padding-end: 1rem;
+      }
+    }
+  }
+
+  .privacy-policy-section {
+    .privacy-policy-button {
+      font-size: 0.8rem;
+
+      ion-icon {
+        font-size: 0.9rem;
       }
     }
   }
@@ -2756,5 +2803,14 @@ export class HomeV2Page implements OnInit {
         */
       }
     });
+  }
+
+  openPrivacyPolicy() {
+    const url = 'https://training-day-be.codecrane.me/doc-privacy-policy';
+    if (this.platform.is('capacitor')) {
+      Browser.open({url: url});
+    } else {
+      window.open(url, '_blank');
+    }
   }
 }
