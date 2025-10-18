@@ -56,10 +56,9 @@ import { Platform } from '@ionic/angular';
     <div>
       <div class="login-header">
         <h1>Se connecter</h1>
-        <br/>
-        <div>
-          <img src="assets/logo-light-cropped.png" alt="Training Day" class="ion-padding" width="150px" *ngIf="!useDarkMode">
-          <img src="assets/logo-dark-cropped.png" alt="Training Day" class="ion-padding" width="150px" *ngIf="useDarkMode">
+        <div class="logo-container">
+          <img src="assets/logo-light-cropped.png" alt="Training Day" width="120px" *ngIf="!useDarkMode">
+          <img src="assets/logo-dark-cropped.png" alt="Training Day" width="120px" *ngIf="useDarkMode">
         </div>
       </div>
         <app-m-form [formGroup]="form" (submit)="submit()">
@@ -110,46 +109,47 @@ import { Platform } from '@ionic/angular';
             </app-ux-button>
         </app-m-form>
 
-        <p>
+        <p class="forgot-password-link">
             <a routerLink="/forgot-password">Mot de passe oublié ?</a>
         </p>
+
+      <div class="action-buttons">
+        <div class="secondary-actions">
+          <ion-button expand="block" color="medium" (click)="goTo('/signup')" shape="round" size="small">S'inscrire</ion-button>
+          <ion-button expand="block" color="tertiary" (click)="goTo('/home')" shape="round" size="small">Sans compte</ion-button>
+        </div>
+
+        <div class="divider-section">
+          <hr/>
+          <span class="divider-text">ou se connecter avec</span>
+          <hr/>
+        </div>
+
+        <div class="social-buttons">
+          <app-continue-with-google-button
+            (action)="requestLogin($event)"
+            color="medium"
+            expand="block"
+            type="button"
+            shape="round"
+            fill="clear"
+            size="small"
+          ></app-continue-with-google-button>
+
+          <app-continue-with-apple-button
+            (action)="handleAppleSignIn($event)"
+            color="medium"
+            expand="block"
+            type="button"
+            shape="round"
+            fill="clear"
+            size="small"
+          ></app-continue-with-apple-button>
+        </div>
+      </div>
+
         <!--
-          <form [formGroup]="form" (submit)="submit()">
-              <br/>
-            <hr/>
-          </form>
-          -->
-
-
-      <div>
-        <ion-button expand="full" type="submit" color="medium" (click)="goTo('/signup')" shape="round">S'inscrire gratuitement</ion-button>
-        <ion-button expand="full" type="submit" color="tertiary" (click)="goTo('/home')" shape="round">Continuer sans s'inscrire</ion-button>
-
-        <!--<ion-button (click)="testPasswordAutofill()" *ngIf="false">Test autofill</ion-button>-->
-
-
-        <hr/>
-
-        <app-continue-with-google-button
-          (action)="requestLogin($event)"
-          color="medium"
-          expand="full"
-          type="button"
-          shape="round"
-          fill="clear"
-        ></app-continue-with-google-button>
-
-        <app-continue-with-apple-button
-          (action)="handleAppleSignIn($event)"
-          color="medium"
-          expand="full"
-          type="button"
-          shape="round"
-          fill="clear"
-        ></app-continue-with-apple-button>
-
-        <!--
-        <app-ux-button 
+        <app-ux-button
           (click)="continueWithGoogle()"
           color="medium"
           expand="full"
@@ -162,9 +162,8 @@ import { Platform } from '@ionic/angular';
             <div>Continuer avec Google</div>
           </div>
         </app-ux-button>-->
-        
-      </div>
-        <a *ngIf="false" routerLink="/s6-activity">Test select component</a>
+
+      <a *ngIf="false" routerLink="/s6-activity">Test select component</a>
         <div *ngIf="false">
             <h3 class="helper">Experimental features</h3>
             <ion-button (click)="continueWith('github')" color="medium">
@@ -201,10 +200,15 @@ import { Platform } from '@ionic/angular';
 @import 'src/theme/mixins.scss';
 
 .login-header{
-  padding-bottom: 2em;
+  padding-bottom: 1em;
 
   h1{
     @include display-1;
+    margin-bottom: 0.5em;
+  }
+
+  .logo-container {
+    margin-bottom: 1em;
   }
 }
 
@@ -247,6 +251,46 @@ app-ux-button .inner{
   justify-content: center;
   flex-direction: row;
   gap: 7px;
+}
+
+.forgot-password-link {
+  margin: 0.5em 0 1em 0;
+  font-size: 0.9em;
+}
+
+.action-buttons {
+  margin-top: 1em;
+
+  .secondary-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5em;
+    margin-bottom: 1em;
+  }
+
+  .divider-section {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin: 1.5em 0;
+
+    hr {
+      flex: 1;
+      margin: 0;
+    }
+
+    .divider-text {
+      color: var(--ion-color-medium);
+      font-size: 0.85em;
+      text-transform: uppercase;
+    }
+  }
+
+  .social-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5em;
+  }
 }
 
 .loading-placeholder {

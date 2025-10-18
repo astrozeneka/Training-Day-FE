@@ -31,10 +31,9 @@ import { User } from 'src/app/models/Interfaces';
     <div>
       <div class="signup-header">
         <h1>Créer un compte</h1>
-        <br/>
-        <div>
-          <img src="assets/logo-light-cropped.png" alt="Training Day" class="ion-padding" width="150px" *ngIf="!useDarkMode">
-          <img src="assets/logo-dark-cropped.png" alt="Training Day" class="ion-padding" width="150px" *ngIf="useDarkMode">
+        <div class="logo-container">
+          <img src="assets/logo-light-cropped.png" alt="Training Day" width="120px" *ngIf="!useDarkMode">
+          <img src="assets/logo-dark-cropped.png" alt="Training Day" width="120px" *ngIf="useDarkMode">
         </div>
       </div>
 
@@ -62,25 +61,33 @@ import { User } from 'src/app/models/Interfaces';
           </app-ux-button>
         </form>
 
-        <hr class="ion-margin-vertical"/>
+        <div class="divider-section">
+          <hr/>
+          <span class="divider-text">ou s'inscrire avec</span>
+          <hr/>
+        </div>
 
-        <app-continue-with-google-button
-          (action)="loginWithGoogle($event)"
-          color="medium"
-          expand="full"
-          type="button"
-          shape="round"
-          fill="clear"
-        ></app-continue-with-google-button>
+        <div class="social-buttons">
+          <app-continue-with-google-button
+            (action)="loginWithGoogle($event)"
+            color="medium"
+            expand="block"
+            type="button"
+            shape="round"
+            fill="clear"
+            size="small"
+          ></app-continue-with-google-button>
 
-        <app-continue-with-apple-button
-          (action)="loginWithApple($event)"
-          color="medium"
-          expand="full"
-          type="button"
-          shape="round"
-          fill="clear"
-        ></app-continue-with-apple-button>
+          <app-continue-with-apple-button
+            (action)="loginWithApple($event)"
+            color="medium"
+            expand="block"
+            type="button"
+            shape="round"
+            fill="clear"
+            size="small"
+          ></app-continue-with-apple-button>
+        </div>
       </div>
 
       <!-- Step 2: Firstname/Lastname -->
@@ -261,10 +268,15 @@ import { User } from 'src/app/models/Interfaces';
 @import 'src/theme/mixins.scss';
 
 .signup-header{
-  padding-bottom: 2em;
+  padding-bottom: 1em;
 
   h1{
     @include display-1;
+    margin-bottom: 0.5em;
+  }
+
+  .logo-container {
+    margin-bottom: 1em;
   }
 }
 
@@ -285,6 +297,31 @@ import { User } from 'src/app/models/Interfaces';
 
 .password-toggle{
   @include password-toggle;
+}
+
+.divider-section {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin: 1.5em 0;
+
+  hr {
+    flex: 1;
+    margin: 0;
+  }
+
+  .divider-text {
+    color: var(--ion-color-medium);
+    font-size: 0.85em;
+    text-transform: uppercase;
+  }
+}
+
+.social-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5em;
+  margin-bottom: 1em;
 }
 
 // ======== Step 3 (conditions) styles ========
