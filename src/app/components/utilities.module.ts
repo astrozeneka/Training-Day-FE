@@ -63,6 +63,7 @@ import { PromotionalBubbleSelectorIosComponent } from './promotional-bubble-sele
 import { CoachMessengerSettingsComponent } from './coach-messenger-settings/coach-messenger-settings.component';
 import { AppointmentListComponent } from './appointment-list/appointment-list.component';
 import { SubscriptionCtaCompactComponent } from './subscription-cta-compact/subscription-cta-compact.component';
+import { ContinueWithAppleButtonComponent } from './continue-with-apple-button/continue-with-apple-button.component';
 
 
 @NgModule({
@@ -120,6 +121,7 @@ import { SubscriptionCtaCompactComponent } from './subscription-cta-compact/subs
     BubbleMultiSelectorComponent,
     LoaderV2Component,
     ContinueWithGoogleButtonComponent,
+    ContinueWithAppleButtonComponent,
     ButtonToChatComponent,
 
     // Pipes
@@ -174,6 +176,7 @@ import { SubscriptionCtaCompactComponent } from './subscription-cta-compact/subs
     BubbleMultiSelectorComponent,
     LoaderV2Component,
     ContinueWithGoogleButtonComponent,
+    ContinueWithAppleButtonComponent,
     ButtonToChatComponent,
     
     DisplayListPipe,

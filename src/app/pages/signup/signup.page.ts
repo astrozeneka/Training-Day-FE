@@ -64,6 +64,11 @@ import { Browser } from '@capacitor/browser';
           shape="round"
           fill="clear"
         ></app-continue-with-google-button>
+
+        <app-continue-with-apple-button
+          (action)="loginWithApple($event)"
+        >
+        </app-continue-with-apple-button>
       </div>
 
       <!-- Step 2: Firstname/Lastname -->
@@ -595,6 +600,10 @@ export class SignupPage extends FormComponent implements OnInit {
         google_token: google_token
       }
     });
+  }
+
+  loginWithApple(event: any) {
+    console.log("Continue with Apple clicked", event);
   }
 
   openCGU() {
