@@ -22,6 +22,11 @@ import { User } from 'src/app/models/Interfaces';
 </ion-header>
 
 <ion-content class="ion-padding">
+
+  <div [class]="'loading-placeholder ' + (formIsLoading ? '' : 'hidden')">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+
   <div class="centered-container">
     <div>
       <div class="signup-header">
@@ -70,8 +75,12 @@ import { User } from 'src/app/models/Interfaces';
 
         <app-continue-with-apple-button
           (action)="loginWithApple($event)"
-        >
-        </app-continue-with-apple-button>
+          color="medium"
+          expand="full"
+          type="button"
+          shape="round"
+          fill="clear"
+        ></app-continue-with-apple-button>
       </div>
 
       <!-- Step 2: Firstname/Lastname -->
@@ -360,6 +369,27 @@ import { User } from 'src/app/models/Interfaces';
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
+
+.loading-placeholder {
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 900000;
+  backdrop-filter: blur(10px);
+  background-color: rgba(var(--ion-color-background-rgb), 0.2);
+  opacity: 1;
+  transition: opacity 0.3s;
+
+  &.hidden{
+    z-index: -1;
+    opacity: 0;
+  }
+}
 `]
 })
 export class SignupPage extends FormComponent implements OnInit {
@@ -606,35 +636,36 @@ export class SignupPage extends FormComponent implements OnInit {
     });
   }
 
-  loginWithApple(event: SignInWithAppleResponse) {
-    // Too fill later
-    let deviceToken = {
-      'ios_token': "ABCD1234"
-    }; // TO fill later
+  async loginWithApple(event: SignInWithAppleResponse) {
+    this.formIsLoading = true;
+    this.cdr.detectChanges();
+
+    let deviceToken = await this.contentService.storage.get('device_token') ?? {'ios_token': 'fake'}
     this.http.post(`${environment.apiEndpoint}/request-login-with-apple`, {
       ...event,
-      ...deviceToken
+      device_token: deviceToken
     })
-    .pipe(catchError((error) => {
-      if (error.status == 401) {
-        this.feedbackService.registerNow("Connexion avec Apple échouée", "danger");
-      } else if (error.status == 0) {
-        this.feedbackService.registerNow("Veuillez vérifier votre connexion internet", "danger");
-      } else {
-        this.feedbackService.registerNow("Erreur " + error.status, 'danger');
-      }
-      return throwError(() => error);
-    }))
+    .pipe(
+      catchError((error) => {
+        if (error.status == 401) {
+          this.feedbackService.registerNow("Connexion avec Apple échouée", "danger");
+        } else if (error.status == 0) {
+          this.feedbackService.registerNow("Veuillez vérifier votre connexion internet", "danger");
+        } else {
+          this.feedbackService.registerNow("Erreur " + error.status, 'danger');
+        }
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.formIsLoading = false;
+      })
+    )
     .subscribe(async (res: {token: string, refresh_token: string, user: User}) => {
-      // console.log("Response from backend:", res);
-      // Set the token, refresh token and user in storage
       await this.storage.set('token', res.token)
       if (res.refresh_token)
         await this.storage.set('refresh_token', res.refresh_token);
       this.contentService.userStorageObservable.updateStorage(res.user);
       await this.storage.set('user', res.user);
-
-      // Redirect to home
       this.router.navigate(['/home']);
     })
   }

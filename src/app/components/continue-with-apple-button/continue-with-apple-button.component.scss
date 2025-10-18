@@ -1,0 +1,20 @@
+// The social authentication
+app-ux-button .inner{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 7px;
+
+    img {
+        filter: brightness(0);
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    app-ux-button .inner {
+        img {
+            filter: brightness(0) invert(1);
+        }
+    }
+}

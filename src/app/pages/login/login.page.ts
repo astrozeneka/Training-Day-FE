@@ -40,9 +40,10 @@ import { Platform } from '@ionic/angular';
 </ion-header>
 
 <ion-content class="ion-padding">
-  
-  <!-- app-loader-v2 causes the login page to bug, it has been disabled -->
-  <!--<app-loader-v2 [isLoading]="formIsLoading"></app-loader-v2>-->
+
+  <div [class]="'loading-placeholder ' + (formIsLoading ? '' : 'hidden')">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
 
   <!--
     <ion-header collapse="condense">
@@ -137,6 +138,15 @@ import { Platform } from '@ionic/angular';
           shape="round"
           fill="clear"
         ></app-continue-with-google-button>
+
+        <app-continue-with-apple-button
+          (action)="handleAppleSignIn($event)"
+          color="medium"
+          expand="full"
+          type="button"
+          shape="round"
+          fill="clear"
+        ></app-continue-with-apple-button>
 
         <!--
         <app-ux-button 
@@ -237,6 +247,27 @@ app-ux-button .inner{
   justify-content: center;
   flex-direction: row;
   gap: 7px;
+}
+
+.loading-placeholder {
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 900000;
+  backdrop-filter: blur(10px);
+  background-color: rgba(var(--ion-color-background-rgb), 0.2);
+  opacity: 1;
+  transition: opacity 0.3s;
+
+  &.hidden{
+    z-index: -1;
+    opacity: 0;
+  }
 }
 `],
 })
@@ -656,5 +687,54 @@ export class LoginPage extends FormComponent implements OnInit {
       .catch((error) => {
         console.error('SavePassword.promptDialog' + JSON.stringify(error));
       });
+  }
+
+  async handleAppleSignIn(appleResponse: any){
+    this.formIsLoading = true;
+    this.cdr.detectChanges();
+
+    let deviceToken = await this.contentService.storage.get('device_token') ?? {'ios_token': 'fake'}
+
+    this.httpClient.post(`${environment.apiEndpoint}/request-login-with-apple`, {
+      ...appleResponse,
+      device_token: deviceToken
+    })
+    .pipe(
+      catchError((error) => {
+        if (error.status == 401) {
+          this.feedbackService.registerNow("Connexion avec Apple échouée", "danger");
+        } else if (error.status == 0) {
+          this.feedbackService.registerNow("Veuillez vérifier votre connexion internet", "danger");
+        } else {
+          this.feedbackService.registerNow("Erreur " + error.status, 'danger');
+        }
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.formIsLoading = false;
+      })
+    )
+    .subscribe(async (res: any) => {
+      await this.contentService.storage.set('token', res.token)
+      if (res.refresh_token)
+        await this.contentService.storage.set('refresh_token', res.refresh_token);
+      this.contentService.userStorageObservable.updateStorage(res.user);
+      await this.contentService.storage.set('user', res.user);
+
+      try{
+        await this.reloadPushNotificationPermissions()
+      }catch (e){
+        console.error('Device not compatible with PushNotification', e)
+      }
+
+      let user = await this.contentService.storage.get('user')
+      if (!user.extra_data && user.function == 'customer'){
+        this.os.clearOnboardingData()
+        this.router.navigate(['/s2-more-info'])
+      } else {
+        await this.feedbackService.register("Bonjour, vous êtes connecté", 'success')
+        this.router.navigate(['/home'])
+      }
+    })
   }
 }

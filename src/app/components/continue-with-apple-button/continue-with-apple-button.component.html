@@ -1,7 +1,16 @@
 <app-ux-button
   (click)="trigger()"
+  [color]="color"
+  [expand]="expand"
+  [disabled]="disabled || loading"
+  [shape]="shape"
+  [size]="size"
+  [fill]="fill"
+  [type]="type"
+  [loading]="loading"
 >
-  <div class="inner">
-    <div>Continuer avec Apple</div>
-  </div>
+<div class="inner">
+  <img src="/assets/icon/social-menu/apple-logo.svg" alt="Apple" width="20px" height="20px">
+  <div>Continuer avec Apple</div>
+</div>
 </app-ux-button>

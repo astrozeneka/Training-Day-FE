@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SignInWithApple, SignInWithAppleResponse as _SignInWithAppleResponse, SignInWithAppleOptions } from '@capacitor-community/apple-sign-in';
 
 export interface SignInWithAppleResponse {
@@ -18,6 +18,16 @@ export interface SignInWithAppleResponse {
 })
 export class ContinueWithAppleButtonComponent  implements OnInit {
   @Output() action = new EventEmitter<SignInWithAppleResponse>();
+
+  // Button inherited
+  @Input() color: string|undefined = undefined;
+  @Input() expand: string|undefined = undefined;
+  @Input() shape: string|undefined = undefined;
+  @Input() size: string|undefined = undefined;
+  @Input() fill: string|undefined = undefined;
+  @Input() type: string|undefined = undefined;
+  @Input() disabled: boolean|undefined = false;
+  @Input() loading: boolean|undefined = false;
 
   constructor() { }
 
