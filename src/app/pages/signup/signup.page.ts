@@ -4,6 +4,7 @@ import { ContentService } from "../../content.service";
 import { FeedbackService } from "../../feedback.service";
 import { catchError, finalize, throwError } from "rxjs";
 import { Router } from "@angular/router";
+import {Storage} from "@ionic/storage-angular";
 import { FormComponent } from "../../components/form.component";
 import PasswordToggle from 'src/app/utils/PasswordToggle';
 import { DarkModeService } from 'src/app/dark-mode.service';
@@ -11,6 +12,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Platform } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
+import { SignInWithAppleResponse } from 'src/app/components/continue-with-apple-button/continue-with-apple-button.component';
+import { User } from 'src/app/models/Interfaces';
 
 @Component({
   selector: 'app-signup',
@@ -391,6 +394,7 @@ export class SignupPage extends FormComponent implements OnInit {
   constructor(
     private contentService: ContentService, // DO not use http provided by the content service
     private http: HttpClient,
+    public storage: Storage,
     private feedbackService: FeedbackService,
     private router: Router,
     private dms: DarkModeService,
@@ -602,8 +606,37 @@ export class SignupPage extends FormComponent implements OnInit {
     });
   }
 
-  loginWithApple(event: any) {
-    console.log("Continue with Apple clicked", event);
+  loginWithApple(event: SignInWithAppleResponse) {
+    // Too fill later
+    let deviceToken = {
+      'ios_token': "ABCD1234"
+    }; // TO fill later
+    this.http.post(`${environment.apiEndpoint}/request-login-with-apple`, {
+      ...event,
+      ...deviceToken
+    })
+    .pipe(catchError((error) => {
+      if (error.status == 401) {
+        this.feedbackService.registerNow("Connexion avec Apple échouée", "danger");
+      } else if (error.status == 0) {
+        this.feedbackService.registerNow("Veuillez vérifier votre connexion internet", "danger");
+      } else {
+        this.feedbackService.registerNow("Erreur " + error.status, 'danger');
+      }
+      return throwError(() => error);
+    }))
+    .subscribe(async (res: {token: string, refresh_token: string, user: User}) => {
+      // console.log("Response from backend:", res);
+      // Set the token, refresh token and user in storage
+      await this.storage.set('token', res.token)
+      if (res.refresh_token)
+        await this.storage.set('refresh_token', res.refresh_token);
+      this.contentService.userStorageObservable.updateStorage(res.user);
+      await this.storage.set('user', res.user);
+
+      // Redirect to home
+      this.router.navigate(['/home']);
+    })
   }
 
   openCGU() {
