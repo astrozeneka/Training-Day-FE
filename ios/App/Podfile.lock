@@ -5,6 +5,8 @@ PODS:
     - Capacitor
   - CapacitorBrowser (5.2.0):
     - Capacitor
+  - CapacitorCommunityAppleSignIn (7.1.0):
+    - Capacitor
   - CapacitorCommunityBackgroundGeolocation (0.0.1):
     - Capacitor
   - CapacitorCommunityNativeAudio (5.0.1):
@@ -90,6 +92,7 @@ DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorBrowser (from `../../node_modules/@capacitor/browser`)"
+  - "CapacitorCommunityAppleSignIn (from `../../node_modules/@capacitor-community/apple-sign-in`)"
   - "CapacitorCommunityBackgroundGeolocation (from `../../node_modules/@capacitor-community/background-geolocation`)"
   - "CapacitorCommunityNativeAudio (from `../../node_modules/@capacitor-community/native-audio`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
@@ -126,6 +129,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/app"
   CapacitorBrowser:
     :path: "../../node_modules/@capacitor/browser"
+  CapacitorCommunityAppleSignIn:
+    :path: "../../node_modules/@capacitor-community/apple-sign-in"
   CapacitorCommunityBackgroundGeolocation:
     :path: "../../node_modules/@capacitor-community/background-geolocation"
   CapacitorCommunityNativeAudio:
@@ -161,6 +166,7 @@ SPEC CHECKSUMS:
   Capacitor: 018b78e70c892da9e2ca16481978c3ce09fa491a
   CapacitorApp: 3bef09d0bbb9698fd1766398499f306647156bbf
   CapacitorBrowser: 4dc0624a8c372054f64f31e53c6375ce300b28cc
+  CapacitorCommunityAppleSignIn: 271cb2860576fd2961508bbfa7a82117d93eadca
   CapacitorCommunityBackgroundGeolocation: 834a8f8eca8ebada8debffe1236e5674b831cead
   CapacitorCommunityNativeAudio: 242e305c1d7bf6e3f26c3c110807d1582bcf69e5
   CapacitorCordova: 3d3908a3d208a11a75f9df3b18c4405c4de76e1d
@@ -186,6 +192,6 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
 
-PODFILE CHECKSUM: 893bd3ab0b17105a96c12fefbd2e5e703cded3d4
+PODFILE CHECKSUM: 3cf668154e878ec8b9ff45b14d3ecd95fd6b8aa2
 
 COCOAPODS: 1.16.2
