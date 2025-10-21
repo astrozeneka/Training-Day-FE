@@ -146,6 +146,19 @@ import { Platform } from '@ionic/angular';
             size="small"
           ></app-continue-with-apple-button>
         </div>
+
+        <ion-button
+          expand="full"
+          fill="outline"
+          color="medium"
+          size="small"
+          shape="round"
+          class="privacy-policy-button"
+          (click)="openPrivacyPolicy()"
+        >
+          <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
+          Politique de confidentialité
+        </ion-button>
       </div>
 
         <!--
@@ -290,6 +303,12 @@ app-ux-button .inner{
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .privacy-policy-button {
+    margin-top: 8px;
+    font-size: 0.85rem;
   }
 }
 
@@ -780,5 +799,14 @@ export class LoginPage extends FormComponent implements OnInit {
         this.router.navigate(['/home'])
       }
     })
+  }
+
+  openPrivacyPolicy() {
+    const url = 'https://training-day-be.codecrane.me/doc-privacy-policy';
+    if (this.platform.is('capacitor')) {
+      Browser.open({url: url});
+    } else {
+      window.open(url, '_blank');
+    }
   }
 }

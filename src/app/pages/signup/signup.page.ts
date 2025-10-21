@@ -256,9 +256,22 @@ import { User } from 'src/app/models/Interfaces';
         </ion-button>
       </div>
 
-      <p class="ion-margin-top">
+      <p class="ion-margin-top login-link">
         <a routerLink="/login">Déjà un compte ? Se connecter</a>
       </p>
+
+      <ion-button
+        expand="full"
+        fill="outline"
+        color="medium"
+        size="small"
+        shape="round"
+        class="privacy-policy-button"
+        (click)="openPrivacyPolicy()"
+      >
+        <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
+        Politique de confidentialité
+      </ion-button>
     </div>
   </div>
 </ion-content>
@@ -321,7 +334,16 @@ import { User } from 'src/app/models/Interfaces';
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5em;
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
+}
+
+.login-link {
+  font-size: 0.9em;
+}
+
+.privacy-policy-button {
+  margin-top: 8px;
+  font-size: 0.85rem;
 }
 
 // ======== Step 3 (conditions) styles ========
