@@ -1,7 +1,7 @@
 // https://claude.ai/chat/9a73221d-d81b-437e-89ea-284ad16a3358
 
 import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse, HttpXsrfTokenExtractor } from '@angular/common/http';
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
@@ -21,6 +21,7 @@ import { FilePicker } from '@capawesome/capacitor-file-picker';
 import { FeedbackService } from '../feedback.service';
 import { Browser } from '@capacitor/browser';
 import { Badge } from '@capawesome/capacitor-badge';
+import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 
 interface File {
   name: any,
@@ -232,7 +233,7 @@ interface File {
     </ion-footer>
     `
 })
-export class MessengerDetailPage implements OnInit {
+export class MessengerDetailPage implements OnInit, OnDestroy {
   @ViewChild('content') content: IonContent | undefined;
   @ViewChild('messageInput') messageInput: ElementRef | undefined;
 
@@ -314,7 +315,12 @@ export class MessengerDetailPage implements OnInit {
     })
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    // Enable keyboard resize for this page
+    if (this.platform.is('capacitor')) {
+      await Keyboard.setResizeMode({ mode: KeyboardResize.Body });
+    }
+
     this.isLoading = true;
     this.conversation$ = this.route.params.pipe(
       // 1. Get the conversation Id
@@ -1008,5 +1014,12 @@ export class MessengerDetailPage implements OnInit {
         this.isMessagingDisabled[key] = settings[key] !== "0";
       }
     });
+  }
+
+  async ngOnDestroy() {
+    // Restore default keyboard behavior when leaving the page
+    if (this.platform.is('capacitor')) {
+      await Keyboard.setResizeMode({ mode: KeyboardResize.None });
     }
+  }
 }

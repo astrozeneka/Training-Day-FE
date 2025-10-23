@@ -57,7 +57,7 @@
     "codex-tooltip": "^1.0.5",
     "cordova-plugin-file": "^8.1.0",
     "cordova-plugin-media": "^7.0.0",
-    "cordova-plugin-purchase": "^11.0.0",
+    "cordova-plugin-purchase": "^13.12.1",
     "cordova-plugin-theme-detection": "^1.3.0",
     "date-fns": "^2.30.0",
     "hls.js": "^1.5.19",

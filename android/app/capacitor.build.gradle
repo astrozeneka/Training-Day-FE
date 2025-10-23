@@ -9,7 +9,7 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
-    implementation project(':capacitor-community-apple-sign-in')
+    // implementation project(':capacitor-community-apple-sign-in') // This things is not available for Android
     implementation project(':capacitor-community-background-geolocation')
     implementation project(':capacitor-community-native-audio')
     implementation project(':capacitor-app')
@@ -24,7 +24,7 @@ dependencies {
     implementation project(':capawesome-capacitor-file-picker')
     implementation project(':capgo-native-audio')
     implementation "androidx.webkit:webkit:1.4.0"
-    implementation "com.android.billingclient:billing:4.0.0"
+    implementation "com.android.billingclient:billing:7.1.1"
 }
 
 

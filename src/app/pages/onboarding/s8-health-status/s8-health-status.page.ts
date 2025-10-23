@@ -66,7 +66,7 @@ import { OnboardingService } from 'src/app/onboarding.service';
 
     <br/><br/><br/><br/><br/><br/>
     <div class="onboarding-floating-bottom-1">
-      <div class="ion-padding">
+      <div class="ion-padding" style="z-index: 1000">
         <app-ux-button
           expand="block" 
           color="primary" 
