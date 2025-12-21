@@ -1,0 +1,127 @@
+
+@import '../../../mixins';
+@import 'src/theme/mixins.scss';
+
+.login-header{
+  padding-bottom: 1em;
+
+  h1{
+    @include display-1;
+    margin-bottom: 0.5em;
+  }
+
+  .logo-container {
+    margin-bottom: 1em;
+  }
+}
+
+.dark-logo img {
+  display: none; /* Hide the light logo by default */
+}
+
+.dark-logo img:last-child {
+  display: block; /* Display the dark logo when the dark mode is active */
+}
+
+ion-content{
+}
+
+.centered-container{
+  text-align: center;
+  max-width: 600px;
+  margin: auto;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+
+  &>div{
+    width: 100%;
+  }
+}
+
+
+// Password toggle
+.password-toggle{
+  @include password-toggle;
+}
+
+// The social authentication
+app-ux-button .inner{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 7px;
+}
+
+.forgot-password-link {
+  margin: 0.5em 0 1em 0;
+  font-size: 0.9em;
+}
+
+.action-buttons {
+  margin-top: 1em;
+
+  .secondary-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5em;
+    margin-bottom: 1em;
+  }
+
+  .divider-section {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin: 1.5em 0;
+
+    hr {
+      flex: 1;
+      margin: 0;
+    }
+
+    .divider-text {
+      color: var(--ion-color-medium);
+      font-size: 0.85em;
+      text-transform: uppercase;
+    }
+  }
+
+  .social-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    margin-bottom: 1.5em;
+    & > *{
+      flex: 1;
+    }
+  }
+
+  .privacy-policy-button {
+    margin-top: 8px;
+    font-size: 0.85rem;
+  }
+}
+
+.loading-placeholder {
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 900000;
+  backdrop-filter: blur(10px);
+  background-color: rgba(var(--ion-color-background-rgb), 0.2);
+  opacity: 1;
+  transition: opacity 0.3s;
+
+  &.hidden{
+    z-index: -1;
+    opacity: 0;
+  }
+}

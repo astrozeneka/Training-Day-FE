@@ -1,0 +1,428 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <app-back-button></app-back-button>
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Mon profil</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+    <form [formGroup]="form">
+
+        <div class="profile-image-container">
+            <ion-avatar>
+                <img *ngIf="!profile_image && entity?.profile_image?.permalink"
+                    [src]="getStaticUrl(entity?.profile_image?.permalink)" alt="Profile picture" />
+                <img *ngIf="!profile_image && !entity?.profile_image?.permalink"
+                    src="/assets/samples/profile-default-01.png" alt="Profile image" />
+                <img *ngIf="profile_image" [src]="profile_image.base64" alt="Profile image" />
+            </ion-avatar>
+            <input type="file" name="profile_image" style="display: none" #fileInput (change)="handleFileInput($event)"
+                accept="image/*" /><!-- This way of handling input doesn't work anymore in the new update of iOS -->
+            <ion-button size="small" color="medium" (click)="selectImage()">
+                Sélectionner une image
+                <ion-icon slot="end" name="cloud-upload-outline"></ion-icon>
+            </ion-button>
+        </div>
+
+        <!-- In case the user doesn't have a renewable_id -->
+        <div *ngIf="entity && !entity?.renewable_id && !active_entitled_subscription && entity.function === 'customer'">
+            <app-subscription-cta-compact (buttonClick)="navigateTo('/swipeable-store')"></app-subscription-cta-compact>
+        </div>
+
+        <!-- The form below is redundant -->
+        <form [formGroup]="form">
+            <ion-item>
+                <ion-input label="Prénom" label-placement="floating" formControlName="firstname"
+                    [errorText]="displayedError.firstname"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-input label="Nom" label-placement="floating" formControlName="lastname"
+                    [errorText]="displayedError.lastname"></ion-input>
+            </ion-item>
+            <ion-item>
+                <!-- The email cannot be updated -->
+                <ion-input label="Email" label-placement="floating" formControlName="email"
+                    [errorText]="displayedError.email" readonly></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-input type="password" label="Changer l'ancien mot de passe" label-placement="floating"
+                    formControlName="password" [errorText]="displayedError.password"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-input type="password" label="Confirmez le mot de passe" label-placement="floating"
+                    formControlName="password_confirm" [errorText]="displayedError.password_confirm"></ion-input>
+            </ion-item>
+            <ion-item>
+                <div class="phone-input-wrapper">
+                    <app-phone-prefix-select justify="end" label="Indicatif" labelPlacement="stacked"
+                        formControlName="phone_prefix"></app-phone-prefix-select>
+                    <ion-input label="Téléphone" label-placement="floating" formControlName="phone"
+                        [errorText]="displayedError.phone"></ion-input>
+                </div>
+            </ion-item>
+            <ion-item>
+                <ion-input label="Adresse" label-placement="floating" formControlName="address"
+                    [errorText]="displayedError.address"></ion-input>
+            </ion-item>
+
+            <div class="city-postal-code">
+                <ion-item>
+                    <ion-input label="Ville" label-placement="floating" formControlName="city"
+                        [errorText]="displayedError.city"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-input label="Code postal" label-placement="floating" formControlName="postal_code"
+                        [errorText]="displayedError.postal_code"></ion-input>
+                </ion-item>
+            </div>
+        </form>
+
+        <div class="ion-padding ion-text-center">
+            <app-ux-button (click)="submit()" [loading]="formIsLoading" [fixedWidth]="true">
+                Mettre à jour
+            </app-ux-button>
+        </div>
+    </form>
+
+    <div *ngIf="entity?.extra_data" class="ion-padding-horizontal">
+        <h3 class="display-1 ion-padding">Mes informations</h3>
+
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Mes informations physiques</div>
+                <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s2-more-info')">
+                    Modifier
+                </ion-button>
+            </div>
+            <table class="info-table">
+                <tr>
+                    <td>Poids</td>
+                    <td>{{ entity.extra_data.weight }} kg</td>
+                </tr>
+                <tr>
+                    <td>Taille</td>
+                    <td>{{ entity.extra_data.height }} cm</td>
+                </tr>
+                <tr>
+                    <td>Age</td>
+                    <td>{{ entity.extra_data.age }} ans</td>
+                </tr>
+                <tr>
+                    <td>Sexe</td>
+                    <td>{{ sexKeyAccessor(undefined)[entity.extra_data.sex] }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Mes objectifs</div>
+                <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s3-goal')">
+                    Modifier
+                </ion-button>
+            </div>
+            <div class="info-table">
+                <tr *ngFor="let goal of entity.extra_data.goals">
+                    <td *ngIf="!goal.includes('Autre')">{{ goal }}</td>
+                    <td *ngIf="goal.includes('Autre')">{{ goal }}: {{ entity.extra_data.otherGoals }}</td>
+                </tr>
+            </div>
+        </div>
+
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Mon sommeil</div>
+                <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s4-sleep')">
+                    Modifier
+                </ion-button>
+            </div>
+            <div class="info-table ">
+                <tr>
+                    <td>{{ entity.extra_data.dailySleepHours }}</td>
+                </tr>
+            </div>
+        </div>
+
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Mon alimentation et mon hydratation</div>
+                <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s5-food-and-water')">
+                    Modifier
+                </ion-button>
+            </div>
+            <div class="info-table ">
+                <tr>
+                    <td>Repas</td>
+                    <td>{{ entity.extra_data.dailyMeals }}</td>
+                </tr>
+                <tr>
+                    <td>Consommation d'eau</td>
+                    <td>{{ entity.extra_data.dailyWater }}</td>
+                </tr>
+            </div>
+        </div>
+
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Mon activité physique</div>
+                <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s6-activity')">
+                    Modifier
+                </ion-button>
+            </div>
+            <table class="info-table">
+                <tr>
+                    <td>{{ entity.extra_data.activity?.text }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Pratique sportif régulière</div>
+                <ion-button size="small" fill="clear" shape="round"
+                    (click)="updateOnboardingInfo('s7-do-sport-regularly')">
+                    Modifier
+                </ion-button>
+            </div>
+            <table class="info-table">
+                <tr>
+                    <td>{{ entity.extra_data.everydaySport }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="info-table-wrapper">
+            <div class="info-table-heading">
+                <div>Soucis de santé</div>
+                <ion-button size="small" fill="clear" shape="round" (click)="updateOnboardingInfo('s8-health-status')">
+                    Modifier
+                </ion-button>
+            </div>
+            <table class="info-table">
+                <tr *ngFor="let condition of entity.extra_data.healthConditions">
+                    <td *ngIf="!condition.includes('Autre')">{{ condition }}</td>
+                    <td *ngIf="condition.includes('Autre')">{{ condition }}: {{ entity.extra_data.otherHealthConditions
+                        }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div *ngIf="entity">
+        <h3 class="display-1 ion-padding">Abonnement</h3>
+
+        <div *ngIf="entity && !entity?.renewable_id && !active_entitled_subscription">
+            <div class="span-button ion-padding-horizontal">
+                <span>
+                    Vous n'avez pas d'abonnement actif.
+                </span>
+            </div>
+        </div>
+
+        <div *ngIf="entity?.renewable_id && active_entitled_subscription">
+            <div class="span-button ion-padding-horizontal">
+                <span>
+                    Vous disposez d'un abonnement <b> {{ entity.renewable_id }}</b>
+                </span>
+                <ion-button size="small" (click)="presentManageModal()">
+                    Gérer
+                </ion-button>
+            </div>
+        </div>
+        <div *ngIf="!entity.renewable_id && active_entitled_subscription && is_ios"><!-- Only in IOS -->
+            <div class="span-button ion-padding-horizontal">
+                <span>
+                    Vous disposez actuellement d'un <b>{{ active_entitled_subscription.displayName }}</b> pour cet
+                    appareil iOS
+                </span>
+                <ion-button size="small" (click)="presentManageModal()">
+                    Gérer
+                </ion-button>
+            </div>
+        </div>
+        <!-- An Android equivalent of the code above should be here (not yet tested) -->
+        <div *ngIf="!entity.renewable_id && active_entitled_subscription && is_android">
+            <div class="span-button ion-padding-horizontal">
+                <span>
+                    Vous disposez actuellement d'un <b>{{ active_entitled_subscription.displayName }}</b> pour cet
+                    appareil Android
+                </span>
+                <ion-button size="small" (click)="presentManageModal()"
+                    *ngIf="false"><!-- Temporary false, will be upated later -->
+                    Gérer
+                </ion-button>
+            </div>
+        </div>
+        <div *ngIf="entity.renewable_id && !active_entitled_subscription">
+            <div class="span-button ion-padding-horizontal">
+                <span>
+                    Vous disposez d'un abonnement <b> {{ entity.renewable_id }}</b> pour ce compte utilisateur
+                </span>
+                <ion-button size="small" (click)="presentManageModal()"><!-- experimental -->
+                    Gérer
+                </ion-button>
+            </div>
+        </div>
+
+        <div *ngIf="entity.subscription">
+            <!--
+                <ion-item>
+                    <ion-label>
+                        Votre abonnement actuel
+                    </ion-label>
+                    <ion-note class="text-bigger" slot="end">
+                        {{ entity.subscription.label }}
+                    </ion-note>
+                </ion-item>
+                <ion-item>
+                    <ion-label>
+                        Date d'expiration
+                    </ion-label>
+                    <ion-note slot="end">
+                        {{ entity.expires_at | date }}
+                    </ion-note>
+                </ion-item>
+                <ion-item>
+                    <ion-label>
+                        Terminer l'abonnement
+                    </ion-label>
+                    <ion-button slot="end" color="danger" (click)="endSubscription()" *ngIf="entity.subscription_is_active">
+                        Annuler l'abonnement
+                    </ion-button>
+                    <ion-note slot="end" *ngIf="!entity.subscription_is_active">
+                        Votre abonnement prendra fin le {{ entity.expires_at | date }}
+                    </ion-note>
+                </ion-item>
+                -->
+        </div>
+        <div *ngIf="!entity.subscription">
+            <!--
+            <ion-item>
+                <ion-label>
+                    Vous n'avez pas d'abonnement actif
+                </ion-label>
+                <ion-button slot="end" color="primary" (click)="navigate('/subscriptions')">Souscrire</ion-button>
+            </ion-item>
+            -->
+        </div>
+    </div>
+
+    <!--<div *ngIf="entity?.renewable_id">
+        <h3 class="display-1 ion-padding">Terminer mon abonnement</h3>
+        <div class="span-button ion-padding-horizontal">
+            <span>
+                Vous pouvez terminer votre abonnement à tout moment.
+            </span>
+            <ion-button size="small" (click)="cancelSubscription()">
+                Se désabonner
+            </ion-button>
+        </div>
+    </div>-->
+
+    <!-- The below section has been disabled -->
+    <div *ngIf="entity && entity.function === 'customer' && false">
+        <h3 class="display-1 ion-padding">Privilèges(s)</h3>
+        <div *ngIf="grouped_perishables && grouped_perishables['food-coach']">
+            <app-subscription-card [entity]="grouped_perishables['food-coach']" [title]="'Programme alimentaire'"
+                [description]="'Vous pouvez utiliser cette abonnement pour accéder à un programme alimentaire personnalisé de Training-Day.'"
+                [expiresAt]="grouped_perishables['food-coach']['expires_at']" [columns]="false"></app-subscription-card>
+        </div>
+
+        <div *ngIf="grouped_perishables && grouped_perishables['sport-coach']">
+            <app-subscription-card [entity]="grouped_perishables['sport-coach']" [title]="'Programme Sportif'"
+                [description]="'Vous pouvez utiliser cette abonnement pour accéder à un programme sportif personnalisé de Training-Day.'"
+                [expiresAt]="grouped_perishables['sport-coach']['expires_at']"
+                [columns]="false"></app-subscription-card>
+        </div>
+
+        <!-- Temporary unavailable-->
+        <!--
+        <div *ngIf="grouped_perishables && grouped_perishables['personal-trainer']">
+            <app-trainer-card
+                    [entity]="grouped_perishables['personal-trainer']"
+            ></app-trainer-card>
+        </div>
+        -->
+
+        <p class="helper ion-padding" *ngIf="Object.keys(grouped_perishables).length === 0">
+            Vous pouvez accéder à la boutique via le menu pour souscrire à des abonnements.
+        </p>
+    </div>
+
+    <div *ngIf="entity && entity.function === 'customer'">
+        <h3 class="display-1 ion-padding">Vérification de l'addresse e-mail</h3>
+        <div class="span-button ion-padding-horizontal" *ngIf="!entity.email_verified_at ">
+            <span>Votre adresse e-mail n'est pas encore vérifié.</span>
+            <ion-button size="small" color="primary" (click)="sendVerificationEmail()">Vérifier</ion-button>
+        </div>
+        <div class="span-button ion-padding-horizontal" *ngIf="entity.email_verified_at">
+            <span>Votre adresse e-mail a été vérifiée.</span>
+        </div>
+    </div>
+
+    <!-- For the coach allowing him to set the "active" status -->
+    <div *ngIf="entity?.function === 'coach'">
+        <h3 class="display-1 ion-padding">Horaire d'activité</h3>
+        <form [formGroup]="activityStatusForm">
+            <ion-item>
+                <ion-label slot="start">
+                    Actif à partir de
+                </ion-label>
+                <ion-input slot="end" type="time" formControlName="activeFrom"
+                    [errorText]="activityStatusDisplayedError.activeFrom"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label slot="start">
+                    Actif jusqu'à
+                </ion-label>
+                <ion-input slot="end" type="time" formControlName="activeTo"
+                    [errorText]="activityStatusDisplayedError.activeTo"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Pause</ion-label>
+                <ion-select slot="end" formControlName="pauseDays">
+                    <ion-select-option value="[6]">Samedi</ion-select-option>
+                    <ion-select-option value="[0]">Dimanche</ion-select-option>
+                    <ion-select-option value="[6,0]">Samedi et Dimanche</ion-select-option>
+                    <ion-select-option value="[]">Pas de pause</ion-select-option>
+                </ion-select>
+                <ion-text color="danger"
+                    *ngIf="activityStatusDisplayedError.pauseDays && activityStatusForm.get('pauseDays').touched">
+                    {{ activityStatusDisplayedError.pauseDays }}
+                </ion-text>
+            </ion-item>
+            <div class="ion-text-center" *ngIf="activityStatusForm.touched">
+                <app-ux-button shape="round" fill="outline" (click)="submitActivityStatusForm()"
+                    [disabled]="activityStatusForm.invalid">
+                    Appliquer les modifications
+                </app-ux-button>
+            </div>
+        </form>
+    </div>
+
+    <div class="ion-padding">
+        <h3 class="display-1">Suppression du compte</h3>
+        <div class="span-button ion-padding-bottom">
+            <span>
+                Vous pouvez supprimer votre compte à tout moment. Cette action est irréversible.
+            </span>
+        </div>
+        <div class="ion-text-center">
+            <ion-button (click)="deleteAccount()" color="danger">Supprimer mon compte</ion-button>
+        </div>
+    </div>
+
+    <div class="ion-padding">
+        <div *ngIf="true">
+            <ion-button (click)="contentService.logout()" expand="full" fill="clear" color="danger">Se
+                déconnecter</ion-button>
+        </div>
+    </div>
+
+    <app-button-to-chat></app-button-to-chat>
+    <app-bottom-navbar-placeholder></app-bottom-navbar-placeholder>
+</ion-content>

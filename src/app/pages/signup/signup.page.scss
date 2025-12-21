@@ -1,0 +1,176 @@
+@import '../../../mixins';
+@import 'src/theme/mixins.scss';
+
+.signup-header {
+    padding-bottom: 1em;
+
+    h1 {
+        @include display-1;
+        margin-bottom: 0.5em;
+    }
+
+    .logo-container {
+        margin-bottom: 1em;
+    }
+}
+
+.centered-container {
+    text-align: center;
+    max-width: 600px;
+    margin: auto;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+
+    &>div {
+        width: 100%;
+    }
+}
+
+.password-toggle {
+    @include password-toggle;
+}
+
+.divider-section {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin: 1.5em 0;
+
+    hr {
+        flex: 1;
+        margin: 0;
+    }
+
+    .divider-text {
+        color: var(--ion-color-medium);
+        font-size: 0.85em;
+        text-transform: uppercase;
+    }
+}
+
+.social-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    margin-bottom: 1.5em;
+
+    &>* {
+        flex: 1;
+    }
+}
+
+.login-link {
+    font-size: 0.9em;
+}
+
+.privacy-policy-button {
+    margin-top: 8px;
+    font-size: 0.85rem;
+}
+
+// ======== Step 3 (conditions) styles ========
+.conditions-container {
+    padding: 1rem 0;
+
+    h3 {
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .helper {
+        color: var(--ion-color-medium);
+        margin-bottom: 1.5rem;
+    }
+}
+
+.custom-checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 1rem;
+    border: 1px solid var(--ion-color-light);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 1rem;
+
+    &:hover {
+        border-color: var(--ion-color-primary);
+        background-color: var(--ion-color-light);
+    }
+}
+
+.custom-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--ion-color-medium);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+
+    &.checked {
+        background-color: var(--ion-color-primary);
+        border-color: var(--ion-color-primary);
+
+        ion-icon {
+            color: white;
+            font-size: 14px;
+        }
+    }
+}
+
+.checkbox-text {
+    flex: 1;
+    line-height: 1.4;
+    font-size: 0.9rem;
+}
+
+.conditions-link {
+    color: var(--ion-color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+.error-message {
+    color: var(--ion-color-danger);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    padding: 0 1rem;
+}
+
+.privacy-policy-button {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.loading-placeholder {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 900000;
+    backdrop-filter: blur(10px);
+    background-color: rgba(var(--ion-color-background-rgb), 0.2);
+    opacity: 1;
+    transition: opacity 0.3s;
+
+    &.hidden {
+        z-index: -1;
+        opacity: 0;
+    }
+}

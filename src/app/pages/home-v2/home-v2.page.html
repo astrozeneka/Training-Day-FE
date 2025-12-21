@@ -1,13 +1,527 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>home-v2</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-header></ion-header>
+<ion-content>
+  <!-- Header Section -->
+  <div class="app-header" [class.transparent]="isSearchActive">
+    <div class="header-content">
+      <ion-menu-button *ngIf="user?.function === 'admin' || user?.function === 'coach'"></ion-menu-button>
+      <h1 class="greeting-title">
+        {{ user ? 'Bonjour, ' + user.firstname : 'Bienvenue sur Training Day' }}
+      </h1>
+    </div>
+  </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">home-v2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- Trial Notification -->
+  <div class="notifications-section" *ngIf="user" [class.transparent]="isSearchActive">
+    <ion-card color="warning" class="trial-notification"
+      *ngIf="user.trial_is_active && !(user.subscription_is_active || (user.grouped_perishables && user.grouped_perishables['sport-coach']) || (user.grouped_perishables && user.grouped_perishables['food-coach']))">
+      <ion-card-content>
+        <div class="trial-content">
+          <ion-icon name="time" class="trial-icon"></ion-icon>
+          <div class="trial-text">
+            <p>
+              Vous disposez d'un essai gratuit de <strong>{{ getRemainingTrialDays(user.trial_expires_at) }}
+                jours</strong>.
+              Profitez-en pour discuter avec votre coach.
+            </p>
+            <p class="trial-expiry">
+              L'essai se terminera le <strong>{{ user.trial_expires_at | date:'dd MMMM yyyy' }}</strong>.
+            </p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    <!-- Unread Messages Notification -->
+    <ion-card color="primary" class="messages-notification" *ngIf="unreadMessagesCount > 0"
+      (click)="navigateTo('/messenger-master')">
+      <ion-card-content>
+        <div class="messages-content">
+          <ion-icon name="chatbubbles" class="messages-icon"></ion-icon>
+          <div class="messages-text">
+            <p>
+              Vous avez <strong>{{ unreadMessagesCount }} {{ unreadMessagesCount === 1 ? 'nouveau message' : 'nouveaux
+                messages' }}</strong>
+              <span *ngIf="user?.function === 'customer'">de votre coach.</span>
+            </p>
+            <p class="messages-action">
+              Touchez pour voir vos messages
+            </p>
+          </div>
+          <div class="message-arrow-container">
+            <ion-icon name="chevron-forward" class="messages-arrow"></ion-icon>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Appointments Notification -->
+  <div class="appointments-section" *ngIf="user?.appointments?.length > 0" [class.transparent]="isSearchActive">
+    <div class="section-header ion-padding">
+      <h2 class="section-title">Mes rendez-vous</h2>
+    </div>
+
+    <div class="appointments-container ion-padding-horizontal">
+      <ion-card class="appointment-card" *ngFor="let appointment of user.appointments">
+        <ion-card-content>
+          <div class="appointment-content">
+            <div class="appointment-icon">
+              <ion-icon name="calendar"></ion-icon>
+            </div>
+            <div class="appointment-details">
+              <p class="appointment-date">
+                Rendez-vous le <strong>{{ appointment.datetime | date:'dd MMMM yyyy' }}</strong>
+                à <strong>{{ appointment.datetime | date:'HH:mm' }}</strong>
+              </p>
+              <p class="appointment-reason">
+                <strong>Motif :</strong> {{ appointment.reason }}
+              </p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Search Overlay -->
+  <div class="search-overlay" [class.active]="isSearchActive" (click)="closeSearch()">
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section-wrapper">
+    <div class="search-section" [class.search-active]="isSearchActive">
+      <div class="search-container">
+        <ion-icon name="search" class="search-icon"></ion-icon>
+        <input type="text" placeholder="Rechercher un exercice, un programme..." class="search-input"
+          [formControl]="searchControl" (focus)="openSearch()" (blur)="handleSearchBlur()">
+        <ion-icon name="options" class="filter-icon" *ngIf="!isSearchActive"></ion-icon>
+        <ion-icon name="close" class="close-icon" *ngIf="isSearchActive" (click)="closeSearch()"></ion-icon>
+      </div>
+
+      <!-- Search Results -->
+      <div class="search-results-container" *ngIf="showSearchResults">
+        <!-- Loading State -->
+        <div class="search-loading" *ngIf="isSearching">
+          <ion-spinner></ion-spinner>
+          <span>Recherche en cours...</span>
+        </div>
+
+        <!-- Results -->
+        <div class="search-results" *ngIf="!isSearching && searchResults">
+          <!-- No Results -->
+          <div class="no-results" *ngIf="!hasResults()">
+            <ion-icon name="search"></ion-icon>
+            <p>Aucun résultat trouvé pour "{{ searchQuery }}"</p>
+          </div>
+
+          <!-- Results List -->
+          <div class="results-list" *ngIf="hasResults()">
+            <div class="result-item" *ngFor="let result of getAllResults()" (click)="selectResult(result)">
+              <div class="result-icon">
+                <ion-icon [name]="getResultIcon(result.entity)"></ion-icon>
+              </div>
+              <div class="result-content">
+                <h4 class="result-title">{{ result.title }}</h4>
+                <!--<p class="result-description">{{ result.description }}</p>-->
+                <span class="result-type">{{ getResultType(result.entity) }}</span>
+              </div>
+              <div class="result-thumbnail" *ngIf="result.thumbnailUrl">
+                <img [src]="result.thumbnailUrl" [alt]="result.title">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Training video section -->
+  <div class="video-card-list">
+    <!-- Training everyday -->
+    <div class="tool-card">
+      <div class="image-container">
+        <img title="Training of the day"
+          src="../../../assets/medias/rounded-cards/sample-image-training-of-the-day.jpg" />
+      </div>
+      <div class="card-description">
+        <div class="spacer"></div>
+        <p>Explore des programmes sportifs adaptés à ton niveau et construits autour de tes objectifs personnels.</p>
+        <h3>Training of the day</h3>
+        <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateTo('/video-home')">
+          Commencer
+        </ion-button>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="image-container">
+        <img title="Boxing of the day" src="../../../assets/medias/rounded-cards/sample-image-boxing-of-the-day.jpg" />
+      </div>
+      <div class="card-description">
+        <div class="spacer"></div>
+        <p>De l'initiation aux entraînements avancés, progresse en boxe selon tes objectifs personnels.</p>
+        <h3>Boxing of the day</h3>
+        <ion-button style="align-self: stretch;" expand="block" shape="round" (click)="navigateTo('/video-home')">
+          Commencer
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mes rendez-vous -->
+  <div class="appointments-section" *ngIf="user?.function === 'coach' || user?.function === 'nutritionist'">
+    <div class="section-header ion-padding">
+      <h2 class="section-title">Mes Rendez-vous en attente de confirmation</h2>
+      <span class="voir-plus" (click)="navigateTo('/staff-appointment')">Voir plus</span>
+    </div>
+
+    <app-appointment-list [appointments]="staffAppointments"
+      [isLoadingAppointments]="isLoadingAppointments"></app-appointment-list>
+  </div>
+
+
+
+  <!-- Featured Videos Section -->
+  <div class="featured-videos-section">
+    <div class="section-header ion-padding">
+      <h2 class="section-title">Découvrez les nouvelles actualités sportives</h2>
+    </div>
+
+    <div class="videos-container ion-padding">
+      <div style="height: 50px; display: flex; justify-content: center; align-items: center;"
+        *ngIf="featuredVideoIsLoading">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+      <div class="video-card" *ngFor="let video of videos" (click)="goToVideo(video.id)">
+        <div class="video-thumbnail">
+          <img [src]="video.thumbnail ? getUrl(video.thumbnail.permalink) : '/assets/logo-light-1024x1024-noalpha.jpg'"
+            [alt]="video.title" class="thumbnail-image" />
+          <div class="play-overlay">
+            <ion-icon name="play-circle-outline"></ion-icon>
+          </div>
+        </div>
+        <div class="video-content">
+          <h3 class="video-title">{{ video.title }}</h3>
+          <p class="video-description">{{ video.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Applications Section -->
+  <div class="apps-section">
+    <div class="section-header ion-padding">
+      <h2 class="section-title">Mes Applications</h2>
+      <span class="voir-plus" (click)="navigateTo('/tools')">Voir plus</span>
+    </div>
+
+    <!-- Swiper container with fixed margins -->
+    <div class="swiper-container">
+      <swiper-container navigation="false" pagination="true" css-mode="false" loop="false" slides-per-view="1.2"
+        space-between="16" centered-slides="false" init="true">
+
+        <swiper-slide>
+          <div class="slide-content enhanced-slide-content" (click)="navigateTo('/app-imc')">
+            <div class="image-container">
+              <img title="Calculateur IMC" src="./../../assets/medias/imc-stockphoto.png" />
+            </div>
+            <div class="slide-description">
+              <p>Découvrez notre application calculateur d'IMC pour connaître votre indice de masse corporelle.</p>
+              <h3>Calculateur d'IMC</h3>
+              <ion-button class="slide-button" (click)="$event.stopPropagation(); navigateTo('/app-imc')" shape="round">
+                Commencer
+              </ion-button>
+            </div>
+          </div>
+        </swiper-slide>
+
+        <swiper-slide>
+          <div class="slide-content enhanced-slide-content" (click)="navigateTo('/app-weight-tracking')">
+            <div class="image-container">
+              <img title="Suivi du poids" src="../../../assets/medias/weight-tracking-stockphoto.png" />
+            </div>
+            <div class="slide-description">
+              <p>Découvrez notre application suivi du poids.</p>
+              <h3>Suivi du poids</h3>
+              <ion-button class="slide-button" (click)="navigateTo('/app-weight-tracking')" shape="round">
+                Commencer
+              </ion-button>
+            </div>
+          </div>
+        </swiper-slide>
+
+        <swiper-slide>
+          <div class="slide-content enhanced-slide-content" (click)="navigateTo('/app-calories')">
+            <div class="image-container">
+              <img title="Calculateur de calories" src="../../../assets/medias/calory-stockphoto.png" />
+            </div>
+            <div class="slide-description">
+              <p>Découvrez notre application calculateur de calories.</p>
+              <h3>Calculateur de calories</h3>
+              <ion-button class="slide-button" (click)="navigateTo('/app-calories')" shape="round">
+                Commencer
+              </ion-button>
+            </div>
+          </div>
+        </swiper-slide>
+
+        <swiper-slide>
+          <div class="slide-content enhanced-slide-content" (click)="navigateTo('/app-gps')">
+            <div class="image-container">
+              <img title="Chronomètre" src="../../../assets/medias/IMG_0962_1024x683.jpeg" />
+            </div>
+            <div class="slide-description">
+              <p>Entraînez-vous avec l'application chronomètre réglable pour chaque tour d'entraînement.</p>
+              <h3>Chronomètre</h3>
+              <ion-button class="slide-button" (click)="navigateTo('/app-timer')" shape="round">
+                Commencer
+              </ion-button>
+            </div>
+          </div>
+        </swiper-slide>
+
+        <swiper-slide>
+          <div class="slide-content enhanced-slide-content" (click)="navigateTo('/app-gps')">
+            <div class="image-container">
+              <img title="GPS Course" src="../../../assets/medias/IMG_0961_1024x683.jpeg" />
+            </div>
+            <div class="slide-description">
+              <p>Calculez vos kilomètres parcourus avec l'application GPS.</p>
+              <h3>Course</h3>
+              <ion-button class="slide-button" (click)="navigateTo('/app-gps')" shape="round">
+                Commencer
+              </ion-button>
+            </div>
+          </div>
+        </swiper-slide>
+
+      </swiper-container>
+    </div>
+  </div>
+
+  <!-- Chat CTA Section -->
+  <div class="chat-cta-section ion-padding">
+    <div class="chat-cta-container">
+      <div class="chat-cta-content">
+        <ion-icon name="chatbubbles" class="chat-icon"></ion-icon>
+        <div class="chat-text">
+          <h3>Besoin d'aide ?</h3>
+          <p>Parlez à votre coach personnel</p>
+        </div>
+      </div>
+      <ion-button class="chat-button" (click)="goToMessenger()" shape="round">
+        Commencer la discussion
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Training Section -->
+  <div class="training-section">
+    <div class="section-header ion-padding">
+      <h2 class="section-title">S'entraîner</h2>
+      <span class="voir-plus" (click)="navigateTo('/video-home')">Voir plus</span>
+    </div>
+    <div class="training-cta-section ion-padding">
+      <div class="training-cta-container">
+        <div class="training-cta-content">
+          <!--<div class="cta-icon-container">-->
+          <ion-icon name="fitness" class="training-icon"></ion-icon>
+          <!--</div>-->
+          <div class="training-text">
+            <h3>Commencez votre entraînement</h3>
+            <p>Découvrez nos programmes personnalisés et vidéos d'exercices</p>
+          </div>
+        </div>
+        <div class="training-features">
+          <div class="feature-item">
+            <ion-icon name="play-circle" color="light"></ion-icon>
+            <span>Vidéos HD</span>
+          </div>
+          <div class="feature-item">
+            <ion-icon name="timer" color="light"></ion-icon>
+            <span>Programmes adaptés</span>
+          </div>
+          <div class="feature-item">
+            <ion-icon name="trophy" color="light"></ion-icon>
+            <span>Suivi des progrès</span>
+          </div>
+        </div>
+        <ion-button class="training-button" (click)="navigateTo('/video-home')" shape="round">
+          Explorer les entraînements
+        </ion-button>
+      </div>
+    </div>
+  </div>
+  <!-- Premium Subscription Section -->
+  <div class="ion-padding-horizontal ion-padding-bottom" *ngIf="!user || user.renewable_id == null">
+    <div class="premium-subscription-section">
+      <div class="section-header ion-padding">
+        <h2 class="section-title">Profiter des avantages</h2>
+      </div>
+      <div class="subscription-card">
+        <div class="subscription-content">
+          <!-- Premium Badge -->
+          <div class="premium-badge-wrapper">
+            <div class="premium-badge">
+              <ion-icon name="diamond" class="premium-badge-icon"></ion-icon>
+              <span class="premium-badge-text">Premium</span>
+            </div>
+          </div>
+
+          <!-- Header with Logo -->
+          <div class="subscription-header">
+            <img src="/assets/logo-dark-cropped.png" width="48" alt="Training Day Logo" class="premium-logo" />
+            <h2 class="subscription-title">Optez pour un abonnement</h2>
+            <p class="subscription-subtitle">
+              Débloquez des programmes personnalisés et un suivi avec votre coach
+            </p>
+          </div>
+
+          <!-- Premium Features with Enhanced Icons -->
+          <div class="premium-features">
+            <div class="feature-item">
+              <div class="feature-icon-container">
+                <ion-icon name="fitness" class="feature-icon"></ion-icon>
+              </div>
+              <div class="feature-content">
+                <span class="feature-title">Programmes personnalisés</span>
+                <span class="feature-description">Adaptés à vos objectifs</span>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon-container">
+                <ion-icon name="person" class="feature-icon"></ion-icon>
+              </div>
+              <div class="feature-content">
+                <span class="feature-title">Coach personnel dédié</span>
+                <span class="feature-description">Accompagnement quotidien</span>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon-container">
+                <ion-icon name="analytics" class="feature-icon"></ion-icon>
+              </div>
+              <div class="feature-content">
+                <span class="feature-title">Suivi en temps réel</span>
+                <span class="feature-description">Progression détaillée</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Call to Action Button -->
+          <ion-button class="premium-cta-button" expand="block" size="large" shape="round"
+            (click)="navigateTo('/swipeable-store')">
+            <ion-icon name="storefront" slot="start"></ion-icon>
+            Accéder à la boutique
+            <ion-icon name="arrow-forward" slot="end"></ion-icon>
+          </ion-button>
+
+          <!-- Trust Indicators -->
+          <div class="trust-indicators">
+            <div class="trust-item">
+              <ion-icon name="shield-checkmark" color="success"></ion-icon>
+              <span>Garantie satisfait ou remboursé</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips and Advice Section -->
+  <div class="tips-section">
+    <div class="section-header ion-padding">
+      <h2 class="section-title">Astuces et conseils</h2>
+      <span class="voir-plus" (click)="navigateTo('/tips')">Voir plus</span>
+    </div>
+
+    <!-- Tips Swiper Container -->
+    <div class="tips-swiper-container">
+      <swiper-container navigation="false" pagination="true" css-mode="false" loop="false" slides-per-view="1.1"
+        space-between="16" centered-slides="false" autoplay="true" autoplay-delay="4000" init="true">
+
+        <swiper-slide>
+          <div class="tip-slide">
+            <div class="tip-image-container">
+              <img src="../../../assets/medias/plat-bol-bouddha-legumes-legumineuses-vue-dessus-1024x683.jpeg"
+                alt="Les calories" />
+            </div>
+            <div class="tip-content">
+              <h3>Les calories</h3>
+              <p class="tip-excerpt">
+                Chaque jour, votre corps a besoin d'énergie pour fonctionner et accomplir correctement ses missions.
+              </p>
+              <div class="tip-details" [class.expanded]="expandedTips['calories']">
+                <p>
+                  La calorie est une unité de mesure de l'énergie couramment utilisée en nutrition. Par habitude,
+                  on évoque nos besoins journaliers en "calories", mais il s'agit en fait de kilocalories (kcal).
+                  1 kilocalorie = 1 000 calories.
+                </p>
+              </div>
+              <ion-button class="tip-button" (click)="toggleTip('calories')">
+                {{ expandedTips['calories'] ? 'Réduire' : 'En savoir plus' }}
+              </ion-button>
+            </div>
+          </div>
+        </swiper-slide>
+        <swiper-slide>
+          <div class="tip-slide">
+            <div class="tip-image-container">
+              <img src="../../../assets/medias/femme-active-mesurant-sa-taille-1024x767.jpeg"
+                alt="Rééquilibrage alimentaire" />
+            </div>
+            <div class="tip-content">
+              <h3>Rééquilibrage alimentaire</h3>
+              <p class="tip-excerpt">
+                Dans notre société sédentaire, où l'abondance et la consommation effrénée sont les maîtres-mots.
+              </p>
+              <div class="tip-details" [class.expanded]="expandedTips['reequilibrage']">
+                <p>
+                  Dans un tel contexte, il peut être difficile de se repérer parmi les informations qui nous parviennent
+                  continuellement. « 5 fruits et légumes par jour », « 10000 pas par jour », « limiter les aliments
+                  gras,
+                  salés, sucrés » : tout le monde connaît ces messages de santé publique.
+                </p>
+              </div>
+              <ion-button class="tip-button" (click)="toggleTip('reequilibrage')">
+                {{ expandedTips['reequilibrage'] ? 'Réduire' : 'En savoir plus' }}
+              </ion-button>
+            </div>
+          </div>
+        </swiper-slide>
+      </swiper-container>
+    </div>
+  </div>
+
+  <!-- Share Section -->
+  <div class="share-section ion-padding">
+    <div class="share-container">
+      <div class="share-content">
+        <ion-icon name="share-social" class="share-icon"></ion-icon>
+        <div class="share-text">
+          <h3>Partagez Training Day</h3>
+          <p>Invitez vos amis à vous rejoindre</p>
+        </div>
+      </div>
+      <ion-button fill="outline" class="share-button" (click)="clickShareApp()">
+        Partager
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Privacy Policy Section -->
+  <div class="privacy-policy-section ion-padding">
+    <ion-button fill="clear" color="medium" size="small" class="privacy-policy-button" (click)="openPrivacyPolicy()">
+      <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
+      Politique de confidentialité
+    </ion-button>
+  </div>
+  <br />
+  <br />
+  <br />
+
+  <!-- Bottom Spacing -->
+  <div class="bottom-spacing"></div>
+
+  <!-- Chat Button -->
+  <app-button-to-chat></app-button-to-chat>
 </ion-content>
