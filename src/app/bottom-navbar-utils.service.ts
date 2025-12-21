@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Injectable } from '@angular/core';
+
+import { ChangeDetectorRef, Injectable, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, merge, of } from 'rxjs';
 
@@ -6,7 +7,11 @@ import { filter, merge, of } from 'rxjs';
   providedIn: 'root'
 })
 export class BottomNavbarUtilsService {
+  
+  /* @deprecated use isNavbarVisible() instead */
   bottomNavbarAvailable: boolean = true // Hidden by default
+
+  isNavbarVisible: WritableSignal<boolean> = signal(true)
 
   tabSequences = ['home', 'tools', 'videos', 'recipe-home', 'profile']
 
@@ -34,8 +39,10 @@ export class BottomNavbarUtilsService {
         console.log("e", e)
         if (flattenedMatches.includes(e.split('/')[1].split("?")[0])) {
           this.bottomNavbarAvailable = true
+          this.isNavbarVisible.set(true)
         } else {
           this.bottomNavbarAvailable = false
+          this.isNavbarVisible.set(false)
         }
       })
   }
@@ -50,5 +57,6 @@ export class BottomNavbarUtilsService {
 
   setVisibility(visible: boolean) {
     this.bottomNavbarAvailable = visible
+    this.isNavbarVisible.set(visible)
   }
 }

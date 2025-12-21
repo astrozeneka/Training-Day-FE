@@ -111,3 +111,13 @@ ion-header{
 a{
   text-decoration: none;
 }
+
+// Toast feedback with offset
+.toast-feedback-with-offset{
+  transform: translateY(-60px);
+}
+
+// Default
+.toast-feedback{
+  // Unused
+}

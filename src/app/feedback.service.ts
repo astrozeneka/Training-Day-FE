@@ -4,6 +4,7 @@ import {ModalController, ToastController} from "@ionic/angular";
 import {environment} from "../environments/environment";
 import {FeedbackModalComponent} from "./components/feedback-modal/feedback-modal.component";
 import { Router } from '@angular/router';
+import { BottomNavbarUtilsService } from './bottom-navbar-utils.service';
 
 // log levels
 export const DEBUG = 0
@@ -34,7 +35,8 @@ export class FeedbackService {
     private contentService: ContentService,
     private toastController: ToastController,
     private modalController: ModalController,
-    private router: Router
+    private router: Router,
+    private bottomNavbarUtilsService: BottomNavbarUtilsService
   ) { }
 
   register(message:string, color:string = 'secondary', options:FeedbackOptions={type: 'toast', buttonText: null, modalTitle: null, modalContent: null, modalImage: null}){
@@ -44,9 +46,10 @@ export class FeedbackService {
   }
 
   async displayFeedback(message:string, color:string = 'secondary', logLevel:number = INFO, options:FeedbackOptions){
-    console.log("DisplayFeedback", message, color, logLevel, options)
     if (options.type == 'toast') {
+      let navbarVisible: boolean = this.bottomNavbarUtilsService.isNavbarVisible()
       let toast = await this.toastController.create({
+        cssClass: navbarVisible ? 'toast-feedback-with-offset' : 'toast-feedback',
         message: message,
         position: 'bottom',
         duration: 5000,
