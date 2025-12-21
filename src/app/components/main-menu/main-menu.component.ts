@@ -11,7 +11,7 @@ import { ChatService } from 'src/app/chat.service';
 @Component({
   selector: 'app-main-menu',
   templateUrl: './main-menu.component.html',
-  styleUrls: ['./main-menu.component.scss'],
+  styleUrls: ['./main-menu.component.scss'], 
 })
 export class MainMenuComponent extends AbstractComponent implements OnInit {
   user: any = null

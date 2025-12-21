@@ -10,6 +10,7 @@ import videojs from 'video.js';
 import 'videojs-hls-quality-selector';
 import '@videojs/http-streaming';  // Import VHS plugin
 import { VideoFormService } from 'src/app/video-form.service';
+import { VideoMasterService } from 'src/app/video-master.service';
 
 @Component({
   selector: 'app-video-view',
@@ -358,12 +359,13 @@ import { VideoFormService } from 'src/app/video-form.service';
             <div class="detail-section danger-zone">
                 <h3>Supprimer la vidéo</h3>
                 <div class="delete-action">
-                    <ion-button 
+                    <app-ux-button 
+                        expand="full"
                         (click)="deleteVideo()" 
                         shape="round" 
                         color="danger"
-                        expand="block"
-                    >Supprimer la vidéo</ion-button>
+                        [loading]="videoIsDeleting"
+                    >Supprimer la vidéo</app-ux-button>
                 </div>
             </div>
         </div>
@@ -890,6 +892,7 @@ export class VideoViewPage implements OnInit, AfterViewInit {
 
   programVideos: any[] = [];
   isLoadingProgramVideos = false;
+  videoIsDeleting = false;
 
   // The video element reference
   @ViewChild('videoElement', { static: false }) videoElement:any = undefined
@@ -928,7 +931,8 @@ export class VideoViewPage implements OnInit, AfterViewInit {
     private alertController: AlertController,
     private cdr: ChangeDetectorRef,
     private vfs: VideoFormService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private videoMasterService: VideoMasterService
   ) {
     this.videoId = this.route.snapshot.paramMap.get('id')
     this.router.events.subscribe(async (event)=>{
@@ -1143,6 +1147,10 @@ export class VideoViewPage implements OnInit, AfterViewInit {
           this.feedbackService.register('Le vidéo a été mis à jour avec succes', 'success')
           // Go back if possible
           window.history.back()
+
+          // Trigger video updates
+          if (this.video.category)
+            this.videoMasterService.loadData(this.video.category);
           
 
           // this.router.navigate(['/home'])
@@ -1166,12 +1174,21 @@ export class VideoViewPage implements OnInit, AfterViewInit {
           text: 'Supprimer',
           cssClass: 'ion-color-danger',
           handler: ()=>{
+            this.videoIsDeleting = true
             this.contentService.delete(`/video`, `${this.videoId}`)
+            // all
+            .pipe(finalize(()=>this.videoIsDeleting = false))
             .subscribe((response:any)=>{
               if(response.message){
                 this.feedbackService.register('Le vidéo a été supprimé avec succes', 'success')
+
                 // this.navCtrl.back();
                 window.history.back()
+
+                // Trigger video updates
+                if (this.video.category)
+                  this.videoMasterService.loadData(this.video.category);
+                
               }else{
                 this.feedbackService.registerNow('Erreur lors de la suppression de la vidéo', 'danger')
               }

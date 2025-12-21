@@ -1,0 +1,242 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <app-back-button></app-back-button>
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>{{ videoData().pageTitle }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <!-- List View -->
+    <div class="exercise-list-page" *ngIf="!selectedExercise && !selectedProgram">
+
+        <!-- The page title and subtitle -->
+        <div class="ion-padding-horizontal" *ngIf="!videoData().isLoading">
+            <div class="title" *ngIf="videoData().pageTitle">
+                {{ videoData().pageTitle }}
+            </div>
+            <div class="subtitle">
+                Choisissez un exercice ou un programme
+            </div>
+        </div>
+
+        <!-- The tab segments -->
+        <div class="segment-container" *ngIf="!videoData().isLoading">
+            <ion-segment [(ngModel)]="selectedSegment" (ionChange)="segmentChanged($event)">
+                <ion-segment-button value="exercises">
+                    <ion-label>Exercices</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="programs">
+                    <ion-label>Programmes</ion-label>
+                </ion-segment-button>
+            </ion-segment>
+        </div>
+
+        <!-- The shimmering loader for both header and tab segments -->
+        <div *ngIf="videoData().isLoading" class="shimmer-header">
+            <div class="shimmer-title"></div>
+            <div class="shimmer-subtitle"></div>
+            <div class="shimmer-segment">
+                <div class="shimmer-segment-button"></div>
+                <div class="shimmer-segment-button"></div>
+            </div>
+        </div>
+
+        <div class="content-container">
+            <!-- Exercises Tab -->
+            <div class="exercises-content" *ngIf="selectedSegment === 'exercises'">
+
+                <!-- Shimering Loading State -->
+                <div *ngIf="videoData().isLoading" class="shimmer-container exercises-shimmer">
+                    <div class="shimmer-exercise-item" *ngFor="let i of [1,2,3,4]">
+                        <div class="shimmer-exercise-icon"></div>
+                        <div class="shimmer-exercise-info">
+                            <div class="shimmer-exercise-name"></div>
+                            <div class="shimmer-exercise-description"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!videoData().isLoading && videoData().exercises.length === 0" class="empty-state">
+                    <ion-icon name="fitness-outline" class="empty-icon"></ion-icon>
+                    <p>Aucun exercice disponible dans cette catégorie</p>
+                </div>
+
+                <div class="exercises-list" *ngIf="!videoData().isLoading && videoData().exercises.length > 0">
+                    <div class="exercise-item" *ngFor="let exercise of videoData().exercises"
+                        (click)="exercise.available ? openExerciseDetail(exercise) : null"
+                        [class.unavailable]="!exercise.available">
+                        <div class="exercise-icon" *ngIf="!exercise.thumbnailUrl"> 
+                            <ion-icon name="fitness-outline"></ion-icon>
+                        </div>
+                        <div class="exercise-thumbnail" *ngIf="exercise.thumbnailUrl">
+                            <img [src]="exercise.thumbnailUrl" [alt]="exercise.title">
+                            <div class="play-overlay">
+                                <ion-icon name="play-circle-outline"></ion-icon>
+                            </div>
+                        </div>
+
+                        <div class="exercise-info">
+                            <div class="exercise-name">{{ exercise.title }}</div>
+                            <div class="exercise-description" *ngIf="exercise.available">
+                                {{ exercise.description }}
+                            </div>
+                            <div *ngIf="!exercise.available" class="availability-message">
+                                <ion-icon name="alert-circle-outline"></ion-icon>
+                                <span>Ce vidéo est disponible pour les abonnés {{
+                                    getMinimumRequiredLevel(exercise.privilege) }} ou supérieur</span>
+                            </div>
+                        </div>
+                        <ion-icon name="chevron-forward" class="arrow-icon" *ngIf="exercise.available"></ion-icon>
+                        <ion-icon name="lock-closed" class="lock-icon" *ngIf="!exercise.available"></ion-icon>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Programs Tab -->
+            <div class="programs-content" *ngIf="selectedSegment === 'programs'">
+                <div *ngIf="videoData().isLoading" class="shimmer-container programs-shimmer">
+                    <div class="shimmer-program-card" *ngFor="let i of [1,2,3]">
+                        <div class="shimmer-program-header">
+                            <div class="shimmer-program-title"></div>
+                        </div>
+                        <div class="shimmer-program-info">
+                            <div class="shimmer-info-item"></div>
+                            <div class="shimmer-info-item"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!videoData().isLoading && videoData().programs.length === 0" class="empty-state">
+                    <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
+                    <p>Aucun programme disponible dans cette catégorie</p>
+                </div>
+
+                <div class="programs-list" *ngIf="!videoData().isLoading && videoData().programs.length > 0">
+                    <div class="program-card" *ngFor="let program of videoData().programs" (click)="openProgramDetail(program)">
+                        <div class="program-header">
+                            <div class="program-title">{{ program.name }}</div>
+                            <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
+                        </div>
+                        <div class="program-info">
+                            <span class="info-item">
+                                <ion-icon name="albums-outline"></ion-icon>
+                                {{ program.videoCount }} vidéos
+                            </span>
+                            <span class="info-item">
+                                <ion-icon name="pricetag-outline"></ion-icon>
+                                {{ program.category }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exercise Detail View -->
+    <div class="detail-page" *ngIf="selectedExercise">
+        <div class="detail-header">
+            <ion-button fill="clear" class="back-button" (click)="closeDetail()">
+                <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+            </ion-button>
+            <h2>{{ selectedExercise.name }}</h2>
+        </div>
+
+        <div class="video-container">
+            <video controls class="exercise-video" poster="/assets/placeholder-video.jpg">
+                <source [src]="selectedExercise.videoUrl" type="video/mp4">
+                Votre navigateur ne supporte pas la lecture de vidéos.
+            </video>
+        </div>
+
+        <div class="detail-content">
+            <div class="detail-section">
+                <h3>Description</h3>
+                <p>{{ selectedExercise.description }}</p>
+            </div>
+
+            <div class="detail-section">
+                <h3>Muscles ciblés</h3>
+                <p>{{ selectedExercise.targetMuscles }}</p>
+            </div>
+
+            <div class="detail-section">
+                <h3>Niveau de difficulté</h3>
+                <p>{{ selectedExercise.difficulty }}</p>
+            </div>
+
+            <div class="detail-section">
+                <h3>Instructions</h3>
+                <ol>
+                    <li *ngFor="let step of selectedExercise.steps">{{ step }}</li>
+                </ol>
+            </div>
+
+            <ion-button expand="block" color="primary" class="action-button">
+                Ajouter à mon programme
+            </ion-button>
+        </div>
+    </div>
+
+    <!-- Program Detail View -->
+    <div class="detail-page" *ngIf="selectedProgram">
+        <div class="detail-header">
+            <ion-button fill="clear" class="back-button" (click)="closeDetail()">
+                <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+            </ion-button>
+            <h2>{{ selectedProgram.title }}</h2>
+        </div>
+
+        <div class="video-container">
+            <video controls class="program-video" poster="/assets/placeholder-program.jpg">
+                <source [src]="selectedProgram.videoUrl" type="video/mp4">
+                Votre navigateur ne supporte pas la lecture de vidéos.
+            </video>
+        </div>
+
+        <div class="detail-content">
+            <!--<div class="program-metadata">
+            <div class="metadata-item">
+              <ion-icon name="time-outline"></ion-icon>
+              <span>{{ selectedProgram.duration }}</span>
+            </div>
+            <div class="metadata-item">
+              <ion-icon name="fitness-outline"></ion-icon>
+              <span>{{ selectedProgram.level }}</span>
+            </div>
+            <div class="metadata-item">
+              <ion-icon name="flame-outline"></ion-icon>
+              <span>{{ selectedProgram.calories }}</span>
+            </div>
+          </div>-->
+
+            <div class="detail-section">
+                <h3>Description du programme</h3>
+                <p>{{ selectedProgram | json }}</p>
+            </div>
+
+            <div class="detail-section">
+                <h3>Coach</h3>
+                <div class="coach-info">
+                    <div class="coach-avatar">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h3>Équipement nécessaire</h3>
+            </div>
+
+            <ion-button expand="block" color="primary" class="action-button">
+                Commencer l'entraînement
+            </ion-button>
+        </div>
+    </div>
+
+    <app-button-to-chat *ngIf="!selectedExercise && !selectedProgram"></app-button-to-chat>
+    <app-bottom-navbar-placeholder *ngIf="!selectedExercise && !selectedProgram"></app-bottom-navbar-placeholder>
+</ion-content>

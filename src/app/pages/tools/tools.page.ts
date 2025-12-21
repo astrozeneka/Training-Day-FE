@@ -77,7 +77,7 @@ import { Router } from '@angular/router';
       <div class="card-description">
         <div class="spacer"></div>
         <p>Calculez vos kilomètres parcourus avec l'application GPS.</p>
-        <h3>GPS</h3>
+        <h3>Course</h3>
         <ion-button class="tool-button" expand="block" (click)="navigateTo('/app-gps')">
           Commencer
         </ion-button>
