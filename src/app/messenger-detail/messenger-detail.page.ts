@@ -318,7 +318,11 @@ export class MessengerDetailPage implements OnInit, OnDestroy {
   async ngOnInit() {
     // Enable keyboard resize for this page
     if (this.platform.is('capacitor')) {
-      await Keyboard.setResizeMode({ mode: KeyboardResize.Body });
+      try {
+        await Keyboard.setResizeMode({ mode: KeyboardResize.Body });
+      } catch (error) {
+        console.warn('Keyboard plugin not available on this platform', error);
+      }
     }
 
     this.isLoading = true;
@@ -483,8 +487,6 @@ export class MessengerDetailPage implements OnInit, OnDestroy {
     let channel = echo.private(`conversation.${conversation.id}`);
     channel.listen('MessageSent', (e: Msg) => {
       this.lastMessage = e.content
-      console.log("Message received", e)
-      console.log("==>", JSON.stringify(e))
 
       // Check if the message is already added as a 'sending' message
       const tempIndex = this.messages.findIndex(m => 
@@ -542,14 +544,20 @@ export class MessengerDetailPage implements OnInit, OnDestroy {
           'content': messageText,
           'type': 'text', // Todo be updated later
           'role': 'coach' // Can be nutritionist or coach
-        })
+        }) as any as Observable<{success: boolean, msg: any}>;
       }),
       catchError((err) => {
         console.error('Error sending message:', err);
         return throwError(() => err)
       })
     )
-      .subscribe((res) => {
+      .subscribe((res: {success: boolean, msg: any}) => {
+        // The newly sent message, change its status from 'sending' to 'sent'
+        let latestMessage = this.messages[this.messages.length - 1];
+        latestMessage.status = 'sent';
+        latestMessage.content = latestMessage.content;
+        this.cdr.detectChanges();
+        console.log(latestMessage)
       })
   }
 
@@ -1019,7 +1027,11 @@ export class MessengerDetailPage implements OnInit, OnDestroy {
   async ngOnDestroy() {
     // Restore default keyboard behavior when leaving the page
     if (this.platform.is('capacitor')) {
-      await Keyboard.setResizeMode({ mode: KeyboardResize.None });
+      try {
+        await Keyboard.setResizeMode({ mode: KeyboardResize.None });
+      } catch (error) {
+        console.warn('Keyboard plugin not available on this platform', error);
+      }
     }
   }
 }

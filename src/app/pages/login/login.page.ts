@@ -137,6 +137,7 @@ import { Platform } from '@ionic/angular';
           ></app-continue-with-google-button>
 
           <app-continue-with-apple-button
+            *ngIf="system == 'ios'"
             (action)="handleAppleSignIn($event)"
             color="medium"
             expand="block"
@@ -300,10 +301,13 @@ app-ux-button .inner{
   }
 
   .social-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: row;
     gap: 0.5em;
-    margin-bottom: 0.5em;
+    margin-bottom: 1.5em;
+    & > *{
+      flex: 1;
+    }
   }
 
   .privacy-policy-button {

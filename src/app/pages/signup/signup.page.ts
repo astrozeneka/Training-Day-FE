@@ -79,6 +79,7 @@ import { User } from 'src/app/models/Interfaces';
           ></app-continue-with-google-button>
 
           <app-continue-with-apple-button
+            *ngIf="system == 'ios'"
             (action)="loginWithApple($event)"
             color="medium"
             expand="block"
@@ -331,10 +332,13 @@ import { User } from 'src/app/models/Interfaces';
 }
 
 .social-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5em;
-  margin-bottom: 0.5em;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    margin-bottom: 1.5em;
+    & > *{
+      flex: 1;
+    }
 }
 
 .login-link {
@@ -480,6 +484,10 @@ export class SignupPage extends FormComponent implements OnInit {
     'acceptConditions': undefined
   };
 
+
+  // The social buttons are displayed conditionally based on the platform
+  system:'ios'|'android' = null
+
   constructor(
     private contentService: ContentService, // DO not use http provided by the content service
     private http: HttpClient,
@@ -496,6 +504,14 @@ export class SignupPage extends FormComponent implements OnInit {
   async ngOnInit() {
     this.useDarkMode = await this.dms.isAvailableAndEnabled();
     this.setValidatorsForCurrentStep();
+
+
+    // 7. Detect the platform
+    if (this.platform.is('android')){
+      this.system = 'android'
+    } else {
+      this.system = 'ios'
+    }
   }
 
   setValidatorsForCurrentStep() {
