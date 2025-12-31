@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnInit, signal, ViewChild, WritableSignal } from '@angular/core';
 import { EntitlementReady } from '../abstract-components/EntitlementReady';
 import { AndroidSubscription, Product } from '../custom-plugins/store.plugin';
 import { User } from '../models/Interfaces';
@@ -99,6 +99,10 @@ export class AutorenewableBubblesComponent extends EntitlementReady implements O
       on: {
         slideChange: this.onSlideChange,
         reachEnd: this.onReachEnd,
+        /*sliderMove: this.onSliderMove,
+        setTranslate: this.onSetTranslate,
+        transitionStart: this.onTransitionStart,
+        transitionEnd: this.onTransitionEnd,*/
       }
     }
     Object.assign(this.swiperEl?.nativeElement, swiperParams)
@@ -124,6 +128,42 @@ export class AutorenewableBubblesComponent extends EntitlementReady implements O
   onReachEnd(param) {
     // Unused
   }
+
+  /*
+  // Signal for x position
+  xPos: WritableSignal<number> = signal<number>(0)
+  private animationFrameId: number = null
+
+  onSliderMove = (swiper: Swiper) => {
+    // Fires continuously during active dragging
+    this.xPos.set(swiper.translate)
+  }
+
+  onSetTranslate = (swiper: Swiper, translate: number) => {
+    this.xPos.set(translate)
+  }
+
+  onTransitionStart = (swiper: Swiper) => {
+    // Start continuous tracking during momentum/bounce animation
+    this.trackTranslate(swiper)
+  }
+
+  onTransitionEnd = () => {
+    // Stop tracking when animation completes
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId)
+      this.animationFrameId = null
+    }
+  }
+
+  trackTranslate(swiper: Swiper) {
+    const update = () => {
+      this.xPos.set(swiper.translate)
+      this.animationFrameId = requestAnimationFrame(update)
+    }
+    update()
+  }
+    */
 
   /**
    * Handle the click event from a storefront item

@@ -35,6 +35,7 @@ swiper-slide{
         --margin-top: 0px;
         --margin-bottom: 0px;
     }
+    border: 1px solid var(--ion-color-primary);
 }
 
 
@@ -91,5 +92,130 @@ swiper-slide{
     &.hidden{
         z-index: -1;
         opacity: 0;
+    }
+}
+
+/**
+ * Pack content - Professional feature list styling
+ */
+.pack-content{
+    margin-top: 8px;
+
+    & .feature-list{
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        & .feature-item{
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 6px 0;
+            transition: all 0.2s ease;
+
+            & .feature-icon{
+                flex-shrink: 0;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                padding: 4px;
+
+                & svg{
+                    width: 16px;
+                    height: 16px;
+                    color: white;
+                }
+            }
+
+            & .feature-text{
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+
+                & .feature-title{
+                    font-size: 15px;
+                    font-weight: 600;
+                    color: var(--ion-text-color);
+                    line-height: 1.3;
+                }
+
+                & .feature-subtitle{
+                    font-size: 13px;
+                    font-weight: 400;
+                    color: var(--ion-color-medium);
+                    line-height: 1.3;
+                }
+            }
+
+            &.feature-highlight{
+                & .feature-icon{
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                }
+
+                & .feature-title{
+                    font-weight: 700;
+                }
+            }
+        }
+    }
+
+    &.color-primary{
+        & .feature-icon{
+            background: var(--ion-color-primary);
+        }
+        & .feature-highlight{
+            & .feature-icon{
+                background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-primary-shade));
+            }
+            & .feature-title{
+                color: var(--ion-color-primary);
+            }
+        }
+    }
+
+    &.color-dark{
+        & .feature-icon{
+            background: #383a3e;
+        }
+        & .feature-highlight{
+            & .feature-icon{
+                background: linear-gradient(135deg, #383a3e, #1e2023);
+            }
+            & .feature-title{
+                color: #383a3e;
+            }
+        }
+    }
+
+    &.color-warning{
+        & .feature-icon{
+            background: var(--ion-color-warning);
+        }
+        & .feature-highlight{
+            & .feature-icon{
+                background: linear-gradient(135deg, var(--ion-color-warning), var(--ion-color-warning-shade));
+            }
+            & .feature-title{
+                color: var(--ion-color-warning-shade);
+            }
+        }
+    }
+
+    &.color-danger{
+        & .feature-icon{
+            background: var(--ion-color-danger);
+        }
+        & .feature-highlight{
+            & .feature-icon{
+                background: linear-gradient(135deg, var(--ion-color-danger), var(--ion-color-danger-shade));
+            }
+            & .feature-title{
+                color: var(--ion-color-danger);
+            }
+        }
     }
 }
