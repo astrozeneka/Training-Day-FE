@@ -11,22 +11,84 @@
     border: 1px solid bluered;
 
     background: transparent;
+    & h2{
+        margin: 0;
+    }
     & .display-1{
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        border: 1px solid red;
 
-        background: orange;
         margin-left: -12px;
         margin-right: -12px;
         margin-top: -24px!important;
         padding-left: 12px;
         padding-right: 12px;
-        padding-top: 8px;
-        padding-bottom: 8px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+        // padding-bottom: 8px;
         //padding-top: 24px;
+
+        &.color-primary{
+            background: linear-gradient(135deg,
+                #b05322 0%,
+                #d05f23 25%,
+                #c04f13 50%,
+                #d05f23 75%,
+                #b05322 100%);
+            background-size: 200% 200%;
+            animation: shimmer 3s ease-in-out infinite;
+            color: #ffffff;
+        }
+
+        &.color-dark{
+            background: linear-gradient(135deg,
+                #1e2023 0%,
+                #222428 25%,
+                #383a3e 50%,
+                #222428 75%,
+                #1e2023 100%);
+            background-size: 200% 200%;
+            animation: shimmer 3s ease-in-out infinite;
+            color: #ffffff;
+        }
+
+        &.color-warning{
+            background: linear-gradient(135deg,
+                #e0ac08 0%,
+                #ffc409 25%,
+                #ffca22 50%,
+                #ffc409 75%,
+                #e0ac08 100%);
+            background-size: 200% 200%;
+            animation: shimmer 3s ease-in-out infinite;
+            color: #000000;
+        }
+
+        &.color-danger{
+            background: linear-gradient(135deg,
+                #cf3c4f 0%,
+                #eb445a 25%,
+                #ed576b 50%,
+                #eb445a 75%,
+                #cf3c4f 100%);
+            background-size: 200% 200%;
+            animation: shimmer 3s ease-in-out infinite;
+            color: #ffffff;
+        }
+    }
+
+    @keyframes shimmer {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
     }
 
     & .price{
@@ -38,7 +100,7 @@
         flex-direction: column;
         align-items: center;
         & .prefix, & .suffix{
-            color: var(--ion-color-lightgrey);
+            // color: var(--ion-color-lightgrey);
             font-size: 14px;
             height: 16px;
         }
@@ -51,6 +113,8 @@
     }
 
     & .description{
+        padding-top: 16px;
+        padding-bottom: 16px;
         font-size: .9em;
         color: var(--ion-color-medium);
     }
@@ -62,7 +126,7 @@
 
 
     &.swipeable{
-        height: 100%;
+        height: 105%;
         & h2{
             margin-top: 0!important;
         }
@@ -77,4 +141,5 @@
             margin-top: 12px;
         }
     }
+
 }

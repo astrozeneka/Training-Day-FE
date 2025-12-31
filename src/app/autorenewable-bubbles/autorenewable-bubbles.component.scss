@@ -25,10 +25,10 @@ swiper-slide{
     border-radius: 12px;
     overflow: hidden;
     
-    height: 380px!important;
+    // height: 380px!important;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
 
     & app-storefront-item{
         flex-grow: 1;

@@ -1,5 +1,5 @@
 <div [class]="'storefront-item ' + variant">
-  <h2 class="display-1">
+  <h2 [class]="'display-1 color-' + color">
     <ng-content select="*[slot='title']"></ng-content>
     <div *ngIf="!product" class="price">
       -
