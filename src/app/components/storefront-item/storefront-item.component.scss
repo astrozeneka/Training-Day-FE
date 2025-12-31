@@ -3,11 +3,30 @@
 .storefront-item{
     margin-top: var(--margin-top, 46px);
     margin-bottom: var(--margin-bottom, 46px);
+
+    padding-left: 12px;
+    padding-right: 12px;
+    // padding-top: 24px;
+    padding-bottom: 24px;
+    border: 1px solid bluered;
+
+    background: transparent;
     & .display-1{
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        border: 1px solid red;
+
+        background: orange;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-top: -24px!important;
+        padding-left: 12px;
+        padding-right: 12px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        //padding-top: 24px;
     }
 
     & .price{

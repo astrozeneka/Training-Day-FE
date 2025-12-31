@@ -1,12 +1,19 @@
-ion-tab-bar{
-    padding-top: 0em!important;
-  }
-  
-  ion-tab-button{
-    height: 65px;
-    font-family: "Bebas Neue", sans-serif;
-  }
+ion-tab-bar {
+  padding-top: 0em !important;
+}
 
-.main{
+ion-tab-button {
+  height: 65px;
+  font-family: "Bebas Neue", sans-serif;
+}
+
+.main {
   background: cyan;
+}
+
+ion-content.swipeable-store {
+  --offset-bottom: auto !important;
+  --overflow: hidden;
+  overflow: auto;
+  -webkit-overflow-scrolling: auto; // Disables momentum/inertia
 }
