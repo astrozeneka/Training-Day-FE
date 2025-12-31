@@ -1,0 +1,105 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <app-back-button></app-back-button>
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Training</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content id="video-home-content">
+
+    <!-- this is used to invite the user to select login -->
+    <div class="faded-cover" *ngIf="!isUserLoggedIn"></div>
+    <ion-card class="ion-padding cta" *ngIf="!isUserLoggedIn">
+        <ion-card-content>
+            <h1 class="display-1">Créer un compte gratuitement pour continuer</h1>
+            <br />
+            <p class="helper">
+                L'enregistrement de votre historique de poids requiert un compte utilisateur.
+            </p>
+            <br />
+            <app-ux-button shape="round" expand="full" routerLink="/login">
+                Se connecter
+            </app-ux-button>
+        </ion-card-content>
+    </ion-card>
+
+
+    <!-- some header here (according to the new theme) -->
+    <div class="video-home">
+        <div class="ion-padding-horizontal" *ngIf="!shouldShowSubscriptionCTA">
+            <div class="title">
+                Choisis ton Training
+            </div>
+            <div class="subtitle">
+                Ces contenus ont été sélectionnés pour vous aider à progresser dans votre entraînement.
+            </div>
+        </div>
+
+        <!-- Subscription CTA for users without subscription -->
+        <div *ngIf="shouldShowSubscriptionCTA" class="ion-padding-horizontal"
+            style="display: flex; align-items: center; justify-content: center; min-height: 500px;">
+            <app-subscription-cta-compact (buttonClick)="navigateTo('/swipeable-store')"></app-subscription-cta-compact>
+        </div>
+
+        <div class="card-list">
+            <!-- Training everyday -->
+            <div class="tool-card enhanced-tool-card" *ngIf="videoOptions.includes('training')">
+                <div class="image-container">
+                    <img title="Training of the day"
+                        src="../../../assets/medias/rounded-cards/sample-image-training-of-the-day.jpg" />
+                </div>
+                <div class="card-description">
+                    <div class="spacer"></div>
+                    <p>Explore des programmes sportifs adaptés à ton niveau et construits autour de tes objectifs
+                        personnels.</p>
+                    <h3>Training of the day</h3>
+                    <ion-button style="align-self: stretch;" expand="block"
+                        (click)="navigateToCategory('/exercise-categories', 'training')"
+                        *ngIf="isUserLoggedIn && !isVideoDisabled">
+                        Commencer
+                    </ion-button>
+                    <ion-button style="align-self: stretch;" expand="block" (click)="navigateTo('/swipeable-store')"
+                        color="warning" *ngIf="isUserLoggedIn && isVideoDisabled">
+                        Choisir mon abonnement
+                    </ion-button>
+                    <ion-button style="align-self: stretch;" expand="block" (click)="navigateTo('/login')"
+                        *ngIf="!isUserLoggedIn">
+                        Se connecter
+                    </ion-button>
+
+                </div>
+            </div>
+
+            <div class="tool-card enhanced-tool-card" *ngIf="videoOptions.includes('boxing')">
+                <div class="image-container">
+                    <img title="Boxing of the day"
+                        src="../../../assets/medias/rounded-cards/sample-image-boxing-of-the-day.jpg" />
+                </div>
+                <div class="card-description">
+                    <div class="spacer"></div>
+                    <p>De l'initiation aux entraînements avancés, progresse en boxe selon tes objectifs personnels.</p>
+                    <h3>Boxing of the day</h3>
+                    <ion-button style="align-self: stretch;" expand="block"
+                        (click)="navigateToCategory('/exercise-categories', 'boxing')"
+                        *ngIf="isUserLoggedIn && !isVideoDisabled">
+                        Commencer
+                    </ion-button>
+                    <ion-button style="align-self: stretch;" expand="block" (click)="navigateTo('/swipeable-store')"
+                        color="warning" *ngIf="isUserLoggedIn && isVideoDisabled">
+                        Choisir mon abonnement
+                    </ion-button>
+                    <ion-button style="align-self: stretch;" expand="block" (click)="navigateTo('/login')"
+                        *ngIf="!isUserLoggedIn">
+                        Se connecter
+                    </ion-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-button-to-chat></app-button-to-chat>
+    <app-bottom-navbar-placeholder></app-bottom-navbar-placeholder>
+</ion-content>

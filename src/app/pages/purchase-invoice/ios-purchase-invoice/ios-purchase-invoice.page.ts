@@ -31,7 +31,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
       <form [formGroup]="form">
         <div class="ion-padding-horizontal description">
-          Veuillez sélectionner votre offre d'abonnement. Les prélèvements seront effectués automatiquement par Apple Store.
+          Sélectionne ton abonnement.
         </div>
         <div class="ion-padding-horizontal bubble-wrapper">
           <app-promotional-bubble-selector-ios *ngIf="productList && productId" [product]="productList[productId]" formControlName="offer"></app-promotional-bubble-selector-ios>
