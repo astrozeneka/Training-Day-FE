@@ -17,6 +17,7 @@ import { PhonePrefixSelectComponent } from 'src/app/components-submodules/phone-
 import { OnboardingService } from 'src/app/onboarding.service';
 import { User } from 'src/app/models/Interfaces';
 import { el } from 'date-fns/locale';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -27,6 +28,7 @@ import { el } from 'date-fns/locale';
 export class ProfilePage extends FormComponent implements OnInit {
   entitlementComponent = new EntitlementReady()
   active_entitled_subscription = null
+  isProduction = environment.production
 
   override form:any = new FormGroup({
     'email': new FormControl('', [Validators.required, Validators.email]), // readonly
