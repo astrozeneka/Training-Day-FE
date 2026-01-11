@@ -26,7 +26,8 @@
                         </span> <br/>
                     <span style="text-decoration:line-through">{{ displayable.normalPrice }}</span>
                     <span *ngIf="!displayable.isMonthlyPrice && displayable.monthlyPrice && !displayable.isFree"> . {{ displayable.monthlyPrice }}/mois</span>
-                    <span *ngIf="!displayable.isFree"> . {{ displayable.weeklyPrice }}€/sem.</span> 
+                    <span *ngIf="!displayable.isFree"> . {{ displayable.weeklyPrice }}€/sem.</span>
+                    <span *ngIf="displayable.percentageReduction"> . -{{ displayable.percentageReduction | number:'1.0-0' }}%</span>
                     <br/>
                      <br/> <br/> <br/>
                 </div>

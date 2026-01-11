@@ -9,6 +9,7 @@ export interface DisplayableProduct {
     monthlyPrice?: string;
     normalPrice: string;
     isFree: boolean;
+    percentageReduction?: number;
 }
 
 export abstract class AbstractStoreProductUiAdapter<T extends AndroidStoreProduct | iOSStoreProduct> {
