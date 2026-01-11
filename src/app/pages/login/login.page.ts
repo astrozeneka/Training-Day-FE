@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, signal } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import { Browser } from "@capacitor/browser";
 import { v4 as uuidv4 } from 'uuid';
@@ -52,7 +52,7 @@ export class LoginPage extends FormComponent implements OnInit {
   passwordToggle = new PasswordToggle()
 
   // Darkmode
-  useDarkMode:boolean = false;
+  useDarkMode = signal<boolean>(false);
 
   // App link handling (for login only) - Subject is the token
   onOpenedFromGoogleOauth$: Subject<{token: string}> = new Subject()
@@ -194,7 +194,7 @@ export class LoginPage extends FormComponent implements OnInit {
     )*/
 
     // Checking if the darkmode is enabled
-    this.useDarkMode = await this.dms.isAvailableAndEnabled()
+    this.useDarkMode.set(await this.dms.isAvailableAndEnabled())
 
     // 6. Handle deeplink redirection
     App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {

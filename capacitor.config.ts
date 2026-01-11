@@ -4,8 +4,14 @@ const config: CapacitorConfig = {
   appId: 'me.codecrane.training-day',
   appName: 'Training-Day',
   webDir: 'www',
+// TODO: [CRITICAL] Comment this when providing builds and uncomment FOR enabling live-reload, uncomment this
   server: {
-    androidScheme: 'https'
+    // androidScheme: 'http',
+    url: 'http://localhost:8100',
+    cleartext: true
+  },
+  android: {
+    allowMixedContent: true
   },
   plugins: {
     PushNotifications: {
@@ -18,6 +24,7 @@ const config: CapacitorConfig = {
       resizeOnFullScreen: true
     }
   },
+  cleartext: true
 };
 
 export default config;
