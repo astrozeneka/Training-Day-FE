@@ -36,6 +36,7 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
   offerSignatureLoading$: Observable<PromoOfferIOS[]> = this.offerSignatureLoadingSubject.asObservable()
 
   uiAdapter?: iOSStoreProductUIAdapter = null
+  uiTheme: 'primary' | 'dark' | 'warning' | 'danger' = 'primary';
 
   constructor(
       private cs: ContentService,

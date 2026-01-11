@@ -17,19 +17,29 @@
             <div class="ion-padding-horizontal description">
                 Sélectionne ton abonnement.
             </div>
-            <div>
-                <div *ngFor="let displayable of uiAdapter?.displayables">
-                    {{ displayable.durationText }} <br/>
-                    {{ displayable.displayPrice }} 
-                        <span *ngIf="displayable.isMonthlyPrice">
-                            /mois
-                        </span> <br/>
-                    <span style="text-decoration:line-through">{{ displayable.normalPrice }}</span>
-                    <span *ngIf="!displayable.isMonthlyPrice && displayable.monthlyPrice && !displayable.isFree"> . {{ displayable.monthlyPrice }}/mois</span>
-                    <span *ngIf="!displayable.isFree"> . {{ displayable.weeklyPrice }}€/sem.</span>
-                    <span *ngIf="displayable.percentageReduction"> . -{{ displayable.percentageReduction | number:'1.0-0' }}%</span>
-                    <br/>
-                     <br/> <br/> <br/>
+            <div class="subscription-options ion-padding-horizontal">
+                <div *ngFor="let displayable of uiAdapter?.displayables; let i = index" class="option-wrapper">
+                    <input type="radio" [id]="'subscription-' + i" name="subscription" class="hidden-radio" [value]="displayable" [checked]="i === 0">
+                    <label [for]="'subscription-' + i" class="radio-card">
+                        <div class="content">
+                            <div class="header">
+                                <span class="duration">{{ displayable.durationText }}</span>
+                            </div>
+                            <div class="pricing">
+                                <span class="price">{{ displayable.displayPrice }}</span>
+                                <span class="period" *ngIf="displayable.isMonthlyPrice">/mois</span>
+                            </div>
+                            <div class="details">
+                                <span class="normal-price">{{ displayable.normalPrice }}</span>
+                                <span *ngIf="!displayable.isMonthlyPrice && displayable.monthlyPrice && !displayable.isFree"> . {{ displayable.monthlyPrice }}/mois</span>
+                                <span *ngIf="!displayable.isFree"> . {{ displayable.weeklyPrice }}€/sem.</span>
+                                <span class="discount" *ngIf="displayable.percentageReduction"> . -{{ displayable.percentageReduction | number:'1.0-0' }}%</span>
+                            </div>
+                        </div>
+                        <div class="check-circle">
+                            <div class="check-indicator"></div>
+                        </div>
+                    </label>
                 </div>
             </div>
 
