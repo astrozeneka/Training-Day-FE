@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewCh
 
 import { register } from 'swiper/element/bundle';
 import SwiperCore, { Swiper } from 'swiper';
+import { IonRouterOutlet } from '@ionic/angular';
 
 @Component({
   selector: 'app-store',
@@ -13,7 +14,8 @@ export class SwipeableStorePage implements OnInit, AfterViewInit {
   @ViewChild('swiperEl') swiperEl: ElementRef|null = null as any
 
   constructor(
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private routerOutlet: IonRouterOutlet
   ) { }
 
   ngOnInit() {
@@ -50,6 +52,18 @@ export class SwipeableStorePage implements OnInit, AfterViewInit {
 
   onReachEnd(param) {
     // Unused
+  }
+
+  ionViewDidEnter() {
+    console.log("Disable swipe gesture")
+    // Disable swipe (not to conflict with store swiper)
+    this.routerOutlet.swipeGesture = false;
+  }
+
+  ionViewDidLeave() {
+    console.log("Re-enable swipe gesture")
+    // Re-enable swipe
+    this.routerOutlet.swipeGesture = true;
   }
 
 }

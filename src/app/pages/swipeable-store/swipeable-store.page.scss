@@ -16,4 +16,5 @@ ion-content.swipeable-store {
   --overflow: hidden;
   overflow: auto;
   -webkit-overflow-scrolling: auto; // Disables momentum/inertia
+  background: var(--ion-background-color);
 }

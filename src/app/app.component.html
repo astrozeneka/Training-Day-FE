@@ -4,7 +4,7 @@
       <app-main-menu></app-main-menu>
     </ion-menu>
     <div class="ion-page" id="main">
-      <ion-router-outlet></ion-router-outlet>
+      <ion-router-outlet [swipeGesture]="false"></ion-router-outlet>
       <div class="floating-bottom" *ngIf="bnus.bottomNavbarAvailable">
         <app-bottom-navbar></app-bottom-navbar>
       </div>
