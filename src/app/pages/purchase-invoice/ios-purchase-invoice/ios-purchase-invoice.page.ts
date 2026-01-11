@@ -36,7 +36,26 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
   offerSignatureLoading$: Observable<PromoOfferIOS[]> = this.offerSignatureLoadingSubject.asObservable()
 
   uiAdapter?: iOSStoreProductUIAdapter = null
-  uiTheme: 'primary' | 'dark' | 'warning' | 'danger' = 'primary';
+  uiTheme: 'primary' | 'dark' | 'warning' | 'danger' = 'danger';
+
+  /**
+   * Get the selectable offers array [baseProduct, ...promotionalOffers]
+   * This matches the order of displayables from uiAdapter
+   */
+  get selectableOffers(): (Product | PromoOfferIOS)[] {
+    if (!this.product) return []
+    // Cast product.offers to PromoOfferIOS[] for iOS context
+    const offers = (this.product.offers || []) as PromoOfferIOS[]
+    return [this.product, ...offers]
+  }
+
+  /**
+   * Handle subscription selection from radio buttons
+   */
+  onSubscriptionChange(offer: Product | PromoOfferIOS) {
+    this.form.patchValue({ offer })
+    this.cdr.detectChanges()
+  }
 
   constructor(
       private cs: ContentService,
@@ -112,8 +131,16 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
           console.log("Loaded product: ", JSON.stringify(product));
 
           this.uiAdapter = new iOSStoreProductUIAdapter(product as iOSStoreProduct)
+          this.uiTheme = {
+            "smiley": "dark"
+          }[product.id] || 'primary'
 
-          let observables = product.offers.map((offer) => 
+          // Initialize form with the first offer (base product) selected
+          if (this.selectableOffers.length > 0) {
+            this.form.patchValue({ offer: this.selectableOffers[0] })
+          }
+
+          let observables = product.offers.map((offer: PromoOfferIOS) => 
             this.cs.getOne('/generate-offer-signature', { offer_identifier: offer.offerId, product_identifier: offer.productId })
               .pipe(
                 catchError((err) => {
