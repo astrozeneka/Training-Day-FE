@@ -7,68 +7,18 @@ import { ContentService } from 'src/app/content.service';
 import { DarkModeService } from 'src/app/dark-mode.service';
 import { FeedbackService } from 'src/app/feedback.service';
 import { PurchaseService } from 'src/app/purchase.service';
-import { AbstractPurchaseInvoicePage } from '../abstract-purchase-invoice';
+import { AbstractPurchaseInvoicePage, iOSStoreProduct } from '../abstract-purchase-invoice';
 import { Product, PromoOfferIOS, Transaction } from 'src/app/custom-plugins/store.plugin';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { iOSStoreProductUIAdapter } from '../ios-store-product-ui-adapter';
+
 
 @Component({
   selector: 'app-ios-purchase-invoice',
-  template: `
-  <ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-          <app-back-button></app-back-button>
-          <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>Abonnements</ion-title>
-      <ion-progress-bar [value]="processProgress" *ngIf="processProgress > 0"></ion-progress-bar>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-content>
-    <div class="ios-purchase-invoice">
-      <h1 class="display-1 ion-padding">Confirmez votre achat</h1>
-
-      <form [formGroup]="form">
-        <div class="ion-padding-horizontal description">
-          Sélectionne ton abonnement.
-        </div>
-        <div class="ion-padding-horizontal bubble-wrapper">
-          <app-promotional-bubble-selector-ios *ngIf="productList && productId" [product]="productList[productId]" formControlName="offer"></app-promotional-bubble-selector-ios>
-          <div class="placeholder" *ngIf="offersAreLoading"><ion-spinner></ion-spinner></div>
-        </div>
-
-        <div class="floating-bottom">
-          <div class="ion-padding">
-            <div class="cgv-row">
-              <ion-label>Accepter <a class="a" (click)="openCGV()">les CGV</a></ion-label>
-              <ion-checkbox formControlName="acceptCGV" slot="end" color="primary"></ion-checkbox>
-            </div>
-
-            <app-ux-button
-              expand="block" 
-              color="primary" 
-              shape="round" 
-              [disabled]="!form.valid"
-              (click)="continueToPayment()"
-              [loading]="isLoading"
-            >
-              Continuer
-            </app-ux-button>
-            <!-- TODO, redeem code -->
-            <div class="helper ion-text-center" style="font-size:smaller">
-              <!-- Enregistrement de votre commande en cours <br/> -->
-              {{ loadingStep }}
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  </ion-content>
-  `,
+  templateUrl: './ios-purchase-invoice.page.html',
   styleUrls: ['./ios-purchase-invoice.page.scss', '../purchase-invoice.scss'],
 })
-export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implements OnInit {
+export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStoreProduct> implements OnInit {
   // The form
   form: FormGroup = new FormGroup({
     'offer': new FormControl(null, [Validators.required]),
@@ -84,6 +34,8 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implemen
   // Offer signature loading observable
   offerSignatureLoadingSubject: BehaviorSubject<PromoOfferIOS[]> = new BehaviorSubject(null)
   offerSignatureLoading$: Observable<PromoOfferIOS[]> = this.offerSignatureLoadingSubject.asObservable()
+
+  uiAdapter?: iOSStoreProductUIAdapter = null
 
   constructor(
       private cs: ContentService,
@@ -156,6 +108,9 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage implemen
           // Set some state variables
           this.productId = data.productId
           this.product = product
+          console.log("Loaded product: ", JSON.stringify(product));
+
+          this.uiAdapter = new iOSStoreProductUIAdapter(product as iOSStoreProduct)
 
           let observables = product.offers.map((offer) => 
             this.cs.getOne('/generate-offer-signature', { offer_identifier: offer.offerId, product_identifier: offer.productId })

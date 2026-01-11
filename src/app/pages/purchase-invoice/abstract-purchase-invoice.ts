@@ -7,8 +7,63 @@ import { DarkModeService } from "src/app/dark-mode.service";
 import { FeedbackService } from "src/app/feedback.service";
 import { environment } from "src/environments/environment";
 
+// Used by android (adapter techniques will be used later)
+export interface AndroidStoreProduct {
+  displayPrice: string
+  displayName: string
+  description: string
+  id: string
+  offers: AndroidOffer[]
+  firstPhaseMonthlyPrices: number[]
+}
 
-export abstract class AbstractPurchaseInvoicePage {
+// Used by android (adapter techniques will be used later)
+export interface AndroidOffer {
+  displayPrice: string
+  price: number
+  androidOfferToken: string
+  pricingPhases: AndroidPricingPhase[]
+}
+
+// Used by android (adapter techniques will be used later)
+export interface AndroidPricingPhase {
+  priceAmountMicros: number
+  priceCurrencyCode: string
+  formattedPrice: string
+  billingPeriod: string
+  recurrenceMode: number
+  billingCycleCount: number
+  percentageReduction?: number
+  billingNMonth?: number
+}
+
+// Used by iOS (adapter techniques will be used later)
+export interface iOSStoreProduct {
+  description: string
+  id: string
+  price: number
+  displayName: string
+  displayPrice: string
+  offers: iOSOffer[]
+  baseOfferDisplayPrice: string
+}
+
+// Used by iOS (adapter techniques will be used later)
+export interface iOSOffer {
+  price: number
+  productId: string
+  periodValue: number
+  periodUnit: string
+  offerId: string
+  paymentMode: string
+  periodCount: number
+  type: string
+  displayPrice: string
+  percentageReduction: number
+}
+
+
+export abstract class AbstractPurchaseInvoicePage<T extends iOSStoreProduct | AndroidStoreProduct> {
 
   // Generic properties used by both iOS and android
   isLoading: boolean = false;

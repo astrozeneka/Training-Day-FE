@@ -7,7 +7,7 @@ const config: CapacitorConfig = {
 // TODO: [CRITICAL] Comment this when providing builds and uncomment FOR enabling live-reload, uncomment this
   server: {
     // androidScheme: 'http',
-    url: 'http://localhost:8100',
+    url: 'http://localhost:8100', 
     cleartext: true
   },
   android: {

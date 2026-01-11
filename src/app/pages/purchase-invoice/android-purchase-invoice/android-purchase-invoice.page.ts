@@ -9,8 +9,11 @@ import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
 import { PurchaseService } from '../../../purchase.service';
 import { Platform } from '@ionic/angular';
 import { DarkModeService } from '../../../dark-mode.service';
-import { AbstractPurchaseInvoicePage } from '../abstract-purchase-invoice';
+import { AbstractPurchaseInvoicePage, AndroidStoreProduct } from '../abstract-purchase-invoice';
 import StorePlugin, { AndroidProduct, Product, PromoOfferIOS, Transaction } from "../../../custom-plugins/store.plugin";
+import { AndroidStoreProductUIAdapter } from '../android-store-product-ui-adapter';
+
+
 
 
 export interface AndroidTransaction extends Transaction {
@@ -21,7 +24,7 @@ export interface AndroidTransaction extends Transaction {
   templateUrl: './android-purchase-invoice.page.html',
   styleUrls: ['./android-purchase-invoice.page.scss', '../purchase-invoice.scss'],
 })
-export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage implements OnInit{
+export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<AndroidStoreProduct> implements OnInit{
 
   // Don't use this anymore, use similar to the os (a formGroup)
   acceptConditions: FormControl = new FormControl(false);
@@ -54,6 +57,8 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage impl
 
   processProgress = 0
   offersAreLoading: boolean = false
+
+  uiAdapter?: AndroidStoreProductUIAdapter = null
 
   constructor(
       private cs: ContentService,
@@ -100,10 +105,14 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage impl
       .pipe(map(({productId, productList}) => {
         this.productList = productList.products.reduce((acc, product) => { acc[product.id] = product; return acc }, {}); 
         this.productId = productId
-        return productList.products.find((product) => product.id == productId)
+        // Bad practice, need to review the below "as any as AndroidStoreProduct" later
+        return productList.products.find((product) => product.id == productId) as any as AndroidStoreProduct
       }))
-      .subscribe((product:Product) => {
+      .subscribe((product:AndroidStoreProduct) => {
         this.product = product
+        this.uiAdapter = (new AndroidStoreProductUIAdapter(product as AndroidStoreProduct))
+
+        console.log("Loaded product: ", (product));
         console.log(this.productList, this.productId, this.productList[this.productId])
         this.cdr.detectChanges()
       })

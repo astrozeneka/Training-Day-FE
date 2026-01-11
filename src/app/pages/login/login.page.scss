@@ -5,12 +5,12 @@
 .login-header{
   padding-bottom: 1em;
 
-  h1{
+  & h1{
     @include display-1;
     margin-bottom: 0.5em;
   }
 
-  .logo-container {
+  & .logo-container {
     margin-bottom: 1em;
   }
 }

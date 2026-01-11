@@ -67,7 +67,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
       console.log(this.os)
       if (this.os == 'ios') {
         products = (await StorePlugin.getProducts({})).products
-        console.log(`Ios fetching products: ${JSON.stringify(products)}`)
+        // console.log(`Ios fetching products: ${JSON.stringify(products)}`)
         // Load the related promotional offers
         /*for(let i=0; i<products.length; i++){
           let product = products[i]
@@ -115,7 +115,7 @@ export class PurchaseService { // This class cannot be used anymore due to andro
                   offer.percentageReduction = percentageReduction
                 }
               })
-              console.log(`Calculating percentage reduction, raw data is ${JSON.stringify(data)}, product is ${JSON.stringify(product)}`)
+              /*console.log(`Calculating percentage reduction, raw data is ${JSON.stringify(data)}, product is ${JSON.stringify(product)}`)*/
               return promotedProduct
             })
           )

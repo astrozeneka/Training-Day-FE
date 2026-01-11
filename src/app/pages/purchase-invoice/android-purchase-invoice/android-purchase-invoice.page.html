@@ -15,8 +15,16 @@
     
     <form [formGroup]="form">
       <div class="ion-padding-horizontal description">
-        Veuillez sélectionner votre offre d'abonnement. Les prélèvements seront effectués automatiquement par Google Play Store.
+                Sélectionne ton abonnement.
       </div>
+
+      <div>
+        <div *ngFor="let displayable of uiAdapter?.displayables">
+          {{ displayable.durationText }}
+        </div>
+      </div>
+
+      <!-- REMOVE LATER -->
       <div class="ion-padding-horizontal bubble-wrapper">
         <app-promotional-bubble-selector *ngIf="productList && productId" [product]="productList[productId]" formControlName="offer" os="android"></app-promotional-bubble-selector>
         <div class="placeholder" *ngIf="offersAreLoading"><ion-spinner></ion-spinner></div>
