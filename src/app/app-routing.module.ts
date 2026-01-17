@@ -127,10 +127,10 @@ const routes: Routes = [
     path: 'video-view/:id',
     loadChildren: () => import('./pages/video-view/video-view.module').then(m => m.VideoViewPageModule)
   },
-  {
+  /*{
     path: 'food-program',
     loadChildren: () => import('./pages/shop/food-program/food-program.module').then(m => m.FoodProgramPageModule)
-  },
+  },*/
   {
     path: 'sport-program',
     loadChildren: () => import('./pages/shop/sport-program/sport-program.module').then(m => m.SportProgramPageModule)
@@ -371,6 +371,14 @@ const routes: Routes = [
   {
     path: 'staff-appointment',
     loadChildren: () => import('./pages/staff-appointment/staff-appointment.module').then( m => m.StaffAppointmentPageModule)
+  },
+  {
+    path: 'food-program-master',
+    loadChildren: () => import('./food-program-master/food-program-master.module').then( m => m.FoodProgramMasterPageModule)
+  },
+  {
+    path: 'food-program-detail',
+    loadChildren: () => import('./food-program-detail/food-program-detail.module').then( m => m.FoodProgramDetailPageModule)
   },
 ];
 

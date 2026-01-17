@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
   <div class="tools">
     <div class="ion-padding-horizontal">
       <div class="title">
-        Découvez les outils d'entraînement
+        Découvrez les outils d'entraînement
       </div>
       <div class="subtitle">
         Ces outils permettront de vous aider à vous entraîner et à suivre vos progrès.

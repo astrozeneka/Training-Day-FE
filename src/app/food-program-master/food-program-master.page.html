@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-back-button></app-back-button>
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Programme Alimentaire</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="food-program-master">
+
+    <div class="ion-padding-horizontal">
+      <ion-button expand="block" fill="outline" shape="round" [routerLink]="['/recipe-home']">
+        <ion-icon slot="start" name="restaurant-outline"></ion-icon>
+        Voir les recettes
+      </ion-button>
+      <div class="title">
+        Choisissez votre programme
+      </div>
+      <div class="subtitle" style="font-size: 80%;">
+        Les fourchettes caloriques présentées correspondent à des zones d'adaptation.
+        <br/>
+        <br/>
+        Le choix précis à l'intérieur de chaque palier dépend du poids, du niveau d'activité, de l'âge et de l'objectif.
+        Chaque programme est ensuite ajusté individuellement.
+      </div>
+    </div>
+
+    <div class="card-list">
+      <div class="calorie-box" *ngFor="let program of programs" [routerLink]="['/food-program-detail']">
+        <div class="calorie-range">
+          {{ program.range }}
+        </div>
+        <div class="calorie-description">
+          {{ program.description }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br/>
+  <br/>
+
+  <app-button-to-chat></app-button-to-chat>
+</ion-content>

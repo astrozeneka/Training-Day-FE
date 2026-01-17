@@ -6,10 +6,10 @@
         font-size: 24px;
         font-weight: 400;
         text-align: center;
-        padding-top: 32px;
+        padding-top: 0px;
         margin-top: 0px;
     }
-    
+
     .subtitle{
         font-size: 16px;
         font-weight: 400;
@@ -19,7 +19,14 @@
         margin-bottom: 25px;
     }
 
-    margin-left: 22px; 
+    .ion-padding-horizontal {
+        ion-button {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    }
+
+    margin-left: 22px;
     margin-right: 22px;
     margin-bottom: 32px;
 
