@@ -231,6 +231,26 @@
             }
         }
 
+        .radio-card[data-theme="light"] {
+            .discount-badge {
+                background: var(--ion-color-light);
+                color: var(--ion-color-light-contrast);
+            }
+        }
+
+        .hidden-radio:checked+.radio-card[data-theme="light"] {
+            border-color: var(--ion-color-light);
+            background: linear-gradient(to bottom, rgba(var(--ion-color-light-rgb), 0.2), var(--ion-background-color));
+
+            .check-circle {
+                border-color: var(--ion-color-light);
+
+                .check-indicator {
+                    background: var(--ion-color-light);
+                }
+            }
+        }
+
         .radio-card[data-theme="warning"] {
             .discount-badge {
                 background: var(--ion-color-warning);

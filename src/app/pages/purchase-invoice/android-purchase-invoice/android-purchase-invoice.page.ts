@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, catchError, filter, forkJoin, from, map, Subject, switchMap, take, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -56,9 +56,10 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<Andr
   product = null
 
   processProgress = 0
-  offersAreLoading: boolean = false
+  isOfferLoading: WritableSignal<boolean> = signal(true)
 
   uiAdapter?: AndroidStoreProductUIAdapter = null
+  uiTheme: WritableSignal<'primary' | 'dark' | 'warning' | 'danger' | 'light'> = signal('primary');
 
   constructor(
       private cs: ContentService,
@@ -70,8 +71,25 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<Andr
       feedbackService: FeedbackService,
       private cdr: ChangeDetectorRef,
       private route: ActivatedRoute
-  ) { 
-    super(platform, router, dms, feedbackService)
+  ) {
+    super(platform, router, dms, feedbackService);
+  }
+
+  /**
+   * Get the selectable offers array for Android
+   * For Android, displayables map directly to product.offers
+   */
+  get selectableOffers(): any[] {
+    if (!this.product || !this.product.offers) return []
+    return this.product.offers
+  }
+
+  /**
+   * Handle subscription selection from radio buttons
+   */
+  onSubscriptionChange(offer: any) {
+    this.form.patchValue({ offer })
+    this.cdr.detectChanges()
   }
 
   ngOnInit() {
@@ -98,12 +116,13 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<Andr
       .subscribe((data:{products:Product[]}) => {
         this.productList = data.products.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
       })*/
+    this.isOfferLoading.set(true)
     forkJoin({
       productId: from(this.cs.storage.get('productId')),
       productList: from(this.purchaseService.getProducts('subs'))
     })
       .pipe(map(({productId, productList}) => {
-        this.productList = productList.products.reduce((acc, product) => { acc[product.id] = product; return acc }, {}); 
+        this.productList = productList.products.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
         this.productId = productId
         // Bad practice, need to review the below "as any as AndroidStoreProduct" later
         return productList.products.find((product) => product.id == productId) as any as AndroidStoreProduct
@@ -112,6 +131,22 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<Andr
         this.product = product
         this.uiAdapter = (new AndroidStoreProductUIAdapter(product as AndroidStoreProduct))
 
+        // Set theme based on product (need to refactor) todo later
+        const themeMap: {[key: string]: 'primary' | 'dark' | 'warning' | 'danger' | 'light'} = {
+          "hoylt": "dark",
+          "gursky": "warning",
+          "smiley": "danger",
+          "alonzo": "primary"
+        }
+        this.uiTheme.set(themeMap[product.id] || 'primary')
+        console.log("====", product.id, this.uiTheme())
+
+        // Initialize form with the first offer selected
+        if (this.selectableOffers.length > 0) {
+          this.form.patchValue({ offer: this.selectableOffers[0] })
+        }
+
+        this.isOfferLoading.set(false)
         console.log("Loaded product: ", (product));
         console.log(this.productList, this.productId, this.productList[this.productId])
         this.cdr.detectChanges()
@@ -120,7 +155,7 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<Andr
     // 2. Listener that will be able to listen the onPurchase event and link to the related observable
     StorePlugin.addListener('onPurchase', (purchases: {purchases:AndroidProduct[]}) => {
       // Filter the router
-      if (!this.router.url.includes('android-purchase-invoice'))
+      if (!this.router.url.includes('android-purchase-invoice'))  
         return
       // Transmit to observers
       this.onPurchaseDone$.next(purchases)
@@ -157,8 +192,8 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<Andr
     if (!this.form.valid)
       return;
 
-    this.isLoading = true
-    this.loadingStep = "(1/3) Connexion à Google Play"
+    this.isLoading.set(true)
+    this.loadingStep.set("(1/3) Connexion à Google Play")
 
     // Specific to android, for subscription, the product id is "training_day" instead of hoylt, moreno, etc.
     let productId = this.productId
@@ -184,8 +219,9 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<Andr
     )
       .subscribe((data)=>{
         console.log(`Purchase aborted ${JSON.stringify(data)}`)
-        this.isLoading = false
-        this.loadingStep = null
+        this.isLoading.set(false)
+        this.loadingStep.set(null)
+        this.cdr.detectChanges();
         this.feedbackService.registerNow("La transaction a été annulée", "danger")
       })
     
@@ -201,7 +237,7 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<Andr
       }),
       switchMap((product)=>{
         console.log(`Handle purchase success: ${JSON.stringify(product)}`)
-        this.loadingStep = "(2/3) Enregistrement de l'achat"
+        this.loadingStep.set("(2/3) Enregistrement de l'achat")
         this.cdr.detectChanges();
         // Restored the patched product_id
         // In android, the product_id in the Google Play Store is training_day, contrary to App Store which uses hoylt, moreno, etc.
@@ -210,8 +246,8 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<Andr
         return this.cs.post('/payments/registerAndroidIAPTransaction', product)
           .pipe(catchError((err)=>{
             console.error(`Error while saving android purchase to server : ${JSON.stringify(err)}`)
-            this.isLoading = false
-            this.loadingStep = null
+            this.isLoading.set(false)
+            this.loadingStep.set(null)
             return null
           }), tap(()=>{
             console.log("Correctly saved purchase to the server");
@@ -224,14 +260,14 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<Andr
     savePurchase$
       .pipe(
         switchMap((data:AndroidTransaction)=>{
-          this.loadingStep = "(3/3) Validation de l'achat"
+          this.loadingStep.set("(3/3) Validation de l'achat")
           this.cdr.detectChanges();
           console.log(`Purchase saved to the server : ${JSON.stringify(data)}`)
           return from(StorePlugin.acknowledgeAndroidPurchase({purchaseToken: data.purchase_token}))
             .pipe(catchError((err)=>{
               console.error(`Error while acknowledging purchase: ${JSON.stringify(err)}`)
-              this.isLoading = false
-              this.loadingStep = null
+              this.isLoading.set(false)
+              this.loadingStep.set(null)
               return throwError(err)
             }))
         })

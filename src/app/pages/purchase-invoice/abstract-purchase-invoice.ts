@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { Browser } from "@capacitor/browser";
 import { ThemeDetection } from "@ionic-native/theme-detection/ngx";
 import { Platform } from "@ionic/angular";
+import { signal, WritableSignal } from "@angular/core";
 import { DarkModeService } from "src/app/dark-mode.service";
 import { FeedbackService } from "src/app/feedback.service";
 import { environment } from "src/environments/environment";
@@ -66,8 +67,8 @@ export interface iOSOffer {
 export abstract class AbstractPurchaseInvoicePage<T extends iOSStoreProduct | AndroidStoreProduct> {
 
   // Generic properties used by both iOS and android
-  isLoading: boolean = false;
-  loadingStep: string = null;
+  isLoading: WritableSignal<boolean> = signal(false);
+  loadingStep: WritableSignal<string | null> = signal(null);
 
   // Used for both iOS and Android
   productList:any = {} // Bound to the Store

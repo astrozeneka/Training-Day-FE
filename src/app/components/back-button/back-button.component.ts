@@ -11,6 +11,7 @@ import { NavController } from '@ionic/angular';
 export class BackButtonComponent  implements OnInit {
   displayed = false;
   @Input() customUrl: string = null
+  @Input() color: string = null
 
   constructor(
     private location: Location,

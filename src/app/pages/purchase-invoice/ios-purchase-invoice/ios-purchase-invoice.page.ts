@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ThemeDetection } from '@ionic-native/theme-detection/ngx';
 import { Platform } from '@ionic/angular';
@@ -26,7 +26,7 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
   })
 
   // Improved UI while loading ui
-  offersAreLoading: boolean = false
+  isOfferLoading: WritableSignal<boolean> = signal(true)
 
   // Loader to improve User Experience
   processProgress: number = 0
@@ -36,7 +36,7 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
   offerSignatureLoading$: Observable<PromoOfferIOS[]> = this.offerSignatureLoadingSubject.asObservable()
 
   uiAdapter?: iOSStoreProductUIAdapter = null
-  uiTheme: 'primary' | 'dark' | 'warning' | 'danger' = 'danger';
+  uiTheme: WritableSignal<'primary' | 'dark' | 'warning' | 'danger'> = signal('primary');
 
   /**
    * Get the selectable offers array [baseProduct, ...promotionalOffers]
@@ -106,12 +106,12 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
   ngOnInit() {
 
     // 1. Load products to be used (similar but a little bit simplified than the Android version)
-    this.offersAreLoading = true
+    this.isOfferLoading.set(true)
     this.loadProductList()
       .pipe(
         catchError((err) => {
           console.error("Error while loading product list: ", JSON.stringify(err))
-          this.offersAreLoading = false
+          this.isOfferLoading.set(false)
           this.cdr.detectChanges()
           return throwError(() => err)
         }),
@@ -119,7 +119,7 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
           console.log("Product id is: " + data.productId)
           // console.log("Product fetched by using purchaseService.getProducts() : " + JSON.stringify(data))
           this.productList = data.products.reduce((acc, product) => { acc[product.id] = product; return acc }, {});
-          this.offersAreLoading = false
+          this.isOfferLoading.set(false)
           this.cdr.detectChanges()
 
           // 2. Load offer token for each of the loaded promotional offer
@@ -131,10 +131,13 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
           console.log("Loaded product: ", JSON.stringify(product));
 
           this.uiAdapter = new iOSStoreProductUIAdapter(product as iOSStoreProduct)
-          this.uiTheme = {
-            "smiley": "dark"
-          }[product.id] || 'primary'
-
+          this.uiTheme.set({
+            "hoylt": "dark",
+            "gursky": "warning",
+            "smiley": "danger",
+            "alonzo": "primary"
+          }[product.id] || 'primary')
+          console.log("====", product.id, this.uiTheme())
           // Initialize form with the first offer (base product) selected
           if (this.selectableOffers.length > 0) {
             this.form.patchValue({ offer: this.selectableOffers[0] })
@@ -165,10 +168,10 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
 
   continueToPayment(){
     if (!this.form.valid) return
-    
-    this.isLoading = true
+
+    this.isLoading.set(true)
     this.processProgress = 0.3
-    this.loadingStep = "Connexion à l'App Store"
+    this.loadingStep.set("Connexion à l'App Store")
 
     let res: any
     if (this.form.value.offer.offerId){
@@ -189,8 +192,8 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
                   return throwError(()=>err)
                 }),
                 finalize(()=>{
-                  this.isLoading = false
-                  this.loadingStep = null
+                  this.isLoading.set(false)
+                  this.loadingStep.set(null)
                   this.processProgress = 0
                 })
               )
@@ -205,8 +208,8 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
           catchError((err)=>{
             console.error(`Error while purchasing the base offer ${this.form.value.offer.productId} : ${JSON.stringify(err)}`)
             this.feedbackService.registerNow("La transaction a été annulée", "dark")
-            this.isLoading = false
-            this.loadingStep = null
+            this.isLoading.set(false)
+            this.loadingStep.set(null)
             this.processProgress = 0
             return throwError(()=>err)
           })
@@ -222,7 +225,7 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
   
         // Save the transaction
         this.processProgress = 0.6
-        this.loadingStep = "Enregistrement de la transaction"
+        this.loadingStep.set("Enregistrement de la transaction")
         this.cdr.detectChanges()
         return this.cs.post('/payments/registerIAPTransaction', res.transaction)
           .pipe(
@@ -233,16 +236,16 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
             }),
             finalize(()=>{
               this.processProgress = 0
-              this.loadingStep = null
-              this.isLoading = false
+              this.loadingStep.set(null)
+              this.isLoading.set(false)
             })
           )
       })
     )
     .subscribe(()=>{
       this.processProgress = 0
-      this.isLoading = false
-      this.loadingStep = null
+      this.isLoading.set(false)
+      this.loadingStep.set(null)
       this.redirectWithFeedback()
     })
   }

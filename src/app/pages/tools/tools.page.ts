@@ -166,7 +166,7 @@ import { Router } from '@angular/router';
   --padding-bottom: 0.6rem;
   font-weight: 600;
   font-size: 0.9rem;
-  backdrop-filter: blur(10px);
+  // backdrop-filter: blur(10px);
   
   &:hover {
     --background: rgba(255, 255, 255, 0.3);

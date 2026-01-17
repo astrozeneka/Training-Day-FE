@@ -309,11 +309,12 @@ export class ContentService {
   async getUserFromLocalStorage(){
     let user = await this.storage.get('user')
     if (!user) return null
-    let grouped_perishables = user.grouped_perishables.reduce((acc:any, item:any)=>{
+    // Very bad practice: no typing, mutable object
+    /*let grouped_perishables = user.grouped_perishables.reduce((acc:any, item:any)=>{
       acc[item.slug] = item
       return acc
     }, {})
-    user.grouped_perishables = grouped_perishables
+    user.grouped_perishables = grouped_perishables*/
     return user
   }
 

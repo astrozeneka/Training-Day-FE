@@ -1,11 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-        <app-back-button></app-back-button>
+        <app-back-button [color]="isOfferLoading() ? null : uiTheme()"></app-back-button>
         <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Abonnements</ion-title>
-    <ion-progress-bar [value]="processProgress" *ngIf="processProgress > 0"></ion-progress-bar>
+    <ion-progress-bar [value]="processProgress" *ngIf="processProgress > 0" [color]="uiTheme()"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
@@ -18,39 +18,72 @@
                 Sélectionne ton abonnement.
       </div>
 
-      <div>
-        <div *ngFor="let displayable of uiAdapter?.displayables">
-          {{ displayable.durationText }}
+      <div class="subscription-options ion-padding-horizontal">
+        <div *ngIf="isOfferLoading()">
+          <app-purchase-invoice-shimmer *ngFor="let i of [1,2,3]"></app-purchase-invoice-shimmer>
         </div>
+        <ng-container *ngIf="!isOfferLoading()">
+          <div class="option-wrapper" *ngFor="let displayable of uiAdapter?.displayables; let i = index">
+            <input
+              type="radio"
+              [id]="'subscription-' + i"
+              name="subscription"
+              class="hidden-radio"
+              [value]="selectableOffers[i]"
+              [checked]="form.get('offer')?.value === selectableOffers[i]"
+              (change)="onSubscriptionChange(selectableOffers[i])">
+            <label [for]="'subscription-' + i" class="radio-card" [attr.data-theme]="uiTheme()">
+              <div class="discount-badge" *ngIf="displayable.percentageReduction">
+                -{{ displayable.percentageReduction | number:'1.0-0' }}%
+              </div>
+              <div class="content">
+                <div class="header">
+                  <span class="duration">{{ displayable.durationText }}</span>
+                </div>
+                <div class="pricing">
+                  <span class="price">{{ displayable.displayPrice }}</span>
+                  <span class="period" *ngIf="displayable.isMonthlyPrice">/mois</span>
+                </div>
+                <div class="details" *ngIf="displayable.normalPrice">
+                  <span class="normal-price">{{ displayable.normalPrice }}</span>
+                  <span *ngIf="!displayable.isMonthlyPrice && displayable.monthlyPrice && !displayable.isFree"> • {{ displayable.monthlyPrice }}/mois</span>
+                  <span *ngIf="!displayable.isFree"> • {{ displayable.weeklyPrice }}/sem.</span>
+                </div>
+              </div>
+              <div class="check-circle">
+                <div class="check-indicator"></div>
+              </div>
+            </label>
+          </div>
+        </ng-container>
       </div>
 
-      <!-- REMOVE LATER -->
-      <div class="ion-padding-horizontal bubble-wrapper">
+      <!--<div class="ion-padding-horizontal bubble-wrapper">
         <app-promotional-bubble-selector *ngIf="productList && productId" [product]="productList[productId]" formControlName="offer" os="android"></app-promotional-bubble-selector>
         <div class="placeholder" *ngIf="offersAreLoading"><ion-spinner></ion-spinner></div>
-      </div>
+      </div>-->
 
       <div class="floating-bottom">
         <div class="ion-padding">
           <div class="cgv-row">
             <ion-label>Accepter <a class="a" (click)="openCGV()">les CGV</a></ion-label>
-            <ion-checkbox formControlName="acceptCGV" slot="end" color="primary"></ion-checkbox>
+            <ion-checkbox formControlName="acceptCGV" slot="end" color="primary" [disabled]="isOfferLoading()"></ion-checkbox>
           </div>
 
           <app-ux-button
-            expand="block" 
-            color="primary" 
-            shape="round" 
-            [disabled]="!form.valid"
+            expand="block"
+            [color]="isOfferLoading() ? 'light' : uiTheme()"
+            shape="round"
+            [disabled]="!form.valid || isOfferLoading()"
             (click)="continueToPayment()"
-            [loading]="isLoading"
+            [loading]="isLoading()"
           >
             Continuer
           </app-ux-button>
           <!-- TODO, redeem code -->
           <div class="helper ion-text-center" style="font-size:smaller">
             <!-- Enregistrement de votre commande en cours <br/> -->
-            {{ loadingStep }}
+            {{ loadingStep() }}
           </div>
         </div>
       </div>
@@ -101,20 +134,20 @@
     </form>
     <div class="ion-padding">
       <app-ux-button
-        expand="block" 
-        color="primary" 
-        shape="round" 
-        (click)="continueToPayment()" 
+        expand="block"
+        color="primary"
+        shape="round"
+        (click)="continueToPayment()"
         [disabled]="!acceptConditions.value"
-        [loading]="isLoading"
+        [loading]="isLoading()"
       >
         Continuer
       </app-ux-button>
-      <div class="helper ion-text-center" *ngIf="isLoading" style="font-size:smaller">
+      <div class="helper ion-text-center" *ngIf="isLoading()" style="font-size:smaller">
         Enregistrement de votre commande en cours <br/>
         <div>
             <span>
-                {{ loadingStep }}
+                {{ loadingStep() }}
             </span>
             <ion-spinner name="dots"></ion-spinner>
         </div>

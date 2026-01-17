@@ -64,6 +64,7 @@ import { CoachMessengerSettingsComponent } from './coach-messenger-settings/coac
 import { AppointmentListComponent } from './appointment-list/appointment-list.component';
 import { SubscriptionCtaCompactComponent } from './subscription-cta-compact/subscription-cta-compact.component';
 import { ContinueWithAppleButtonComponent } from './continue-with-apple-button/continue-with-apple-button.component';
+import { PurchaseInvoiceShimmerComponent } from './purchase-invoice-shimmer/purchase-invoice-shimmer.component';
 
 
 @NgModule({
@@ -123,6 +124,7 @@ import { ContinueWithAppleButtonComponent } from './continue-with-apple-button/c
     ContinueWithGoogleButtonComponent,
     ContinueWithAppleButtonComponent,
     ButtonToChatComponent,
+    PurchaseInvoiceShimmerComponent,
 
     // Pipes
     DisplayListPipe,
@@ -178,7 +180,8 @@ import { ContinueWithAppleButtonComponent } from './continue-with-apple-button/c
     ContinueWithGoogleButtonComponent,
     ContinueWithAppleButtonComponent,
     ButtonToChatComponent,
-    
+    PurchaseInvoiceShimmerComponent,
+
     DisplayListPipe,
     ChatMasterDiscussionListComponent,
     CoachChatSettingsComponent,
