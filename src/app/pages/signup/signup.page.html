@@ -20,16 +20,17 @@
       <!-- Step 1: Email input -->
       <div *ngIf="currentStep === 1">
         <form [formGroup]="form" (submit)="validateEmail()">
-          <ion-item class="ion-margin-vertical">
-            <ion-input
-              label="Email"
-              label-placement="floating"
+          
+          <div class="input-wrapper">
+            <app-outline-input
               formControlName="email"
+              label="Email"
+              type="email"
               [errorText]="displayedError.email"
               autocomplete="email"
               appAutofill
-            ></ion-input>
-          </ion-item>
+            ></app-outline-input>
+          </div>
 
           <app-ux-button
             expand="full"
@@ -74,23 +75,22 @@
       <!-- Step 2: Firstname/Lastname -->
       <div *ngIf="currentStep === 2">
         <form [formGroup]="form" (submit)="validateNames()">
-          <ion-item class="ion-margin-vertical">
-            <ion-input
-              label="Prénom"
-              label-placement="floating"
-              formControlName="firstname"
-              [errorText]="displayedError.firstname"
-            ></ion-input>
-          </ion-item>
 
-          <ion-item class="ion-margin-vertical">
-            <ion-input
-              label="Nom"
-              label-placement="floating"
+          <div class="input-wrapper">
+            <app-outline-input
+              formControlName="firstname"
+              label="Prénom"
+              [errorText]="displayedError.firstname"
+            ></app-outline-input>
+          </div>
+
+          <div class="input-wrapper">
+            <app-outline-input
               formControlName="lastname"
+              label="Nom"
               [errorText]="displayedError.lastname"
-            ></ion-input>
-          </ion-item>
+            ></app-outline-input>
+          </div>
 
           <app-ux-button
             expand="full"
@@ -115,55 +115,26 @@
       <!-- Step 3: Password -->
       <div *ngIf="currentStep === 3">
         <form [formGroup]="form" (submit)="submitForm()">
-          <ion-item class="ion-margin-vertical">
-            <ion-input
-              label="Mot de passe"
-              label-placement="floating"
+
+          <div class="input-wrapper">
+            <app-outline-input
               formControlName="password"
+              label="Mot de passe"
               [type]="passwordToggle.value ? 'text' : 'password'"
               [errorText]="displayedError.password"
               autocomplete="new-password"
-            ></ion-input>
-            <ion-button
-              color="medium"
-              fill="clear"
-              class="password-toggle"
-              shape="round"
-              (touchstart)="passwordToggle.toggle($event, true)"
-              (touchend)="passwordToggle.toggle($event, false)"
-              (mousedown)="passwordToggle.toggle($event, true)"
-              (mouseup)="passwordToggle.toggle($event, false)"
-            >
-              <div>
-                <ion-icon slot="end" name="eye"></ion-icon>
-              </div>
-            </ion-button>
-          </ion-item>
+            ></app-outline-input>
+          </div>
 
-          <ion-item class="ion-margin-vertical">
-            <ion-input
-              label="Confirmez le mot de passe"
-              label-placement="floating"
+          <div class="input-wrapper">
+            <app-outline-input
               formControlName="password_confirm"
+              label="Confirmez le mot de passe"
               [type]="passwordConfirmToggle.value ? 'text' : 'password'"
               [errorText]="displayedError.password_confirm"
               autocomplete="new-password"
-            ></ion-input>
-            <ion-button
-              color="medium"
-              fill="clear"
-              class="password-toggle"
-              shape="round"
-              (touchstart)="passwordConfirmToggle.toggle($event, true)"
-              (touchend)="passwordConfirmToggle.toggle($event, false)"
-              (mousedown)="passwordConfirmToggle.toggle($event, true)"
-              (mouseup)="passwordConfirmToggle.toggle($event, false)"
-            >
-              <div>
-                <ion-icon slot="end" name="eye"></ion-icon>
-              </div>
-            </ion-button>
-          </ion-item>
+            ></app-outline-input>
+          </div>
 
           <app-ux-button
             expand="full"

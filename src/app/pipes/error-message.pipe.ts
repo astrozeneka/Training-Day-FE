@@ -28,6 +28,8 @@ export class ErrorMessagePipe implements PipeTransform {
       return `La valeur doit être inférieure ou égale à ${maxValue}.`;
     } else if ('pattern' in errors) {
       return 'Le format est incorrect.';
+    } else if ('password-policy-pattern' in errors) {
+      return "Le mot de passe doit contenir au moins 8 caractères dont au moins une lettre, un chiffre et un caractère spécial (!@#$%^&*)";
     } else {
       // Fallback for unknown errors
       return 'Erreur inconnue.';

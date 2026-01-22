@@ -17,7 +17,7 @@ import { UtilitiesModule } from 'src/app/components/utilities.module';
     SignupPageRoutingModule,
     ReactiveFormsModule,
     UtilitiesModule,
-    
+     
   ],
   declarations: [SignupPage]
 })

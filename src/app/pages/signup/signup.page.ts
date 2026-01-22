@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormControl, FormGroup, ValidatorFn, AbstractControl, ValidationErrors, Validators } from "@angular/forms";
 import { ContentService } from "../../content.service";
 import { FeedbackService } from "../../feedback.service";
 import { catchError, finalize, throwError } from "rxjs";
@@ -14,6 +14,28 @@ import { Platform } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 import { SignInWithAppleResponse } from 'src/app/components/continue-with-apple-button/continue-with-apple-button.component';
 import { User } from 'src/app/models/Interfaces';
+import { SignupService } from './signup.service';
+
+// Custom password policy validator
+function passwordPolicyValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) {
+      return null;
+    }
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    const valid = passwordRegex.test(value);
+    return valid ? null : { 'password-policy-pattern': true };
+  };
+}
+
+// Enumeration
+export enum SignupStep {
+  Email = 1,
+  Names = 2,
+  Password = 3,
+  AcceptConditions = 4
+}
 
 @Component({
   selector: 'app-signup',
@@ -22,7 +44,7 @@ import { User } from 'src/app/models/Interfaces';
 })
 export class SignupPage extends FormComponent implements OnInit {
 
-  currentStep: number = 1;
+  currentStep: SignupStep = SignupStep.Email;
   useDarkMode: boolean = false;
   formIsLoading: boolean = false;
 
@@ -61,7 +83,8 @@ export class SignupPage extends FormComponent implements OnInit {
     private router: Router,
     private dms: DarkModeService,
     private cdr: ChangeDetectorRef,
-    private platform: Platform
+    private platform: Platform,
+    private service: SignupService
   ) {
     super();
   }
@@ -89,15 +112,18 @@ export class SignupPage extends FormComponent implements OnInit {
     });
 
     // Set validators based on current step
-    if (this.currentStep === 1) {
+    if (this.currentStep === SignupStep.Email) {
       this.form.get('email')?.setValidators([Validators.required, Validators.email]);
-    } else if (this.currentStep === 2) {
+    } else if (this.currentStep === SignupStep.Names) {
       this.form.get('firstname')?.setValidators([Validators.required]);
       this.form.get('lastname')?.setValidators([Validators.required]);
-    } else if (this.currentStep === 3) {
-      this.form.get('password')?.setValidators([Validators.required]);
+    } else if (this.currentStep === SignupStep.Password) {
+      this.form.get('password')?.setValidators([
+        Validators.required,
+        passwordPolicyValidator()
+      ]);
       this.form.get('password_confirm')?.setValidators([Validators.required]);
-    } else if (this.currentStep === 4) {
+    } else if (this.currentStep === SignupStep.AcceptConditions) {
       this.form.get('acceptConditions')?.setValidators([Validators.requiredTrue]);
     }
 
@@ -112,8 +138,8 @@ export class SignupPage extends FormComponent implements OnInit {
   }
 
   async validateEmail() {
-    console.log("Here");
     if (this.form.get('email')?.invalid) {
+      this.form.get('email')?.setErrors({'email': 'Invalid email'});
       this.form.get('email')?.markAsTouched();
       return;
     }
@@ -121,16 +147,36 @@ export class SignupPage extends FormComponent implements OnInit {
     this.formIsLoading = true;
     this.cdr.detectChanges();
 
-    try {
+    /*try {
       await this.checkEmailAvailability(this.form.value.email);
-      this.currentStep = 2;
+      this.currentStep = SignupStep.Names;
       this.setValidatorsForCurrentStep();
     } catch (error) {
       console.error('Email availability check failed:', error);
       this.feedbackService.registerNow(error, "danger");
     } finally {
       this.formIsLoading = false;
-    }
+    }*/
+    this.service.validateEmail({email: this.form.value.email})
+    .pipe(
+      catchError((error) => {
+        if (error.status == 422) {
+          this.manageValidationFeedback(error, 'email');
+        } else if (error.status == 0) {
+          this.feedbackService.registerNow("Veuillez vérifier votre connexion internet", "danger");
+        } else {
+          this.feedbackService.registerNow("Erreur " + error.status, 'danger');
+        }
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.formIsLoading = false;
+      })
+    )
+    .subscribe(() => {
+      this.currentStep = SignupStep.Names;
+      this.setValidatorsForCurrentStep();
+    })
   }
 
   validateNames() {
@@ -143,12 +189,13 @@ export class SignupPage extends FormComponent implements OnInit {
       return;
     }
 
-    this.currentStep = 3;
+    this.currentStep = SignupStep.Password;
     this.setValidatorsForCurrentStep();
   }
 
   async submitForm() {
-    if (this.currentStep == 3) {
+    
+    if (this.currentStep === SignupStep.Password) {
       // On the password step, validate the password fields
 
       const passwordControl = this.form.get('password');
@@ -165,11 +212,11 @@ export class SignupPage extends FormComponent implements OnInit {
         return;
       }
 
-      this.currentStep = 4;
+      this.currentStep = SignupStep.AcceptConditions;
       this.setValidatorsForCurrentStep();
       return;
 
-    } else if (this.currentStep == 4) {
+    } else if (this.currentStep === SignupStep.AcceptConditions) {
 
       // On the final step, validate the acceptance of conditions
       const acceptConditionsControl = this.form.get('acceptConditions');
@@ -199,6 +246,7 @@ export class SignupPage extends FormComponent implements OnInit {
               this.manageValidationFeedback(error, 'password_confirm');
               this.manageValidationFeedback(error, 'firstname');
               this.manageValidationFeedback(error, 'lastname');
+              this.feedbackService.registerNow("Veuillez corriger les erreurs dans le formulaire", "danger");
             } else if (error.status == 0) {
               this.feedbackService.registerNow("Veuillez vérifier votre connexion internet", "danger");
             } else {
@@ -225,47 +273,11 @@ export class SignupPage extends FormComponent implements OnInit {
   }
 
   goBack() {
-    if (this.currentStep > 1) {
+    if (this.currentStep > SignupStep.Email) {
       this.currentStep--;
       this.setValidatorsForCurrentStep();
     }
   }
-
-  // Fake API call to simulate email availability check
-  private async checkEmailAvailability(email: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.http.get(`${environment.apiEndpoint}/users-check-email-availability`, {
-        params: { email }
-      })
-      .pipe(
-        catchError(err => {
-          reject(err.message);
-          return throwError(() => new Error('Email availability check failed'));
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          if (response['available']) {
-            resolve();
-          } else {
-            reject("L'email est déjà utilisé");
-          }
-        },
-        error: (error) => reject(error.message)
-      });
-    });
-  }
-
-    /*return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simulate email availability check - reject if email is 'test@example.com'
-        if (email === 'test@example.com') {
-          reject(new Error('Email already exists'));
-        } else {
-          resolve();
-        }
-      }, 1000);
-    });*/
 
   // Google signup functionality reused from subscribe.page.ts
   loginWithGoogle({google_token}: {google_token: string}) {
