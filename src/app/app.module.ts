@@ -23,7 +23,7 @@ import { ConversationCacheInterceptor } from './messenger-master/messenger-maste
 @NgModule({
   declarations: [
     AppComponent,
-    DisplayPricePipe
+    DisplayPricePipe,
   ],
     imports: [
         BrowserModule,

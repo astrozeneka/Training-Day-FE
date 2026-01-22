@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-back-button></app-back-button>
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Programmes Alimentaires</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <h1 class="display-1 ion-padding">Liste des programmes</h1>
+  <div class="programs-wrapper">
+    <a [routerLink]="['/recipe-detail', 7]" *ngFor="let program of programs">
+      <div class="program">
+        <div class="program-icon">
+          <ion-icon [name]="program.icon"></ion-icon>
+        </div>
+        <div class="headings">
+          <div class="title">{{ program.title }}</div>
+          <div class="subtitle">{{ program.calories }}</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</ion-content>
