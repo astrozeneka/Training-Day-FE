@@ -128,8 +128,6 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
           // Set some state variables
           this.productId = data.productId
           this.product = product
-          console.log("Loaded product: ", JSON.stringify(product));
-
           this.uiAdapter = new iOSStoreProductUIAdapter(product as iOSStoreProduct)
           this.uiTheme.set({
             "hoylt": "dark",
@@ -137,7 +135,6 @@ export class IosPurchaseInvoicePage extends AbstractPurchaseInvoicePage<iOSStore
             "smiley": "danger",
             "alonzo": "primary"
           }[product.id] || 'primary')
-          console.log("====", product.id, this.uiTheme())
           // Initialize form with the first offer (base product) selected
           if (this.selectableOffers.length > 0) {
             this.form.patchValue({ offer: this.selectableOffers[0] })

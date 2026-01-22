@@ -1,14 +1,6 @@
 import { signal } from "@angular/core";
-import { AndroidOffer, iOSOffer, iOSStoreProduct } from "./abstract-purchase-invoice";
+import { iOSOffer, iOSStoreProduct } from "./abstract-purchase-invoice";
 import { AbstractStoreProductUiAdapter, DisplayableProduct } from "./abstract-store-product-ui-adapter";
-
-export interface Currency {
-  symbol: string;
-  position: 'prefix' | 'suffix';
-  hasSpace: boolean;
-  decimalSeparator: string;
-  thousandSeparator: string;
-}
 
 export class iOSStoreProductUIAdapter extends AbstractStoreProductUiAdapter<iOSStoreProduct> {
   constructor(iOSStoreProduct: iOSStoreProduct) {
@@ -51,84 +43,9 @@ export class iOSStoreProductUIAdapter extends AbstractStoreProductUiAdapter<iOSS
           normalPrice,
           percentageReduction: offer.percentageReduction
         } as DisplayableProduct;
-    }))
+    }).sort((a, b) => a.percentageReduction - b.percentageReduction))
   }
 
-  protected _extractCurrency(offer: iOSOffer): Currency {
-    const displayPrice = offer.displayPrice.trim();
-
-    const numericMatch = displayPrice.match(/[\d\s.,]+/);
-    if (!numericMatch) {
-      return {
-        symbol: '',
-        position: 'suffix',
-        hasSpace: false,
-        decimalSeparator: '.',
-        thousandSeparator: ''
-      };
-    }
-
-    const numericPart = numericMatch[0];
-    const numericIndex = displayPrice.indexOf(numericPart);
-
-    const prefix = displayPrice.substring(0, numericIndex).trim();
-    const suffix = displayPrice.substring(numericIndex + numericPart.length).trim();
-
-    const symbol = prefix || suffix;
-    const position = prefix ? 'prefix' : 'suffix';
-    const hasSpace = prefix
-      ? displayPrice[numericIndex - 1] === ' '
-      : displayPrice[numericIndex + numericPart.length] === ' ';
-
-    const cleanNumeric = numericPart.replace(/\s/g, '');
-    const separators = cleanNumeric.match(/[.,]/g) || [];
-
-    let decimalSeparator = '.';
-    let thousandSeparator = '';
-
-    if (separators.length > 0) {
-      const lastSeparator = cleanNumeric.lastIndexOf(',') > cleanNumeric.lastIndexOf('.') ? ',' : '.';
-      const lastSeparatorIndex = cleanNumeric.lastIndexOf(lastSeparator);
-      const digitsAfterLast = cleanNumeric.length - lastSeparatorIndex - 1;
-
-      if (digitsAfterLast === 2 || digitsAfterLast === 3) {
-        decimalSeparator = lastSeparator;
-
-        if (separators.length > 1) {
-          thousandSeparator = lastSeparator === ',' ? '.' : ',';
-        }
-      } else {
-        thousandSeparator = lastSeparator;
-        decimalSeparator = lastSeparator === ',' ? '.' : ',';
-      }
-    }
-
-    return {
-      symbol,
-      position,
-      hasSpace,
-      decimalSeparator,
-      thousandSeparator
-    };
-  }
-
-  protected _applyCurrency(offer: iOSOffer, currency: Currency): string {
-    const price = offer.price;
-    const [integerPart, decimalPart = '00'] = price.toFixed(2).split('.');
-
-    let formattedInteger = integerPart;
-    if (currency.thousandSeparator && integerPart.length > 3) {
-      formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, currency.thousandSeparator);
-    }
-
-    const formattedPrice = `${formattedInteger}${currency.decimalSeparator}${decimalPart}`;
-
-    if (currency.position === 'prefix') {
-      return `${currency.symbol}${currency.hasSpace ? ' ' : ''}${formattedPrice}`;
-    } else {
-      return `${formattedPrice}${currency.hasSpace ? ' ' : ''}${currency.symbol}`;
-    }
-  }
 
   protected _computeWeeklyPrice(offer: iOSOffer): string {
     const numericPrice = parseFloat(offer.displayPrice.replace(/[^0-9.,]/g, '').replace(',', '.'))
@@ -160,8 +77,8 @@ export class iOSStoreProductUIAdapter extends AbstractStoreProductUiAdapter<iOSS
         break
     }
 
-    const currency = this._extractCurrency(offer)
-    return this._applyCurrency({ ...offer, price: weeklyPrice }, currency)
+    const currency = this._extractCurrency(offer.displayPrice.trim())
+    return this._applyCurrency(weeklyPrice, currency)
   }
 
   protected _computeMonthlyPrice(offer: iOSOffer): string | undefined {
@@ -194,8 +111,8 @@ export class iOSStoreProductUIAdapter extends AbstractStoreProductUiAdapter<iOSS
         break
     }
 
-    const currency = this._extractCurrency(offer)
-    return this._applyCurrency({ ...offer, price: monthlyPrice }, currency)
+    const currency = this._extractCurrency(offer.displayPrice.trim())
+    return this._applyCurrency(monthlyPrice, currency)
   }
 
   protected _computeNormalPrice(offer: iOSOffer, baseOffer: iOSOffer): string {
@@ -204,8 +121,8 @@ export class iOSStoreProductUIAdapter extends AbstractStoreProductUiAdapter<iOSS
     }
     const nMonth:number = offer.periodValue;
     const normalPrice:number = baseOffer.price * nMonth;
-    const currency = this._extractCurrency(offer)
-    return this._applyCurrency({ ...offer, price: normalPrice }, currency)
+    const currency = this._extractCurrency(offer.displayPrice.trim())
+    return this._applyCurrency(normalPrice, currency)
   }
 }
 

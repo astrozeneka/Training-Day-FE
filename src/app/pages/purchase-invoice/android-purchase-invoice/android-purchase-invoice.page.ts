@@ -129,6 +129,7 @@ export class AndroidPurchaseInvoicePage extends AbstractPurchaseInvoicePage<Andr
       }))
       .subscribe((product:AndroidStoreProduct) => {
         this.product = product
+        console.log("---a>" + JSON.stringify(product))
         this.uiAdapter = (new AndroidStoreProductUIAdapter(product as AndroidStoreProduct))
 
         // Set theme based on product (need to refactor) todo later
