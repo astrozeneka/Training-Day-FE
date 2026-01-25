@@ -1,304 +1,30 @@
 import { HttpClient, HttpEventType, HttpHeaders, HttpRequest } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavigationEnd, Router } from '@angular/router';
 import { ActionSheetController } from '@ionic/angular';
 import { catchError, distinctUntilChanged, filter, finalize, map, merge, of, switchMap, tap, throwError } from 'rxjs';
 import { ContentService } from 'src/app/content.service';
 import { FeedbackService } from 'src/app/feedback.service';
-import { Recipe, RecipesService } from 'src/app/recipes.service';
+import { ProgramCategory, Recipe, RecipesService } from 'src/app/recipes.service';
+
+export enum RecipeType{
+  Recipe = 1,
+  Program = 2
+}
 
 @Component({
   selector: 'app-add-recipe',
-  template: `
-  <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <app-back-button></app-back-button>
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Ajouter une recette</ion-title>
-    <ion-progress-bar [value]="progress" *ngIf="progress"></ion-progress-bar>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  <h1 class="display-1 ion-padding">Ajouter une recette</h1>
-  <form [formGroup]="form" (submit)="submit()">
-
-    <!-- ion-item is deprecated and will be removed later -->
-    <div class="input-wrapper">
-      <app-outline-input label="Titre" formControlName="title" [errorText]="displayedError.title"></app-outline-input>
-    </div>
-    <!--<ion-item>
-      <ion-input
-        label="Titre"
-        label-placement="floating"
-        formControlName="title"
-        [errorText]="displayedError.title"
-      ></ion-input>
-    </ion-item>-->
-
-    <!-- Will be changed to text area later (not now) -->
-    <div class="input-wrapper">
-      <app-outline-input label="Description" formControlName="description"
-        [errorText]="displayedError.description"></app-outline-input>
-    </div>
-
-    <!--<ion-item>
-      <ion-textarea
-              label="Description"
-              label-placement="floating"
-              formControlName="description"
-              [rows]="5"
-              [errorText]="displayedError.description"
-      ></ion-textarea>
-    </ion-item>-->
-
-    <div class="input-wrapper">
-      <app-outline-input label="Catégorie" formControlName="category"
-        [errorText]="displayedError.category"></app-outline-input>
-      <div class="chip-list">
-        <ion-chip *ngFor="let c of categories" (click)="chooseCategory({val:c})"
-          [color]="c === form.get('category').value ? 'primary' : 'medium'">{{ c }}</ion-chip>
-      </div>
-    </div>
-
-    <!-- Image picker -->
-    <div class="image-picker-wrapper">
-      <div class="label">
-        Image représentative
-      </div>
-      <app-image-picker color="light" label="Image" accept="image/png,image/jpeg" formControlName="image"
-        [errorText]="displayedError.image"></app-image-picker>
-    </div>
-
-    <!-- PDF pickers -->
-    <div class="image-picker-wrapper">
-      <div class="label">
-        Visuel pour petit smartphone (facult.)
-      </div>
-      <app-image-picker color="light" label="Sélectionner un fichier" accept="image/png,image/jpeg,image/tiff"
-        formControlName="docSmallPhone" [errorText]="displayedError.docSmallPhone" mode="image"></app-image-picker>
-    </div>
-
-    <!-- PDF pickers -->
-    <div class="image-picker-wrapper">
-      <div class="label">
-        Visuel pour smartphone
-      </div>
-      <app-image-picker color="light" label="Sélectionner un fichier" accept="image/png,image/jpeg,image/tiff"
-        formControlName="docLargePhone" [errorText]="displayedError.docLargePhone" mode="image"></app-image-picker>
-    </div>
-
-    <!-- PDF pickers -->
-    <div class="image-picker-wrapper">
-      <div class="label">
-        Visuel pour tablette (facult.)
-      </div>
-      <app-image-picker color="light" label="Sélectionner un fichier" accept="image/png,image/jpeg,image/tiff"
-        formControlName="docTablet" [errorText]="displayedError.docTablet" mode="image"></app-image-picker>
-    </div>
-
-    <div class="section-header">
-      <h3>Informations supplémentaires</h3>
-    </div>
-
-    <div class="input-wrapper">
-      <app-outline-input label="Description détaillée" formControlName="extra_description"
-        [errorText]="displayedError.extra_description"></app-outline-input>
-    </div>
-
-    <div class="input-row">
-      <div class="input-wrapper half-width">
-        <app-outline-input label="Temps total" formControlName="extra_time"
-          [errorText]="displayedError.extra_time"></app-outline-input>
-      </div>
-      <div class="input-wrapper half-width">
-        <app-outline-input label="Calories" formControlName="extra_calories"
-          [errorText]="displayedError.extra_calories"></app-outline-input>
-      </div>
-    </div>
-
-    <div class="input-row">
-      <div class="input-wrapper half-width">
-        <app-outline-input label="Difficulté" formControlName="extra_difficulty"
-          [errorText]="displayedError.extra_difficulty"></app-outline-input>
-      </div>
-      <div class="input-wrapper half-width">
-        <app-outline-input label="Portions" formControlName="extra_servings"
-          [errorText]="displayedError.extra_servings"></app-outline-input>
-      </div>
-    </div>
-
-    <div class="input-row">
-      <div class="input-wrapper half-width">
-        <app-outline-input label="Temps de préparation" formControlName="extra_preparationTime"
-          [errorText]="displayedError.extra_preparationTime"></app-outline-input>
-      </div>
-      <div class="input-wrapper half-width">
-        <app-outline-input label="Temps de cuisson" formControlName="extra_cookingTime"
-          [errorText]="displayedError.extra_cookingTime"></app-outline-input>
-      </div>
-    </div>
-
-    <div class="input-row">
-      <div class="input-wrapper half-width">
-        <app-outline-input label="Protéines" formControlName="extra_protein"
-          [errorText]="displayedError.extra_protein"></app-outline-input>
-      </div>
-      <div class="input-wrapper half-width">
-        <app-outline-input label="Lipides" formControlName="extra_lipids"
-          [errorText]="displayedError.extra_lipids"></app-outline-input>
-      </div>
-    </div>
-    
-    <div class="input-row">
-      <div class="input-wrapper half-width">
-        <app-outline-input label="Glucides" formControlName="extra_glucids"
-          [errorText]="displayedError.extra_glucids"></app-outline-input>
-      </div>
-      <div class="input-wrapper half-width">
-        <!-- Empty cell for layout consistency -->
-        <div></div>
-      </div>
-    </div>
-
-    <!-- The code below have a lot of bug -->
-    <!--
-    <div class="input-wrapper">
-      <div class="label">Ingrédients</div>
-      <div class="list-manager">
-        <ion-button fill="clear" size="small" (click)="addIngredient()">
-          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-          Ajouter un ingrédient
-        </ion-button>
-        <div class="list-items">
-          <div class="list-item" *ngFor="let ingredient of ingredientsList; let i = index">
-            <ion-input [(ngModel)]="ingredientsList[i]" [ngModelOptions]="{standalone: true}"
-              placeholder="Ex: 200g de farine"></ion-input>
-            <ion-button fill="clear" size="small" (click)="removeIngredient(i)">
-              <ion-icon name="close-circle-outline" slot="icon-only"></ion-icon>
-            </ion-button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="input-wrapper">
-      <div class="label">Instructions</div>
-      <div class="list-manager">
-        <ion-button fill="clear" size="small" (click)="addInstruction()">
-          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-          Ajouter une instruction
-        </ion-button>
-        <div class="list-items">
-          <div class="list-item" *ngFor="let instruction of instructionsList; let i = index">
-            <span class="step-number">{{ i + 1 }}.</span>
-            <ion-input [(ngModel)]="instructionsList[i]" [ngModelOptions]="{standalone: true}"
-              placeholder="Décrivez l'étape"></ion-input>
-            <ion-button fill="clear" size="small" (click)="removeInstruction(i)">
-              <ion-icon name="close-circle-outline" slot="icon-only"></ion-icon>
-            </ion-button>
-          </div>
-        </div>
-      </div>
-    </div>
-    -->
-
-    <div class="controls">
-      <app-ux-button expand="block" [disabled]="!valid" shape="round" [loading]="isFormLoading"
-        *ngIf="formMode=='add'">Ajouter</app-ux-button>
-      <app-ux-button expand="block" [disabled]="!valid" shape="round" [loading]="isFormLoading"
-        *ngIf="formMode=='edit'">Mettre à jour</app-ux-button>
-      <app-ux-button *ngIf="formMode == 'edit'" type="button" expand="block" fill="clear" color="danger"
-        (click)="promptDelete()" [loading]="deleteIsLoading">Supprimer</app-ux-button>
-    </div>
-  </form>
-</ion-content>
-  `,
-  styles: [`
-
-
-.image-picker-wrapper,
-app-outline-input{
-    --margin-top: 22px;
-    --margin-bottom: 22px;
-    --border-color: #858585;
-    margin-top: 22px;
-    margin-bottom: 22px;
-}
-
-form{
-    padding-left: 24px;
-    padding-right: 24px;
-}
-
-.label{
-    font-size: 14px;
-    color: #79747E;
-    margin-bottom: 8px;
-    display: block;
-}
-
-.chip-list{
-    margin-top: -16px;
-    margin-bottom: 8px;
-}
-
-/* For the extra information */
-.section-header {
-  margin: 32px 0 16px 0;
-  
-  h3 {
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--ion-color-dark);
-  }
-}
-
-.input-row {
-  display: flex;
-  gap: 16px;
-  
-  .half-width {
-    flex: 1;
-  }
-}
-
-.list-manager {
-  .list-items {
-    margin-top: 8px;
-  }
-  
-  .list-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-    
-    ion-input {
-      flex: 1;
-      --background: var(--ion-color-light);
-      --padding-start: 12px;
-      --padding-end: 12px;
-      --padding-top: 8px;
-      --padding-bottom: 8px;
-      border-radius: 8px;
-    }
-    
-    .step-number {
-      font-weight: 500;
-      color: var(--ion-color-medium);
-      min-width: 20px;
-    }
-  }
-}
-  `]
+  templateUrl: './add-recipe.page.html',
+  styleUrls: ['./add-recipe.page.scss']
 })
 export class AddRecipePage implements OnInit {
 
+  selectedRecipeType: string = 'recipe';
+
   form = new FormGroup({
+    'type': new FormControl<RecipeType>(RecipeType.Recipe, []),
+
     'title': new FormControl('', [Validators.required]),
     'description': new FormControl('', [Validators.required]), // In the BE, it is not required
     'category': new FormControl('', [Validators.required]),
@@ -358,8 +84,11 @@ export class AddRecipePage implements OnInit {
   deleteIsLoading: boolean = false
 
   // Category list to improve User experience
-  categories: string[] = []
+  recipeCategory: WritableSignal<string[]> = signal([])
+  programCategory: WritableSignal<ProgramCategory[]> = signal([])
 
+  // THe extra informations field to be displayed only if RecipeType == Recipe
+  displayExtraInfoFields: WritableSignal<boolean> = signal(true);
 
   constructor(
     private router: Router,
@@ -373,6 +102,9 @@ export class AddRecipePage implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    // Set default recipe type
+    this.form.get('type').setValue(RecipeType.Recipe);
 
     // When the status of the form chane-ged
     this.form.statusChanges.subscribe((status) => {
@@ -434,8 +166,34 @@ export class AddRecipePage implements OnInit {
 
     // Load the category information
     this.rs.onCategoryData(true, true).subscribe((data: string[]) => {
-      this.categories = data
+      this.recipeCategory.set(data)
     })
+
+    // Load the program category information
+    this.rs.onProgramCategoryData(true, true).subscribe((data: ProgramCategory[]) => {
+      this.programCategory.set(data)
+    })
+
+    // Determine whether to display extra info fields
+    this.form.get('type').valueChanges.pipe(
+      distinctUntilChanged()
+    )
+      .subscribe(() => {
+        if (this.form.get('type').value === RecipeType.Recipe) {
+          this.displayExtraInfoFields.set(true);
+        } else {
+          this.displayExtraInfoFields.set(false);
+        }
+      });
+  }
+
+  segmentChanged(event: any) {
+    this.selectedRecipeType = event.detail.value;
+    if (this.selectedRecipeType === 'recipe') {
+      this.form.get('type').setValue(RecipeType.Recipe);
+    } else if (this.selectedRecipeType === 'program') {
+      this.form.get('type').setValue(RecipeType.Program);
+    }
   }
 
   _loadedFiles = {}
@@ -471,7 +229,6 @@ export class AddRecipePage implements OnInit {
             }),
             reportProgress: true,
           });
-          console.log(JSON.stringify(req))
           return this.http.request(req)
             .pipe(
               catchError((err) => {
@@ -568,6 +325,7 @@ export class AddRecipePage implements OnInit {
         // Upload to the server using the traditionnal POST endpoint for uploading video
         switchMap((res: any) => {
           let data = {
+            type: this.form.value.type,
             title: this.form.value.title,
             description: this.form.value.description,
             category: this.form.value.category,
@@ -606,11 +364,9 @@ export class AddRecipePage implements OnInit {
           } 
 
 
-          console.log(data)
           if (this.formMode === 'add') {
             return this.cs.post('/recipes', data)
               .pipe(catchError((err) => {
-                console.error(JSON.stringify(err))
                 return throwError(() => err)
               }))
           } else { // this.formMode == 'edit'
@@ -631,7 +387,11 @@ export class AddRecipePage implements OnInit {
           if (res.id) {
             this.reset()
             this.feedbackService.register('Votre recette a été ajoutée avec succès', 'success')
-            this.router.navigate(['/recipe-list'])
+            // Navigate and avoid going back to the form
+            this.router.navigate(
+              ['/recipe-list'],
+              { replaceUrl: true }
+            )
           } else {
             this.feedbackService.registerNow('Erreur lors de l\'ajout de la recette', 'danger')
           }

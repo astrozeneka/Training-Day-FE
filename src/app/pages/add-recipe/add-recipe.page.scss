@@ -1,0 +1,90 @@
+.segment-container {
+    margin: 0 22px 20px 22px;
+
+    ion-segment {
+        --background: transparent;
+
+        ion-segment-button {
+            --indicator-color: transparent;
+            --color-checked: var(--ion-color-primary);
+            --color: var(--ion-color-dark);
+            text-transform: none;
+            font-size: 16px;
+        }
+    }
+}
+
+.image-picker-wrapper,
+app-outline-input {
+    --margin-top: 22px;
+    --margin-bottom: 22px;
+    --border-color: #858585;
+    margin-top: 22px;
+    margin-bottom: 22px;
+}
+
+form {
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.label {
+    font-size: 14px;
+    color: #79747E;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.chip-list {
+    margin-top: -16px;
+    margin-bottom: 8px;
+}
+
+/* For the extra information */
+.section-header {
+    margin: 32px 0 16px 0;
+
+    h3 {
+        font-size: 18px;
+        font-weight: 500;
+        color: var(--ion-color-dark);
+    }
+}
+
+.input-row {
+    display: flex;
+    gap: 16px;
+
+    .half-width {
+        flex: 1;
+    }
+}
+
+.list-manager {
+    .list-items {
+        margin-top: 8px;
+    }
+
+    .list-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+
+        ion-input {
+            flex: 1;
+            --background: var(--ion-color-light);
+            --padding-start: 12px;
+            --padding-end: 12px;
+            --padding-top: 8px;
+            --padding-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .step-number {
+            font-weight: 500;
+            color: var(--ion-color-medium);
+            min-width: 20px;
+        }
+    }
+}

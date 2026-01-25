@@ -39,6 +39,11 @@ export interface Recipe {
   }
 }
 
+export interface ProgramCategory {
+  slug: string
+  name: string
+}
+
 export class RecipeCategory {
   name: string
   imageUrl: string
@@ -70,6 +75,11 @@ export class RecipesService {
   categoryDetailsSubject: BehaviorSubject<RecipeCategory[]>
   categoryDetails$: Observable<RecipeCategory[]>
 
+  // Program category
+  programCategoryData: StoredData<ProgramCategory[]>
+  programCategorySubject: BehaviorSubject<ProgramCategory[]>
+  programCategories$: Observable<ProgramCategory[]>
+
   // Recipe data by category
   recipeDataByCategory: { [key: string]: StoredData<Recipe[]> } = {}
   recipeDataByCategorySubject: { [key: string]: BehaviorSubject<Recipe[]> } = {}
@@ -90,6 +100,10 @@ export class RecipesService {
     this.categoryDetailsData = new StoredData<RecipeCategory[]>('recipeCategoryDetails', this.cs.storage)
     this.categoryDetailsSubject = new BehaviorSubject<RecipeCategory[]>([])
     this.categoryDetails$ = this.categoryDetailsSubject.asObservable()
+
+    this.programCategoryData = new StoredData<ProgramCategory[]>('programCategories', this.cs.storage)
+    this.programCategorySubject = new BehaviorSubject<ProgramCategory[]>([])
+    this.programCategories$ = this.programCategorySubject.asObservable()
   }
 
   /**
@@ -294,6 +308,36 @@ export class RecipesService {
 
     // Prepare output
     let output$ = merge(this.recipeDataByCategory$[category], additionalEvents$)
+    output$ = output$.pipe(filter((data) => data?.length > 0))
+    return output$
+  }
+
+  /** */
+  onProgramCategoryData(fromCache = true, fromServer = true): Observable<ProgramCategory[]> {
+    let additionalEvents$ = new Subject<ProgramCategory[]>()
+
+    // 1. Fire the cached data
+    if (fromCache) {
+      this.programCategoryData.get().then((data: ProgramCategory[]) => {
+        this.programCategorySubject.next(data)
+      })
+    }
+
+    // 2. Fire from the server
+    if (fromServer) {
+      this.cs.getCollection('/recipe-program-categories/', 0, {}, 99999).subscribe((data: []) => {
+        additionalEvents$.next(data)
+        this.programCategoryData.set(data.map((item: any) => {
+          return {
+            slug: item.slug,
+            name: item.name
+          } as ProgramCategory
+        }))
+      })
+    }
+
+    // Prepare output
+    let output$ = merge(this.programCategories$, additionalEvents$)
     output$ = output$.pipe(filter((data) => data?.length > 0))
     return output$
   }
