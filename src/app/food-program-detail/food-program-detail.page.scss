@@ -1,3 +1,12 @@
+.food-program-detail>.title {
+  font-size: 24px;
+  font-weight: 400;
+  text-align: center;
+  padding-top: 22px;
+  margin-top: 0px;
+  padding-bottom: 35px;
+}
+
 .programs-wrapper {
   margin-left: 22px;
   margin-right: 22px;
@@ -14,30 +23,73 @@
   width: 120px;
   vertical-align: top;
 
-  .program-icon {
+  & .program-image {
     height: 120px;
     width: 120px;
+    overflow: hidden;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    background: rgba(var(--ion-color-lightgrey-rgb), 0.5);
 
-    ion-icon {
-      font-size: 60px;
-      color: #fff;
+    & img {
+      width: 120px;
     }
   }
 
-  .headings {
-    .title {
+  & .headings {
+    text-align: center;
+
+    & .title {
       margin-top: 5px;
       color: --ion-color-dark;
     }
 
-    .subtitle {
+    & .subtitle {
       color: #888888;
+      font-size: 13px;
     }
+  }
+}
+
+/* Loading placeholder */
+.loading-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 900000;
+  backdrop-filter: blur(10px);
+  background-color: rgba(var(--ion-color-background-rgb), 0.2);
+  opacity: 1;
+  transition: opacity 0.3s;
+
+  &.hidden {
+    z-index: -1;
+    opacity: 0;
+  }
+}
+
+/* Empty State Styles */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+
+  .empty-icon {
+    font-size: 48px;
+    color: var(--ion-color-medium);
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    font-size: 16px;
+    margin: 0;
   }
 }

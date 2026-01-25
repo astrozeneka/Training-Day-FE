@@ -8,6 +8,9 @@ import { RecipeHomePageRoutingModule } from './recipe-home-routing.module';
 
 import { RecipeHomePage } from './recipe-home.page';
 import { UtilitiesModule } from "../../components/utilities.module";
+import { RecipesTabComponent } from './recipes-tab.component';
+import { ProgramsTabComponent } from './programs-tab.component';
+import { FoodProgramListComponent } from './food-program-list.component';
 
 @NgModule({
   imports: [
@@ -17,6 +20,11 @@ import { UtilitiesModule } from "../../components/utilities.module";
     RecipeHomePageRoutingModule,
     UtilitiesModule
 ],
-  declarations: [RecipeHomePage]
+  declarations: [
+    RecipeHomePage,
+    RecipesTabComponent,
+    ProgramsTabComponent,
+    FoodProgramListComponent
+  ]
 })
 export class RecipeHomePageModule {}

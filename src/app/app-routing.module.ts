@@ -377,7 +377,7 @@ const routes: Routes = [
     loadChildren: () => import('./food-program-master/food-program-master.module').then( m => m.FoodProgramMasterPageModule)
   },
   {
-    path: 'food-program-detail',
+    path: 'food-program-detail/:category',
     loadChildren: () => import('./food-program-detail/food-program-detail.module').then( m => m.FoodProgramDetailPageModule)
   },
 ];

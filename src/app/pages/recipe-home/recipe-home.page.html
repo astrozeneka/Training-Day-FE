@@ -10,33 +10,34 @@
 
 <ion-content>
   <div class="recipe-home">
-
+    <br/>
     <div class="ion-padding-horizontal">
-      <ion-button expand="block" fill="outline" shape="round" [routerLink]="['/food-program-master']">
-        <ion-icon slot="start" name="calendar-outline"></ion-icon>
-        Voir les programmes alimentaires
-      </ion-button>
       <div class="title">
-        Découvrez nos recettes
+        Les recettes pour sportifs
       </div>
       <div class="subtitle">
         Ces recettes ont été sélectionnées pour vous aider les sportifs à s'alimenter sainement.
       </div>
     </div>
 
-    <div class="card-list">
-      <div class="tool-card enhanced-tool-card" *ngFor="let category of categories">
-        <div class="image-container">
-          <img [title]="category.name" [src]="category.imageUrl" />
-        </div>
-        <div class="card-description">
-          <div class="spacer"></div>
-          <p>Découvrez des recettes savoureuses et nutritives spécialement conçues pour les sportifs.</p>
-          <h3>{{ category.name }}</h3>
-          <ion-button style="align-self: stretch;" expand="block" shape="round" [routerLink]="'/recipe-by-category/' + category.name">
-            Découvrir
-          </ion-button>
-        </div>
+    <div class="segment-container">
+      <ion-segment [(ngModel)]="selectedSegment" (ionChange)="segmentChanged($event)">
+        <ion-segment-button value="recipes">
+          <ion-label>Recettes</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="programs">
+          <ion-label>Programmes</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <div class="content-container">
+      <div class="recipes-content" *ngIf="selectedSegment() === 'recipes'">
+        <app-recipes-tab [categories]="categories"></app-recipes-tab>
+      </div>
+
+      <div class="programs-content" *ngIf="selectedSegment() === 'programs'">
+        <app-programs-tab></app-programs-tab>
       </div>
     </div>
   </div>

@@ -1,4 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, WritableSignal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { catchError, throwError } from 'rxjs';
+import { FeedbackService } from '../feedback.service';
+
+interface ProgramCategory {
+  slug: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-food-program-master',
@@ -7,32 +16,33 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FoodProgramMasterPage implements OnInit {
 
-  programs = [
-    {
-      range: '100 – 1 300 kcal',
-      description: 'Programme très léger'
-    },
-    {
-      range: '1 300 – 1 600 kcal',
-      description: 'Programme léger'
-    },
-    {
-      range: '1 600 – 2 000 kcal',
-      description: 'Programme modéré'
-    },
-    {
-      range: '2 000 – 2 400 kcal',
-      description: 'Programme standard'
-    },
-    {
-      range: '2 400 – 3 000 kcal',
-      description: 'Programme intensif'
-    }
-  ]
+  isLoading: WritableSignal<boolean> = signal(false);
+  programs: WritableSignal<ProgramCategory[]> = signal([]);
 
-  constructor() { }
+  constructor(
+    private http: HttpClient,
+    private feedbackService: FeedbackService
+  ) { }
 
   ngOnInit() {
+    this._loadCategories();
+  }
+
+  private _loadCategories() {
+    this.isLoading.set(true);
+    this.http.get<{data: ProgramCategory[]}>(`${environment.apiEndpoint}/recipe-program-categories`)
+    .pipe(
+      catchError((error) => {
+        this.feedbackService.registerNow('Erreur lors du chargement des catégories.');
+        this.isLoading.set(false);
+        return throwError(() => error);
+      })
+    )
+    .subscribe((data) => {
+      console.log(data);
+      this.programs.set(data.data);
+      this.isLoading.set(false);
+    })
   }
 
 }

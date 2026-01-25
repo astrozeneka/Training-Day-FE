@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, signal, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
@@ -27,8 +27,8 @@ import { Recipe, RecipesService } from 'src/app/recipes.service';
 
 <ion-content fullscreen="true" [scrollEvents]="true" (ionScroll)="onScroll($event)">
   <!-- The media container -->
-  <div class="pdf-container" *ngIf="docUrl">
-    <img [src]="docUrl" class="doc-image">
+  <div class="pdf-container" *ngIf="docUrl()">
+    <img [src]="docUrl()" class="doc-image">
   </div>
 
   <!-- Floating action button to scroll to details -->
@@ -38,14 +38,14 @@ import { Recipe, RecipesService } from 'src/app/recipes.service';
       (click)="scrollToDetails()" 
       size="small"
       expand="block"
-      *ngIf="docUrl && recipe?.extra">
+      *ngIf="docUrl() && recipe?.extra">
       <span>Voir les informations</span>
       <ion-icon name="arrow-down" slot="end"></ion-icon>
     </ion-button>
   </div>
 
   <!-- Loading spinner while the document is being fetched -->
-  <div class="spinner" *ngIf="!docUrl">
+  <div class="spinner" *ngIf="!docUrl()">
     <ion-spinner></ion-spinner>
   </div>
 
@@ -298,7 +298,7 @@ export class RecipeDetailPage implements OnInit {
   // Recipe information
   recipeId: number = null
   recipe: Recipe = null
-  docUrl: SafeResourceUrl
+  docUrl = signal<string>('')
 
   // User data
   user: User = null
@@ -329,9 +329,9 @@ export class RecipeDetailPage implements OnInit {
         console.log(data)
         if (data.docLargePhoneUrl) {
           if (data.docLargePhoneBase64)
-            this.docUrl = this.sanitizer.bypassSecurityTrustResourceUrl(data.docLargePhoneBase64)
+            this.docUrl.set(data.docLargePhoneBase64)
           else
-            this.docUrl = data.docLargePhoneUrl
+            this.docUrl.set(data.docLargePhoneUrl)
         }
       })
   }

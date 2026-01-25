@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { distinct, distinctUntilChanged } from 'rxjs';
 import { RecipeCategory, RecipesService } from 'src/app/recipes.service';
 
@@ -9,6 +9,7 @@ import { RecipeCategory, RecipesService } from 'src/app/recipes.service';
 })
 export class RecipeHomePage implements OnInit {
   categories: RecipeCategory[] = []
+  selectedSegment: WritableSignal<string> = signal('recipes');
 
   constructor(
     private rs: RecipesService
@@ -25,6 +26,10 @@ export class RecipeHomePage implements OnInit {
         console.log(`Categories: ${categories.length}`)
         this.categories = categories
       })
+  }
+
+  segmentChanged(event: any) {
+    this.selectedSegment.set(event.detail.value);
   }
 
 }

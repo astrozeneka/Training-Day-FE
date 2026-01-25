@@ -1,4 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, WritableSignal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { environment } from 'src/environments/environment';
+import { Recipe } from '../recipes.service';
+import { HttpClient } from '@angular/common/http';
+import { catchError, throwError } from 'rxjs';
+import { FeedbackService } from '../feedback.service';
+
+interface FoodProgram extends Recipe {}
+
+interface ProgramCategory {
+  slug: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-food-program-detail',
@@ -7,48 +20,59 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FoodProgramDetailPage implements OnInit {
 
-  programs = [
-    {
-      id: 1,
-      title: 'Programme Petit-Déjeuner',
-      calories: '300-400 kcal',
-      icon: 'cafe-outline'
-    },
-    {
-      id: 2,
-      title: 'Programme Déjeuner Léger',
-      calories: '500-600 kcal',
-      icon: 'restaurant-outline'
-    },
-    {
-      id: 3,
-      title: 'Programme Déjeuner Complet',
-      calories: '700-900 kcal',
-      icon: 'pizza-outline'
-    },
-    {
-      id: 4,
-      title: 'Programme Dîner',
-      calories: '400-500 kcal',
-      icon: 'moon-outline'
-    },
-    {
-      id: 5,
-      title: 'Programme Snack Protéiné',
-      calories: '200-300 kcal',
-      icon: 'fitness-outline'
-    },
-    {
-      id: 6,
-      title: 'Programme Musculation',
-      calories: '800-1000 kcal',
-      icon: 'barbell-outline'
-    }
-  ]
+  isLoading:WritableSignal<boolean> = signal(false);
+  foodPrograms:WritableSignal<FoodProgram[]> = signal([]);
+  categorySlug: string = null;
+  categoryName:WritableSignal<string> = signal(null);
 
-  constructor() { }
+  constructor(
+    private http: HttpClient,
+    private feedbackService: FeedbackService,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
+    this.categorySlug = this.route.snapshot.paramMap.get('category');
+    this._loadData()
+  }
+
+  private _loadData() {
+    this.isLoading.set(true);
+
+    this.http.get<ProgramCategory[]>(`${environment.apiEndpoint}/recipe-program-categories`)
+    .pipe(
+      catchError((error) => {
+        this.feedbackService.registerNow('Erreur lors du chargement des catégories.');
+        this.isLoading.set(false);
+        return throwError(() => error);
+      })
+    )
+    .subscribe((categories) => {
+      const category = categories.find(cat => cat.slug === this.categorySlug);
+      if (category) {
+        this.categoryName.set(category.name);
+        this._loadFoodPrograms();
+      } else {
+        this.feedbackService.registerNow('Catégorie introuvable.');
+        this.isLoading.set(false);
+      }
+    })
+  }
+
+  private _loadFoodPrograms() {
+    this.http.get<{data: FoodProgram[]}>(`${environment.apiEndpoint}/recipes?f_type=2&f_category=${this.categoryName()}`)
+    .pipe(
+      catchError((error) => {
+        this.feedbackService.registerNow('Erreur lors du chargement des programmes alimentaires.');
+        this.isLoading.set(false);
+        return throwError(() => error);
+      })
+    )
+    .subscribe((data)=>{
+      console.log(data);
+      this.foodPrograms.set(data.data);
+      this.isLoading.set(false);
+    })
   }
 
 }

@@ -28,13 +28,14 @@
       </div>
     </div>
 
-    <div class="card-list">
-      <div class="calorie-box" *ngFor="let program of programs" [routerLink]="['/food-program-detail']">
+    <div class="spinner" *ngIf="isLoading()">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <div class="card-list" *ngIf="!isLoading()">
+      <div class="calorie-box" *ngFor="let program of programs()" [routerLink]="['/food-program-detail', program.slug]">
         <div class="calorie-range">
-          {{ program.range }}
-        </div>
-        <div class="calorie-description">
-          {{ program.description }}
+          {{ program.name }}
         </div>
       </div>
     </div>

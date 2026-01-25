@@ -27,6 +27,13 @@
   margin-right: 22px;
   margin-bottom: 32px;
 
+  .spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+  }
+
   .card-list {
     width: 100%;
     display: flex;
