@@ -7,6 +7,7 @@ import { FeedbackService } from '../feedback.service';
 interface ProgramCategory {
   slug: string;
   name: string;
+  imageUrl: string;
 }
 
 @Component({
