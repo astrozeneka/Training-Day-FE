@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  apiEndpoint: 'https://training-day-dev.codecrane.me/api',
-  rootEndpoint: 'https://training-day-dev.codecrane.me',
+  apiEndpoint: 'https://training-day-be.codecrane.me/api',
+  rootEndpoint: 'https://training-day-be.codecrane.me',
 
   // Pusher configuration
   pusher_app_key: 'app-key',

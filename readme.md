@@ -58,3 +58,9 @@ android-iap is the currently published branch
 ## S3 access
 username: training-day-be
 pass: greatestIsLove<3
+
+## Development server
+```bash
+ionic cap run ios -l --external
+```
+

@@ -325,7 +325,7 @@ export class RecipesService {
 
     // 2. Fire from the server
     if (fromServer) {
-      this.cs.getCollection('/recipe-program-categories/', 0, {}, 99999).subscribe((data: []) => {
+      this.cs.getCollection('/recipe-program-categories', 0, {}, 99999).subscribe((data: []) => {
         additionalEvents$.next(data)
         this.programCategoryData.set(data.map((item: any) => {
           return {

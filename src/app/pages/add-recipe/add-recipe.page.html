@@ -31,30 +31,12 @@
             <app-outline-input label="Titre" formControlName="title"
                 [errorText]="displayedError.title"></app-outline-input>
         </div>
-        <!--<ion-item>
-      <ion-input
-        label="Titre"
-        label-placement="floating"
-        formControlName="title"
-        [errorText]="displayedError.title"
-      ></ion-input>
-    </ion-item>-->
 
         <!-- Will be changed to text area later (not now) -->
         <div class="input-wrapper">
             <app-outline-input label="Description" formControlName="description"
                 [errorText]="displayedError.description"></app-outline-input>
         </div>
-
-        <!--<ion-item>
-      <ion-textarea
-              label="Description"
-              label-placement="floating"
-              formControlName="description"
-              [rows]="5"
-              [errorText]="displayedError.description"
-      ></ion-textarea>
-    </ion-item>-->
 
         <div class="input-wrapper" *ngIf="displayExtraInfoFields()">
             <app-outline-input label="Catégorie" formControlName="category"
@@ -66,12 +48,11 @@
         </div>
 
         <div class="input-wrapper" *ngIf="!displayExtraInfoFields()">
-            <app-outline-input label="Catégorie" formControlName="category"
-                [errorText]="displayedError.category"></app-outline-input>
-            <div class="chip-list">
-                <ion-chip *ngFor="let c of programCategory()" (click)="chooseCategory({val:c.name})"
-                    [color]="c.name === form.get('category').value ? 'primary' : 'medium'">{{ c.name }}</ion-chip>
-            </div>
+            <ion-item>
+                <ion-select label="Catégorie" label-placement="floating" formControlName="category">
+                    <ion-select-option *ngFor="let c of programCategory()" [value]="c.name">{{ c.name }}</ion-select-option>
+                </ion-select>
+            </ion-item>
         </div>
 
         <!-- Image picker -->

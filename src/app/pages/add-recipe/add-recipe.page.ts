@@ -6,7 +6,7 @@ import { ActionSheetController } from '@ionic/angular';
 import { catchError, distinctUntilChanged, filter, finalize, map, merge, of, switchMap, tap, throwError } from 'rxjs';
 import { ContentService } from 'src/app/content.service';
 import { FeedbackService } from 'src/app/feedback.service';
-import { ProgramCategory, Recipe, RecipesService } from 'src/app/recipes.service';
+import { ProgramCategory, Recipe, RecipeCategory, RecipesService } from 'src/app/recipes.service';
 
 export enum RecipeType{
   Recipe = 1,
@@ -90,6 +90,9 @@ export class AddRecipePage implements OnInit {
   // THe extra informations field to be displayed only if RecipeType == Recipe
   displayExtraInfoFields: WritableSignal<boolean> = signal(true);
 
+  // Only a list of preselected fields can be used as a value
+  categories: WritableSignal<RecipeCategory[]> = signal([])
+
   constructor(
     private router: Router,
     private contentService: ContentService,
@@ -169,8 +172,19 @@ export class AddRecipePage implements OnInit {
       this.recipeCategory.set(data)
     })
 
+    // Load the category details information
+    // WE ARE HERE, REMOVE REDUNDENCY OF THE CODE
+    // THE NUMBER OF LINE OF CODE AFTER THE INTERVENTION SHOULD BE LOWER THAN THE NUMBER OF CODE BEFORE IT
+    // A SUITABLE FAILURE CASE SET SHOULD BE PLANNED FOR THIS PAGE AND RELATED MODULES
+    // THIS PAGE AND RELATED MODULES SHOULD BE OPTIMIZED FOR REUSAGE (CLAUDE CODING)
+    // ION-SELECT SHOULDN'T BE USED
+    /*this.rs.onCategoryDetailsData(true, true).subscribe((data: RecipeCategory[]) => {
+      this.categories.set(data)
+    })*/
+
     // Load the program category information
     this.rs.onProgramCategoryData(true, true).subscribe((data: ProgramCategory[]) => {
+      console.log("Program category", data)
       this.programCategory.set(data)
     })
 
