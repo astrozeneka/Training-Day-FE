@@ -38,7 +38,7 @@ import { Recipe, RecipesService } from 'src/app/recipes.service';
       (click)="scrollToDetails()" 
       size="small"
       expand="block"
-      *ngIf="docUrl() && recipe?.extra">
+      *ngIf="docUrl() && recipe?.extra.description">
       <span>Voir les informations</span>
       <ion-icon name="arrow-down" slot="end"></ion-icon>
     </ion-button>

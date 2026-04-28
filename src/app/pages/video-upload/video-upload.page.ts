@@ -464,6 +464,9 @@ export class VideoUploadPage extends FormComponent {
                     }, 4000);
                   })
 
+              } else {
+                console.log(`Unexpected event type`);
+                console.log(JSON.stringify(event));
               }
             });
         });

@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 
 export interface Recipe {
   id: number
+  type: number // "1" (recipe) or "2" (program)
   created_at: string
   updated_at: string
   title: string
