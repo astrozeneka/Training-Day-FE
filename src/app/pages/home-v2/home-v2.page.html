@@ -38,8 +38,7 @@
           <ion-icon name="chatbubbles" class="messages-icon"></ion-icon>
           <div class="messages-text">
             <p>
-              Vous avez <strong>{{ unreadMessagesCount }} {{ unreadMessagesCount === 1 ? 'nouveau message' : 'nouveaux
-                messages' }}</strong>
+              Vous avez <strong>{{ unreadMessagesCount }} {{ unreadMessagesCount === 1 ? 'nouveau message' : 'nouveaux messages' }}</strong>
               <span *ngIf="user?.function === 'customer'">de votre coach.</span>
             </p>
             <p class="messages-action">

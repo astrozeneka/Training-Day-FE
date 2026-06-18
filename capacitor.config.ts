@@ -5,11 +5,11 @@ const config: CapacitorConfig = {
   appName: 'Training-Day',
   webDir: 'www',
 // TODO: [CRITICAL] Comment this when providing builds and uncomment FOR enabling live-reload, uncomment this
-  server: {
+  /*server: {
     // androidScheme: 'http',
     url: 'http://localhost:8100', 
     cleartext: true
-  },
+  },*/
   android: {
     allowMixedContent: true
   },
