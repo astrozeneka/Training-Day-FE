@@ -7,4 +7,6 @@ application {
 dependencies {
     implementation project(':common')
     implementation 'dev.mobile:dadb:1.2.10'
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation 'org.json:json:20240303'
 }

@@ -6,12 +6,18 @@ import com.getcapacitor.MessageHandler;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginResult;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.function.Consumer;
+
 public class StorePluginCliAdapter {
   public static final StorePluginCliAdapter INSTANCE = new StorePluginCliAdapter();
 
   private StorePluginCliAdapter() {}
 
   private Bridge bridge;
+  private StorePlugin storePlugin;
 
   public static StorePluginCliAdapter getInstance() {
     return INSTANCE;
@@ -19,26 +25,44 @@ public class StorePluginCliAdapter {
 
   public void setBridge(Bridge Bridge) {
     this.bridge = Bridge;
+    this.storePlugin = (StorePlugin) bridge.getPlugin("Store").getInstance();
   }
 
-  public void getProducts(){
-    StorePlugin storePlugin = (StorePlugin) bridge.getPlugin("Store").getInstance();
-
+  public void getProductsAsync(Consumer<JSONArray> onSuccess, Consumer<String> onError){
     JSObject data = new JSObject();
     data.put("type", "subs");
 
     PluginCall call = new PluginCall(null, "Store", "cli-callback", "getProducts", data) {
       @Override
       public void resolve(JSObject result) {
-        // Interpret
-        JSObject resultData = result.getJSObject("products");
-        System.out.println("Received result from StorePlugin: " + resultData.toString());
+        try {
+          onSuccess.accept(result.getJSONArray("products"));
+        } catch (JSONException e) {
+          onError.accept("Failed to parse products: " + e.getMessage());
+        }
       }
       @Override
       public void reject(String message) {
-        System.err.println("Error from StorePlugin: " + message);
+        onError.accept(message);
       }
     };
     storePlugin.getProducts(call);
+  }
+
+  public void purchaseProductByIdAsync(String productId, Consumer<JSObject> onSuccess, Consumer<String> onError){
+    JSObject data = new JSObject();
+    data.put("productId", productId);
+
+    PluginCall call = new PluginCall(null, "Store", "cli-callback", "purchaseProductById", data) {
+      @Override
+      public void resolve(JSObject result) {
+        onSuccess.accept(result);
+      }
+      @Override
+      public void reject(String message) {
+        onError.accept(message);
+      }
+    };
+    storePlugin.purchaseProductById(call);
   }
 }

@@ -33,8 +33,12 @@ public class StorePluginCliServer {
                 out.println("pong");
                 break;
               case CliProtocol.CMD_GET_PRODUCTS:
-                StorePluginCliAdapter.getInstance().getProducts();
-                out.println("getProducts: request sent to StorePlugin");
+                StorePluginCliAdapter.getInstance().getProductsAsync(
+                  (result) -> {
+                    out.println(result.toString());
+                  },
+                  error -> out.println("Error: " + error)
+                );
                 break;
               default:
                 out.println("Unknown command: " + request);
