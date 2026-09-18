@@ -5,6 +5,7 @@ public final class CliProtocol {
 
   public static final String CMD_PING = "ping";
   public static final String CMD_GET_PRODUCTS = "getProducts";
+  public static final String CMD_PURCHASE_PRODUCT_BY_ID = "purchaseProductById";
 
   private CliProtocol() {}
 }

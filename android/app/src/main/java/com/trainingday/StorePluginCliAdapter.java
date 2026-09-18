@@ -8,6 +8,7 @@ import com.getcapacitor.PluginResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.function.Consumer;
 
@@ -49,9 +50,14 @@ public class StorePluginCliAdapter {
     storePlugin.getProducts(call);
   }
 
-  public void purchaseProductByIdAsync(String productId, Consumer<JSObject> onSuccess, Consumer<String> onError){
-    JSObject data = new JSObject();
-    data.put("productId", productId);
+  public void purchaseProductByIdAsync(JSONObject params, Consumer<JSObject> onSuccess, Consumer<String> onError){
+    JSObject data;
+    try {
+      data = JSObject.fromJSONObject(params);
+    } catch (JSONException e) {
+      onError.accept("Invalid params: " + e.getMessage());
+      return;
+    }
 
     PluginCall call = new PluginCall(null, "Store", "cli-callback", "purchaseProductById", data) {
       @Override

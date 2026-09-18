@@ -1,1 +1,5 @@
 apply plugin: 'java-library'
+
+dependencies {
+    api 'org.json:json:20240303'
+}

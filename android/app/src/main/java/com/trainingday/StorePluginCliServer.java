@@ -1,6 +1,8 @@
 package com.trainingday;
 
+
 import com.trainingday.common.CliProtocol;
+import com.trainingday.common.CliRequest;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -28,7 +30,8 @@ public class StorePluginCliServer {
                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
             String request = in.readLine();
-            switch (request) {
+            CliRequest cliRequest = CliRequest.decode(request);
+            switch (cliRequest.command) {
               case CliProtocol.CMD_PING:
                 out.println("pong");
                 break;
@@ -37,6 +40,13 @@ public class StorePluginCliServer {
                   (result) -> {
                     out.println(result.toString());
                   },
+                  error -> out.println("Error: " + error)
+                );
+                break;
+              case CliProtocol.CMD_PURCHASE_PRODUCT_BY_ID:
+                StorePluginCliAdapter.getInstance().purchaseProductByIdAsync(
+                  cliRequest.params,
+                  (result) -> out.println(result.toString()),
                   error -> out.println("Error: " + error)
                 );
                 break;
