@@ -10,10 +10,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class StorePluginCliAdapter {
   public static final StorePluginCliAdapter INSTANCE = new StorePluginCliAdapter();
+
+  private final Map<String, PluginCall> activeListeners = new ConcurrentHashMap<>();
 
   private StorePluginCliAdapter() {}
 
@@ -27,6 +32,53 @@ public class StorePluginCliAdapter {
   public void setBridge(Bridge Bridge) {
     this.bridge = Bridge;
     this.storePlugin = (StorePlugin) bridge.getPlugin("Store").getInstance();
+  }
+
+  public String addListener(String eventName, Consumer<JSObject> onEvent) {
+    String callbackId = UUID.randomUUID().toString();
+    JSObject data = new JSObject();
+    data.put("eventName", eventName);
+
+    PluginCall call = new PluginCall(null, "Store", callbackId, "addListener", data) {
+      @Override
+      public void resolve() {
+        this.resolve(new JSObject());
+      }
+
+      @Override
+      public void resolve(JSObject result) {
+        onEvent.accept(result);
+      }
+
+      @Override
+      public void reject(String message) {
+        this.reject(message, new Exception(message));
+      }
+
+      @Override
+      public void reject(String message, Exception e) {
+        // Handle error if needed (TODO LATER) — add an onError callback
+      }
+    };
+    activeListeners.put(callbackId, call);
+    bridge.saveCall(call); // keep removeListener()'s bridge.getSavedCall(callbackId) lookup working
+    storePlugin.addListener(call);
+    return callbackId;
+  }
+
+  public void removeEventListener(String eventName, String callbackId) {
+    PluginCall savedCall = activeListeners.remove(callbackId);
+    if (savedCall == null) return;
+
+    JSObject data = new JSObject();
+    data.put("eventName", eventName);
+    data.put("callbackId", callbackId);
+
+    PluginCall unsubscribeCall = new PluginCall(null, "Store", null, "removeListener", data) {
+      @Override public void resolve() {}
+      @Override public void resolve(JSObject result) {}
+    };
+    storePlugin.removeListener(unsubscribeCall);
   }
 
   public void getProductsAsync(Consumer<JSONArray> onSuccess, Consumer<String> onError){
@@ -63,7 +115,7 @@ public class StorePluginCliAdapter {
     PluginCall call = new PluginCall(null, "Store", "cli-callback", "purchaseProductById", data) {
       @Override
       public void resolve() {
-        onSuccess.accept(new JSObject());
+        this.resolve(new JSObject());
       }
       @Override
       public void resolve(JSObject result) {
@@ -71,7 +123,7 @@ public class StorePluginCliAdapter {
       }
       @Override
       public void reject(String message) {
-        onError.accept(message);
+        this.reject(message, new Exception(message));
       }
       @Override
       public void reject(String message, Exception e) {

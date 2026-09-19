@@ -10,9 +10,16 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class StorePluginCliServer {
   private static final StorePluginCliServer INSTANCE = new StorePluginCliServer();
+  private static final List<String> LISTENED_EVENTS = Arrays.asList("onPurchase", "onPurchaseAborted");
   private boolean started = false;
 
   private StorePluginCliServer() {}
@@ -35,9 +42,33 @@ public class StorePluginCliServer {
   }
 
   private void handleClient(Socket socket){
+    BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
+    Map<String, String> listenerCallbackIds = new HashMap<>();
+    Thread eventWriter = null;
+
     try ( socket; // ?
           BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
           PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+      for (String eventName : LISTENED_EVENTS) {
+        String callbackId = StorePluginCliAdapter.getInstance().addListener(
+          eventName,
+          data -> eventQueue.add(CliProtocol.EVENT_PREFIX + eventName + " " + data.toString())
+        );
+        listenerCallbackIds.put(eventName, callbackId);
+      }
+
+      eventWriter = new Thread(() -> {
+        try {
+          while (!Thread.currentThread().isInterrupted()) {
+            out.println(eventQueue.take());
+          }
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        }
+      });
+      eventWriter.start();
+
       String request;
       while ((request = in.readLine()) != null) {
         CliRequest cliRequest = CliRequest.decode(request);
@@ -68,6 +99,13 @@ public class StorePluginCliServer {
       }
     } catch (Exception e) {
       e.printStackTrace();
+    } finally {
+      if (eventWriter != null) {
+        eventWriter.interrupt();
+      }
+      for (Map.Entry<String, String> entry : listenerCallbackIds.entrySet()) {
+        StorePluginCliAdapter.getInstance().removeEventListener(entry.getKey(), entry.getValue());
+      }
     }
   }
 }

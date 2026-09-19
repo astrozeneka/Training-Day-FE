@@ -104,10 +104,20 @@ public class PurchaseProductByIdTest extends BaseTest {
           .put("type", "subs")
           .put("offerToken", "invalid_offer_token")
       ).encode());
-      String response = in.readLine();
-      // In the displayed sheet, an error should be displayed
 
-      assertTrue(response.toLowerCase().contains("invalid offer token"));
+      // 1. purchaseProductById resolves as soon as launchBillingFlow is called,
+      // before the Play sheet is shown or closed.
+      String response = in.readLine();
+      assertEquals("{}", response);
+
+      // 2. The sheet then displays its own error and, once the user closes it,
+      // StorePlugin's listener fires exactly one onPurchase/onPurchaseAborted event.
+      String eventPrefix = CliProtocol.EVENT_PREFIX + "onPurchaseAborted ";
+      String event = in.readLine();
+      assertTrue(event.startsWith(eventPrefix));
+
+      JSONObject eventData = new JSONObject(event.substring(eventPrefix.length()));
+      assertEquals(6, eventData.getInt("code")); // BillingResponseCode.ERROR
     }
   }
 }

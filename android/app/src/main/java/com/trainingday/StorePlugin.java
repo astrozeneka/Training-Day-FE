@@ -45,6 +45,7 @@ public class StorePlugin extends Plugin {
     Context context = getContext();
     billingClient = BillingClient.newBuilder(context)
       .setListener((billingResult, purchases) -> { // purchases is nullable
+
         if (purchases != null) {
           // Handle purchase here
           System.out.println("StorePlugin: Purchase listener: " + purchases);
@@ -73,7 +74,8 @@ public class StorePlugin extends Plugin {
           notifyListeners("onPurchase", output);
         } else {
           JSObject output = new JSObject();
-          output.put("message", "No purchases found"); // Can also mean that the purchase has been aborted by the user
+          output.put("message", billingResult.toString());
+          output.put("code", billingResult.getResponseCode()); // Can also mean that the purchase has been aborted by the user
           notifyListeners("onPurchaseAborted", output);
         }
       })
