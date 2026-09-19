@@ -9,6 +9,8 @@ public final class CliProtocol {
   public static final String CMD_PING_ASYNC = "pingAsync";
   public static final String CMD_GET_PRODUCTS = "getProducts";
   public static final String CMD_PURCHASE_PRODUCT_BY_ID = "purchaseProductById";
+  public static final String CMD_ACKNOWLEDGE_ANDROID_PURCHASE = "acknowledgeAndroidPurchase";
+  public static final String CMD_OPEN_ANDROID_SUBSCRIPTION_MANAGEMENT_PAGE = "openAndroidSubscriptionManagementPage";
 
   private CliProtocol() {}
 }

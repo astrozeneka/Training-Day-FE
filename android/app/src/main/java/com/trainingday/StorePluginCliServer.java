@@ -95,6 +95,20 @@ public class StorePluginCliServer {
               error -> out.println(CliProtocol.ERROR_PREFIX + error)
             );
             break;
+          case CliProtocol.CMD_ACKNOWLEDGE_ANDROID_PURCHASE:
+            StorePluginCliAdapter.getInstance().acknowledgeAndroidPurchaseAsync(
+              cliRequest.params,
+              (result) -> out.println(result.toString()),
+              error -> out.println(CliProtocol.ERROR_PREFIX + error)
+            );
+            break;
+          case CliProtocol.CMD_OPEN_ANDROID_SUBSCRIPTION_MANAGEMENT_PAGE:
+            StorePluginCliAdapter.getInstance().openAndroidSubscriptionManagementPageAsync(
+              cliRequest.params,
+              (result) -> out.println(result.toString()),
+              error -> out.println(CliProtocol.ERROR_PREFIX + error)
+            );
+            break;
         }
       }
     } catch (Exception e) {

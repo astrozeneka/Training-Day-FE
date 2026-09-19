@@ -132,4 +132,64 @@ public class StorePluginCliAdapter {
     };
     storePlugin.purchaseProductById(call);
   }
+
+  public void acknowledgeAndroidPurchaseAsync(JSONObject params, Consumer<JSObject> onSuccess, Consumer<String> onError){
+    JSObject data;
+    try {
+      data = JSObject.fromJSONObject(params);
+    } catch (JSONException e) {
+      onError.accept("Invalid params: " + e.getMessage());
+      return;
+    }
+
+    PluginCall call = new PluginCall(null, "Store", "cli-callback", "acknowledgeAndroidPurchase", data) {
+      @Override
+      public void resolve() {
+        this.resolve(new JSObject());
+      }
+      @Override
+      public void resolve(JSObject result) {
+        onSuccess.accept(result);
+      }
+      @Override
+      public void reject(String message) {
+        this.reject(message, new Exception(message));
+      }
+      @Override
+      public void reject(String message, Exception e) {
+        onError.accept(message + ": " + e.getMessage());
+      }
+    };
+    storePlugin.acknowledgeAndroidPurchase(call);
+  }
+
+  public void openAndroidSubscriptionManagementPageAsync(JSONObject params, Consumer<JSObject> onSuccess, Consumer<String> onError){
+    JSObject data;
+    try {
+      data = JSObject.fromJSONObject(params);
+    } catch (JSONException e) {
+      onError.accept("Invalid params: " + e.getMessage());
+      return;
+    }
+
+    PluginCall call = new PluginCall(null, "Store", "cli-callback", "openAndroidSubscriptionManagementPage", data) {
+      @Override
+      public void resolve() {
+        this.resolve(new JSObject());
+      }
+      @Override
+      public void resolve(JSObject result) {
+        onSuccess.accept(result);
+      }
+      @Override
+      public void reject(String message) {
+        this.reject(message, new Exception(message));
+      }
+      @Override
+      public void reject(String message, Exception e) {
+        onError.accept(message + ": " + e.getMessage());
+      }
+    };
+    storePlugin.openAndroidSubscriptionManagementPage(call);
+  }
 }
