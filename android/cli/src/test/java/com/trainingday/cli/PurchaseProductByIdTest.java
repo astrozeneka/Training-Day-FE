@@ -1,5 +1,9 @@
 package com.trainingday.cli;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import com.trainingday.common.CliProtocol;
 import com.trainingday.common.CliRequest;
 
@@ -18,6 +22,7 @@ public class PurchaseProductByIdTest extends BaseTest {
    */
   @Test
   public void purchaseProductById_opensPurchaseFlow() throws Exception {
+    // Warning, this test is not automatable and will possibly removed later
     try (AutoCloseable forwarder = dadb.tcpForward(CliProtocol.PORT, CliProtocol.PORT);
          Socket socket = new Socket("localhost", CliProtocol.PORT);
          PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -30,8 +35,79 @@ public class PurchaseProductByIdTest extends BaseTest {
       ).encode());
       String response = in.readLine();
       System.out.println("Response: " + response);
+      assertEquals("{}", response);
+    }
+  }
 
-      // TODO, next step, handle the onPurchase callback
+  @Test
+  public void purchaseProductById_invalidProductId_returnsError() throws Exception {
+    try (AutoCloseable forwarder = dadb.tcpForward(CliProtocol.PORT, CliProtocol.PORT);
+         Socket socket = new Socket("localhost", CliProtocol.PORT);
+         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+      out.println(new CliRequest(CliProtocol.CMD_PURCHASE_PRODUCT_BY_ID,
+        new JSONObject()
+          .put("productId", "invalid_product_id")
+          .put("type", "subs")
+          .put("offerToken", "AcE6+HKaoixIHmeIPrB8b+qNpiL5UqPFtMsJnOmo1qiGHbCTtbJ7PcIQgHP0r9ia+ZTScLmzq7Z2VV4=")
+      ).encode());
+      String response = in.readLine();
+      // ASSERT that product not found is in the response
+      assertTrue(response.toLowerCase().contains("product not found"));
+    }
+  }
+
+  @Test
+  public void purchaseProductById_invalidType_returnsError() throws Exception {
+    try (AutoCloseable forwarder = dadb.tcpForward(CliProtocol.PORT, CliProtocol.PORT);
+         Socket socket = new Socket("localhost", CliProtocol.PORT);
+         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+      out.println(new CliRequest(CliProtocol.CMD_PURCHASE_PRODUCT_BY_ID,
+        new JSONObject()
+          .put("productId", "training_day")
+          .put("type", "invalid_type")
+          .put("offerToken", "AcE6+HKaoixIHmeIPrB8b+qNpiL5UqPFtMsJnOmo1qiGHbCTtbJ7PcIQgHP0r9ia+ZTScLmzq7Z2VV4=")
+      ).encode());
+      String response = in.readLine();
+      assertTrue(response.toLowerCase().contains("product type must be"));
+    }
+  }
+
+  @Test
+  public void purchaseProductById_missingOfferToken_returnsError() throws Exception {
+    try (AutoCloseable forwarder = dadb.tcpForward(CliProtocol.PORT, CliProtocol.PORT);
+         Socket socket = new Socket("localhost", CliProtocol.PORT);
+         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+      out.println(new CliRequest(CliProtocol.CMD_PURCHASE_PRODUCT_BY_ID,
+        new JSONObject()
+          .put("productId", "training_day")
+          .put("type", "subs")
+      ).encode());
+      String response = in.readLine();
+      // In a new version, the text messages need to be standardized;
+      // This exception is from the API, not coded in the plugin, so it may change in the future
+      assertTrue(response.toLowerCase().contains("offerToken can not be empty"));
+    }
+  }
+
+  @Test
+  public void purchaseProductById_invalidOfferToken_returnsError() throws Exception {
+    try (AutoCloseable forwarder = dadb.tcpForward(CliProtocol.PORT, CliProtocol.PORT);
+         Socket socket = new Socket("localhost", CliProtocol.PORT);
+         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+      out.println(new CliRequest(CliProtocol.CMD_PURCHASE_PRODUCT_BY_ID,
+        new JSONObject()
+          .put("productId", "training_day")
+          .put("type", "subs")
+          .put("offerToken", "invalid_offer_token")
+      ).encode());
+      String response = in.readLine();
+      // In the displayed sheet, an error should be displayed
+
+      assertTrue(response.toLowerCase().contains("invalid offer token"));
     }
   }
 }

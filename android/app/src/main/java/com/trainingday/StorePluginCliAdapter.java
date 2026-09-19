@@ -59,7 +59,12 @@ public class StorePluginCliAdapter {
       return;
     }
 
+    // TODO: Make the following portion reusable
     PluginCall call = new PluginCall(null, "Store", "cli-callback", "purchaseProductById", data) {
+      @Override
+      public void resolve() {
+        onSuccess.accept(new JSObject());
+      }
       @Override
       public void resolve(JSObject result) {
         onSuccess.accept(result);
@@ -67,6 +72,10 @@ public class StorePluginCliAdapter {
       @Override
       public void reject(String message) {
         onError.accept(message);
+      }
+      @Override
+      public void reject(String message, Exception e) {
+        onError.accept(message + ": " + e.getMessage());
       }
     };
     storePlugin.purchaseProductById(call);

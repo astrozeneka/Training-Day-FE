@@ -61,7 +61,7 @@ public class StorePluginCliServer {
             StorePluginCliAdapter.getInstance().purchaseProductByIdAsync(
               cliRequest.params,
               (result) -> out.println(result.toString()),
-              error -> out.println("Error: " + error)
+              error -> out.println(CliProtocol.ERROR_PREFIX + error)
             );
             break;
         }

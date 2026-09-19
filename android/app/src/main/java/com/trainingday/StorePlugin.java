@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @CapacitorPlugin(name="Store")
 public class StorePlugin extends Plugin {
@@ -73,7 +74,7 @@ public class StorePlugin extends Plugin {
         } else {
           JSObject output = new JSObject();
           output.put("message", "No purchases found"); // Can also mean that the purchase has been aborted by the user
-          notifyListeners("onPurchaseAborted", new JSObject());
+          notifyListeners("onPurchaseAborted", output);
         }
       })
       .enablePendingPurchases()
@@ -111,7 +112,7 @@ public class StorePlugin extends Plugin {
     }
   }
 
-  private CompletableFuture<List<ProductDetails>> _getProductDetails(PluginCall call){
+  private CompletableFuture<List<ProductDetails>> _getProductDetails(PluginCall call) throws TDInvalidProductTypeException {
     List<QueryProductDetailsParams.Product> productList = new ArrayList<>();
     String productType = call.getString("type");
     if (productType.equals("inapp")) {
@@ -144,7 +145,7 @@ public class StorePlugin extends Plugin {
       }
     } else {
       // Error 5: It generally show if the product type is not recognized
-      call.reject("Product type must be either 'inapp' or 'subs', '" + productType + "' given");
+      throw new TDInvalidProductTypeException("Product type must be either 'inapp' or 'subs', '" + productType + "' given");
     }
 
 
@@ -278,15 +279,12 @@ public class StorePlugin extends Plugin {
     System.out.println("StorePlugin: Purchasing product by ID"); // ok
     String productId = call.getString("productId");
     if (!billingClient.isReady()){
-      // The code below is redundant
-      // TODO: should consider to refactor in the future
       billingClient.startConnection(new BillingClientStateListener() {
         @Override
         public void onBillingSetupFinished(BillingResult billingResult) {
           if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
             System.out.println("StorePlugin: Billing client is ready");
-            processPurchase(productId, call); // Very carefull of the redundant code
-            call.resolve(); // TODO, should be refactored if possible
+            attemptPurchase(productId, call);
           } else {
             System.out.println("StorePlugin: Error code: " + billingResult.getResponseCode());
             // Error 3: It generally show if the billing client is not available (due to geographical location or device restrictions)
@@ -301,57 +299,62 @@ public class StorePlugin extends Plugin {
         }
       });
     } else {
-      processPurchase(productId, call); // Very carefull of the redundant code
-      call.resolve(); // TODO, should be refactored if possible
+      attemptPurchase(productId, call);
     }
   }
 
-  public void processPurchase(String productId, PluginCall call){
+  private void attemptPurchase(String productId, PluginCall call) {
+    try {
+      processPurchase(productId, call);
+      call.resolve();
+    } catch (Exception e) {
+      call.reject("Unable to purchase product", e);
+    }
+  }
+
+  public void processPurchase(String productId, PluginCall call) throws TDProductNotFoundException, TDInvalidProductTypeException, InterruptedException, ExecutionException {
     System.out.println("StorePlugin: Processing purchase for product: " + productId + ", type is " + call.getString("type")); // ok
     String productType = call.getString("type");
-    try {
-      // Step 1. fetch the product details
-      List<ProductDetails> productDetailsList = _getProductDetails(call).get();
-      ProductDetails productDetails = productDetailsList.stream()
-        .filter(details -> details.getProductId().equals(productId))
-        .findFirst()
-        .orElse(null);
 
-      // Step 2. Set product details params list
-      List<BillingFlowParams.ProductDetailsParams> productDetailsParamsList = new ArrayList<>();
-      if (productType.equals("inapp")) {
-        productDetailsParamsList.add(
-          BillingFlowParams.ProductDetailsParams.newBuilder()
-            .setProductDetails(productDetails)
-            .build()
-        );
-      } else if (productType.equals("subs")) {
-        String offerToken = call.getString("offerToken");
-        productDetailsParamsList.add(
-          BillingFlowParams.ProductDetailsParams.newBuilder()
-            .setProductDetails(productDetails)
-            .setOfferToken(offerToken)
-            .build()
-        );
-      } else {
-        // Error 5: It generally show if the product type is not recognized
-        call.reject("Product type must be either 'inapp' or 'subs', '" + productType + "' given");
-      }
+    // Step 1. fetch the product details
+    List<ProductDetails> productDetailsList = _getProductDetails(call).get();
+    ProductDetails productDetails = productDetailsList.stream()
+      .filter(details -> details.getProductId().equals(productId))
+      .findFirst()
+      .orElseThrow(() -> new TDProductNotFoundException("Product not found: " + productId));
 
-      // Step 3. Set the flow params
-      BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-        .setProductDetailsParamsList(productDetailsParamsList)
-        .build();
-
-      // Step 4. Launch
-      System.out.println("Launching billing flow...");
-      BillingResult billingResult = billingClient.launchBillingFlow(getActivity(), billingFlowParams);
-      System.out.println("Billing flow done " + billingResult);
-      System.out.println(billingResult); // Response Code: OK, Debug Message: null
-
-    } catch (Exception e) {
-      System.out.println("StorePlugin: Error code: " + e.getMessage());
+    // Step 2. Set product details params list
+    List<BillingFlowParams.ProductDetailsParams> productDetailsParamsList = new ArrayList<>();
+    if (productType.equals("inapp")) {
+      productDetailsParamsList.add(
+        BillingFlowParams.ProductDetailsParams.newBuilder()
+          .setProductDetails(productDetails)
+          .build()
+      );
+    } else if (productType.equals("subs")) {
+      String offerToken = call.getString("offerToken");
+      productDetailsParamsList.add(
+        BillingFlowParams.ProductDetailsParams.newBuilder()
+          .setProductDetails(productDetails)
+          .setOfferToken(offerToken)
+          .build()
+      );
+    } else {
+      // Dead code since the _getProductDetails already throws an exception for invalid product type, but we keep it here for safety
+      throw new TDInvalidProductTypeException("Product type must be either 'inapp' or 'subs', '" + productType + "' given");
     }
+
+    // Step 3. Set the flow params
+    BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+      .setProductDetailsParamsList(productDetailsParamsList)
+      .build();
+
+    // Step 4. Launch
+    System.out.println("Launching billing flow...");
+    BillingResult billingResult = billingClient.launchBillingFlow(getActivity(), billingFlowParams);
+    System.out.println("Billing flow done " + billingResult);
+    System.out.println(billingResult); // Response Code: OK, Debug Message: null
+
   }
 
   @PluginMethod()
