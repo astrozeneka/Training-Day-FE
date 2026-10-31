@@ -12,12 +12,12 @@ import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.PendingPurchasesParams;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryProductDetailsResult;
 import com.android.billingclient.api.QueryPurchasesParams;
-import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsParams;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -79,8 +79,11 @@ public class StorePlugin extends Plugin {
           notifyListeners("onPurchaseAborted", output);
         }
       })
-      .enablePendingPurchases()
-      .build();
+      .enablePendingPurchases(
+        PendingPurchasesParams.newBuilder()
+          .enableOneTimeProducts()
+          .build()
+      ).build();
 
     // Handle promo code sheet (Play Store) broadcast receiver
     System.out.println("StorePlugin: Registering promo receiver");
@@ -114,7 +117,7 @@ public class StorePlugin extends Plugin {
     }
   }
 
-  private CompletableFuture<List<ProductDetails>> _getProductDetails(PluginCall call) throws TDInvalidProductTypeException {
+  private CompletableFuture<QueryProductDetailsResult> _getProductDetails(PluginCall call) throws TDInvalidProductTypeException {
     List<QueryProductDetailsParams.Product> productList = new ArrayList<>();
     String productType = call.getString("type");
     if (productType.equals("inapp")) {
@@ -155,10 +158,10 @@ public class StorePlugin extends Plugin {
     QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
       .setProductList(productList)
       .build();
-    CompletableFuture<List<ProductDetails>> future = new CompletableFuture<>();
-    billingClient.queryProductDetailsAsync(params, (billingResult, productDetailsList) -> {
+    CompletableFuture<QueryProductDetailsResult> future = new CompletableFuture<>();
+    billingClient.queryProductDetailsAsync(params, (billingResult, productDetailsResult) -> {
       if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-        future.complete(productDetailsList);
+        future.complete(productDetailsResult);
       } else {
         future.completeExceptionally(new RuntimeException("Unable to query product details. Error code: " + billingResult.getResponseCode()));
       }
@@ -168,7 +171,7 @@ public class StorePlugin extends Plugin {
 
   public void loadProductList(PluginCall call) {
     try {
-      List<ProductDetails> productDetailsList = _getProductDetails(call).get();
+      List<ProductDetails> productDetailsList = _getProductDetails(call).get().getProductDetailsList();
       System.out.println("StorePlugin: Query successful");
       // Print products as json
       System.out.println("StorePlugin: Products: " + productDetailsList.size() + " items");
@@ -319,7 +322,7 @@ public class StorePlugin extends Plugin {
     String productType = call.getString("type");
 
     // Step 1. fetch the product details
-    List<ProductDetails> productDetailsList = _getProductDetails(call).get();
+    List<ProductDetails> productDetailsList = _getProductDetails(call).get().getProductDetailsList();
     ProductDetails productDetails = productDetailsList.stream()
       .filter(details -> details.getProductId().equals(productId))
       .findFirst()

@@ -88,7 +88,7 @@ public class PurchaseProductByIdTest extends BaseTest {
       String response = in.readLine();
       // In a new version, the text messages need to be standardized;
       // This exception is from the API, not coded in the plugin, so it may change in the future
-      assertTrue(response.toLowerCase().contains("offerToken can not be empty"));
+      assertTrue(response.toLowerCase().contains("offertoken can not be empty"));
     }
   }
 
